@@ -1,0 +1,21 @@
+# Build workspace: downloaded upstream data (cache/), intermediate files (work/),
+# and compiled artifacts (dist/). Artifacts are distributed via GitHub Releases,
+# never committed to git (they're ~6MB+ binaries rebuilt nightly).
+/build/
+
+# Internal planning documents (PRD, research conversations). These contain
+# owner strategy and are deliberately kept out of the public repository.
+# The public-facing documentation lives in README.md and docs published later.
+/docs/
+
+# OS / editor noise
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Ruby
+/.bundle/
+/vendor/bundle/
+/coverage/
+*.gem

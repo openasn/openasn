@@ -1,0 +1,93 @@
+# cdn.txt — ASNs belonging to major content delivery networks.
+#
+# Effect: sets flags bit 12 (cdn). Classification: contributes to :hosting
+# (precedence rule 10) and, more importantly, surfaces in Result#flags /
+# #sources so applications can special-case CDN traffic. The flag also
+# hedges against upstream recategorization: if ipverse ever drops the
+# hosting category on Cloudflare, these IPs still classify :hosting.
+#
+# HEADS-UP (PRD D11): never blanket-BLOCK CDN ranges. Cloudflare address
+# space carries iCloud Private Relay and WARP egress — real humans. The
+# Tier B relay overlay outranks :hosting in the gem precisely because of
+# this; keep it that way.
+#
+# Curation bar: globally recognized CDN brands only, ASN registered to the
+# brand itself (beware same-name lookalikes: AS149097 "FASTLY NETWORK
+# SOLUTION COMPANY LIMITED (VN)" is NOT Fastly Inc; AS13188 "CONTENT
+# DELIVERY NETWORK LTD (UA)" is a Ukrainian access ISP - both excluded).
+# Evidence for every line: ipverse as-metadata org description
+# (https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json),
+# checked 2026-07-04.
+
+# --- Cloudflare, Inc. ---
+AS13335   # Cloudflare Inc. (US) — main. src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
+AS14789   # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
+AS132892  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
+AS133877  # Cloudflare Hong Kong LLC. src: ipverse as-metadata description "Cloudflare Hong Kong LLC" (2026-07-04)
+AS139242  # Cloudflare Sydney LLC. src: ipverse as-metadata description "Cloudflare Sydney LLC" (2026-07-04)
+AS202623  # Cloudflare Inc. src: ipverse as-metadata description "Cloudflare Inc" (2026-07-04)
+AS203898  # Cloudflare Inc. src: ipverse as-metadata description "Cloudflare Inc" (2026-07-04)
+AS209242  # Cloudflare London LLC. src: ipverse as-metadata description "Cloudflare London LLC" (2026-07-04)
+AS394536  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
+AS395747  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
+AS400095  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
+AS402542  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
+
+# --- Akamai Technologies / Akamai International ---
+AS12222   # Akamai Technologies (US). src: ipverse as-metadata description "Akamai Technologies" (2026-07-04)
+AS16625   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS16702   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS17334   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS18680   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS18717   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS20189   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS20940   # Akamai International B.V. (NL) — main global CDN AS. src: ipverse as-metadata description (2026-07-04)
+AS21342   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS21357   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS21399   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS22207   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS23454   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS23455   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS23903   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS24319   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS26008   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS30675   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS31107   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS31108   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS31109   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS31110   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS31377   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS31984   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS32787   # Akamai Technologies Inc. (US) — Prolexic. src: ipverse as-metadata description (2026-07-04)
+AS33905   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS34164   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS34850   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS35204   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS35993   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS35994   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS36029   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS36183   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS39836   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS43639   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS45757   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS48163   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS49249   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS49846   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS55409   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS55770   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS63949   # Akamai Technologies Inc. (US) — Linode (Akamai cloud). src: ipverse as-metadata description (2026-07-04)
+AS133103  # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS200005  # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS213120  # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
+AS393234  # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS393560  # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+
+# --- Fastly, Edgecast, CacheFly, bunny.net ---
+AS895     # Fastly Inc. (US). src: ipverse as-metadata description "Fastly Inc." (2026-07-04)
+AS54113   # Fastly Inc. (US) — main. src: ipverse as-metadata description "Fastly Inc." (2026-07-04)
+AS394192  # Fastly Inc. (US). src: ipverse as-metadata description "Fastly Inc." (2026-07-04)
+AS14153   # Edgecast Inc. (US). src: ipverse as-metadata description "Edgecast Inc." (2026-07-04)
+AS14210   # Edgecast Inc. (US). src: ipverse as-metadata description "Edgecast Inc." (2026-07-04)
+AS15133   # Edgecast Inc. (US) — main (Edgio). src: ipverse as-metadata description "Edgecast Inc." (2026-07-04)
+AS30081   # CacheFly (US). src: ipverse as-metadata description "CacheFly" (2026-07-04)
+AS200325  # BUNNYWAY informacijske storitve d.o.o. (SI) — bunny.net CDN. src: ipverse as-metadata description "BUNNYWAY" (2026-07-04)

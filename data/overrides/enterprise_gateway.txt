@@ -1,0 +1,46 @@
+# enterprise_gateway.txt — ASNs of corporate/school secure web gateways (SWG).
+#
+# Effect: sets flags bit 11 (enterprise_gw). Classification:
+# :enterprise_gateway (precedence rule 7 — ABOVE the hosting rules on
+# purpose). Traffic from these ASNs is humans-at-work behind Zscaler-style
+# egress, not anonymizer infrastructure. Blocking them blocks entire
+# companies and school districts; the whole point of this class is to stop
+# that false positive (the iboss case is documented by is-vpn's maintainer:
+# https://github.com/josephrocca/is-vpn — school gateways misread as VPNs).
+#
+# Curation bar: ASN registered to a recognized SWG/SSE vendor whose product
+# proxies customer web traffic through vendor-operated egress. Evidence:
+# ipverse as-metadata org description
+# (https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json),
+# checked 2026-07-04, plus the vendor's public product line.
+
+# --- Zscaler (zscaler.com; egress list at https://config.zscaler.com/) ---
+AS22616   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
+AS32921   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
+AS40384   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
+AS53444   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
+AS53813   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
+AS55242   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
+AS62044   # Zscaler Switzerland GmbH (CH). src: ipverse as-metadata description "Zscaler Switzerland GmbH" (2026-07-04)
+AS62907   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
+
+# --- Forcepoint (forcepoint.com — Web Security Cloud) ---
+AS7598    # Forcepoint UK Limited (GB). src: ipverse as-metadata description "Forcepoint UK Limited" (2026-07-04)
+AS30057   # Forcepoint LLC (US). src: ipverse as-metadata description "Forcepoint LLC" (2026-07-04)
+AS35788   # Forcepoint UK Limited (GB). src: ipverse as-metadata description "Forcepoint UK Limited" (2026-07-04)
+AS42465   # Forcepoint UK Limited (GB). src: ipverse as-metadata description "Forcepoint UK Limited" (2026-07-04)
+AS43251   # Forcepoint Overseas Limited (GB). src: ipverse as-metadata description "Forcepoint Overseas Limited" (2026-07-04)
+AS44444   # Forcepoint UK Limited (GB). src: ipverse as-metadata description "Forcepoint UK Limited" (2026-07-04)
+
+# --- Netskope (netskope.com — SSE/SWG) ---
+AS55256   # Netskope Inc (US). src: ipverse as-metadata description "Netskope Inc" (2026-07-04)
+AS151293  # Netskope Network Technology (Shanghai) Co. Ltd (CN). src: ipverse as-metadata description (2026-07-04)
+
+# --- Menlo Security (menlosecurity.com — browser isolation/SWG) ---
+AS62654   # MENLO SECURITY INC. (US). src: ipverse as-metadata description "MENLO SECURITY INC." (2026-07-04)
+AS152150  # Menlo Security Japan K.K. (JP). src: ipverse as-metadata description "Menlo Security Japan K.K." (2026-07-04)
+
+# --- iboss (iboss.com — the documented school-gateway false-positive case) ---
+AS137922  # IBOSS Inc. (US). src: ipverse as-metadata description "IBOSS Inc." (2026-07-04)
+AS202276  # IBOSS INC (US). src: ipverse as-metadata description "IBOSS INC" (2026-07-04)
+AS396253  # iboss inc (US). src: ipverse as-metadata description "iboss inc" (2026-07-04)

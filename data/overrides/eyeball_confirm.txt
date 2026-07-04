@@ -1,0 +1,52 @@
+# eyeball_confirm.txt — ASNs our curators CONFIRM are consumer eyeball networks.
+#
+# Effect: forces category=isp + network_role=access_provider in the compiled
+# flags (compile.rb), overriding whatever ipverse as-metadata says (but NOT
+# overriding corrections.yml, which always wins). Classification result:
+# :residential_isp via precedence rule 12.
+#
+# Two jobs:
+#   1. THE TIER-1 FIX (behavior-changing): ipverse assigns networkRole by
+#      position in the routing graph, so the four consumer giants that also
+#      run tier-1 backbones get role=tier1_transit — which our precedence
+#      would honestly call :unknown (pure-transit ambiguity, rule 16).
+#      For these four, "is it an eyeball?" is not ambiguous: they serve
+#      tens of millions of homes. Confirming them here keeps rule 16's
+#      honesty for the REAL pure-transit carriers (Lumen AS3356, Cogent
+#      AS174, Arelion AS1299, GTT AS3257, NTT AS2914, Zayo AS6461, ... —
+#      measured 2026-07-04: only 19 ASNs worldwide are isp+tier1_transit,
+#      and exactly these four are consumer-heavy).
+#   2. DRIFT INSURANCE (no behavior change today): the biggest national
+#      eyeballs, pinned so a bad day at ipverse (recategorization, data
+#      loss) cannot flip millions of home users to :business or :unknown.
+#      These already classify :residential_isp via rule 12; the pin is a
+#      hedge (PRD D8: overrides double as the hedge if upstream dies).
+#
+# Curation bar: major consumer broadband/mobile ISP, verified against
+# ipverse as-metadata description + public knowledge of the brand. If an
+# ASN here ever appears in an infrastructure list (vpn/dc/bad-asn), the
+# build FAILS (overrides sanity check) — resolve via corrections.yml, not
+# by having it both ways.
+
+# --- Tier-1-role consumer giants (the behavior-changing fix; see header) ---
+AS7018    # AT&T Enterprises LLC (US) — tens of millions of US broadband subscribers; also tier1 backbone. src: ipverse as-metadata description "AT&T Enterprises LLC" + https://about.att.com (2026-07-04)
+AS701     # Verizon Business (US) — Verizon consumer broadband legacy AS; also tier1 backbone. src: ipverse as-metadata description "Verizon Business" (2026-07-04)
+AS3320    # Deutsche Telekom AG (DE) — Germany's incumbent consumer ISP; also tier1 backbone. src: ipverse as-metadata description "Deutsche Telekom AG" (2026-07-04)
+AS6830    # Liberty Global Europe (NL) — pan-EU consumer cable (UPC et al.); role=tier1_transit in ipverse. src: ipverse as-metadata description "Liberty Global Europe Holding B.V." (2026-07-04)
+
+# --- Drift insurance: top national eyeballs (already :residential_isp today) ---
+AS7922    # Comcast Cable Communications LLC (US). src: ipverse as-metadata description "Comcast Cable Communications LLC" (2026-07-04)
+AS20115   # Charter Communications LLC (US). src: ipverse as-metadata description "Charter Communications LLC" (2026-07-04)
+AS22773   # Cox Communications Inc. (US). src: ipverse as-metadata description "Cox Communications Inc." (2026-07-04)
+AS3352    # Telefónica de España S.A.U. (ES). src: ipverse as-metadata description "TELEFONICA DE ESPANA S.A.U." (2026-07-04)
+AS12430   # Vodafone España S.A.U. (ES). src: ipverse as-metadata description "VODAFONE ESPANA S.A.U." (2026-07-04)
+AS6739    # Vodafone ONO S.A. (ES). src: ipverse as-metadata description "VODAFONE ONO S.A." (2026-07-04)
+AS12479   # Orange Espagne SA (ES). src: ipverse as-metadata description "Orange Espagne SA" (2026-07-04)
+AS57269   # Digi Spain Telecom S.A. (ES). src: ipverse as-metadata description "DIGI SPAIN TELECOM S.A" (2026-07-04)
+AS3209    # Vodafone GmbH (DE). src: ipverse as-metadata description "Vodafone GmbH" (2026-07-04)
+AS3215    # Orange S.A. (FR consumer; the tier1 backbone is separate AS5511 OpenTransit). src: ipverse as-metadata description "Orange S.A." (2026-07-04)
+AS2856    # British Telecommunications Ltd (GB). src: ipverse as-metadata description "British Telecommunications Limited" (2026-07-04)
+AS5089    # Virgin Media Limited (GB). src: ipverse as-metadata description "Virgin Media Limited" (2026-07-04)
+AS5607    # Sky UK Limited (GB). src: ipverse as-metadata description "Sky UK Limited" (2026-07-04)
+AS1136    # KPN B.V. (NL). src: ipverse as-metadata description "KPN B.V." (2026-07-04)
+AS3269    # Telecom Italia S.p.A. (IT). src: ipverse as-metadata description "Telecom Italia S.p.A." (2026-07-04)

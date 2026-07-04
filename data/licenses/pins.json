@@ -1,0 +1,32 @@
+{
+  "sapics-origin-asn": {
+    "url": "https://raw.githubusercontent.com/sapics/ip-location-db/main/origin-asn/SOURCES.md",
+    "extract": "whole_file",
+    "sha256": "e8756fd515b673f3e868bf8d9aa5cbbb28d4611366c654e36977ea5279e6551a",
+    "pinned_at": "2026-07-04T20:25:49Z"
+  },
+  "ipverse-as-metadata": {
+    "url": "https://raw.githubusercontent.com/ipverse/as-metadata/master/LICENSE",
+    "extract": "whole_file",
+    "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+    "pinned_at": "2026-07-04T20:25:49Z"
+  },
+  "ipverse-as-ip-blocks": {
+    "url": "https://raw.githubusercontent.com/ipverse/as-ip-blocks/master/LICENSE",
+    "extract": "whole_file",
+    "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+    "pinned_at": "2026-07-04T20:25:49Z"
+  },
+  "x4bnet-lists_vpn": {
+    "url": "https://raw.githubusercontent.com/X4BNet/lists_vpn/main/README.md",
+    "extract": "license_heading_section",
+    "sha256": "8826b5fbb9d7380264deb636df4adf349eab0e640ca3f2f5481d74cea96ba7a5",
+    "pinned_at": "2026-07-04T20:25:50Z"
+  },
+  "brianhama-bad-asn-list": {
+    "url": "https://raw.githubusercontent.com/brianhama/bad-asn-list/master/LICENSE",
+    "extract": "whole_file",
+    "sha256": "67690d0688b2b17b2fb74446e0bf58132a389b2e543d9ba0c4c44a60fedd4e67",
+    "pinned_at": "2026-07-04T20:25:50Z"
+  }
+}

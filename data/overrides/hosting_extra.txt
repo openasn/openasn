@@ -1,0 +1,79 @@
+# hosting_extra.txt — hosting/datacenter ASNs that ipverse as-metadata does
+# NOT categorize as hosting (or does not know at all).
+#
+# Effect: sets flags bit 13 (hosting_extra). Classification: :hosting
+# (precedence rule 10). This file exists because the crosscheck stage
+# (pipeline/crosscheck.rb) measures a gap between the first-party curated
+# datacenter reference sets (X4BNet input ASNs, brianhama/bad-asn-list) and
+# ipverse's hosting category — the entries here close the reviewed part of
+# that gap. Regenerate candidates any time with `rake overrides:candidates`
+# (build/work/candidates/hosting_extra.gap.txt).
+#
+# Curation bar (strict — a wrong entry here mislabels humans as servers):
+#   (a) listed in BOTH X4B datacenter input AND bad-asn-list
+#       (two independent curators agree), or
+#   (b) listed in one of them AND the org is name-evidently a hosting
+#       company / verifiable hosting brand.
+# Deliberately NOT graduated from the gap (2026-07-04): eyeball-shaped or
+# ambiguous orgs (e.g. AS31242 P4/Play PL — a mobile carrier; AS28682 Posta
+# Slovenije; AS39832 Opera Norway — browser-VPN egress, covered by X4B's
+# range overlay instead). When unsure, leave it out: the X4B dc RANGE
+# overlay still covers those providers' published ranges.
+
+# --- (a) corroborated by BOTH X4B dc input and bad-asn-list; absent from as-metadata entirely ---
+AS14986   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS17920   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS24931   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS25128   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS29073   # not in as-metadata; dc per both curated lists (historic Ecatel/Quasi). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS29354   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS31698   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS35017   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS38279   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS42311   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS45486   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS45693   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS50915   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS51731   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS52219   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS55225   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS55761   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS56110   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS56617   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS56784   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS58667   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS59764   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS59791   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS62049   # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+AS196678  # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
+
+# --- (b) X4B dc input + name-evident/verifiable hosting brand, miscategorized by as-metadata ---
+AS21501   # Host Europe GmbH (DE) — hosting brand. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description "Host Europe GmbH" (2026-07-04)
+AS60253   # Host Europe GmbH (DE). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description "Host Europe GmbH" (2026-07-04)
+AS44144   # HostRoyale Technologies Pvt Ltd (IN) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS142036  # Hosteons Pte. Ltd. (SG) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS44803   # Webdock.io ApS (DK) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS214036  # Ultahost Inc. (US) — web hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS329184  # Host Africa (Pty) Ltd (ZA). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS399804  # Hostodo (US) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS64286   # LogicWeb Inc. (US) — hosting/proxies. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS33696   # NextArray LLC (US) — dedicated servers. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS204601  # NovoServe B.V. (NL) — dedicated servers. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS203758  # EUGAMEHOST LTD (GB) — game server hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS213887  # WAIcore Ltd (GB) — hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS15694   # Atman Sp. z o.o. (PL) — Warsaw datacenter operator (atman.pl). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://www.atman.pl (2026-07-04)
+AS41406   # Atman Sp. z o.o. (PL) — atman.pl. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://www.atman.pl (2026-07-04)
+AS24806   # INTERNET CZ a.s. (CZ) — FORPSI hosting (forpsi.com). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://www.forpsi.com (2026-07-04)
+AS29522   # Cyber Folks S.A. (PL) — hosting brand (cyberfolks.pl). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://cyberfolks.pl (2026-07-04)
+AS48505   # Kylos sp. z o.o. (PL) — hosting (kylos.pl). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://kylos.pl (2026-07-04)
+AS60713   # EXEA Sp. z o.o. (PL) — EXEA Data Center (exea.pl). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://exea.pl (2026-07-04)
+AS43962   # INTEN Sp. z o.o. (PL) — hosting (inten.pl). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://inten.pl (2026-07-04)
+AS60362   # alwaysdata SARL (FR) — hosting (alwaysdata.com). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://www.alwaysdata.com (2026-07-04)
+AS6698    # Virtual Systems LLC (UA) — vsys.host. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://vsys.host (2026-07-04)
+AS137409  # GSL Networks Pty Ltd (AU) — VPS/dedicated. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS149020  # WebHorizon Internet Services (IN) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS59787   # WebSP Lda (PT) — web hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS210558  # 1337 Services GmbH (DE) — njal.la VPS/hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://njal.la (2026-07-04)
+AS35048   # Biterika Group LLC (RU) — proxy/hosting infrastructure. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS208969  # Biterika Group LLC (RU). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS214574  # Biterika Group LLC (RU). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)

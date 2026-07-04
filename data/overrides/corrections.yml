@@ -1,0 +1,25 @@
+# corrections.yml — per-ASN corrections to ipverse as-metadata's
+# category/networkRole, applied LAST in the flags build (wins over
+# as-metadata AND over eyeball_confirm.txt).
+#
+# Use this file when upstream is verifiably wrong about an ASN and the fix
+# doesn't fit a flag list: e.g. a university mislabeled hosting, an ISP
+# mislabeled government. Where the correction is genuinely upstream's bug,
+# ALSO open a PR/issue against https://github.com/ipverse/as-metadata —
+# fixing it at the source helps everyone and keeps this file small.
+#
+# Schema (every field required except network_role):
+#
+#   <asn integer>:
+#     category: isp | hosting | business | education_research | government_admin | none
+#     network_role: tier1_transit | major_transit | midsize_transit |
+#                   access_provider | content_network | stub | none   # optional
+#     reason: "one sentence: what's wrong and how we know"
+#     source_url: "https://evidence"
+#     date: YYYY-MM-DD
+#
+# No entries yet: as of the 2026-07-04 review, every disagreement we found
+# with as-metadata was better expressed as an override flag (see the .txt
+# files) than as a category correction. First real entry should follow the
+# schema above exactly — the loader validates it (pipeline/lib/overrides.rb).
+{}

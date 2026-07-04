@@ -1,0 +1,48 @@
+# vpn_provider.txt — ASNs operated by / dedicated to consumer VPN & anonymizer services.
+#
+# Effect: sets flags bit 9 (vpn_provider). Classification: any IP announced by
+# these ASNs gets verdict :vpn (precedence rule 6) unless a higher-precedence
+# overlay (relay/tor) matched first. This is the ASN-level complement to the
+# X4BNet range overlay: it covers newly-announced prefixes and ALL of the
+# provider's IPv6 space, which the (IPv4-only) range overlay cannot.
+#
+# Curation bar: the ASN must be either (a) hand-curated as VPN infrastructure
+# by X4BNet (first-party, MIT), or (b) registered to an organization whose
+# primary business is a consumer VPN/anonymizer product, evidenced by the
+# ipverse as-metadata description (CC0). Mixed-use hosting providers whose
+# customers *include* VPNs (e.g. Datacamp/CDN77's parent AS60068) do NOT
+# belong here — the range overlay handles those selectively.
+#
+# COUNTER-EXAMPLE (do not add): AS27683 "VPN de Mexico S.A. de C.V." — a
+# corporate connectivity telco ("VPN" as in enterprise links), not an
+# anonymizer. Keyword matches are candidates, never members.
+#
+# Line format: AS<number>  # <org> — <evidence>. src: <url> (<date checked>)
+
+# --- Seeded from X4BNet lists_vpn input/vpn/ASN.txt (hand-curated, MIT) ---
+AS9009    # M247 Europe SRL — NordVPN/major VPN infra per X4B. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS20448   # VPNtranet, LLC. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS32751   # Octovpn / xbox VPN. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS50525   # Privado VPN. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS60729   # Stiftung Erneuerbare Freiheit — Tor exit host ("Tor Servers" per X4B). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS136787  # NordVPN (TEFINCOM S.A.). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS198571  # 3xktech. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS200373  # 3xktech. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS207137  # Packethub S.A. (NordVPN). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS208172  # ProtonVPN. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt + https://github.com/X4BNet/lists_vpn/issues/248 (2026-07-04)
+AS209854  # Surfshark. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS212238  # Datacamp Limited — flagged "Datacamp VPN?" by X4B (VPN egress arm; sibling AS60068 deliberately NOT listed). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS398391  # Checkpoint VPN. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS401401  # Unredacted Inc. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+AS401720  # Unredacted Inc. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
+
+# --- VPN companies operating their own ASN (evidence: ipverse as-metadata org descriptions) ---
+AS197141  # Mullvad VPN AB (SE). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Mullvad VPN AB" (2026-07-04)
+AS216025  # Mullvad VPN AB (SE). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Mullvad VPN AB" (2026-07-04)
+AS201665  # Anonymizer LLC (US) — commercial anonymizer. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Anonymizer LLC" (2026-07-04)
+AS208765  # Bullet Proof VPN Ltd (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Bullet Proof VPN Ltd" (2026-07-04)
+AS213163  # FREE UNLIMITED VPN LTD (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "FREE UNLIMITED VPN LTD" (2026-07-04)
+AS216059  # FREE VPN APP LIMITED (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "FREE VPN APP LIMITED" (2026-07-04)
+AS219467  # SUYOU VPN LIMITED (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "SUYOU VPN LIMITED" (2026-07-04)
+AS397282  # Castle VPN (US). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Castle VPN" (2026-07-04)
+AS154050  # GAMING VPN PTY LTD (AU) — consumer gaming VPN egress. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "GAMING VPN PTY LTD" (2026-07-04)

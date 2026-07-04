@@ -1,0 +1,117 @@
+# The spot-check panel: known IPs with expected verdicts, asserted on every
+# build (pipeline/validate.rb gate G5) and in the gem's test suite.
+#
+# THIS IS A TRIPWIRE, NOT GOSPEL. Routing changes; providers move blocks.
+# When a row fails: verify what actually changed (rake 'lookup[IP]'), then
+# either fix the pipeline bug it caught, or update the row in a reviewed PR
+# whose description says WHY the internet changed. Never bulk-update rows to
+# make CI green.
+#
+# Row fields:
+#   ip:      the probe
+#   expect:  verdict (Tier A canonical semantics - no Tier B overlays here)
+#   rule:    optional - assert WHICH precedence rule fired (catches "right
+#            answer, wrong path" regressions, e.g. Cloudflare must classify
+#            via as-metadata category, NOT via the X4B dc overlay, because
+#            X4B deliberately excludes Cloudflare ranges)
+#   asn:     optional - assert the announcing ASN
+#   context: "gem" rows are skipped by the pipeline (they need Tier B
+#            overlays that only exist client-side)
+#   note:    for humans
+#
+# Panel history: 81.9.5.10 expected :unknown in PRD v1 (from the Feb-2026
+# prototype, whose logic had no :business verdict); ipverse now categorizes
+# AS20597 (Vimpelcom) as business/stub, so the correct §9 verdict is
+# :business via rule 13. Updated 2026-07-04 at implementation time.
+
+checks:
+  # --- infrastructure: hosting via category and via curated flags ---
+  - ip: "8.8.8.8"
+    expect: hosting
+    asn: 15169
+    note: "Google LLC - hosting category (as-metadata)"
+  - ip: "16.16.10.10"
+    expect: hosting
+    asn: 16509
+    note: "AWS - hosting category"
+  - ip: "89.187.175.140"
+    expect: hosting
+    asn: 60068
+    note: "Datacamp/CDN77 - hosting category (NOT vpn: only sibling AS212238 is the VPN egress arm)"
+  - ip: "104.16.0.1"
+    expect: hosting
+    rule: asn_category
+    asn: 13335
+    note: "Cloudflare - MUST classify via base-layer category, not X4B dc (X4B deliberately excludes CF ranges; relay/WARP egress lives here - PRD D11)"
+
+  # --- vpn: range overlay + ASN flag paths ---
+  - ip: "185.220.101.5"
+    expect: vpn
+    note: "Tor-heavy range (AS60729) - :vpn from canonical data; becomes :tor_exit in the gem once the Tier B tor overlay is active"
+  - ip: "146.70.107.100"
+    expect: vpn
+    asn: 9009
+    note: "M247 Europe - VPN infra (X4B ranges + vpn_provider override)"
+
+  # --- residential: plain, and the tier1-consumer fix ---
+  - ip: "95.121.10.10"
+    expect: residential_isp
+    asn: 3352
+    note: "Telefonica de Espana - isp + major_transit role (regression: transit-role eyeballs stay residential)"
+  - ip: "95.90.200.10"
+    expect: residential_isp
+    asn: 3209
+    note: "Vodafone DE residential"
+  - ip: "99.49.80.100"
+    expect: residential_isp
+    asn: 7018
+    note: "AT&T - isp + tier1_transit; :residential_isp ONLY because of eyeball_confirm.txt (regression test for the tier1 consumer fix)"
+
+  # --- the honest :unknown for pure tier1 backbone ---
+  - ip: "38.217.219.100"
+    expect: unknown
+    rule: isp_transit_ambiguous
+    asn: 174
+    note: "Cogent - isp + tier1_transit, genuinely ambiguous backbone space, stays :unknown on purpose"
+
+  # --- mobile / enterprise gateway overrides ---
+  - ip: "100.191.100.50"
+    expect: mobile
+    asn: 21928
+    note: "T-Mobile USA public block (starts at 100.128.0.0, right above CGNAT space - also a boundary test)"
+  - ip: "164.137.224.100"
+    expect: enterprise_gateway
+    asn: 62044
+    note: "Zscaler Switzerland - corporate SWG egress, humans at work"
+
+  # --- category verdicts ---
+  - ip: "81.9.5.10"
+    expect: business
+    asn: 20597
+    note: "Vimpelcom - business/stub per as-metadata (panel history note above)"
+
+  # --- special ranges ---
+  - ip: "10.1.2.3"
+    expect: private
+    note: "RFC 1918"
+  - ip: "100.64.0.1"
+    expect: cgnat
+    note: "RFC 6598 shared address space, lower edge"
+  - ip: "100.127.255.255"
+    expect: cgnat
+    note: "RFC 6598 upper edge (100.128.0.0 is T-Mobile public - boundary must not bleed)"
+  - ip: "127.0.0.1"
+    expect: private
+    note: "loopback"
+
+  # --- IPv6 ---
+  - ip: "2001:4860:4860::8888"
+    expect: hosting
+    asn: 15169
+    note: "Google public DNS v6"
+  - ip: "fd00::1"
+    expect: private
+    note: "RFC 4193 ULA"
+  - ip: "::1"
+    expect: private
+    note: "v6 loopback"

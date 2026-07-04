@@ -1,0 +1,113 @@
+name: Build & publish data
+
+# Nightly data build (PRD §7): fetch Tier A sources, run all gates, publish
+# artifacts to the rolling `latest` release. Also runs on pushes that touch
+# the pipeline or the curated data (validation without publishing on PRs).
+#
+# Heads-up for maintainers:
+#   * The cron minute is deliberately off-hour (03:17 UTC): GitHub delays
+#     on-the-hour crons under load, and upstreams appreciate the jitter.
+#   * Standard GITHUB_TOKEN suffices - releases live in this repo.
+#   * jq is preinstalled on ubuntu runners; the as.json parser depends on
+#     that (falls back to a slow stdlib parse if it ever disappears).
+#   * On gate failure the workflow opens/updates a `pipeline-failure` issue
+#     so a broken nightly is impossible to miss (license drift, upstream
+#     breakage, delta-gate trips - see pipeline/validate.rb).
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      dated_tag:
+        description: "Also cut a dated pinnable release (YYYY-MM-DD)"
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/**"
+      - "data/**"
+      - "spotchecks.yml"
+      - "fetch-manifest.json"
+      - ".github/workflows/build.yml"
+  pull_request:
+    paths:
+      - "pipeline/**"
+      - "data/**"
+      - "spotchecks.yml"
+      - "fetch-manifest.json"
+
+concurrency:
+  group: data-build
+  cancel-in-progress: false # never kill a publish mid-upload
+
+permissions:
+  contents: write # create/update releases
+  issues: write   # open pipeline-failure issues
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30 # PRD acceptance: build must stay under 15 min; 2x headroom
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+
+      # Upstream downloads are cached between runs so conditional GETs
+      # (ETag) can 304 and we stay polite to third-party mirrors.
+      - name: Restore upstream download cache
+        uses: actions/cache@v4
+        with:
+          path: build/cache
+          key: upstream-cache-${{ github.run_id }}
+          restore-keys: upstream-cache-
+
+      - name: Run pipeline (fetch → gates → compile → validate)
+        id: pipeline
+        env:
+          # Publish only on scheduled runs and manual dispatch from main -
+          # never from PRs or ordinary pushes (those validate only).
+          PUBLISH: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '1' || '0' }}
+          OPENASN_DATED_TAG: ${{ inputs.dated_tag == true && '1' || '' }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Weekly pinnable snapshot: Sundays on the scheduled run.
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%u)" = "7" ]; then
+            export OPENASN_DATED_TAG=1
+          fi
+          ruby pipeline/run.rb
+
+      - name: Upload artifacts for inspection (PR/push builds)
+        if: always() && github.event_name != 'schedule'
+        uses: actions/upload-artifact@v4
+        with:
+          name: openasn-dist
+          path: build/dist/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      # A failed nightly must page a human. Reuses one open issue instead of
+      # spamming a new one per failure night.
+      - name: Open/update pipeline-failure issue
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Nightly data build failed"
+          body="The scheduled data build failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          Most likely causes (see job log for the gate that tripped):
+          - License gate: an upstream changed its license text (data/licenses/ pins)
+          - Delta gate: a layer's record count moved more than ±20% overnight
+          - Crosscheck: ipverse as-metadata category quality collapsed
+          - An upstream URL scheme changed (sapics did this 2026-06-18)"
+          existing=$(gh issue list --label pipeline-failure --state open --json number --jq '.[0].number' || true)
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "Failed again: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          else
+            gh issue create --title "$title" --body "$body" --label pipeline-failure
+          fi

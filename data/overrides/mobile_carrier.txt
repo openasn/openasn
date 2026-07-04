@@ -1,0 +1,71 @@
+# mobile_carrier.txt — ASNs of DEDICATED cellular carrier networks.
+#
+# Effect: sets flags bit 10 (mobile_carrier). Classification: :mobile
+# (precedence rule 11). :mobile is a likely_human verdict; its value is
+# telling apps "one IP here = hundreds of humans behind carrier NAT — never
+# hard-block, never per-IP rate-limit aggressively".
+#
+# Curation bar (deliberately strict for the seed):
+#   * The ASN carries a carrier's MOBILE subscriber traffic specifically —
+#     not a converged telco ASN mixing fixed broadband on the same AS
+#     (those stay :residential_isp, which is equally likely_human, so a
+#     miss here costs almost nothing).
+#   * Fixed-wireless ISPs (WISPs) do NOT belong here: their subscribers are
+#     homes with stable IPs — that's :residential_isp, not carrier NAT.
+#   * Known incompleteness is fine; recall grows via PRs. Misclassified
+#     entries are the only real bug class for this file.
+# Evidence: ipverse as-metadata org descriptions
+# (https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json),
+# checked 2026-07-04, selected via
+# `rake overrides:candidates` keyword sweep + manual review.
+
+# --- North America ---
+AS6614    # T-Mobile USA Inc. (mobile-only carrier). src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
+AS21928   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
+AS10728   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
+AS11461   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
+AS5079    # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
+AS20057   # AT&T Wireless Service (dedicated mobility AS, distinct from fixed AS7018). src: ipverse as-metadata description "AT&T Wireless Service" (2026-07-04)
+AS32307   # NE Colorado Cellular Inc (Viaero Wireless). src: ipverse as-metadata description "NE COLORADO CELLULAR INC" (2026-07-04)
+
+# --- Europe ---
+AS6854    # PJSC MegaFon (RU, mobile). src: ipverse as-metadata description "PJSC MegaFon" (2026-07-04)
+AS25106   # Mobile TeleSystems JLLC (MTS Belarus). src: ipverse as-metadata description "Mobile TeleSystems JLLC" (2026-07-04)
+AS12958   # T2 Mobile LLC (Tele2 Russia, mobile-only). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
+AS39374   # T2 Mobile LLC (Tele2 Russia). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
+AS42437   # T2 Mobile LLC (Tele2 Russia). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
+AS48092   # T2 Mobile LLC (Tele2 Russia). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
+AS12847   # Latvijas Mobilais Telefons SIA (LMT, LV mobile). src: ipverse as-metadata description "Latvijas Mobilais Telefons SIA" (2026-07-04)
+AS13280   # Three Ireland (Hutchison) Ltd (mobile). src: ipverse as-metadata description "Three Ireland (Hutchison) limited" (2026-07-04)
+AS47883   # KIBRIS Mobile Telekomunikasyon Ltd (Turkcell NC). src: ipverse as-metadata description "KIBRIS MOBILE TELEKOMUNIKASYON LTD." (2026-07-04)
+
+# --- Asia-Pacific ---
+AS9605    # NTT DOCOMO INC. (JP mobile). src: ipverse as-metadata description "NTT DOCOMO INC." (2026-07-04)
+AS9644    # SK Telecom (KR mobile). src: ipverse as-metadata description "SK Telecom" (2026-07-04)
+AS138384  # Rakuten Mobile Inc (JP). src: ipverse as-metadata description "Rakuten Mobile Inc" (2026-07-04)
+AS9231    # China Mobile Hong Kong Company Limited. src: ipverse as-metadata description "China Mobile Hong Kong Company Limited" (2026-07-04)
+AS24444   # China Mobile (Shandong). src: ipverse as-metadata description "China Mobile" (2026-07-04)
+AS24547   # China Mobile (Hebei). src: ipverse as-metadata description "China Mobile" (2026-07-04)
+AS38019   # China Mobile. src: ipverse as-metadata description "China Mobile" (2026-07-04)
+AS56041   # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
+AS56042   # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
+AS56047   # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
+AS132525  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
+AS138407  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
+AS139080  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
+AS140895  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
+AS141425  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
+AS209141  # China Mobile International (Russia) LLC. src: ipverse as-metadata description (2026-07-04)
+AS17924   # SmarTone Mobile Communications Limited (HK). src: ipverse as-metadata description "Smartone Mobile communications Limited" (2026-07-04)
+AS9587    # DTAC TriNet Co. Ltd. (TH mobile). src: ipverse as-metadata description "DTAC TriNet Co. Ltd." (2026-07-04)
+AS133481  # Advanced Wireless Network Co. Ltd (AWN — AIS Thailand mobile). src: ipverse as-metadata description "ADVANCED WIRELESS NETWORK COMPANY LIMITED" (2026-07-04)
+AS10030   # Celcom Axiata Berhad (MY mobile). src: ipverse as-metadata description "Celcom Axiata Berhad" (2026-07-04)
+AS10081   # DiGi Telecommunications Sdn Bhd (MY mobile). src: ipverse as-metadata description "DiGi Telecommunications Sdn Bhd" (2026-07-04)
+
+# --- Middle East / Africa / elsewhere ---
+AS197207  # Mobile Communication Company of Iran PLC (MCI/Hamrah-e Aval). src: ipverse as-metadata description (2026-07-04)
+AS211908  # Horizon Scope Mobile Telecom WLL (IQ). src: ipverse as-metadata description "Horizon Scope Mobile Telecom WLL" (2026-07-04)
+AS138322  # Afghan Wireless Communication Company. src: ipverse as-metadata description "Afghan Wireless Communication Company" (2026-07-04)
+AS37009   # Mobile Telecommunications Ltd (MTC Namibia). src: ipverse as-metadata description "Mobile Telecommunications Ltd." (2026-07-04)
+AS48503   # Mobile Telecom-Service LLP (Tele2/Altel KZ). src: ipverse as-metadata description "Mobile Telecom-Service LLP" (2026-07-04)
+AS50257   # JV A-Mobile Ltd (Abkhazia mobile). src: ipverse as-metadata description "JV A-Mobile Ltd." (2026-07-04)

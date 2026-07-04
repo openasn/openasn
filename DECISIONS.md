@@ -65,3 +65,33 @@ deliberately excluded: converged ASNs stay `:residential_isp` (equally
 likely_human — a miss costs nothing), and WISP subscribers are homes, not
 carrier NAT. The seed carries only unambiguous cellular networks; recall
 grows via PRs under the same rule.
+
+## D-IMPL-5 — Repo topology: dataset / pipeline / clients (2026-07-04)
+
+The project split into three repos, and the naming convention changed:
+
+- **`openasn/openasn`** (this repo) — the dataset: curation, license
+  receipts, public specs, releases. The flagship; stars, PRs, and the
+  download URL all concentrate here. Nothing here requires running code
+  beyond a stdlib lint script.
+- **`openasn/openasn-pipeline`** — the compiler. Separated so data
+  contributions and pipeline engineering have distinct issue trackers,
+  reviewers, and cadence. The nightly workflow deliberately stays in THIS
+  repo: it publishes releases here with the repo's own token, and once the
+  pipeline repo is public the nightly needs zero secrets.
+- **`openasn/openasn-ruby`** (renamed from `openasn/ruby`) — clients carry
+  the `openasn-<language>` pattern so future `openasn-js`/`openasn-python`
+  fit, and each repo name means something standalone. Gem name on RubyGems
+  remains `openasn`.
+
+**On keeping the pipeline closed as "the moat" — considered and rejected.**
+The pipeline is a few thousand lines of fetch/merge/pack that anyone could
+reimplement from FORMAT.md and the public source list; secrecy buys ~zero
+defense. The durable moats are (a) the curation flywheel in this repo,
+(b) the trust position — auditable compilation is what makes "legally
+clean, CC0" credible, and the public license gate is the receipts — and
+(c) the operational track record. The open-core contract stands: pipeline
+MIT, data CC0 forever; commercial editions (Pro DB, hosted API, SLAs) are
+future SEPARATE products, never a closing of the core. The pipeline repo
+may sit private during pre-launch incubation like everything else, but the
+plan of record is public-at-launch.

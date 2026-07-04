@@ -1,18 +1,25 @@
 name: Build & publish data
 
-# Nightly data build (PRD §7): fetch Tier A sources, run all gates, publish
-# artifacts to the rolling `latest` release. Also runs on pushes that touch
-# the pipeline or the curated data (validation without publishing on PRs).
+# The nightly data build. Lives in THIS repo (not the pipeline repo) on
+# purpose: releases publish here, so the repo's own GITHUB_TOKEN is enough
+# to upload assets — and once openasn-pipeline is public, the whole nightly
+# needs zero secrets.
 #
-# Heads-up for maintainers:
-#   * The cron minute is deliberately off-hour (03:17 UTC): GitHub delays
+# While openasn-pipeline is PRIVATE, checking it out needs one secret:
+#   PIPELINE_REPO_TOKEN — a PAT that can READ openasn/openasn-pipeline
+#   (fine-grained: Repository access = openasn-pipeline, Contents: Read;
+#   classic `repo` scope also works if org settings block fine-grained).
+#   Add it under Settings → Secrets and variables → Actions.
+# When the pipeline repo goes public, delete the secret; the fallback to
+# github.token takes over automatically.
+#
+# Maintainer notes:
+#   * Cron minute is deliberately off-hour (03:17 UTC): GitHub delays
 #     on-the-hour crons under load, and upstreams appreciate the jitter.
-#   * Standard GITHUB_TOKEN suffices - releases live in this repo.
-#   * jq is preinstalled on ubuntu runners; the as.json parser depends on
-#     that (falls back to a slow stdlib parse if it ever disappears).
-#   * On gate failure the workflow opens/updates a `pipeline-failure` issue
-#     so a broken nightly is impossible to miss (license drift, upstream
-#     breakage, delta-gate trips - see pipeline/validate.rb).
+#   * jq is preinstalled on ubuntu runners; the as.json parser uses it.
+#   * On gate failure a `pipeline-failure` issue is opened/updated here so
+#     a broken nightly is impossible to miss (license drift, delta trips,
+#     upstream URL scheme changes — sapics changed theirs 2026-06-18).
 
 on:
   schedule:
@@ -26,14 +33,12 @@ on:
   push:
     branches: [main]
     paths:
-      - "pipeline/**"
       - "data/**"
       - "spotchecks.yml"
       - "fetch-manifest.json"
-      - ".github/workflows/build.yml"
+      - ".github/workflows/nightly-build.yml"
   pull_request:
     paths:
-      - "pipeline/**"
       - "data/**"
       - "spotchecks.yml"
       - "fetch-manifest.json"
@@ -43,15 +48,26 @@ concurrency:
   cancel-in-progress: false # never kill a publish mid-upload
 
 permissions:
-  contents: write # create/update releases
+  contents: write # create/update releases in this repo
   issues: write   # open pipeline-failure issues
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30 # PRD acceptance: build must stay under 15 min; 2x headroom
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout data repo (this repo)
+        uses: actions/checkout@v4
+        with:
+          path: data-repo
+
+      - name: Checkout pipeline
+        uses: actions/checkout@v4
+        with:
+          repository: openasn/openasn-pipeline
+          path: pipeline-repo
+          # Secret needed only while openasn-pipeline is private (see header).
+          token: ${{ secrets.PIPELINE_REPO_TOKEN || github.token }}
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -62,18 +78,19 @@ jobs:
       - name: Restore upstream download cache
         uses: actions/cache@v4
         with:
-          path: build/cache
+          path: pipeline-repo/build/cache
           key: upstream-cache-${{ github.run_id }}
           restore-keys: upstream-cache-
 
-      - name: Run pipeline (fetch → gates → compile → validate)
-        id: pipeline
+      - name: Run pipeline (fetch → gates → compile → validate → publish)
         env:
-          # Publish only on scheduled runs and manual dispatch from main -
-          # never from PRs or ordinary pushes (those validate only).
+          OPENASN_DATA_REPO: ${{ github.workspace }}/data-repo
+          # Publish only on scheduled runs and manual dispatch — never from
+          # PRs or ordinary pushes (those validate only).
           PUBLISH: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '1' || '0' }}
           OPENASN_DATED_TAG: ${{ inputs.dated_tag == true && '1' || '' }}
           GH_TOKEN: ${{ github.token }}
+        working-directory: pipeline-repo
         run: |
           # Weekly pinnable snapshot: Sundays on the scheduled run.
           if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%u)" = "7" ]; then
@@ -86,12 +103,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: openasn-dist
-          path: build/dist/
+          path: pipeline-repo/build/dist/
           retention-days: 7
           if-no-files-found: ignore
 
-      # A failed nightly must page a human. Reuses one open issue instead of
-      # spamming a new one per failure night.
+      # A failed nightly must page a human. Reuses one open issue instead
+      # of spamming a new one per failure night.
       - name: Open/update pipeline-failure issue
         if: failure() && github.event_name == 'schedule'
         env:
@@ -100,7 +117,8 @@ jobs:
           title="Nightly data build failed"
           body="The scheduled data build failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-          Most likely causes (see job log for the gate that tripped):
+          Most likely causes (see the job log for the gate that tripped):
+          - Pipeline checkout: PIPELINE_REPO_TOKEN missing/expired (needed while openasn-pipeline is private)
           - License gate: an upstream changed its license text (data/licenses/ pins)
           - Delta gate: a layer's record count moved more than ±20% overnight
           - Crosscheck: ipverse as-metadata category quality collapsed

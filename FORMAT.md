@@ -4,8 +4,8 @@ This is the byte-exact specification for `openasn-ipv4.bin` and
 `openasn-ipv6.bin`. Two independent implementations exist and MUST stay in
 lockstep with this document:
 
-- writer + reference reader: `pipeline/lib/binary.rb` (this repo)
-- production reader: `lib/openasn/` in [`openasn/ruby`](https://github.com/openasn/ruby)
+- writer + reference reader: `pipeline/lib/binary.rb` in [`openasn/openasn-pipeline`](https://github.com/openasn/openasn-pipeline)
+- production reader: `lib/openasn/binary_format.rb` in [`openasn/openasn-ruby`](https://github.com/openasn/openasn-ruby)
 
 Any byte-layout change requires bumping `format_version` and coordinating a
 gem release that understands both versions. Do not "extend compatibly" —

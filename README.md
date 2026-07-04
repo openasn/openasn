@@ -4,7 +4,15 @@
 
 OpenASN is an open data project: a legally clean, offline database for answering *"what kind of network is this IP really coming from?"* It compiles permissively licensed ASN metadata, IP→ASN backbones, VPN/datacenter overlays, and hand-curated corrections into small binary artifacts (~6MB for all of IPv4) that applications query locally in microseconds — zero API calls, zero per-lookup cost, and no user IPs ever sent to a third party.
 
-This repository is the **data project**: sources, compile pipeline, validation gates, curated overrides, and the nightly build that publishes artifacts. The first client is the Ruby gem [`openasn`](https://github.com/openasn/ruby) for Rails apps; the artifact format is public and language-neutral ([FORMAT.md](FORMAT.md)).
+This repository is the **dataset**: the curated override layer, the pinned upstream licenses, the public specs (artifact format, spot-check panel, Tier B fetch manifest), and the nightly releases. It is the heart of the OpenASN project:
+
+| repo | what |
+|---|---|
+| [`openasn/openasn`](https://github.com/openasn/openasn) | **this repo** — the open data: curation, specs, provenance receipts, releases |
+| [`openasn/openasn-pipeline`](https://github.com/openasn/openasn-pipeline) | the compiler: fetch → legal/quality gates → pack → validate → publish (runs nightly via [this repo's workflow](.github/workflows/nightly-build.yml)) |
+| [`openasn/openasn-ruby`](https://github.com/openasn/openasn-ruby) | the first client: the `openasn` Ruby gem (future: `openasn-js`, `openasn-python`, …) |
+
+The artifact format is public and language-neutral ([FORMAT.md](FORMAT.md)) — clients in any language are welcome.
 
 > [!IMPORTANT]
 > **What OpenASN is NOT.** It is not a fraud engine. It cannot prove an IP is safe or that a user is human. **A clean or `residential_isp` verdict is absence of evidence, not proof of innocence.** Residential proxies — malicious traffic exiting through real home IP addresses — are structurally hard to detect offline, and OpenASN does not claim to detect them. `vpn`, `hosting`, and `tor_exit` verdicts are high-confidence; treat everything else as a signal, not a sentence. Never hard-block `relay`, `cgnat`, or `mobile` — those are real people. OpenASN is a first line of defense, not a fraud engine.
@@ -70,7 +78,7 @@ data/overrides/     (CC0)   our layer    Zscaler egress             → :enterpr
 Our owned, CC0 curation: the classes upstream metadata lacks (`vpn_provider`, `mobile_carrier`, `enterprise_gateway`, `cdn`), extra hosting coverage, eyeball confirmations, and per-ASN corrections. Ground rules:
 
 - **Every line carries a source comment** (`AS9009  # M247 … src: <url> (date)`) — the build *fails* on unsourced lines.
-- Candidates are generated from data (`rake overrides:candidates` sweeps X4B seeds, org-name patterns, and the crosscheck gap); humans graduate lines into the files. LLM-assisted drafting is welcome; unreviewed bulk imports are not.
+- Candidates are generated from data (`rake overrides:candidates` in the [pipeline repo](https://github.com/openasn/openasn-pipeline) sweeps X4B seeds, org-name patterns, and the crosscheck gap); humans graduate lines into the files. LLM-assisted drafting is welcome; unreviewed bulk imports are not. Every PR here gets instant format feedback from [`scripts/lint_overrides.rb`](scripts/lint_overrides.rb).
 - Prefer false negatives: a missed VPN ASN costs a little recall; a mislabeled eyeball ISP hurts real users. When unsure, leave it out or write a `corrections.yml` entry that yields `unknown`.
 - Genuine upstream errors should also be PR'd to [ipverse/as-metadata](https://github.com/ipverse/as-metadata) — fix data at the source.
 
@@ -82,17 +90,19 @@ Our owned, CC0 curation: the classes upstream metadata lacks (`vpn_provider`, `m
 
 **Wrong users:** banks, crypto exchanges, KYC flows, high-chargeback marketplaces. You need paid behavioral intelligence (MaxMind Anonymous IP/Residential Proxy, IPQS, …); OpenASN is at most your prefilter.
 
-## Running the pipeline yourself
+## Building the dataset yourself
+
+The compiler lives in [`openasn/openasn-pipeline`](https://github.com/openasn/openasn-pipeline) (MIT). Clone both repos side by side:
 
 ```bash
-git clone https://github.com/openasn/openasn && cd openasn
+git clone https://github.com/openasn/openasn
+git clone https://github.com/openasn/openasn-pipeline
+cd openasn-pipeline
 ruby pipeline/run.rb           # full build into build/dist/ (~100MB downloads, ~2 min)
-OFFLINE=1 ruby pipeline/run.rb # rebuild from cache
 rake 'lookup[8.8.8.8]'         # classify an IP against your build
-rake overrides:candidates      # regenerate curation candidate lists
 ```
 
-Requirements: Ruby ≥ 3.2, `jq` recommended (streams the 69MB ipverse JSON; stdlib fallback works but is memory-hungry). The nightly build runs in [GitHub Actions](.github/workflows/build.yml) at 03:17 UTC.
+The nightly build runs from [this repo's workflow](.github/workflows/nightly-build.yml) at 03:17 UTC and publishes to the rolling `latest` release; PRs to this repo get instant data lint (`scripts/lint_overrides.rb`, stdlib-only).
 
 ## Related projects
 

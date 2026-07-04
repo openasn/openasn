@@ -6,7 +6,7 @@
 # hedges against upstream recategorization: if ipverse ever drops the
 # hosting category on Cloudflare, these IPs still classify :hosting.
 #
-# HEADS-UP (PRD D11): never blanket-BLOCK CDN ranges. Cloudflare address
+# HEADS-UP: never blanket-BLOCK CDN ranges. Cloudflare address
 # space carries iCloud Private Relay and WARP egress — real humans. The
 # Tier B relay overlay outranks :hosting in the gem precisely because of
 # this; keep it that way.

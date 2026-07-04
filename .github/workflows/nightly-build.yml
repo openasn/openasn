@@ -107,6 +107,18 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+      # GitHub auto-disables cron workflows in public repos after 60 days
+      # WITHOUT COMMITS — and a healthy data repo is exactly one that can
+      # go quiet between curation PRs while the nightly hums along. The
+      # documented reset is re-enabling the workflow via API, which counts
+      # as workflow activity. Without this, the nightly dies silently ~60
+      # days after the last commit (GitHub does email a warning first).
+      - name: Keep the schedule alive through commit-quiet periods
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow enable nightly-build.yml --repo ${{ github.repository }} || true
+
       # A failed nightly must page a human. Reuses one open issue instead
       # of spamming a new one per failure night.
       - name: Open/update pipeline-failure issue

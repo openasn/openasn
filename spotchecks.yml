@@ -19,7 +19,7 @@
 #            overlays that only exist client-side)
 #   note:    for humans
 #
-# Panel history: 81.9.5.10 expected :unknown in PRD v1 (from the Feb-2026
+# Panel history: 81.9.5.10 expected :unknown in the founding spec (from the Feb-2026
 # prototype, whose logic had no :business verdict); ipverse now categorizes
 # AS20597 (Vimpelcom) as business/stub, so the correct §9 verdict is
 # :business via rule 13. Updated 2026-07-04 at implementation time.
@@ -42,7 +42,7 @@ checks:
     expect: hosting
     rule: asn_category
     asn: 13335
-    note: "Cloudflare - MUST classify via base-layer category, not X4B dc (X4B deliberately excludes CF ranges; relay/WARP egress lives here - PRD D11)"
+    note: "Cloudflare - MUST classify via base-layer category, not X4B dc (X4B deliberately excludes CF ranges; relay/WARP egress lives here - see DECISIONS.md context and README verdict notes)"
 
   # --- vpn: range overlay + ASN flag paths ---
   - ip: "185.220.101.5"

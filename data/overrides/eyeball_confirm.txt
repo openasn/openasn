@@ -20,7 +20,7 @@
 #      eyeballs, pinned so a bad day at ipverse (recategorization, data
 #      loss) cannot flip millions of home users to :business or :unknown.
 #      These already classify :residential_isp via rule 12; the pin is a
-#      hedge (PRD D8: overrides double as the hedge if upstream dies).
+#      hedge (design rule: overrides double as the hedge if upstream dies).
 #
 # Curation bar: major consumer broadband/mobile ISP, verified against
 # ipverse as-metadata description + public knowledge of the brand. If an

@@ -41,6 +41,7 @@ Design notes that keep verdicts honest:
 - **VPN and datacenter signals are independent bits, not a hierarchy** — measured: only ~70% of known-VPN space sits inside datacenter lists. Both overlays are recorded separately.
 - **Pure tier-1 backbone space classifies `unknown` on purpose** (Cogent, Lumen, Arelion…): "we can't tell" beats a confident wrong answer. The four consumer giants that also run tier-1 backbones (AT&T, Verizon, Deutsche Telekom, Liberty Global) are eyeball-confirmed by curation. Full reasoning: [DECISIONS.md](DECISIONS.md).
 - **`unknown` is a feature.** Mixed-use ASNs (an ISP that also sells VPS) stay `unknown` with the raw category/role exposed, so *you* choose the policy.
+- **The enum is a cross-language contract and it is append-only**: verdicts are never removed, renamed, or redefined; additions arrive via client releases (never via data refreshes — artifacts carry ranges and flag bits, clients compile the verdict mapping). Every OpenASN client must document the same guarantee ([details](DECISIONS.md)).
 
 ## Architecture: the three tiers
 

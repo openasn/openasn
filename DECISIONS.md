@@ -95,3 +95,25 @@ MIT, data CC0 forever; commercial editions (Pro DB, hosted API, SLAs) are
 future SEPARATE products, never a closing of the core. The pipeline repo
 may sit private during pre-launch incubation like everything else, but the
 plan of record is public-at-launch.
+
+## D-IMPL-6 — The verdict enum is an append-only, cross-language contract (2026-07-04)
+
+Adopted from the sibling VehiclesDB project's stable-ID discipline (their
+slugs-never-change rule), because downstream code will `case` on verdicts
+and parse `to_h` shadow logs — those are API surface:
+
+- The 13-verdict enum is **append-only**: entries are never removed,
+  renamed, or semantically redefined (that would be a major version of
+  every client). New verdicts may be added in client minor versions with
+  prominent CHANGELOG notice; consumers are told to keep an `else` branch.
+- **Verdicts are code, not data.** Artifacts carry ranges + flag bits;
+  clients compile the bit→verdict mapping. Therefore a nightly data
+  refresh can never surface a verdict a deployed client doesn't know —
+  auto-applying data updates is always safe. Introducing a verdict that
+  needs a NEW flag bit also requires a FORMAT.md reserved-bit allocation,
+  which is already version-gated.
+- Result/`to_h` keys are append-only; `sources`/`context_flags` symbols
+  are explicitly informational (may grow without notice).
+- Every client in every language (openasn-ruby today; openasn-js et al.
+  later) implements the same enum and documents this same contract — the
+  Ruby gem's README "API stability contract" section is the reference text.

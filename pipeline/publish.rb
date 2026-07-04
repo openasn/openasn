@@ -88,7 +88,7 @@ module OpenASNPipeline
     def write_manifest(build_id, compiled, crosscheck_stats, artifacts, http)
       pins = LicenseGate.load_pins
 
-      files = %w[openasn-ipv4.bin openasn-ipv6.bin asn-categories.csv fetch-manifest.json ATTRIBUTION.md].map do |name|
+      files = %w[openasn-ipv4.bin openasn-ipv6.bin openasn-orgs.bin asn-categories.csv fetch-manifest.json ATTRIBUTION.md].map do |name|
         path = File.join(DIST_DIR, name)
         {
           name: name,
@@ -135,6 +135,7 @@ module OpenASNPipeline
       case name
       when "openasn-ipv4.bin" then artifacts[:ipv4].counts[:base]
       when "openasn-ipv6.bin" then artifacts[:ipv6].counts[:base]
+      when "openasn-orgs.bin" then File.binread(path, 16)[8, 4].unpack1("N")
       when /\.csv\z/ then File.foreach(path).count - 1
       else 0
       end

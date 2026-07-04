@@ -25,6 +25,7 @@ require_relative "lib/asjson"
 require_relative "lib/overrides"
 require_relative "lib/sources"
 require_relative "lib/http"
+require_relative "lib/orgs"
 require_relative "normalize" # for sanitize_overlaps! after gap-filling
 
 module OpenASNPipeline
@@ -50,6 +51,7 @@ module OpenASNPipeline
 
       v4_path = File.join(DIST_DIR, "openasn-ipv4.bin")
       v6_path = File.join(DIST_DIR, "openasn-ipv6.bin")
+      orgs_path = File.join(DIST_DIR, "openasn-orgs.bin")
 
       Binary.write(v4_path, family: :ipv4, build_ts: build_ts,
                    base_rows: base_v4,
@@ -60,12 +62,15 @@ module OpenASNPipeline
       # signal. Documented lower confidence for v6 - see README.
       Binary.write(v6_path, family: :ipv6, build_ts: build_ts,
                    base_rows: base_v6, vpn_rows: [], dc_rows: [])
+      # Org names ship as an optional sidecar (clients fetch it on refresh;
+      # it is deliberately NOT part of the gem's bundled seed - size budget).
+      Orgs.write(orgs_path, normalized[:asn_meta])
 
       Env.log("compiled: ipv4 #{File.size(v4_path) / 1024}KB (#{base_v4.length} base, " \
               "#{normalized[:vpn_v4].length} vpn, #{normalized[:dc_v4].length} dc) | " \
               "ipv6 #{File.size(v6_path) / 1024}KB (#{base_v6.length} base)")
 
-      { build_ts: build_ts, v4_path: v4_path, v6_path: v6_path,
+      { build_ts: build_ts, v4_path: v4_path, v6_path: v6_path, orgs_path: orgs_path,
         base_v4: base_v4, base_v6: base_v6,
         flags_by_asn: flags_by_asn, overrides: overrides }
     end

@@ -87,6 +87,24 @@ proven prototype of this exact strategy: ~19µs/lookup pure Ruby over 433k
 records, ~6MB resident. Readers MAY also unpack layers into integer arrays
 for ~2µs lookups at ~8x the memory (the gem's `:arrays` mode).
 
+## Sidecar: `openasn-orgs.bin` ("OORG" v1)
+
+ASN → organization name, optional richness (clients work fully without it;
+`as_org` is simply nil until it's downloaded). All integers big-endian.
+
+| offset | size | field |
+|---|---|---|
+| 0 | 4 | magic `"OORG"` |
+| 4 | 1 | version `0x01` |
+| 5 | 3 | reserved (zeros) |
+| 8 | 4 | entry_count u32 |
+| 12 | 4 | blob_size u32 |
+
+Then: index of `entry_count × (asn u32 · blob_offset u32)` sorted by asn,
+then the UTF-8 name blob. An entry's name length = next entry's offset −
+its own (last entry runs to `blob_size`). Names are ipverse as-metadata
+descriptions truncated to 96 bytes on valid UTF-8 boundaries.
+
 ## Integrity
 
 `manifest.json` in every release carries the SHA-256, byte size, and record

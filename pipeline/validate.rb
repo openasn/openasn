@@ -21,6 +21,7 @@ require "ipaddr"
 require_relative "lib/env"
 require_relative "lib/binary"
 require_relative "lib/classifier"
+require_relative "lib/orgs"
 
 module OpenASNPipeline
   module Validate
@@ -48,9 +49,23 @@ module OpenASNPipeline
       end
       check_deltas!(artifacts, previous_stats)
       run_spotchecks!(artifacts)
+      check_orgs!(compiled)
 
       Env.log("validate: all gates green")
       artifacts
+    end
+
+    # G6: the orgs sidecar must resolve well-known ASNs to plausible names.
+    def check_orgs!(compiled)
+      path = compiled[:orgs_path]
+      Env.fail_stage!("G6: orgs artifact missing") unless path && File.exist?(path)
+
+      { 15_169 => /google/i, 13_335 => /cloudflare/i, 3352 => /telefonica/i }.each do |asn, pattern|
+        name = Orgs.read(path, asn)
+        next if name&.match?(pattern)
+
+        Env.fail_stage!("G6: orgs lookup for AS#{asn} returned #{name.inspect}, expected #{pattern.inspect}")
+      end
     end
 
     def check_size!(family, compiled)

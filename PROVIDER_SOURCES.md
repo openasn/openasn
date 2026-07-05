@@ -144,11 +144,11 @@ End-to-end sample classifications from the live run:
 | Bright VPN | Not added. | Bright Data Ltd. operates BrightVPN as a free VPN tied to Bright Data's peer/proxy network economics. Public pages explain that users allow Bright Data to use their connection, and the server-list page is location marketing only. No exact public egress list was found. |
 | Mysterium VPN | Not added. | UAB MN Intelligence operates the VPN product; Mysterium Network/BlockDev AG publishes a public discovery API with node proposal metadata. Live API smoke returned thousands of proposals but no exact exit IP field, only ASN/ISP/IP-type and NATS broker contacts. Residential/decentralized semantics need a separate model before any `vpn` mapping. |
 | Planet VPN | Not added. | FREE VPN PLANET S.R.L. publishes legal/company details and location/server marketing. OpenVPN/L2TP docs route users through premium/account configuration (`/cabinet/configuration`) and support attachments were screenshots, not configs. No unauthenticated exact source was verified. |
-| Turbo VPN | Not added. | Product/app pages only; no exact source verified. |
-| 1ClickVPN | Not added. | Browser extension/product page only; no exact source verified. |
-| VeePN | Not added. | Product/app pages only; no exact source verified. |
-| SkyVPN | Not added. | Product page only; no exact source verified. |
-| X-VPN | Not added. | Product page only; no exact source verified. |
+| Turbo VPN | Not added. | Innovative Connecting Pte. Limited / UEN `201812738K`; official pages publish legal text, app links, and location/server marketing (`/servers`, `/vpn-server/*`) but no exact IP/CIDR/hostname feed or public config archive. |
+| 1ClickVPN | Not added. | `www.1clickvpn.com` did not expose a clear legal operator in verified pages; separate `1clickvpn.net` terms name Kodice LLC. Both publish browser/product/location marketing only; no exact exits verified. |
+| VeePN | Not added. | VeePN Corp., Panama; official server page lists 2,600+ servers / 109 locations / 85 countries, while legal pages name Laraun Limited and IT Research LLC for payments. No exact public egress source verified. |
+| SkyVPN | Not added. | SkyVPN, Inc.; terms say Hong Kong office control and product pages claim 3000+ servers / 30M users, but no exact IP/CIDR/hostname list, config archive, or server API was found. |
+| X-VPN | Not added. | LIGHTNINGLINK NETWORKS PTE. LTD.; official pages claim 10,000+ servers / 80+ countries / 250+ locations. Router OpenVPN configs are premium/account-gated; no public exact source verified. |
 | StrongVPN | Not added. | Ziff Davis brand; no public exact egress source verified. |
 | Total VPN | Not added. | Product page only; no exact source verified. |
 | SetupVPN | Not added. | Product page only; no exact source verified. |

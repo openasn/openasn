@@ -781,10 +781,97 @@ real household, mobile, or business IPs as provider-operated VPN exits.
 | Caveats | Do not script the account cabinet, scrape paid configs, or import user-exported `.ovpn` files. The public country pages are not an inventory. If Planet later publishes an unauthenticated config archive, it may be a good opt-in DNS/IP source, but the current public flow is account/premium gated. |
 | Primary source URLs | `https://freevpnplanet.com/`, `https://freevpnplanet.com/servers/`, `https://freevpnplanet.com/openvpn/`, `https://freevpnplanet.com/router/`, `https://freevpnplanet.com/help/how-to-set-up-planetvpn-with-openvpn-connect/`, `https://freevpnplanet.com/terms/`, `https://freevpnplanet.com/policy/`, `https://freevpnplanet.com/wp-sitemap-posts-page-1.xml`, `https://freevpnplanet.com/cabinet/configuration` |
 
+## Batch 10 - Free, Browser, And Mobile-First VPNs
+
+This batch added no OpenASN sources. All five products expose location,
+marketing, app, support, or account-gated configuration pages, but none
+published an unauthenticated exact IP/CIDR list or a provider-authored exact
+hostname inventory suitable for OpenASN.
+
+### Turbo VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://turbovpn.com/`, `https://turbovpn.com/servers`, `https://turbovpn.com/vpn-server` |
+| Legal / privacy URLs | `https://turbovpn.com/policy`, `https://turbovpn.com/terms-of-service`, `https://turbovpn.com/aboutus` |
+| Legal entity shown by official pages | Innovative Connecting Pte. Limited / INNOVATIVE CONNECTING PTE. LIMITED. |
+| Address / identifier | Turbo VPN's policy and terms list Innovative Connecting Pte. Limited, 8 Marina View #43-052A Asia Square Tower 1, Singapore 018960, UEN `201812738K`. The footer on public pages repeats the same Singapore address. |
+| Registry / incorporation evidence | Official pages verify the Singapore UEN and the about page says Turbo VPN was established in Singapore in 2018. No primary ACRA business-profile extract was captured in this batch. Third-party Singapore registry mirrors at RecordOwl, SGPBusiness, and sg.ltddir tie UEN `201812738K` to Innovative Connecting Pte. Limited and an April 16, 2018 incorporation date, but those mirrors are not source authority for OpenASN data. |
+| Who is behind it | Turbo VPN is operated by Innovative Connecting Pte. Limited. Public pages market a cross-platform consumer VPN with mobile apps, desktop apps, browser extension links, support at `support.turbovpn.com`, and global server/location coverage. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages expose legal text, app links, SEO country/location pages, and a server-page shell. Live probes found `/servers`, `/server-list`, `/vpn-server/*` location pages, `asserts.turbovpn.co` static assets, app-store links, and support pages, but no exact IP/CIDR/hostname inventory, OpenVPN/WireGuard config archive, unauthenticated server API, or redistributable egress feed. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, about, policy, terms, servers, sitemap, and support-link pages fetched successfully on 2026-07-05. The current Gluetun clone checked in `/tmp/gluetun-openasn` had no Turbo VPN provider/source match. |
+| Caveats | Do not treat Turbo's country pages or "111 locations" style marketing as evidence of current exits. Do not use app traffic, account state, or user-exported configs. A future accepted source needs exact public exits and clear redistribution/fetch semantics from Innovative Connecting or another license-clean authority. |
+| Primary source URLs | `https://turbovpn.com/`, `https://turbovpn.com/aboutus`, `https://turbovpn.com/policy`, `https://turbovpn.com/terms-of-service`, `https://turbovpn.com/servers`, `https://turbovpn.com/server-list`, `https://turbovpn.com/vpn-server`, `https://turbovpn.com/sitemap.xml`, `https://support.turbovpn.com/hc/en-sg`, `https://recordowl.com/company/innovative-connecting-pte-limited`, `https://www.sgpbusiness.com/company/Innovative-Connecting-Pte-Limited`, `https://sg.ltddir.com/companies/innovative-connecting-pte-limited/` |
+
+### 1ClickVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.1clickvpn.com/`, `https://www.1clickvpn.com/vpn-locations/`, `https://1clickvpn.net/` |
+| Legal / privacy URLs | `https://www.1clickvpn.com/terms-of-service/`, `https://www.1clickvpn.com/privacy-policy/`, `https://www.1clickvpn.com/about/faq/`, `https://1clickvpn.net/terms-of-service`, `https://1clickvpn.net/privacy` |
+| Legal entity shown by official pages | The verified `www.1clickvpn.com` pages did not expose a clear legal-entity name in this batch. The separate `1clickvpn.net` terms name Kodice LLC as the owner of 1clickVPN Services. |
+| Address / identifier | No street address, registration number, or jurisdiction was captured from the verified `www.1clickvpn.com` legal pages. The `.com` privacy page gives `privacy@1Clickvpn.com` as privacy contact. The `.net` terms name Kodice LLC but did not expose an address or registry identifier in the text captured here. |
+| Registry / incorporation evidence | No primary corporate-registry extract or incorporation date was captured for either the `.com` operator or Kodice LLC. The `.net` terms were last modified `28.10.2021`; the `.com` privacy page says last updated August 07, 2025. |
+| Who is behind it | Treat the two domains separately until proven otherwise. The `.com` site presents a browser/mobile VPN with Chrome, Edge, and Android support, 531+ free VPN servers, and a privacy policy describing sharing with an affiliated company that processes raw data into commercial "Insights." The `.net` site presents a broader multi-platform VPN and its terms identify Kodice LLC as owner. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages publish location pages, browser-extension/app links, marketing counts, and legal/privacy text, not exact exits. The `.com` sitemap exposed WordPress page and country sitemaps; the `.net` sitemap exposed product and promo/location pages. Neither domain exposed a public `.ovpn`, `.conf`, ZIP, JSON server feed, CIDR list, or provider-published exact hostname catalog. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official `.com` home, FAQ, privacy, terms, sitemap, and location pages fetched successfully on 2026-07-05; official `.net` home, sitemap, and terms fetched successfully. The current Gluetun clone had no 1ClickVPN provider/source match. |
+| Caveats | Do not merge `.com` and `.net` identities without stronger evidence. Do not infer egress from browser-extension location pages, affiliate/privacy language, Chrome Web Store metadata, or third-party articles. Browser-extension VPNs can also have different traffic scope than device-wide VPN apps, so future source semantics need to record product surface as well as provider. |
+| Primary source URLs | `https://www.1clickvpn.com/`, `https://www.1clickvpn.com/about/faq/`, `https://www.1clickvpn.com/privacy-policy/`, `https://www.1clickvpn.com/terms-of-service/`, `https://www.1clickvpn.com/vpn-locations/`, `https://www.1clickvpn.com/sitemap.xml`, `https://1clickvpn.net/`, `https://1clickvpn.net/terms-of-service`, `https://1clickvpn.net/sitemap.xml` |
+
+### VeePN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://veepn.com/`, `https://veepn.com/vpn-servers/`, `https://veepn.com/vpn-apps/vpn-for-chrome/` |
+| Legal / privacy URLs | `https://veepn.com/privacy-policy/`, `https://veepn.com/terms-of-service/` |
+| Legal entity shown by official pages | VeePN Corp. / VEEPN, Corp. |
+| Address / identifier | VeePN's privacy policy lists VeePN Corp. with registered office at Samuel Lewis Ave & 55th Street, PH SL55 Building, 21st Floor, Panama, Republic of Panama. It also names Laraun Limited (Cyprus) and IT Research LLC (USA) as payment-processing partners. The footer identifies Laraun Limited as an authorized reseller at Evropis, 4, Flat/Office 3, Strovolos 2064, Nicosia, Cyprus. |
+| Registry / incorporation evidence | Official VeePN pages verify the Panama operator name and registered office. A Panama Official Gazette PDF URL for issue `29575_A` appeared during research with VEEPN CORP. / folio-style evidence, but direct curl to that PDF returned an Incapsula HTML block from this environment, so no durable primary registry receipt was captured in this batch. No Panama registry extract or incorporation date is accepted here as verified. |
+| Who is behind it | VeePN is operated by VeePN Corp., with payment and reseller relationships disclosed for Laraun Limited and IT Research LLC. Public pages market 2,600+ servers, 109 locations, 85 countries, and apps/extensions across major platforms. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages expose country/location marketing and legal/payment disclosures, but not exact exits. Live probes of `/vpn-servers`, terms, privacy, app pages, sitemaps, and common config paths found country pages, pricing links, app-store links, and static assets only. No unauthenticated server API, CIDR/IP list, OpenVPN/WireGuard config archive, or exact hostname inventory was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, servers, privacy, terms, and app/extension pages fetched successfully on 2026-07-05. The current Gluetun clone had no VeePN provider/source match. |
+| Caveats | Do not treat the country list or server-count claims as an inventory. Do not use authenticated app state or user-exported configs. If VeePN publishes router configs or a server manifest later, it should probably enter as opt-in DNS/IP Tier B until cadence and churn are measured. |
+| Primary source URLs | `https://veepn.com/`, `https://veepn.com/vpn-servers/`, `https://veepn.com/privacy-policy/`, `https://veepn.com/terms-of-service/`, `https://veepn.com/vpn-apps/vpn-for-chrome/`, `https://www.gacetaoficial.gob.pa/pdfTemp/29575_A/92402.pdf` |
+
+### SkyVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.skyvpn.net/`, `https://www.skyvpn.net/vpn-download`, `https://www.skyvpn.net/support` |
+| Legal / privacy URLs | `https://www.skyvpn.net/terms`, `https://www.skyvpn.net/privacy-policy`, `https://www.skyvpn.net/contactus` |
+| Legal entity shown by official pages | SkyVPN, Inc. |
+| Address / identifier | SkyVPN terms say the website, software, and VPN proxy service are owned and operated by SkyVPN, Inc. The same terms say the website and software are controlled by SkyVPN, Inc. from offices in Hong Kong. The contact page exposes `contact@skyvpn.net`. No registration number or street address was captured. |
+| Registry / incorporation evidence | Official terms verify SkyVPN, Inc. and Hong Kong office control language. The terms say the agreement is in effect as of October 9, 2016, and the privacy policy was last modified February 2019. No Hong Kong Companies Registry extract or incorporation date was captured in this batch. |
+| Who is behind it | SkyVPN is operated by SkyVPN, Inc. Public pages market a free/premium consumer VPN for Windows, macOS, iOS, and Android, 3000+ VPN servers, no data cap, and 30 million users. Terms explicitly prohibit P2P/torrents on US, UK, CA, and FR servers, which is useful product context but not egress provenance. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages publish product claims, terms, privacy, support/blog material, and app download pages only. Sitemap and support probes found static media, blog links, app pages, and marketing pages. No exact IP/CIDR list, OpenVPN/WireGuard archive, unauthenticated server API, or exact hostname catalog was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, terms, privacy, support, contact, sitemap, and blog/support pages fetched successfully on 2026-07-05. The current Gluetun clone had no SkyVPN provider/source match. |
+| Caveats | Do not use user-observed endpoints, app traffic, or store metadata as an egress list. SkyVPN's "3000+ servers" and "30 million users" claims are marketing context only. A future source needs exact public exits and rights from SkyVPN, Inc. or another license-clean authority. |
+| Primary source URLs | `https://www.skyvpn.net/`, `https://www.skyvpn.net/terms`, `https://www.skyvpn.net/privacy-policy`, `https://www.skyvpn.net/support`, `https://www.skyvpn.net/contactus`, `https://www.skyvpn.net/sitemap.xml`, `https://www.skyvpn.net/blog/how-to-choose-best-vpn-server-location/` |
+
+### X-VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://xvpn.io/`, `https://xvpn.io/vpn-server`, `https://xvpn.io/download` |
+| Legal / privacy URLs | `https://xvpn.io/policy`, `https://xvpn.io/terms-service`, `https://xvpn.io/about-us`, `https://xvpn.io/help-center/how-to-set-up-x-vpn-on-asus-routers-openvpn` |
+| Legal entity shown by official pages | LIGHTNINGLINK NETWORKS PTE. LTD. |
+| Address / identifier | X-VPN's privacy policy says X-VPN is operated by LIGHTNINGLINK NETWORKS PTE. LTD., a company based in Singapore. Its about page says X-VPN operates from 8 Marina View, Asia Square Tower 1, Singapore, and its FAQ says the company is headquartered in Singapore. |
+| Registry / incorporation evidence | Official pages verify the operator name and Singapore base/address. Third-party Singapore registry mirrors at CompaniesHouse.sg, RecordOwl, SGPBusiness, and sg.ltddir list LIGHTNINGLINK NETWORKS PTE. LTD., UEN `202530186D`, and a July 11, 2025 incorporation date, but no primary ACRA business-profile extract was captured in this batch. X-VPN's own about page says the product has been trusted since 2017 and its 2025 timeline describes expansion, so company-formation timing and product-history timing should not be conflated. |
+| Who is behind it | X-VPN is operated by LIGHTNINGLINK NETWORKS PTE. LTD. Public pages market a consumer VPN with 10,000+ servers, 80+ countries, 250+ global locations, proprietary Everest protocol, OpenVPN, WireGuard rollout, QUIC/V2Ray support, and apps/extensions across major platforms. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages expose legal/operator text, location pages, protocol/product documentation, and router setup instructions. The router OpenVPN instructions require signing in and explicitly mark advanced router configuration as premium-only before downloading credentials and location configuration. Sitemap and config probes found country pages, static assets, app-store links, login/account routes, and the router help page, but no public exact IP/CIDR/hostname feed. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, about, policy, terms, VPN-server, sitemap, and router OpenVPN help pages fetched successfully on 2026-07-05. The current Gluetun clone had no X-VPN provider/source match. |
+| Caveats | Do not use account-gated router configs, user-exported `.ovpn` files, app traffic, or generated guesses from country pages. X-VPN's 2026 privacy-policy text is current and useful for operator identity, but it is not a source of egress addresses. |
+| Primary source URLs | `https://xvpn.io/`, `https://xvpn.io/about-us`, `https://xvpn.io/policy`, `https://xvpn.io/terms-service`, `https://xvpn.io/vpn-server`, `https://xvpn.io/sitemap.xml`, `https://xvpn.io/help-center/how-to-set-up-x-vpn-on-asus-routers-openvpn`, `https://companieshouse.sg/lightninglink-networks-pte-ltd-202530186D`, `https://recordowl.com/company/lightninglink-networks-pte-ltd`, `https://www.sgpbusiness.com/company/Lightninglink-Networks-Pte-Ltd`, `https://sg.ltddir.com/companies/lightninglink-networks-pte-ltd/` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 10: Turbo VPN, 1ClickVPN, VeePN, SkyVPN, X-VPN.
-2. Batch 11: StrongVPN, Total VPN, SetupVPN, uVPN, GooseVPN.
-3. Batch 12+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 11: StrongVPN, Total VPN, SetupVPN, uVPN, GooseVPN.
+2. Batch 12: MEGA VPN, Spaceship/FastVPN, BullVPN, hidemy.name/hide.mn, FineVPN.
+3. Batch 13+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

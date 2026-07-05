@@ -7,6 +7,11 @@ conservative: exact IPs first, original authority preferred, licensed fallback
 only when rights are clear, no account-only APIs, no bot-challenge bypasses, no
 ShareAlike data, no widened `/24` or ASN inference for `vpn`.
 
+Detailed provider/operator dossiers live in
+`docs/vpn-provider-dossiers.md`. Keep this file focused on source decisions and
+the dossier file focused on who operates each service, exact legal URLs,
+registry evidence, incorporation/founding caveats, and OpenASN data provenance.
+
 ## Source Quality Modes
 
 | Mode | Meaning | Default posture |

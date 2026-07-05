@@ -17,6 +17,11 @@ name: Build & publish data
 #   * Cron minute is deliberately off-hour (03:17 UTC): GitHub delays
 #     on-the-hour crons under load, and upstreams appreciate the jitter.
 #   * jq is preinstalled on ubuntu runners; the as.json parser uses it.
+#   * Action majors (checkout v7 / cache v6 / upload-artifact v7) run on
+#     Node 24; the previously pinned v4s targeted Node 20, deprecated:
+#     https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+#     They need runner >= 2.327.1 - GitHub-hosted ubuntu-latest is always
+#     newer; only a concern if this ever moves to self-hosted runners.
 #   * On gate failure a `pipeline-failure` issue is opened/updated here so
 #     a broken nightly is impossible to miss (license drift, delta trips,
 #     upstream URL scheme changes — sapics changed theirs 2026-06-18).
@@ -58,12 +63,12 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout data repo (this repo)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: data-repo
 
       - name: Checkout pipeline
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: openasn/openasn-pipeline
           path: pipeline-repo
@@ -89,7 +94,7 @@ jobs:
       # Upstream downloads are cached between runs so conditional GETs
       # (ETag) can 304 and we stay polite to third-party mirrors.
       - name: Restore upstream download cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: pipeline-repo/build/cache
           key: upstream-cache-${{ github.run_id }}
@@ -113,7 +118,7 @@ jobs:
 
       - name: Upload artifacts for inspection (PR/push builds)
         if: always() && github.event_name != 'schedule'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: openasn-dist
           path: pipeline-repo/build/dist/

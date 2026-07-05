@@ -117,3 +117,35 @@ and parse `to_h` shadow logs — those are API surface:
 - Every client in every language (openasn-ruby today; openasn-js et al.
   later) implements the same enum and documents this same contract — the
   Ruby gem's README "API stability contract" section is the reference text.
+
+## D-REL-1 — Release URLs are tag-addressed; the "Latest" badge is never load-bearing (2026-07-05)
+
+**The incident.** GitHub exposes two asset-URL shapes that look
+interchangeable and are not: `releases/download/<tag>/<file>` resolves by
+TAG; `releases/latest/download/<file>` resolves by the "Latest" BADGE —
+whichever non-draft, non-prerelease release was CREATED last, because the
+REST param `make_latest` defaults to `"true"` for every new release.
+Badge/link semantics: https://docs.github.com/en/repositories/releasing-projects-on-github/linking-to-releases
+· make_latest default: https://docs.github.com/en/rest/releases/releases#create-a-release
+On 2026-07-05 the first weekly dated snapshot was cut without
+`--latest=false`, took the badge from the rolling `latest` release, and
+every badge-form consumer — the gem's default `release_url`, the release
+notes' own documented fetch URL, and the pipeline's previous-manifest
+fetch feeding the ±20% delta gates — began resolving to a frozen snapshot
+that would have served up to 6-day-stale data between Sundays.
+
+**The rules** (enforced in openasn-pipeline `pipeline/publish.rb`, pinned
+by its `test/publish_test.rb`; gem side pinned in `test/updater_test.rb`):
+
+- Docs and consumers use ONLY the tag-addressed form
+  `releases/download/latest/<file>`. The badge form may appear in docs
+  solely inside a same-line "do not use" warning.
+- Dated releases are ALWAYS created with `--latest=false`
+  (https://cli.github.com/manual/gh_release_create — boolean negation must
+  be the single-token `=false` form).
+- Every nightly re-asserts `--latest` on the rolling release after asset
+  upload (self-heals if a manual release ever steals the badge) and
+  re-stamps the release body with the current `build_id` + layer counts.
+  Release bodies are human convenience; machines read `manifest.json`.
+- Net effect: the UI badge always sits on the rolling release, but that is
+  cosmetic alignment — nothing may DEPEND on the badge.

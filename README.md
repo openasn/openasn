@@ -27,7 +27,7 @@ The artifact format is public and language-neutral ([FORMAT.md](FORMAT.md)) — 
 | `fetch-manifest.json` | The Tier B recipe (see "Legal design") that clients execute themselves |
 | `ATTRIBUTION.md` / `SHA256SUMS` | Credits and checksums |
 
-Always download via `releases/latest/download/<file>` — assets are replaced nightly. A dated release is cut weekly for pinning.
+Always download via the tag-addressed URL `releases/download/latest/<file>` — assets are replaced nightly. A dated release is cut weekly for pinning (`releases/download/<YYYY-MM-DD>/<file>`). Do NOT use `releases/latest/download/<file>`: it resolves via GitHub's "Latest" badge, not the `latest` tag, and can serve a stale weekly snapshot (see DECISIONS.md D-REL-1).
 
 ## Verdict taxonomy
 

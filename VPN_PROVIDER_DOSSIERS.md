@@ -605,10 +605,98 @@ instead of letting downstream users guess whether these brands were missed.
 | Caveats | Avast and AVG likely share infrastructure, but OpenASN needs exact source evidence before adding either label. Avoid Netify/commercial IP pages and user-extracted client credentials: they are aggregator/private-client data and fail the repo's legal/source rules. HMA is a sibling Gen/Avast VPN brand, but its historical OpenVPN source issues should not be copied onto Avast/AVG without a clean current source. |
 | Primary source URLs | `https://www.avast.com/en-us/secureline-vpn`, `https://support.avast.com/en-us/article/secureline-vpn-faq/`, `https://www.avast.com/en-us/vpn-policy`, `https://www.avg.com/en-us/avg-secure-vpn`, `https://www.avg.com/en-us/vpn-policy`, `https://www.avast.com/ko-kr/eula-avast-secureline-vpn-standalone`, `https://www.avg.com/en-us/eula`, `https://www.avast.com/en-us/consent-policy`, `https://www.avg.com/en-us/secure-vpn-acceptable-use`, `https://community.avast.com/t/setting-avast-secureline-in-my-router/755208`, `https://community.avg.com/t/avg-secure-vpn-is-there-a-way-to-get-a-ovpn-file-for-router/277263`, `https://newsroom.gendigital.com/2016-07-07-avast-announces-agreement-to-acquire-avg-for-1-3b` |
 
+## Batch 8 - Pango / Point Wild And Consumer-Suite VPNs
+
+This batch added no sources. Three Pango/Point Wild brands expose useful
+operator and legal evidence but explicitly do not publish usable exit
+inventories. Norton and McAfee expose product/location material only. Keeping
+the negative result public prevents future agents from redoing the same weak
+scrape/probe paths.
+
+### Betternet
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.betternet.co/` |
+| Legal / privacy URLs | `https://www.betternet.co/terms/`, `https://www.betternet.co/privacy-policy/vpn/`, `https://www.pango.co/legal/privacy-policy` |
+| Legal entity shown by official pages | Betternet LLC for the Betternet terms; Intersections, LLC d/b/a Pango Group for the current Pango privacy policy. |
+| Address / identifier | Betternet terms list Betternet LLC, 250 Northern Ave, 3rd Floor, Boston, MA 02210, United States. Pango privacy lists Intersections, LLC d/b/a Pango Group, 250 Northern Ave, Floor 3, Boston, Massachusetts, 02210. Google Play currently lists BetterNet LLC with a Burlington, MA developer address. |
+| Registry / incorporation evidence | Official terms/app-store pages verify the current operator names and addresses. No Delaware/Massachusetts registry extract or formation date for Betternet LLC was captured in this batch. |
+| Who is behind it | Betternet is a Pango/Point Wild portfolio VPN. Point Wild's 2024 separation and merger announcements place Betternet alongside Hotspot Shield, Touch VPN, Ultra VPN, Ultra AV, and VPN 360 in the Pango/Point Wild portfolio. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Public pages publish marketing claims, platform links, and app-store counts only. The Android app page advertises 1000+ fast VPN proxy server options for premium users, but not IPs/CIDRs/hostnames. Betternet's terms explicitly prohibit attempting to compile, use, or distribute a list of IP addresses operated with the service. Public-site asset scans found app/support/account links and WordPress metadata, not server manifests, config archives, or exact host lists. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official Betternet legal/privacy/product pages fetched successfully on 2026-07-05. Gluetun had no Betternet provider/source match in the current clone checked that day. |
+| Caveats | Do not probe Betternet clients or DNS into an IP list. Its terms make that path legally hostile, and OpenASN's legal invariant is stricter than technical feasibility. Do not borrow Hotspot Shield/Pango ranges unless a source distinguishes Betternet-branded exits. |
+| Primary source URLs | `https://www.betternet.co/`, `https://www.betternet.co/terms/`, `https://www.betternet.co/privacy-policy/vpn/`, `https://www.pango.co/legal/privacy-policy`, `https://play.google.com/store/apps/details?id=com.freevpnintouch`, `https://www.pointwild.com/news/aura-splits-into-two-world-class-online-safety-companies/`, `https://www.pointwild.com/news/pango-group-merges-with-total-security-combined-company-rebranded-point-wild/` |
+
+### VPN 360
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.vpn360.com/` |
+| Legal / privacy URLs | `https://www.vpn360.com/legal/software-license-and-terms-of-service/`, `https://www.vpn360.com/privacy-notice/`, `https://www.vpn360.com/legal/privacy-policy/`, `https://legal.vpn360.com/documents/terms_of_service`, `https://legal.vpn360.com/documents/privacy_policy` |
+| Legal entity shown by official pages | Pango GmbH and Anchorfree LLC in the VPN 360 terms; Anchorfree LLC in the site footer; Pango, LLC in Google Play developer metadata. |
+| Address / identifier | VPN 360 terms list Pango GmbH, Hansmatt 32, 6370 Stans, Switzerland, and Anchorfree LLC, 250 Northern Ave, 3rd Floor, Boston, MA 02210, United States. Google Play lists Pango, LLC at 250 Northern Ave Ste 300, Boston, MA 02210. |
+| Registry / incorporation evidence | Official terms verify the Swiss and U.S. operator names/addresses. Third-party Swiss registry mirrors identify Pango GmbH as CHE-183.861.773 and indicate registration on 2012-01-06, but no primary Swiss registry extract was captured in this batch. |
+| Who is behind it | VPN 360 is part of the Pango/Point Wild family. Point Wild's 2024 separation announcement names VPN 360 in the Pango Group brand portfolio, and VPN 360's own support/help center runs under the Pango Zendesk account. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Public pages give inconsistent marketing counts: the home page says 800+ servers, 85 countries, and 110+ city-level servers; the Apple App Store text observed in this batch says 1800+ servers across 125+ locations. VPN 360 support says each server has a pool of shared IP addresses and users may receive different IPs on repeated connections. The terms prohibit attempting to compile, use, or distribute a service IP-address list. No public exact IP/CIDR/hostname list, OpenVPN ZIP, WireGuard config, or API manifest was found. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official product, privacy, terms, Google Play, and the "different IP every-time" support article fetched successfully on 2026-07-05. Public-site/sitemap/support scans found app/support/legal links only. Gluetun had no VPN 360 provider/source match in the current clone. |
+| Caveats | Treat marketing server counts as non-data. The support article proves shared IP pools exist, not what those IPs are. Do not turn client observation, account flows, or the Hotspot Shield/Pango shared backend into provider attribution. |
+| Primary source URLs | `https://www.vpn360.com/`, `https://www.vpn360.com/legal/software-license-and-terms-of-service/`, `https://www.vpn360.com/privacy-notice/`, `https://www.vpn360.com/legal/privacy-policy/`, `https://support.vpn360.com/hc/en-us/articles/8528302092948-Will-I-get-a-different-IP-every-time`, `https://play.google.com/store/apps/details?id=co.infinitysoft.vpn360`, `https://apps.apple.com/us/app/vpn-360-fast-total-vpn-proxy/id1193154948`, `https://www.pointwild.com/news/aura-splits-into-two-world-class-online-safety-companies/` |
+
+### UltraVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://ultravpn.com/`, `https://ultravpn.com/locations/` |
+| Legal / privacy URLs | `https://ultravpn.com/terms/`, `https://ultravpn.com/privacy/`, `https://ultravpn.com/privacy-notice/`, `https://ultravpn.com/additional-terms/` |
+| Legal entity shown by official pages | Fast VPN Pro, S. de R.L.; Anchorfree LLC as trademark owner for UltraVPN / UltraAV marks. |
+| Address / identifier | UltraVPN terms and privacy pages identify Fast VPN Pro, S. de R.L., Office 1705, 17th Floor, PH Midtown SF 74, 74 E Street, San Francisco, Panama City, Republic of Panama. The terms say UltraVPN and UltraAV are registered trademarks of Anchorfree, LLC. |
+| Registry / incorporation evidence | Official UltraVPN legal pages verify the Panamanian entity and address. A third-party Panama company profile for Fast VPN Pro exists, but no official Panama registry extract or exact incorporation date was captured in this batch. |
+| Who is behind it | UltraVPN is in the Pango/Point Wild portfolio. Point Wild's 2024 separation announcement names Ultra VPN and Ultra AV in the Pango Group portfolio; the later Point Wild merger announcement names UltraAV, Hotspot Shield, Betternet, and related brands in the combined company. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | UltraVPN publishes virtual-location and capacity marketing, including over 125 global locations and a locations-page FAQ claiming 1300 bare-metal servers. It also describes the proprietary Catapult Hydra protocol. The terms prohibit attempting to compile, use, or distribute a list of service IP addresses. Public-site scans found WordPress pages/assets and account/support links, not config archives or exact server feeds. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official UltraVPN terms, privacy, product, locations, and support landing pages fetched successfully on 2026-07-05. Gluetun had no UltraVPN provider/source match in the current clone. |
+| Caveats | Do not reverse engineer Hydra/client behavior or use app captures to build an IP list. Do not assume UltraVPN equals all Anchorfree/Pango/Hotspot Shield infrastructure; brand-level attribution still needs a brand-level exact source. |
+| Primary source URLs | `https://ultravpn.com/`, `https://ultravpn.com/locations/`, `https://ultravpn.com/terms/`, `https://ultravpn.com/privacy/`, `https://ultravpn.com/privacy-notice/`, `https://ultravpn.com/additional-terms/`, `https://play.google.com/store/apps/details?id=tech.hexa`, `https://apps.apple.com/us/developer/fast-vpn-pro-s-de-r-l/id1693337853`, `https://www.pointwild.com/news/aura-splits-into-two-world-class-online-safety-companies/`, `https://www.pointwild.com/news/pango-group-merges-with-total-security-combined-company-rebranded-point-wild/` |
+
+### Norton Secure VPN / Norton VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://us.norton.com/products/norton-vpn`, `https://us.norton.com/feature/vpn-server-locations` |
+| Legal / privacy URLs | `https://us.norton.com/legal/lsa`, `https://us.norton.com/privacy/products-privacy-notice`, `https://us.norton.com/privacy/general-privacy-notice` |
+| Legal entity shown by official pages | Gen Digital Inc. |
+| Address / identifier | Norton License and Services Agreement says the software and services are licensed by Gen Digital Inc., ATTN: Legal Department, 60 E. Rio Salado Pkwy, Ste 1000, Tempe, AZ 85281. |
+| Registry / incorporation evidence | Official Norton legal pages verify the current licensing entity and address. Gen's own investor/press material documents the 2022 NortonLifeLock/Avast combination and Gen brand launch; a direct corporate registry extract was not captured in this batch. |
+| Who is behind it | Norton is a Gen Digital brand. Gen Digital operates Norton, Avast, LifeLock, Avira, AVG, ReputationDefender, CCleaner, and related consumer cybersecurity brands after the NortonLifeLock/Avast combination. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Norton publishes product, privacy, and location information, not exact exits. The product page still contains a plan block saying 2800 servers in 28 countries, while a 2026 Norton blog post says Norton VPN expanded to 130+ server locations in over 90 countries. The server-location page is a country/city list, not IP/CIDR/hostname data. Norton support documents Double VPN, IP Rotation, Manual IP Refresh, kill switch, and related behavior; privacy pages say Norton records the day of a VPN connection and which VPN location is used, but not device IPs, DNS queries, or browsing history. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Norton product, legal, privacy, support, and server-location pages fetched successfully on 2026-07-05. A third-party GitHub search result mentioning a `nortonvpn.io` hostname pattern was rejected as non-authoritative; sampled `nortonvpn.io` hostnames did not resolve from this environment. Gluetun had no Norton provider/source match in the current clone. |
+| Caveats | Norton location/count pages are useful product context but cannot classify IPs. Do not import third-party hostname dumps, generated patterns, app captures, or commercial VPN databases. Norton/Avast/AVG share a parent company, but that does not imply shared egress attribution. |
+| Primary source URLs | `https://us.norton.com/products/norton-vpn`, `https://us.norton.com/feature/vpn-server-locations`, `https://us.norton.com/blog/vpn/norton-vpn-expands-to-130-locations`, `https://support.norton.com/sp/en/us/home/current/solutions/v117552006`, `https://us.norton.com/privacy/products-privacy-notice`, `https://us.norton.com/legal/lsa`, `https://investor.gendigital.com/news/news-details/2022/Introducing-Gen-The-Company-to-Power-Digital-Freedom/default.aspx` |
+
+### McAfee VPN / McAfee Safe Connect
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.mcafee.com/en-us/vpn.html` |
+| Legal / privacy URLs | `https://www.mcafee.com/en-us/consumer-support/policy/legal.html`, `https://www.mcafee.com/en-us/consumer-corporate/about.html`, `https://www.mcafee.com/en-us/consumer-corporate/investors.html` |
+| Legal entity shown by official pages | McAfee LLC for U.S./Americas downloads; McAfee Ireland Limited and McAfee Co., Ltd. for other regions. |
+| Address / identifier | McAfee legal terms list McAfee, LLC, a Delaware limited liability company, 6220 America Center Drive, San Jose, California 95002, USA; McAfee Ireland Limited, Building 2000 City Gate, Mahon, Cork, Ireland; and McAfee Co., Ltd., Dai-ichi Life Hibiya First, 1-13-2 Yurakucho, Chiyoda-ku, Tokyo 100-0006, Japan. McAfee's about page lists headquarters at 6220 America Center Drive, San Jose, CA 95002, USA. |
+| Registry / incorporation evidence | Official McAfee legal pages verify the Delaware LLC statement and regional contracting entities. No Delaware, Irish, or Japanese registry extract or formation date was captured in this batch. McAfee's investor page links the 2022 investor-group acquisition press release; separate SEC material documents the 2021 enterprise-business sale to STG. |
+| Who is behind it | McAfee is currently a consumer online-protection company. The enterprise business was divested to STG in 2021, and McAfee's investor page links the 2022 acquisition by an investor group led by Advent International and Permira. TunnelBear is McAfee-owned but remains a separate VPN dossier/source decision. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official support/search material found in this batch documents virtual locations and Secure VPN FAQ/product behavior, not exact IP/CIDR/hostname exits. McAfee pages were WAF-sensitive from this environment: legal/about/investor content was captured during research, while direct curl probes later returned 403/transport failures for some URLs. No public OpenVPN/WireGuard config archive, server API, or exact egress feed was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. McAfee legal/about/investor content and official support snippets were captured on 2026-07-05; direct curl access to McAfee VPN product/support/legal URLs was intermittently blocked from this environment. Gluetun had no McAfee provider/source match in the current clone. |
+| Caveats | Do not label McAfee VPN exits from TunnelBear data; TunnelBear is a separate McAfee-owned service with its own source and semantics. Avoid user screenshots, paid-account captures, and third-party review claims. A future accepted source needs exact public exits and clear rights from McAfee or a license-clean authority. |
+| Primary source URLs | `https://www.mcafee.com/en-us/vpn.html`, `https://mcafee.com/support/s/article/000001789?language=en_US`, `https://www.mcafee.com/support/s/article/000001911?language=en_US`, `https://www.mcafee.com/en-us/consumer-support/policy/legal.html`, `https://www.mcafee.com/en-us/consumer-corporate/about.html`, `https://www.mcafee.com/en-us/consumer-corporate/investors.html`, `https://www.sec.gov/Archives/edgar/data/1783317/000119312521072222/d101914dex991.htm`, `https://www.permira.com/news-and-insights/announcements/mcafee-to-be-acquired-by-an-investor-group-for-over-14-billion/` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 8: Betternet, VPN 360, UltraVPN, Norton Secure VPN, McAfee VPN.
-2. Batch 9: Urban VPN, Hola VPN, Bright VPN, Mysterium VPN, Planet VPN.
-3. Batch 10+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 9: Urban VPN, Hola VPN, Bright VPN, Mysterium VPN, Planet VPN.
+2. Batch 10: Turbo VPN, 1ClickVPN, VeePN, SkyVPN, X-VPN.
+3. Batch 11+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

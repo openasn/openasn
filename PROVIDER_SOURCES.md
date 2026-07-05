@@ -134,8 +134,11 @@ End-to-end sample classifications from the live run:
 | ESET VPN | Not added. | Product pages publish country/protocol claims and router docs require ESET HOME login before downloading WireGuard/OpenVPN configs. No unauthenticated exact IP/CIDR/hostname inventory was verified. |
 | F-Secure VPN / Freedome | Not added. | Official privacy docs say the new VPN feature uses Pango as a third-party provider and help pages publish protocols/ports, but support material does not expose router configs or exact exits. No brand-specific exact source was verified. |
 | Avast SecureLine / AVG VPN | Not added. | Official VPN policies say the apps process selected/assigned location, protocol, and server IP as internal metadata, but Avast/AVG do not publish the inventory and community support says router/OpenVPN config files are not officially supported. |
-| Norton Secure VPN | Not added. | Product pages only; no exact egress source verified. |
-| McAfee VPN | Not added. | Product pages only; no exact egress source verified. |
+| Betternet | Not added. | Pango/Point Wild brand. Official pages and app stores publish marketing counts only, and Betternet terms prohibit attempting to compile/use/distribute the service IP list. No public exact egress source was accepted. |
+| VPN 360 | Not added. | Pango/Point Wild brand. Product/app/support pages confirm shared VPN IP pools and inconsistent server/location counts, while terms prohibit IP-list compilation. No public exact source was verified. |
+| UltraVPN | Not added. | Pango/Point Wild brand operated by Fast VPN Pro, S. de R.L.; pages publish virtual-location and capacity claims, and terms prohibit service IP-list compilation. No config/feed/API inventory was found. |
+| Norton Secure VPN | Not added. | Gen Digital brand. Product pages publish country/city locations, server counts, IP rotation, and privacy details, but no exact public IP/CIDR/hostname source. Third-party hostname dumps were rejected as non-authoritative. |
+| McAfee VPN | Not added. | McAfee legal/about pages and support snippets were checked; available material is virtual-location/product behavior only. TunnelBear remains a separate McAfee-owned service and cannot be used to infer McAfee VPN exits. |
 | Urban VPN | Not added. | Peer/residential-style network. No public exact exit list; semantics may be residential peers, not provider-operated VPN exits. |
 | Hola VPN | Not added. | Peer/residential-style network. Do not label arbitrary peers as VPN without first-party exact relay inventory. |
 | Bright VPN | Not added. | Consumer VPN tied to Bright Data-style peer/proxy economics; no exact public egress list. |

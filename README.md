@@ -51,12 +51,39 @@ Tier A (this repo, in the artifact)      Tier B (your server fetches directly)
 sapics origin-asn   (PDDL)  backbone     Apple Private Relay egress → :relay
 ipverse as-metadata (CC0)   categories   Tor Project exits          → :tor_exit
 ipverse as-ip-blocks(CC0)   prefixes     AWS/GCP/Azure/OCI/DO/…     → :hosting+provider
-X4BNet lists_vpn    (MIT)   vpn/dc       ProtonVPN first-party      → :vpn+provider
+X4BNet lists_vpn    (MIT)   vpn/dc       ProtonVPN licensed feed    → :vpn+provider
 bad-asn-list        (MIT)   hosting      Cloudflare ranges          → context flag
 data/overrides/     (CC0)   our layer    Zscaler egress             → :enterprise_gateway
 ```
 
 **Tier A** sources carry explicit redistribution rights and are compiled into the published artifacts. **Tier B** sources are either license-restricted from republishing or too fast-moving for a nightly file (Tor exits change hourly) — so we publish the *recipe* (`fetch-manifest.json`: URL, parser id, cadence, failure policy) and clients pull from the original authorities at runtime. **Tier C** (bring-your-own MaxMind/IP2Location, planned) never touches this pipeline. The catalog of rejected sources and why (PeeringDB's AUP, GPL lists, ShareAlike databases, aggregator repackaging…) lives in the project history — the short version is the next section.
+
+## Reading OpenASN labels correctly
+
+The client-facing `verdict` is the product contract. The raw ASN labels are context.
+
+| Field | Meaning | Example |
+|---|---|---|
+| `verdict` | The application-level answer emitted by a client (`residential_isp`, `hosting`, `vpn`, ...) | DIGI Spain home broadband → `residential_isp` |
+| `category` | Upstream ASN category compiled into the artifact (`isp`, `hosting`, `business`, ...) | DIGI Spain → `isp`; Amazon → `hosting` |
+| `network_role` | Upstream routing role (`access_provider`, `midsize_transit`, `tier1_transit`, ...) | Telefónica retail → `access_provider`; Cogent backbone → `tier1_transit` |
+| `openasn_flags` | Extra OpenASN bits such as `bad_asn`, `vpn_provider`, `mobile_carrier`, `enterprise_gw`, `cdn`, `hosting_extra` | Microsoft/Amazon ASNs often carry `bad_asn` as hosting corroboration |
+| `sources` | Runtime client explanation of which rule won | `x4b_dc`, `asn_category`, `aws`, `asn_bad_asn` |
+
+`bad_asn` is unfortunately named upstream, but useful: it means membership in `brianhama/bad-asn-list`, a curated MIT-licensed list of hosting/cloud/colo ASNs. In OpenASN it is just an infrastructure signal. It does not mean the ASN is malicious, unsafe, or block-worthy by itself.
+
+`category=isp` and `verdict=residential_isp` are intentionally different words. The category describes the ASN; the verdict is the safer app-facing label after precedence rules. A real ISP can still be `unknown` if it is pure tier-1 backbone space, and a hosting ASN can become `vpn` when a VPN overlay is more specific.
+
+## Provider enrichment roadmap
+
+OpenASN's MVP answers the most important question first: human-ish access network vs infrastructure. The next layer is provider attribution: "this hosting IP is AWS" or "this VPN IP is Mullvad." The rules for adding that layer are stricter than "can we scrape it":
+
+- **Exact IP hits may set `provider`.** A first-party or license-clean list containing the observed exit IP can produce `provider: "mullvad"` or `provider: "ivpn"`.
+- **Nearby-prefix inference is context only.** Seeing an IP in the same `/24` as known Mullvad relays is useful analyst context, but it must not silently become a provider verdict.
+- **Tier A still requires redistribution rights.** Most provider lists belong in Tier B recipes, where clients fetch from the original authority.
+- **Every source needs parser tests, live smoke fixtures, cadence, keep-stale behavior, and a legal note.**
+
+High-value research candidates after the 0.1.0 checkpoint: Apple Private Relay (already supported as `relay`, not a VPN), Mozilla/Firefox VPN, ProtonVPN official alternatives, Mullvad, IVPN, Private Internet Access, NordVPN, Windscribe, Surfshark, ExpressVPN, CyberGhost, AirVPN, Perfect Privacy, TunnelBear, and Cloudflare WARP. The standard is source quality first, provider coverage second.
 
 ## Legal design (load-bearing, do not weaken)
 

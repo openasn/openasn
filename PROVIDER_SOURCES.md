@@ -30,6 +30,7 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `nordvpn_servers` | NordVPN | `https://api.nordvpn.com/v2/servers?limit=0` | opt-in `vpn_heavy` | `nordvpn_servers_json` | 9455 v4, 1 v6 |
 | `privadovpn` | PrivadoVPN | `https://privadovpn.com/apps/servers_export.json` | default `vpn_providers` | `privado_servers_json` | 166 v4, 0 v6 |
 | `riseup_vpn` | RiseupVPN | `https://api.black.riseup.net/3/config/eip-service.json` | default `vpn_providers` | `leap_eip_service_json` | 21 v4, 0 v6 |
+| `wlvpn_server_list` | WLVPN | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml` | default `vpn_providers` | `wlvpn_server_list_xml` | 3483 active visible v4, 0 v6 |
 | `surfshark_generic` | Surfshark | `https://api.surfshark.com/v4/server/clusters/generic` | opt-in `vpn_dns` | `surfshark_clusters_json` | 142 hostnames / 280 v4, 0 v6 |
 | `surfshark_static` | Surfshark | `https://api.surfshark.com/v4/server/clusters/static` | opt-in `vpn_dns` | `surfshark_clusters_json` | 36 hostnames / 36 v4, 0 v6 |
 | `surfshark_obfuscated` | Surfshark | `https://api.surfshark.com/v4/server/clusters/obfuscated` | opt-in `vpn_dns` | `surfshark_clusters_json` | 7 hostnames / 7 v4, 0 v6 |
@@ -76,6 +77,7 @@ End-to-end sample classifications from the live run:
 | `vpnsecure_locations` | `103.106.228.223` | `vpn`, provider `VPNSecure` |
 | `tunnelbear_openvpn` | `5.253.206.35` | `vpn`, provider `TunnelBear` |
 | `strongvpn_locations` | `176.67.81.250` | `vpn`, provider `StrongVPN` |
+| `wlvpn_server_list` | `103.209.254.114` | `vpn`, provider `WLVPN` |
 | `vpnbook_openvpn` | `142.4.216.196` | `vpn`, provider `VPNBook` |
 | `vpngate` | `1.244.51.251` | `vpn`, provider `VPN Gate` |
 
@@ -96,6 +98,7 @@ End-to-end sample classifications from the live run:
 | NordVPN | Existing opt-in heavy, upgraded to v2. | `https://api.nordvpn.com/v2/servers?limit=0` is first-party and exact, but large enough to keep behind `vpn_heavy`. |
 | PrivadoVPN | Added default Tier B. | `https://privadovpn.com/apps/servers_export.json`; a PrivadoVPN developer publicly described this as the official server list, updated hourly. |
 | RiseupVPN | Added default Tier B. | `https://api.black.riseup.net/3/config/eip-service.json`; OONI documents the LEAP provider API shape and that it advertises gateways. |
+| WLVPN | Added default Tier B. | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml` is a public WLVPN/IPVanish white-label server API with exact `ip` attributes. WLVPN's own site says the service is powered by IPVanish and part of VIPRE Security Group / Ziff Davis, so attribution is `WLVPN` rather than a reseller brand. |
 | Surfshark | Added opt-in DNS-expanded Tier B. | First-party cluster APIs publish `connectionName` hostnames: generic/static/obfuscated. Double-hop was empty live on 2026-07-05. |
 | IPVanish | Added opt-in DNS-expanded Tier B. | First-party OpenVPN config archive `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip` contains thousands of `remote` hostnames. |
 | PrivateVPN | Added opt-in DNS-expanded Tier B. | `https://privatevpn.com/client/PrivateVPN-TUN.zip` contains OpenVPN remotes. |
@@ -156,11 +159,11 @@ End-to-end sample classifications from the live run:
 | SetupVPN | Not added. | Product page only; no exact source verified. |
 | uVPN | Not added. | Product page only; no exact source verified. |
 | GooseVPN | Not added. | Product page only; no exact source verified. |
-| MEGA VPN | Not added. | Product page only; no exact source verified. |
-| Spaceship/FastVPN | Not added. | Product page only; no exact source verified. |
-| BullVPN | Not added. | Product page only; no exact source verified. |
-| hidemy.name / hide.mn | Not added. | Product/network pages only; no exact source verified. |
-| FineVPN | Not added. | Product page only; no exact source verified. |
+| MEGA VPN | Not added. | Official VPN/product/legal pages identify the responsible MEGA entities and list countries/cities for consumer selection, but no public exact VPN exit IP/CIDR/hostname/API/config archive was verified. `https://mega.io/server-locations` is cloud-storage data-centre geography, not VPN egress provenance. |
+| Spaceship/FastVPN | Not added as a separate provider. | Spaceship and Namecheap FastVPN support docs point users at `*.wlvpn.com` server names from the FastVPN account panel, and WLVPN exact backend IPs are covered by `wlvpn_server_list`. OpenASN deliberately labels the backend `WLVPN` instead of guessing whether a hit came from Spaceship, Namecheap, or another reseller. |
+| BullVPN | Not added. | PERSEC COMPANY LIMITED publishes location/server-count marketing and app/setup pages, but common API/config paths returned 404 or site pages. No public exact IP/CIDR/hostname inventory was verified. |
+| hidemy.name / hide.mn | Not added. | Public pages list network size and router support, but `.ovpn` downloads/server IP settings require an access code from payment or trial flow. Account-gated configs are not OpenASN source data. |
+| FineVPN | Not added. | QualityNetwork OÜ publishes legal/contact pages and many country/use-case pages, but exact WireGuard/Xray configuration files are behind signup/trial/account flows. No public exact egress source verified. |
 | ZoogVPN | Not added. | Product page only; no exact source verified. |
 | SuperVPN | Not added. | App-store style listing; no exact source verified. |
 | VPN Super | Not added. | Product page only; no exact source verified. |

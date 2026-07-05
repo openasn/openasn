@@ -955,10 +955,102 @@ documented, but did not publish an unauthenticated exact egress inventory.
 | Caveats | Do not scrape user portal state or user-exported configs. GOOSE's legal pages are unusually good for operator identity, but operator identity is not egress provenance. A future accepted source needs exact public hostnames/IPs/CIDRs from GOOSE B.V. or a license-clean authority. |
 | Primary source URLs | `https://goosevpn.com/`, `https://goosevpn.com/terms-of-service`, `https://goosevpn.com/privacy-policy`, `https://goosevpn.com/vpn-routers`, `https://goosevpn.com/faq`, `https://goosevpn.com/sitemap.xml`, `https://goosevpn.com/wp-sitemap-posts-page-1.xml` |
 
+## Batch 12 - MEGA, WLVPN/FastVPN, BullVPN, hidemy.name, FineVPN
+
+This batch added one OpenASN source: WLVPN's exact public server-list API.
+The important attribution decision is that Spaceship/FastVPN and Namecheap
+FastVPN are not emitted as separate providers. Their public setup docs point at
+WLVPN hostnames, and WLVPN is a white-label backend used by multiple brands, so
+OpenASN labels the exact backend source as `provider: "WLVPN"`.
+
+The other four services were fully documented but not added. Their public
+material is location-only, product/legal text, or account/trial-gated config
+downloads. Those are useful research facts, but not OpenASN source data.
+
+### MEGA VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://mega.io/vpn` |
+| Legal / privacy URLs | `https://mega.io/terms`, `https://mega.io/privacy`, `https://mega.io/contact`, `https://mega.io/about`, `https://mega.io/server-locations` |
+| Legal entity shown by official pages | MEGA terms split contract parties by product path. Users of MEGA Cloud, bundled MEGA VPN/Pass, and MEGA S4 contract with MEGA Privacy Kft, Hungarian Cg. `13-09-239012`, registered office Templom utca 17, 2161 Csomad, Hungary. Standalone paid MEGA VPN or MEGA Pass subscriptions contract with MEGA Privacy (NZ) Limited, NZ company number `9324253`, registered office 120 Albert Street, Auckland, New Zealand. |
+| Address / identifier | MEGA contact/about pages list Hungary head office MEGA Privacy Kft, Templom utca 17, 2161 Csomad, Hungary; New Zealand Mega Privacy (NZ), Level 21, Huawei Centre, 120 Albert St, Auckland, New Zealand; Spain Mega Cloud Services SL, Calle Toro 22, Salamanca; Luxembourg Mega Europe SARL, 202, Z.A.E. Wolser F, L-3290 Bettembourg. |
+| Registry / incorporation evidence | New Zealand Companies Office lists MEGA PRIVACY (NZ) LIMITED, company number `9324253`, NZBN `9429052660849`, registered, NZ Limited Company, incorporated `2025-02-28`, registered office 120 Albert Street, Huawei Centre, Level 15, Auckland 1010. It also lists MEGA LIMITED, company number `7970438`, NZBN `9429048146128`, registered, NZ Limited Company, incorporated `2020-05-05`, former name MEGA CLOUD SERVICES LIMITED from `2020-05-01` to `2022-03-01`. No Hungarian company-register extract for MEGA Privacy Kft was captured in this batch. |
+| Who is behind it | MEGA is the privacy/cloud-storage company operating the broader MEGA product suite. MEGA's terms and contact pages distinguish MEGA Privacy Kft, MEGA Privacy (NZ) Limited, MEGA Limited, and regional offices, so OpenASN documentation keeps those entities separate instead of collapsing all VPN responsibility into "MEGA Limited". |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official VPN page lists country-level availability and says users can choose cities across Australia, Canada, France, Germany, Ireland, Italy, Japan, Netherlands, Singapore, Spain, Sweden, Switzerland, Turkey, United Kingdom, United States, and more. It does not publish exact VPN exit IPs, CIDRs, server hostnames, config archives, or an unauthenticated server API. `https://mega.io/server-locations` is MEGA cloud-storage/data-centre geography, not VPN egress provenance. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official VPN, terms, privacy, contact, about, server-locations, and sitemap pages fetched successfully on 2026-07-05. MEGA privacy text says MEGA processes IP address and port information for VPN usage, including times and dates, which confirms the service has assigned VPN server IPs internally but does not expose an inventory. |
+| Caveats | Do not infer VPN exits from MEGA cloud-storage server locations, MEGA API hostnames, or MEGA client source code. Do not use app/account state or user-observed VPN assignments. A future accepted source needs an unauthenticated MEGA-published exact exit list/API or explicit license-clean redistribution rights. |
+| Primary source URLs | `https://mega.io/vpn`, `https://mega.io/terms`, `https://mega.io/privacy`, `https://mega.io/contact`, `https://mega.io/about`, `https://mega.io/server-locations`, `https://companies-register.companiesoffice.govt.nz/companies/app/ui/pages/companies/9324253`, `https://companies-register.companiesoffice.govt.nz/companies/app/ui/pages/companies/7970438` |
+
+### WLVPN / Spaceship FastVPN / Namecheap FastVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://wlvpn.com/`, `https://wlvpn.com/about-wlvpn/`, `https://wlvpn.com/wlpvn-locations/`, `https://www.spaceship.com/vpn/`, `https://www.namecheap.com/vpn/` |
+| Legal / privacy URLs | `https://wlvpn.com/privacy-policy/`, `https://www.spaceship.com/legal/fastvpn-privacy-policy-spaceship-legal/`, `https://www.spaceship.com/legal/privacy-policy/`, `https://www.namecheap.com/legal/` |
+| Legal entity shown by official pages | WLVPN says it is a white-label VPN solution powered by IPVanish and part of VIPRE Security Group, a Ziff Davis (NASDAQ: ZD) company. Spaceship pages identify Spaceship, Inc. and Namecheap ownership/trademarks. Namecheap pages identify Namecheap, Inc. |
+| Address / identifier | Spaceship FastVPN privacy/footer lists Spaceship, Inc., 4600 East Washington Street, Suite 300, Phoenix, AZ 85034, USA, and says Spaceship is an ICANN-accredited registrar serving customers since 2022. Namecheap support/footer lists Namecheap, Inc., 4600 East Washington Street, Suite 300, Phoenix, AZ 85034, USA. WLVPN pages expose partner/support email `partners@wlvpn.com` but no standalone street address was captured in this batch. |
+| Registry / incorporation evidence | No Delaware/Arizona/other U.S. registry extract for WLVPN/VIPRE/Spaceship/Namecheap was captured in this batch. Official Spaceship blog copy says Spaceship is an ICANN-accredited domain-registration and web-services platform founded by CEO Richard Kirkendall, and that Unbox and Spaceship are trademarks and/or registered trademarks of Namecheap, Inc. Namecheap press copy separately says Namecheap was founded in 2000 by CEO Richard Kirkendall. |
+| Who is behind it | WLVPN is backend/white-label VPN infrastructure powered by IPVanish under VIPRE Security Group / Ziff Davis. Spaceship FastVPN and Namecheap FastVPN are reseller/customer-facing brands that public setup docs connect to WLVPN hostnames. |
+| OpenASN data source | Added `wlvpn_server_list`: `https://api.wlvpn.com/v2/list/wlvpnserverList.xml`, parser `wlvpn_server_list_xml`, provider `WLVPN`, source group `vpn_providers`, enabled by default. |
+| Source quality / status | Accepted as exact-IP Tier B. The WLVPN API returns XML `server` elements with exact `name`, `ip`, city, country, status, visibility, coordinates, capacity, features, and WireGuard port metadata. Parser keeps only `visible="1"` and `status="1"` rows and reads exact `ip` attributes. WLVPN's official pages say it is powered by IPVanish and part of VIPRE Security Group / Ziff Davis; WLVPN location pages claim 40,000+ shared IPs, 2,200+ remote VPN servers, and 85+ cities. |
+| Live smoke | Live API smoke on 2026-07-05 fetched a 1,093,143-byte XML body with 3,483 `server` rows, all active and visible, across 112 country codes. Samples included `mel-b19.wlvpn.com|103.209.254.114|Melbourne|AU`, `phx-a01.wlvpn.com` in Namecheap docs, and `nyc-c19.vpn.wlvpn.com` in Spaceship docs. End-to-end Ruby smoke wrote 3,483 IPv4 overlays, 0 IPv6 overlays, and classified `103.209.254.114` as `verdict: :vpn`, `provider: "WLVPN"`, `sources: [:wlvpn_server_list]`. |
+| Caveats | Do not label these hits as `FastVPN`, `Namecheap`, `Spaceship`, `IPVanish`, `StrongVPN`, or any other reseller unless a more specific exact source wins. WLVPN is shared backend infrastructure; the observed exit IP cannot identify which reseller's customer used it. Do not infer additional IPs from nearby WLVPN hostnames or WLVPN's 40,000+ shared-IP marketing claim. |
+| Primary source URLs | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml`, `https://wlvpn.com/`, `https://wlvpn.com/about-wlvpn/`, `https://wlvpn.com/why-wlvpn/`, `https://wlvpn.com/wlpvn-locations/`, `https://wlvpn.com/privacy-policy/`, `https://www.spaceship.com/legal/fastvpn-privacy-policy-spaceship-legal/`, `https://www.spaceship.com/blog/fastvpn-on-spaceship/`, `https://www.spaceship.com/knowledgebase/setup-fastvpn-on-pfsense-router/`, `https://www.namecheap.com/support/knowledgebase/article.aspx/10409/2269/how-to-set-up-ikev2-vpn-connection-on-ios/`, `https://www.namecheap.com/support/knowledgebase/article.aspx/10395/2270/how-to-set-up-fastvpn-on-pfsense-router/`, `https://www.namecheap.com/about/press-releases/24-04-16/the-new-domain-registration-web-services-platform-spaceship-wants-to-help-shape-the-unseen-future-internet/` |
+
+### BullVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.bullvpn.com/`, `https://www.bullvpn.com/en/location`, `https://www.bullvpn.com/en/private-vpn`, `https://www.bullvpn.com/en/setup/windows_client` |
+| Legal / privacy URLs | `https://www.bullvpn.com/en/term`, `https://www.bullvpn.com/term`, `https://www.bullvpn.com/faq` |
+| Legal entity shown by official pages | PERSEC COMPANY LIMITED / Persec Co.,Ltd. |
+| Address / identifier | BullVPN terms/privacy list data controller PERSEC COMPANY LIMITED, 95/26 Saen Suk Road, Saen Suk, Mueang, Chonburi 20130, Thailand, email `support@bullvpn.com`, phone `096-787-1632`. Public footers say copyright 2014-2026 Persec Co.,Ltd. |
+| Registry / incorporation evidence | Official pages verify the company name, Thai address, support email, phone, and 2014-2026 footer. No Thai Department of Business Development extract, registration number, or incorporation date was captured in this batch. Treat 2014 as public-service/footer history, not verified incorporation. |
+| Who is behind it | BullVPN is operated by PERSEC COMPANY LIMITED / Persec Co.,Ltd. The Android package id is `th.co.persec.bullvpn`, consistent with the Persec operator. Public copy markets 300+ servers in 49 countries, OpenVPN/IKEv2/WireGuard/private VPN/proxy support, and 1,000,000+ users in app-store copy. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official location pages publish country-level pages, server counts, and supported protocol columns, not exact exits. Windows setup docs show server selection in the app and protocols, but no exact host/IP inventory. Private VPN/proxy pages sell dedicated IP/private VPN service but do not publish the pool. Common API/config paths such as `/api/servers`, `/api/location`, and `api.bullvpn.com` returned 404 or no DNS from this environment. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official terms, location, private VPN, FAQ, sitemap, and Windows setup pages fetched successfully on 2026-07-05. Token scans found public site/asset hostnames only, not server hostnames or exit IPs. |
+| Caveats | Do not scrape app state, user logs, payment/private-order output, or dedicated-IP customer assignments. Do not infer exits from country pages or from Persec-owned domains/assets. A future source should be exact public IP/CIDR/hostname data from BullVPN/Persec, preferably an unauthenticated server list or public config archive. |
+| Primary source URLs | `https://www.bullvpn.com/`, `https://www.bullvpn.com/en/term`, `https://www.bullvpn.com/term`, `https://www.bullvpn.com/en/location`, `https://www.bullvpn.com/en/location/thailand`, `https://www.bullvpn.com/en/private-vpn`, `https://www.bullvpn.com/en/setup/windows_client`, `https://www.bullvpn.com/faq`, `https://www.bullvpn.com/sitemap.xml`, `https://play.google.com/store/apps/details?id=th.co.persec.bullvpn` |
+
+### hidemy.name / hide.mn
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://hidemy.name/en/vpn/`, `https://hide.mn/en/vpn/`, `https://hide.mn/en/vpn/router/`, `https://vpnpay.io/en/hmn-vpn/` |
+| Legal / privacy URLs | `https://vpnpay.io/en/hmn-vpn/`; linked footer labels on that page: `Terms of Use`, `Privacy Policy`, `Refund`, `Support` |
+| Legal entity shown by official pages | EUPHORIATECH LIMITED appears on the VPNPay checkout/product page for hidemy.name VPN. |
+| Address / identifier | VPNPay lists EUPHORIATECH LIMITED, Akropoleos, 82, 2nd floor, 2012, Nicosia, Cyprus, registration number `HE 484287`. hidemy.name/hide.mn VPN pages themselves did not expose a separate legal entity in the fetched public pages. |
+| Registry / incorporation evidence | VPNPay page verifies the Cyprus entity name, address, and registration number. No Cyprus Registrar extract or incorporation date for EUPHORIATECH LIMITED was captured in this batch. The VPNPay product page says hidemy.name VPN was founded in 2006, but that is product-history text, not registry evidence. |
+| Who is behind it | Public evidence ties the checkout/product route to EUPHORIATECH LIMITED. The site markets hidemy.name as a long-running censorship-circumvention VPN with DNS leak protection, split tunneling, Double VPN, port forwarding, router/client support, and a network of 240 servers in 74 cities across 41 countries. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official VPN pages list network size and countries and router pages confirm OpenVPN/PPTP/L2TP style setup. The crucial exact data is account-gated: router instructions repeatedly say `.ovpn` configuration files and server IP settings require an access code obtained after payment or by requesting a trial period. Direct probes of common API/config paths returned 404/403/site pages, not an exact public inventory. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official VPN and router pages fetched successfully on 2026-07-05. Token scans found only site/CDN/app-store/support hostnames and private RFC1918 router addresses, not VPN server hostnames or exits. |
+| Caveats | Do not use trial/account-generated `.ovpn` files, access codes, customer configs, or screenshots. Do not treat VPNPay's product/founding page as egress data. If hidemy.name later publishes a public config archive or exact API, add it as Tier B with careful legal review because the current public footer says use of site materials without permission is prohibited. |
+| Primary source URLs | `https://hidemy.name/en/vpn/`, `https://hide.mn/en/vpn/`, `https://hide.mn/en/vpn/router/`, `https://hidemy.name/en/vpn/router/`, `https://vpnpay.io/en/hmn-vpn/`, `https://apps.apple.com/gm/app/hidemy-name-vpn/id1200692581`, `https://play.google.com/store/apps/details?id=com.fourksoft.openvpn` |
+
+### FineVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://finevpn.org/`, `https://finevpn.org/services/wire/`, `https://finevpn.org/site-map/` |
+| Legal / privacy URLs | `https://finevpn.org/rules-of-use/`, `https://finevpn.org/terms-of-service/`, `https://finevpn.org/privacy-policy/`, `https://finevpn.org/disclaimer-limitation-of-liability-and-refund-policy/`, `https://billing.finevpn.org/` |
+| Legal entity shown by official pages | QualityNetwork OÜ / QualityNetwork OU. |
+| Address / identifier | FineVPN Rules of Use list QualityNetwork OÜ, Karu 14-8, Kesklinn, Harju District, Tallinn, Estonia, email `support@finevpn.org`, website `finevpn.org`. Google Play developer details list QualityNetwork OU, `vladimir.i@quality-network.eu`, Karu tn 14-8, 10120 Tallinn, Estonia, and phone `+254 746 366651`. |
+| Registry / incorporation evidence | Official FineVPN pages verify the company name and Tallinn address. The Estonian e-Business Register page fetched only the generic search/app shell from this environment, so no primary registry code or incorporation date was captured in this batch. The FineVPN footer says 2011-2026, but that is product/site history, not verified incorporation. |
+| Who is behind it | FineVPN is operated by QualityNetwork OÜ, which also appears across FineProxy/QualityNetwork web properties. Public pages say FineVPN moved from a permanent free plan to a 14-day full-access trial, supports WireGuard and Xray, uses trusted open-source clients rather than a proprietary app-first model, and offers servers in 20 countries. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | FineVPN pages repeatedly describe downloading WireGuard configuration files for chosen locations, but the public flow is trial/signup/account driven via `billing.finevpn.org` or Telegram. Direct probes of common API/config archive paths returned FineVPN HTML/anti-bot pages, not a config archive or server manifest. No unauthenticated exact IP/CIDR/hostname inventory was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. The public pages rendered through browser/search tooling on 2026-07-05; direct curl saw a JavaScript/anti-bot HTML wrapper for several paths. Search/open verification confirmed the legal/operator text and server/location marketing but not exact exits. |
+| Caveats | Do not use customer/trial WireGuard or Xray configs, Telegram-generated configs, billing-panel state, or country/use-case SEO pages as source data. FineVPN is related to proxy products, so avoid importing proxy lists or surrounding QualityNetwork/FineProxy infrastructure as `vpn` exits without exact FineVPN provenance. |
+| Primary source URLs | `https://finevpn.org/`, `https://finevpn.org/rules-of-use/`, `https://finevpn.org/services/wire/`, `https://finevpn.org/site-map/`, `https://billing.finevpn.org/`, `https://play.google.com/store/apps/details?id=com.fineprotectapp.android`, `https://fineproxy.org/terms-of-service/` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 12: MEGA VPN, Spaceship/FastVPN, BullVPN, hidemy.name/hide.mn, FineVPN.
-2. Batch 13: ZoogVPN, SuperVPN, VPN Super, FreeVPN.org, VPNly.
-3. Batch 14+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 13: ZoogVPN, SuperVPN, VPN Super, FreeVPN.org, VPNly.
+2. Batch 14: SuperFree VPN, FreeVPNApp.org / FreeVPNApp.io, FreeVPN.us, VpnHood, FreeVPN724 / WorldVPN.
+3. Batch 15+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

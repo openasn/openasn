@@ -33,15 +33,19 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `surfshark_generic` | Surfshark | `https://api.surfshark.com/v4/server/clusters/generic` | opt-in `vpn_dns` | `surfshark_clusters_json` | 142 hostnames / 280 v4, 0 v6 |
 | `surfshark_static` | Surfshark | `https://api.surfshark.com/v4/server/clusters/static` | opt-in `vpn_dns` | `surfshark_clusters_json` | 36 hostnames / 36 v4, 0 v6 |
 | `surfshark_obfuscated` | Surfshark | `https://api.surfshark.com/v4/server/clusters/obfuscated` | opt-in `vpn_dns` | `surfshark_clusters_json` | 7 hostnames / 7 v4, 0 v6 |
-| `ipvanish_openvpn` | IPVanish | `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 3463 v4, 0 v6 |
-| `privatevpn_openvpn` | PrivateVPN | `https://privatevpn.com/client/PrivateVPN-TUN.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 101 v4, 0 v6 |
-| `purevpn_openvpn` | PureVPN | `https://d11a57lttb2ffq.cloudfront.net/heartbleed/router/Recommended-CA2.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 122 v4, 0 v6 |
-| `torguard_openvpn_tcp` | TorGuard | `https://torguard.net/downloads/OpenVPN-TCP-Linux.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 422 v4, 0 v6 |
-| `torguard_openvpn_udp` | TorGuard | `https://torguard.net/downloads/OpenVPN-UDP-Linux.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 430 v4, 0 v6 |
-| `fastestvpn_tcp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=tcp` | opt-in `vpn_dns` | `html_table_hostnames` | 55 v4, 0 v6 |
-| `fastestvpn_udp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=udp` | opt-in `vpn_dns` | `html_table_hostnames` | 55 v4, 0 v6 |
+| `ipvanish_openvpn` | IPVanish | `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 3483 hostnames / 3448 v4, 0 v6; 31 DNS misses |
+| `privatevpn_openvpn` | PrivateVPN | `https://privatevpn.com/client/PrivateVPN-TUN.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 100 hostnames + 1 direct IP / 100 v4, 0 v6; 26 DNS misses |
+| `purevpn_openvpn` | PureVPN | `https://d11a57lttb2ffq.cloudfront.net/heartbleed/router/Recommended-CA2.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 166 hostnames / 129 v4, 0 v6 |
+| `torguard_openvpn_tcp` | TorGuard | `https://torguard.net/downloads/OpenVPN-TCP-Linux.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 52 hostnames / 430 v4, 0 v6 |
+| `torguard_openvpn_udp` | TorGuard | `https://torguard.net/downloads/OpenVPN-UDP-Linux.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 52 hostnames / 430 v4, 0 v6 |
+| `fastestvpn_tcp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=tcp` | opt-in `vpn_dns` | `html_table_hostnames` | 68 hostnames / 55 v4, 0 v6 |
+| `fastestvpn_udp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=udp` | opt-in `vpn_dns` | `html_table_hostnames` | 68 hostnames / 55 v4, 0 v6 |
 | `vpnsecure_locations` | VPNSecure | `https://www.vpnsecure.me/vpn-locations/` | opt-in `vpn_dns` | `vpnsecure_locations_html` | 47 v4, 0 v6 |
 | `vpnbook_openvpn` | VPNBook | `https://www.vpnbook.com/freevpn/openvpn` | opt-in `public_relays` | `vpnbook_html_hosts` | 9 v4, 0 v6 |
+
+DNS-expanded counts are resolver-vantage-specific. Hostname counts are the
+stable parser smoke; resolved IP counts can move when provider DNS changes,
+when a resolver suppresses records, or when a lookup times out.
 
 Also verified unchanged existing sources in the same run:
 

@@ -185,11 +185,92 @@ Ground rules:
 | Caveats | Double-hop endpoint returned an error/empty non-array response in this environment and is intentionally not included. Do not widen resolved IPs to neighboring prefixes, and do not merge Surfshark with NordVPN despite group-level corporate relationship. |
 | Primary source URLs | `https://surfshark.com/terms-of-service`, `https://surfshark.com/privacy`, `https://surfshark.com/about-us`, `https://surfshark.com/affiliate-terms-and-conditions`, `https://api.surfshark.com/v4/server/clusters/generic`, `https://api.surfshark.com/v4/server/clusters/static`, `https://api.surfshark.com/v4/server/clusters/obfuscated`, `https://www.prnewswire.com/news-releases/nord-security-and-surfshark-join-forces-to-strengthen-positions-in-the-cybersecurity-industry-301473286.html`, `https://www.lei-lookup.com/record/254900STIEA4WRWRNV37/` |
 
+## Batch 3 - Implemented DNS-Expanded VPN Providers
+
+### IPVanish
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.ipvanish.com/` |
+| Legal / privacy URLs | `https://www.ipvanish.com/terms-of-service/`, `https://www.ipvanish.com/privacy-policy/`, `https://www.ziffdavis.com/brands/security/ipvanish`, `https://www.ziffdavis.com/ziff-davis-inc-entities-self-certified-under-the-data-privacy-framework-dpf` |
+| Legal entity shown by official / registry pages | IPVanish, Inc. |
+| Address / identifier | Florida Sunbiz lists `IPVANISH, INC.`, document number `P11000097829`, FEI/EIN `45-3808692`, status active, principal and mailing address `360 Park Avenue S, 17th Floor, New York, NY 10010`. Ziff Davis's Data Privacy Framework page lists `IPVanish Inc` among self-certified Ziff Davis entities. Chrome Web Store developer disclosure for IPVanish Secure Browser lists D-U-N-S `078627602` and an older Winter Park, Florida address. |
+| Registry / incorporation evidence | Sunbiz lists IPVanish, Inc. as a Florida profit corporation filed/effective `2011-11-10`, with a `2023-03-30` amendment/name-change event and a `2026-02-23` address update. SEC exhibit/search material describes IPVanish, Inc. as formerly known as Mudhook Marketing, Inc.; keep that as historical context, not as the current service contract name unless confirmed from a charter filing. |
+| Who is behind it | Current corporate owner is Ziff Davis. Ziff Davis's brand page lists IPVanish in its cybersecurity portfolio. Secondary transaction data says J2 Global acquired IPVanish/StrongVPN/Encrypt.me from StackPath on `2019-04-30`; J2 later became Ziff Davis. Current Sunbiz officer/director entries include Ziff Davis executives, including Nate Simmons as director/president in the 2026 filing snapshot. |
+| OpenASN data source | `ipvanish_openvpn` uses `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip`, parser `ovpn_zip_remote_hosts`, provider `IPVanish`. |
+| Source quality / status | Implemented as opt-in `vpn_dns`. The source is a first-party `configs.ipvanish.com` OpenVPN archive containing provider-published `remote` hostnames. Clients resolve those hostnames locally; OpenASN does not redistribute the resolved IPs. |
+| Live smoke | On 2026-07-05, the parser found 3483 unique hostnames. This resolver returned 3448 IPv4 addresses, 0 IPv6 addresses, and 31 DNS misses; sample resolved IP `199.127.250.216`. |
+| Caveats | IPVanish's own legal pages challenged no-script HTTP clients during this batch, so legal-page URLs are recorded but legal entity/address facts are corroborated through Ziff Davis, Sunbiz, app-store disclosure, and current reseller privacy notices. DNS results are not byte-stable and this source must stay opt-in. Do not infer IPVanish from ASNs or neighboring prefixes. |
+| Primary source URLs | `https://www.ipvanish.com/terms-of-service/`, `https://www.ipvanish.com/privacy-policy/`, `https://www.ziffdavis.com/brands/security/ipvanish`, `https://www.ziffdavis.com/ziff-davis-inc-entities-self-certified-under-the-data-privacy-framework-dpf`, `https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchTerm=IPVANISH%2C%20INC`, `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip`, `https://chromewebstore.google.com/detail/ipvanish-secure-browser/ekeoaffihmbjndaoglobgjibjgcmjfpo`, `https://www.curryscloudbackup.co.uk/privacy-policy` |
+
+### PrivateVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://privatevpn.com/` |
+| Legal / privacy URLs | `https://privatevpn.com/terms-of-use/`, `https://privatevpn.com/privacy-policy/` |
+| Legal entity shown by official pages | PrivateVPN Global AB |
+| Address / identifier | Terms and privacy policy identify `PrivateVPN Global AB`, registration number `559282-2182`. The privacy policy lists `PrivateVPN Global AB, Reg. No. 559282-2182, Box 2128, SE-442 02 Ytterby, Sweden` as data controller. |
+| Registry / incorporation evidence | Swedish business-information pages sourced from Bolagsverket/SCB list PrivateVPN Global AB, organization number `559282-2182`, Swedish aktiebolag, registered `2020-11-11`, active, share capital SEK 25,000, postal address Box 2128, 442 02 Ytterby. Allabolag says the company is part of Meralm Bidco AB; Hitta group data places it in the wider Miss Group/PW Realm structure. |
+| Who is behind it | Current legal operator is PrivateVPN Global AB. Secondary corporate-data sources say PrivateVPN Global AB was acquired by Miss Group/Miss Group Holdings in June 2022. The older PrivateVPN service is commonly described as launched in 2009; this dossier does not collapse that service history into the 2020 Swedish company registration. Current Swedish registry-like pages list Rolf Jimmie Eriksson as board member. |
+| OpenASN data source | `privatevpn_openvpn` uses `https://privatevpn.com/client/PrivateVPN-TUN.zip`, parser `ovpn_zip_remote_hosts`, provider `PrivateVPN`. |
+| Source quality / status | Implemented as opt-in `vpn_dns`. PrivateVPN support/guides and historical blog posts point users to the first-party OpenVPN configuration ZIP. Parser extracts exact `remote` hostnames and the one direct IP present in the archive; clients resolve locally. |
+| Live smoke | On 2026-07-05, the parser found 100 unique hostnames plus direct IP `193.180.119.2`. This resolver returned 100 IPv4 ranges, 0 IPv6 ranges, and 26 DNS misses; sample resolved/direct IP `193.180.119.2`. |
+| Caveats | PrivateVPN terms include a user covenant not to "attempt to compile, utilize, or distribute a list of IP addresses operated by PrivateVPN in conjunction with the Service." OpenASN therefore must not redistribute a PrivateVPN IP list and should keep this source opt-in/legal-reviewed. Publishing the Tier B recipe is materially different from publishing the resolved list, but this is still a real downstream terms caveat. DNS failures are expected because some published hostnames are stale or resolver-dependent. |
+| Primary source URLs | `https://privatevpn.com/terms-of-use/`, `https://privatevpn.com/privacy-policy/`, `https://privatevpn.com/client/PrivateVPN-TUN.zip`, `https://privatevpn.com/blog/vpn-app/openvpn-configuration-files-updated/`, `https://privatevpn.com/blog/vpn-service/service-upgrade/`, `https://help.privatevpn.com/en/articles/302354-openvpn-on-mac-os-with-tunnelblick-client`, `https://www.allabolag.se/foretag/privatevpn-global-ab/ytterby/konsulter/2KHTL7QI5YF3I`, `https://krafman.se/privatevpn-global-ab/5592822182/sammanfattning`, `https://www.hitta.se/f%C3%B6retagsinformation/privatevpn%2Bglobal%2Bab/5592822182`, `https://www.preqin.com/data/profile/asset/privatevpn-global-ab/486394` |
+
+### PureVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.purevpn.com/` |
+| Legal / privacy URLs | `https://www.purevpn.com/term.php`, `https://www.purevpn.com/privacy-policy.php`, `https://www.purevpn.com/contact`, `https://www.purevpn.com/about.php`, `https://www.purevpn.com/ceo-message` |
+| Legal entity shown by official pages | GZ Systems Limited |
+| Address / identifier | Terms identify `GZ Systems Limited`, doing business as `PureVPN`, as a British Virgin Islands limited-liability company with principal place of business at `Intershore Chambers, P.O Box 4342, Road Town, Tortola, British Virgin Islands`. Footer/contact/privacy pages list PureVPN as a brand of GZ Systems Limited, address `Intershore Chambers P.O Box 4342, Road Town, Tortola, British Virgin Islands`, company registration number `2039934`. |
+| Registry / incorporation evidence | Official pages verify BVI registration number `2039934`, but this batch did not obtain a BVI registry extract or incorporation date. Terms effective date is `2016-10-14`; PureVPN's own about/footer copy says the service launched in 2007. Keep service launch, terms effective date, and company incorporation as separate facts. |
+| Who is behind it | PureVPN's about page says PureVPN launched in 2007 and names Uzair, Umair, and Aqib as the newly graduated founders. PureVPN's CEO message and transparency pages identify Uzair Gadit as CEO/co-founder. Disrupt's official site lists PureSquare/PureVPN in its portfolio and names Aaqib Gadit, Uzair Gadit, and Umair Gadit. |
+| OpenASN data source | `purevpn_openvpn` uses `https://d11a57lttb2ffq.cloudfront.net/heartbleed/router/Recommended-CA2.zip`, parser `ovpn_zip_remote_hosts`, provider `PureVPN`. |
+| Source quality / status | Implemented as opt-in `vpn_dns`. PureVPN support articles instruct users to download the same CloudFront OpenVPN ZIP for Linux/Raspberry Pi/manual configuration. Parser extracts provider-published `remote` hostnames; clients resolve locally. |
+| Live smoke | On 2026-07-05, the parser found 166 unique hostnames. This resolver returned 129 IPv4 ranges and 0 IPv6 ranges; sample resolved IP `172.111.238.9`. |
+| Caveats | PureVPN pages are internally inconsistent: privacy-policy body says `GZ Systems Private Ltd` in one place while footer/terms say `GZ Systems Limited`. Treat `GZ Systems Limited` and BVI registration number `2039934` as the stronger official footer/terms fact and preserve the inconsistency in this dossier. The source is first-party but DNS-expanded, so counts are resolver-specific. |
+| Primary source URLs | `https://www.purevpn.com/term.php`, `https://www.purevpn.com/privacy-policy.php`, `https://www.purevpn.com/contact`, `https://www.purevpn.com/about.php`, `https://www.purevpn.com/ceo-message`, `https://www.purevpn.com/vpn-transparency-report`, `https://www.disrupt.com/`, `https://support.purevpn.com/en_US/manual-connection-setup/how-to-setup-command-line-openvpn-on-linux`, `https://support.purevpn.com/en_US/other-devices-guides/openvpn-command-line-interface-cli-setup-guide-for-raspberry-pi-debian`, `https://d11a57lttb2ffq.cloudfront.net/heartbleed/router/Recommended-CA2.zip` |
+
+### TorGuard
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://torguard.net/` |
+| Legal / privacy URLs | `https://torguard.net/terms/`, `https://torguard.net/privacy/`, `https://torguard.net/dmca.php`, `https://torguard.net/downloads.php` |
+| Legal entity shown by official pages | VPNetworks LLC / VPNETWORKS, LLC |
+| Address / identifier | TorGuard privacy policy lists data-controller mailing address `VPNetworks LLC, 618 E. SOUTH STREET, STE. 500, ORLANDO, FL 32801`. Apple App Store trader disclosure lists `VPNETWORKS LLC`, D-U-N-S `032953620`, same 618 E South Ste 500 address, phone `+1 4073734949`, email `admin@torguard.net`. |
+| Registry / incorporation evidence | Florida Sunbiz lists `VPNETWORKS, LLC`, document number `L12000154089`, FEI/EIN `45-1687395`, filed/effective `2012-12-10`, state FL, status active, principal address `618 E. SOUTH STREET, STE. 500, ORLANDO, FL 32801`, mailing address `1420 EDGEWATER DRIVE, Orlando, FL 32804`. |
+| Who is behind it | TorGuard's 2019 federal complaint identifies `VPNetworks, LLC d/b/a TorGuard` as a Florida LLC with principal place of business in Orange County, Florida; it also says the sole member was Data Protection Services, whose sole member was Benjamin Van Pelt. Treat this as litigation-snapshot ownership evidence, not necessarily current ownership. |
+| OpenASN data source | `torguard_openvpn_tcp` and `torguard_openvpn_udp` use `https://torguard.net/downloads/OpenVPN-TCP-Linux.zip` and `https://torguard.net/downloads/OpenVPN-UDP-Linux.zip`, parser `ovpn_zip_remote_hosts`, provider `TorGuard`. |
+| Source quality / status | Implemented as opt-in `vpn_dns`. Public first-party OpenVPN archives fetch cleanly and contain provider-published `remote` hostnames. Parser extracts the hostnames and clients resolve them locally. |
+| Live smoke | On 2026-07-05, each archive contained 52 unique hostnames after parser de-duplication. This resolver returned 430 IPv4 ranges and 0 IPv6 ranges for TCP, and 430 IPv4 ranges and 0 IPv6 ranges for UDP; sample resolved IP `93.115.35.114`. |
+| Caveats | TorGuard legal pages are Cloudflare-challenged for bare curl but accessible via browser fetch; the config ZIPs fetched cleanly. TCP and UDP sources overlap heavily but are kept separate so protocol-specific omissions do not hide. DNS fanout is high: 52 hostnames yielded hundreds of A records from this resolver. |
+| Primary source URLs | `https://torguard.net/terms/`, `https://torguard.net/privacy/`, `https://torguard.net/dmca.php`, `https://torguard.net/downloads.php`, `https://torguard.net/downloads/OpenVPN-TCP-Linux.zip`, `https://torguard.net/downloads/OpenVPN-UDP-Linux.zip`, `https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchTerm=VPNETWORKS%2C%20LLC`, `https://torguard.net/downloads/1.6-26-2019-Complaint.pdf`, `https://apps.apple.com/fr/app/private-secure-vpn-torguard/id988743799?l=en-GB` |
+
+### FastestVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://fastestvpn.com/` |
+| Legal / privacy URLs | `https://fastestvpn.com/terms-of-service`, `https://fastestvpn.com/privacy-policy`, `https://support.fastestvpn.com/vpn-servers/` |
+| Legal entity shown by official pages | Not cleanly named on FastestVPN's own legal pages in this batch |
+| Address / identifier | FastestVPN's privacy policy says the service is based in the Cayman Islands, but the page text does not name a legal entity or registration number. Apple App Store trader disclosure for FastestVPN apps names `FASTEST TECHNOLOGY PTY LTD`, D-U-N-S `750554679`, address `43 CLAREMONT AVENUE, GREENACRE New South Wales 2190, Australia`, email `tech.support@fasttechnologylimited.com`, and copyright strings such as `Fast Technology Limited`. Google Play metadata for related FastestVPN/FastestPass apps uses `Fastest Technology LLC` and a Houston, Texas address. |
+| Registry / incorporation evidence | ASIC published a proposed deregistration notice for `FASTEST TECHNOLOGY PTY LTD`, ACN `658 034 336`, on `2024-12-10`; this notice explicitly says it does not itself prove deregistration. No Cayman company registry extract for `Fast Technology Limited` was obtained in this batch. Secondary reviews/affiliate pages claim Fast Technology Ltd / Cayman Islands and a 2016 launch/incorporation, but those remain secondary until registry-grade proof is captured. |
+| Who is behind it | Secondary VPN-review sources name Azneem Bilwani as founder/owner of Fast Technology Ltd. A USPTO FASTESTVPN trademark application record names Azneem Bilwani as applicant/owner for serial `98181332`, but that is trademark ownership evidence, not clean corporate ownership proof. OpenASN should not overstate this dossier beyond those facts. |
+| OpenASN data source | `fastestvpn_tcp` and `fastestvpn_udp` POST to `https://support.fastestvpn.com/wp-admin/admin-ajax.php` with `action=vpn_servers` and `protocol=tcp` or `protocol=udp`, parser `html_table_hostnames`, provider `FastestVPN`. |
+| Source quality / status | Implemented as opt-in `vpn_dns`. The first-party support page `https://support.fastestvpn.com/vpn-servers/` publishes a server/host-name table and uses the same WordPress AJAX endpoint. Parser reads hostnames from the returned HTML table; clients resolve locally. |
+| Live smoke | On 2026-07-05, TCP returned 68 hostnames resolving to 55 IPv4 ranges and 0 IPv6 ranges; sample `46.102.153.134`. UDP returned 68 hostnames resolving to 55 IPv4 ranges and 0 IPv6 ranges; sample `193.9.114.210`. |
+| Caveats | This is a good technical source but a weak corporate dossier. The legal operator is not clearly named on FastestVPN's own terms/privacy pages; app-store and review metadata point at several similarly named entities across Cayman Islands, Australia, and the United States. Keep the provider label as `FastestVPN`, keep the source opt-in, and do not make strong company/founder claims without a registry extract or official legal-page update. |
+| Primary source URLs | `https://fastestvpn.com/terms-of-service`, `https://fastestvpn.com/privacy-policy`, `https://support.fastestvpn.com/vpn-servers/`, `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, `https://apps.apple.com/dk/app/fastestvpn-secures-privacy/id1643144565?mt=12`, `https://play.google.com/store/apps/details?id=com.vpn.fastestvpnservice`, `https://publishednotices.asic.gov.au/browsesearch-notices/notice-details/FASTEST-TECHNOLOGY-PTY-LTD-658034336/6b27be62-7e93-4214-8030-03c4336123f0`, `https://uspto.report/TM/98181332` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 3: IPVanish, PrivateVPN, PureVPN, TorGuard, FastestVPN.
-2. Batch 4: VPNSecure, VPN Gate, VPNBook, Apple Private Relay, Mozilla VPN / Firefox VPN.
-3. Batch 5: ExpressVPN, CyberGhost, ZenMate, TunnelBear, Perfect Privacy.
-4. Batch 6+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 4: VPNSecure, VPN Gate, VPNBook, Apple Private Relay, Mozilla VPN / Firefox VPN.
+2. Batch 5: ExpressVPN, CyberGhost, ZenMate, TunnelBear, Perfect Privacy.
+3. Batch 6+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

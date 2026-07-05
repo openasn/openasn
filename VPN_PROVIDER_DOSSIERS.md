@@ -518,10 +518,97 @@ not inflate weak marketing/location data into exact VPN-exit classifications.
 | Caveats | This provider is likely entangled with Pango/AnchorFree infrastructure. Do not label Touch VPN by borrowing Hotspot Shield/Pango ranges unless a source can distinguish Touch-branded exits. App-store packages, Firebase installer URLs, and browser-extension links are product distribution endpoints, not exit inventories. |
 | Primary source URLs | `https://www.touchvpn.net/`, `https://www.touchvpn.net/privacy-policy.html`, `https://www.touchvpn.net/general-terms-and-conditions.html`, `https://www.touchvpn.net/legal-dmca.html`, `https://play.google.com/store/apps/details?id=com.northghost.touchvpn`, `https://apps.apple.com/us/app/touch-vpn-secure-hotspot-proxy/id991744383`, `https://www.pointwild.com/news/aura-splits-into-two-world-class-online-safety-companies/`, `https://www.pointwild.com/news/pango-group-merges-with-total-security-combined-company-rebranded-point-wild/` |
 
+## Batch 7 - Antivirus-Suite VPNs And White-Label Infrastructure
+
+This batch did not add OpenASN sources. That is still useful product data:
+antivirus-suite VPNs are large enough to matter, but many are white-label,
+account-gated, or app-only. OpenASN should document that boundary publicly
+instead of letting downstream users guess whether these brands were missed.
+
+### Bitdefender VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.bitdefender.com/en-us/consumer/vpn`, `https://www.bitdefender.com/consumer/support/answer/7126/` |
+| Legal / privacy URLs | `https://www.bitdefender.com/en-us/site/view/legal-privacy-policy-for-home-users-solutions`, `https://www.bitdefender.com/consumer/support/answer/116380/` |
+| Legal entity shown by official pages | BITDEFENDER S.R.L. |
+| Address / identifier | Bitdefender's home-user privacy policy lists BITDEFENDER S.R.L., 15A Sos. Orhideelor, Orhideea Towers Building, 10-12 floors, 6th District, Bucharest, Romania, Bucharest Trade Register number `J40/20427/2005`, fiscal code `RO18189442`, email `privacy@bitdefender.com`, and DPO contact `dpo@bitdefender.com`. |
+| Registry / incorporation evidence | Official legal pages verify the Romanian trade-register number and fiscal code. No direct Romanian registry extract was captured in this batch; do not treat the trade-register number alone as a complete incorporation record. |
+| Who is behind it | Bitdefender is a Romanian cybersecurity company. Official contest/legal material identifies Florin Talpes as CEO/legal representative of BITDEFENDER SRL. The VPN product is Bitdefender-branded, but infrastructure responsibility is split: Bitdefender's privacy policy says IPVanish is used as data processor for VPN service delivery. |
+| OpenASN data source | Not added as a separate provider. Existing `ipvanish_openvpn` may classify some shared infrastructure as `IPVanish`, but OpenASN has no exact source that maps individual exits to the Bitdefender brand. |
+| Source quality / status | Official FAQ publishes a country/city location list and explicitly says Bitdefender VPN does not support router installation and does not provide `.ovpn` / `.conf` files or authentication details for direct integration. Official privacy policy says VPN connection establishment uses user/device IDs, IP addresses, and tokens, with IPVanish processing data on Bitdefender's behalf. None of those pages publish exact exits. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official support/legal pages fetched successfully on 2026-07-05 and confirmed 110 country-level locations, city-level marketing locations, and the no-router/no-config-file limitation. |
+| Caveats | Do not relabel IPVanish ranges as Bitdefender. Bitdefender users may appear on IPVanish-operated infrastructure, but provider attribution requires an exact Bitdefender-specific mapping. A third-party review or commercial VPN database is not a substitute for first-party/legal-source evidence. |
+| Primary source URLs | `https://www.bitdefender.com/en-us/consumer/vpn`, `https://www.bitdefender.com/consumer/support/answer/7126/`, `https://www.bitdefender.com/en-us/site/view/legal-privacy-policy-for-home-users-solutions`, `https://www.bitdefender.com/consumer/support/answer/116380/`, `https://www.bitdefender.com/en-us/site/view/bitdefender-ambassador-contest-terms` |
+
+### Kaspersky VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.kaspersky.com/vpn-secure-connection`, `https://usa.kaspersky.com/vpn-secure-connection` |
+| Legal / privacy URLs | `https://www.kaspersky.com/products-and-services-privacy-policy`, `https://www.kaspersky.com/end-user-license-agreement`, `https://support.kaspersky.com/kpc/1.0/en-us/227551.htm`, `https://support.kaspersky.com/ksec-for-windows/5.24/127345` |
+| Legal entity shown by official pages | AO Kaspersky Lab |
+| Address / identifier | Kaspersky's products-and-services privacy policy lists AO Kaspersky Lab, bldg. 3, 39A Leningradskoe Shosse, Moscow, 125212, Russian Federation. It also lists Kaspersky Labs GmbH, Schlosslaende 26, 85049 Ingolstadt, Germany as EU data-protection representative. |
+| Registry / incorporation evidence | Official pages verify the current legal name and address. Kaspersky's own history material says the company was established on 1997-06-26; no Russian corporate-register extract was captured in this batch. |
+| Who is behind it | Official Kaspersky pages identify Eugene Kaspersky as founder and CEO. Kaspersky describes itself as a privately owned cybersecurity company. U.S. consumer-product availability is materially affected by the 2024 U.S. ban and transition to UltraAV/Pango for U.S. antivirus customers; that transition does not establish a VPN exit source. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official product pages advertise 6000+ servers in 120+ locations globally, or 2000+ servers in 100+ locations on the U.S. product page, and support pages document account-generated OpenVPN/WireGuard router configuration export from My Kaspersky. Those config files require a subscription/account flow and are generated per user/location, so they fail OpenASN's public-source/no-private-client-state rule. No public exact IP/CIDR/hostname feed was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official product/support pages fetched successfully on 2026-07-05 and confirmed router/third-party-client support is account-gated through My Kaspersky. |
+| Caveats | Kaspersky's router support is tempting, but it is not a public list. Do not script My Kaspersky login flows, reuse exported customer configs, or import forum screenshots. UltraAV/Pango migration evidence is relevant corporate/product context for U.S. customers, not Kaspersky VPN egress provenance. |
+| Primary source URLs | `https://www.kaspersky.com/vpn-secure-connection`, `https://usa.kaspersky.com/vpn-secure-connection`, `https://www.kaspersky.com/products-and-services-privacy-policy`, `https://www.kaspersky.com/end-user-license-agreement`, `https://support.kaspersky.com/kpc/1.0/en-us/227551.htm`, `https://support.kaspersky.com/ksec-for-windows/5.24/127345`, `https://www.kaspersky.com/about/team/eugene-kaspersky`, `https://esg.kaspersky.com/en/about-company/brief-history`, `https://www.pointwild.com/news/statement-on-kaspersky-u-s-customers-transition-to-ultraav/` |
+
+### ESET VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.eset.com/us/home/eset-vpn/` |
+| Legal / privacy URLs | `https://help.eset.com/evpn/1/en-US/eula.html`, `https://help.eset.com/home_eset/en-US/privacy_policy.html`, `https://help.eset.com/home_eset/en-US/terms_of_use.html`, `https://help.eset.com/evpn/1/en-US/router_download_config.html` |
+| Legal entity shown by official pages | ESET, spol. s r. o. |
+| Address / identifier | ESET VPN EULA identifies ESET, spol. s r. o., Einsteinova 24, 85101 Bratislava, Slovak Republic, Business Registration Number `31333532`. ESET HOME terms/privacy also list Commercial Register administration by the Bratislava court, Section Sro, Entry No `3586/B`. |
+| Registry / incorporation evidence | Official EULA, HOME terms, and privacy pages verify the Slovak legal entity, address, business registration number, and Commercial Register section/entry. A direct Slovak registry extract was not captured in this batch. |
+| Who is behind it | ESET is a Slovak cybersecurity company. This batch did not re-verify founder/shareholder history from official ESET pages; keep the dossier scoped to the current legal operator unless a primary company-history source is added later. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official product pages advertise 70+ countries and protocol options including WireGuard and OpenVPN. Official router documentation explains how a user downloads WireGuard or OpenVPN router configuration after logging into ESET HOME, selecting a subscription/profile, choosing protocol/location/port, and saving credentials. That is account-gated, not a public exact inventory. A product-page screenshot showing an example IP is illustrative UI, not source data. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official ESET VPN, EULA, HOME, and router-config pages fetched successfully on 2026-07-05 and confirmed the account-gated configuration path. |
+| Caveats | Do not use user-exported ESET router configs, screenshots, or third-party guesses. If ESET later publishes an unauthenticated server manifest or config archive, it may be a strong candidate because the OpenASN parser stack already supports WireGuard/OpenVPN-style host extraction elsewhere. |
+| Primary source URLs | `https://www.eset.com/us/home/eset-vpn/`, `https://help.eset.com/evpn/1/en-US/eula.html`, `https://help.eset.com/home_eset/en-US/privacy_policy.html`, `https://help.eset.com/home_eset/en-US/terms_of_use.html`, `https://help.eset.com/evpn/1/en-US/router_download_config.html`, `https://support.eset.com/en/kb8892-eset-vpn-for-router`, `https://help.eset.com/evpn/1/en-US/connection.html` |
+
+### F-Secure VPN / Freedome
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.f-secure.com/en/vpn` |
+| Legal / privacy URLs | `https://www.f-secure.com/en/legal/privacy/statement`, `https://www.f-secure.com/en/legal/privacy/total`, `https://www.f-secure.com/en/legal/terms/vpn`, `https://help.f-secure.com/product.html?home%2Ffreedome%2Flatest%2Fen%2Fid_55701-freedome-latest-en=` |
+| Legal entity shown by official pages | F-Secure Corporation |
+| Address / identifier | F-Secure privacy statement identifies F-Secure Corporation as a Finnish publicly listed corporation with Business ID `3269349-7`. Contact address: F-Secure Corporation, Tammasaarenkatu 7, PL 24, 00180 Helsinki, Finland. |
+| Registry / incorporation evidence | Official privacy statement verifies the current Finnish public-company identity and Business ID. No Finnish registry extract was captured in this batch. Historical Freedome/product-history details are separate from the current post-demerger F-Secure Corporation identity. |
+| Who is behind it | F-Secure Corporation operates the current consumer security suite. Its Total privacy notice says the service can include a VPN component, and the VPN privacy section distinguishes old VPN protocols from the new VPN feature. The same notice says the new VPN feature uses a third-party provider and links that provider to Pango's privacy policy. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official documentation publishes protocols/ports and product privacy details, not exits. F-Secure help says Android/macOS/Windows use OpenVPN on TCP/UDP ports 2700-2800 and TCP 443. The Total privacy notice says the old VPN version has OpenVPN and IPSec/IKEv2, while the new VPN version has Hydra, WireGuard, and IPSec, and that F-Secure engages Pango for the new VPN feature. Official/community support material says router-level OpenVPN configuration is not supported. No public exact IP/CIDR/hostname feed was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official legal/privacy/help pages fetched successfully on 2026-07-05 and confirmed protocol/port details plus Pango as third-party provider for the new VPN feature. |
+| Caveats | Pango involvement is infrastructure context, not attribution. Do not label Pango/Hotspot Shield/UltraVPN ranges as F-Secure without a brand-specific exact mapping. Old Freedome and new F-Secure VPN may have different backends, so any future source must say which product generation it covers. |
+| Primary source URLs | `https://www.f-secure.com/en/vpn`, `https://www.f-secure.com/en/legal/privacy/statement`, `https://www.f-secure.com/en/legal/privacy/total`, `https://www.f-secure.com/en/legal/terms/vpn`, `https://help.f-secure.com/product.html?home%2Ffreedome%2Flatest%2Fen%2Fid_55701-freedome-latest-en=`, `https://community.f-secure.com/en/discussion/129278/does-f-secure-vpn-server-support-by-example-openvpn-client-on-my-asus-router`, `https://www.pango.co/legal/privacy-policy` |
+
+### Avast SecureLine VPN / AVG Secure VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.avast.com/en-us/secureline-vpn`, `https://www.avg.com/en-us/avg-secure-vpn` |
+| Legal / privacy URLs | `https://www.avast.com/en-us/vpn-policy`, `https://www.avg.com/en-us/vpn-policy`, `https://www.avast.com/ko-kr/eula-avast-secureline-vpn-standalone`, `https://www.avg.com/en-us/eula`, `https://www.avast.com/en-us/consent-policy`, `https://www.avg.com/en-us/secure-vpn-acceptable-use` |
+| Legal entity shown by official pages | Avast Software s.r.o. for the SecureLine standalone EULA and EMEA AVG vendor; Gen Digital Inc. for North/Central/South America AVG EULA vendor. |
+| Address / identifier | Avast SecureLine standalone EULA identifies Avast Software s.r.o., registered in the Commercial Register maintained by the Municipal Court in Prague, Section C, Insert No. `216540`, Identification No. `021 764 75`. Avast/AVG consent and EULA pages list Avast Software s.r.o., Pikrtova 1737/1a, Nusle / Prague 4, 140 00 Praha 4, Czech Republic. AVG EULA lists Gen Digital Inc., 60 E. Rio Salado Parkway, Suite 1000, Tempe, AZ 85281, USA for the Americas. |
+| Registry / incorporation evidence | Official EULA pages verify the Czech registration identifiers and regional vendor mapping. No Czech or U.S. registry extract was captured in this batch. |
+| Who is behind it | Avast and AVG are Gen Digital brands. Avast's about page says Avast is part of Gen; AVG and Avast VPN policies use the same Gen/Avast legal stack and very similar VPN-policy language. AVG was acquired by Avast in 2016, and both now sit under Gen Digital. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official support pages publish app-level server-location workflows, OpenVPN/WireGuard/Mimic/IPsec protocol choices, IP Rotation, Double VPN, and product behavior. Avast and AVG VPN policies say they process selected/assigned VPN location, VPN protocol, and VPN server IP as server/network metadata, but they do not publish the actual server inventory. Community support says Avast/AVG SecureLine/Secure VPN do not officially support router configuration and do not expose a public `.ovpn` list like HMA. No exact public IP/CIDR/hostname feed was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official Avast and AVG VPN policy pages fetched successfully on 2026-07-05; Avast policy was last updated 2026-05-07, AVG policy 2026-01-10. Official Avast support showed app-only location selection and protocol options but no exact exits. |
+| Caveats | Avast and AVG likely share infrastructure, but OpenASN needs exact source evidence before adding either label. Avoid Netify/commercial IP pages and user-extracted client credentials: they are aggregator/private-client data and fail the repo's legal/source rules. HMA is a sibling Gen/Avast VPN brand, but its historical OpenVPN source issues should not be copied onto Avast/AVG without a clean current source. |
+| Primary source URLs | `https://www.avast.com/en-us/secureline-vpn`, `https://support.avast.com/en-us/article/secureline-vpn-faq/`, `https://www.avast.com/en-us/vpn-policy`, `https://www.avg.com/en-us/avg-secure-vpn`, `https://www.avg.com/en-us/vpn-policy`, `https://www.avast.com/ko-kr/eula-avast-secureline-vpn-standalone`, `https://www.avg.com/en-us/eula`, `https://www.avast.com/en-us/consent-policy`, `https://www.avg.com/en-us/secure-vpn-acceptable-use`, `https://community.avast.com/t/setting-avast-secureline-in-my-router/755208`, `https://community.avg.com/t/avg-secure-vpn-is-there-a-way-to-get-a-ovpn-file-for-router/277263`, `https://newsroom.gendigital.com/2016-07-07-avast-announces-agreement-to-acquire-avg-for-1-3b` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 7: Bitdefender VPN, Kaspersky VPN, ESET VPN, F-Secure VPN / Freedome, Avast SecureLine / AVG VPN.
-2. Batch 8: Betternet, VPN 360, UltraVPN, Norton Secure VPN, McAfee VPN.
-3. Batch 9+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 8: Betternet, VPN 360, UltraVPN, Norton Secure VPN, McAfee VPN.
+2. Batch 9: Urban VPN, Hola VPN, Bright VPN, Mysterium VPN, Planet VPN.
+3. Batch 10+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

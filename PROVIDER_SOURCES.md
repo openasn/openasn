@@ -129,11 +129,11 @@ End-to-end sample classifications from the live run:
 | Brave VPN | Not added. | Brave Firewall + VPN is powered by Guardian. Guardian exposes a public country/city region endpoint with server counts, but no IPs/CIDRs/hostnames; connection APIs are credentialed. No OpenASN-compatible exact source verified. |
 | Hotspot Shield | Not added. | Anchorfree/Pango/Point Wild family. Official legal pages identify operators and server-location marketing, but no public exact egress inventory. Gluetun has no Hotspot Shield provider because it also requires a public server/config source. |
 | Touch VPN | Not added. | VPN Proxy Pro, LLC / TouchVPN LLC within the Pango/Point Wild family. Official pages and stores publish server counts/locations only, not exact IPs, CIDRs, or hostnames. |
-| Bitdefender VPN | Not added. | Evidence points to Hotspot Shield/Pango infrastructure, but no exact first-party egress source. |
-| Kaspersky VPN | Not added. | Product/support pages only; no exact egress source verified. |
-| ESET VPN | Not added. | Product/support pages only; no exact egress source verified. |
-| F-Secure VPN / Freedome | Not added. | Product pages only; no exact egress source verified. |
-| Avast SecureLine / AVG VPN | Not added. | Product pages only; no exact egress source verified. |
+| Bitdefender VPN | Not added. | Official privacy/support pages say IPVanish processes VPN delivery and Bitdefender does not provide router configs, `.ovpn`, `.conf`, or direct-auth details. Existing `ipvanish_openvpn` may catch shared infrastructure, but there is no exact Bitdefender-branded egress map. |
+| Kaspersky VPN | Not added. | Product pages publish server/location counts and support pages document account-generated OpenVPN/WireGuard router configs through My Kaspersky. Those configs are authenticated/customer-specific, so no public exact egress source was accepted. |
+| ESET VPN | Not added. | Product pages publish country/protocol claims and router docs require ESET HOME login before downloading WireGuard/OpenVPN configs. No unauthenticated exact IP/CIDR/hostname inventory was verified. |
+| F-Secure VPN / Freedome | Not added. | Official privacy docs say the new VPN feature uses Pango as a third-party provider and help pages publish protocols/ports, but support material does not expose router configs or exact exits. No brand-specific exact source was verified. |
+| Avast SecureLine / AVG VPN | Not added. | Official VPN policies say the apps process selected/assigned location, protocol, and server IP as internal metadata, but Avast/AVG do not publish the inventory and community support says router/OpenVPN config files are not officially supported. |
 | Norton Secure VPN | Not added. | Product pages only; no exact egress source verified. |
 | McAfee VPN | Not added. | Product pages only; no exact egress source verified. |
 | Urban VPN | Not added. | Peer/residential-style network. No public exact exit list; semantics may be residential peers, not provider-operated VPN exits. |

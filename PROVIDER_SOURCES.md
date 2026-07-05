@@ -121,11 +121,11 @@ End-to-end sample classifications from the live run:
 
 | Provider/service | Status | Why not added yet |
 |---|---|---|
-| ExpressVPN | Open candidate. | Public pages list locations and virtual locations, not exact IPs. Gluetun carries hardcoded hostnames, but that is not a first-party source catalog. Owned by Kape. |
-| CyberGhost | Open candidate. | Public docs list locations/virtual locations. Gluetun derives possible `cg-dialup.net` hostnames from patterns and country codes; this is generated DNS probing, not a provider-published exact list. Owned by Kape. |
-| ZenMate | Open candidate through Kape/CyberGhost family. | No independent exact first-party list found. |
-| Perfect Privacy | Promising but blocked. | Public docs/Gluetun indicate an exact OpenVPN ZIP/API path under `www.perfect-privacy.com`, but live DNS/connection timed out repeatedly from this environment. Not shipped without smoke. |
-| hide.me | Not added. | Network page and Linux client were checked; no unauthenticated exact-IP endpoint verified. |
+| ExpressVPN | Re-audited, not added. | Official manual OpenVPN pages send users to the authenticated ExpressVPN setup page to download per-location `.ovpn` files. The public Linux setup page exposes no `expressnetw.com` catalog, and Gluetun's hardcoded hostnames remain a third-party inventory rather than provider-published source data. |
+| CyberGhost | Re-audited, not added. | Official support pages require users to log in, choose OpenVPN type/location/server type, then download an account-generated ZIP. Public examples and Gluetun's generated `cg-dialup.net` patterns are not an exact provider-published catalog. Owned by Kape. |
+| ZenMate | Re-audited, not added separately. | Current ZenMate pages and migration notice route paid VPN service through CyberGhost apps. No independent exact source was found, and CyberGhost cannot distinguish ZenMate users beyond aggregate app-auth counts. |
+| Perfect Privacy | Promising but still blocked. | Gluetun indicates a first-party OpenVPN ZIP path under `www.perfect-privacy.com`, but official home/legal/ZIP URLs timed out from this environment again on 2026-07-05. Not shipped without a fetched body, parser output, and legal/source smoke. |
+| hide.me | Re-audited, not added. | Official network page lists locations/self-managed claims only. Official OpenVPN docs place config ZIPs behind `member.hide.me` Premium/member login, and unauthenticated `member.hide.me/en/server-status` redirects to login. No public exact IP/CIDR/hostname source verified. |
 | OVPN.com | Not added. | No public exact-IP endpoint verified. |
 | HMA / HideMyAss | Not added. | Gluetun points at `https://vpn.hidemyass.com/vpn-config/...`, but `vpn.hidemyass.com` did not resolve here. |
 | VyprVPN | Not added. | Current and old support attachment URLs returned 404. |

@@ -1303,9 +1303,93 @@ no clean first-party exact IP/CIDR/hostname source.
 | Caveats | Do not map Radmin VPN users as `vpn` exits. A Radmin client IP is normally the user's own network endpoint inside a private virtual LAN, not a Famatech public egress address. If Famatech later ships a separate public egress product, it needs a separate source and semantics. |
 | Primary source URLs | `https://www.radmin-vpn.com/`, `https://www.radmin-vpn.com/about/`, `https://www.radmin-vpn.com/security/`, `https://www.radmin-vpn.com/privacy/`, `https://www.radmin.com/contact/`, `https://www.radmin.com/privacy/`, `https://lei.bloomberg.com/leis/view/529900U3HJPNC34CLE87` |
 
+## Batch 16 - Kape Re-Audit, Perfect Privacy Retry, hide.me
+
+This batch deliberately re-checks several high-value misses instead of adding
+weak data. ExpressVPN, CyberGhost, ZenMate, and Perfect Privacy already have
+Batch 5 dossiers; the rows below record the deeper 2026-07-05 re-audit and the
+current no-ship reason. hide.me receives a full first dossier here.
+
+### ExpressVPN re-audit
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.expressvpn.com/` |
+| Legal / privacy URLs | `https://www.expressvpn.com/tos`, `https://www.expressvpn.com/privacy-policy`, `https://www.expressvpn.com/about-us`, `https://www.expressvpn.com/blog/expressvpn-officially-joins-kape/` |
+| Legal entity shown by official pages | Express Technologies Ltd. Current terms, last updated 2026-06-29, define the services as offered by Express Technologies Ltd. |
+| Re-audit URLs | `https://www.expressvpn.com/support/vpn-setup/manual-config-for-linux-with-openvpn/`, `https://www.expressvpn.com/support/vpn-setup/manual-config-asustor-openvpn/`, `https://www.expressvpn.com/support/vpn-setup/manual-config-for-windows-with-openvpn/`, `https://www.expressvpn.com/support/vpn-setup/?srsltid=AfmBOorK-KlahjxnFaVEbfv5OZOHBozfQ98FwO06Nw7tqkljUwXKDyQk` |
+| What changed in this pass | Official support pages now clearly document the account-gated shape: a user must go to the ExpressVPN setup page, sign in, pass email verification, then download individual `.ovpn` files from the authenticated list. The Linux guide also says not all ExpressVPN locations are available for manual configuration. |
+| Source probes | A direct scan of the public Linux setup page found only ordinary site/support domains (`www.expressvpn.com`, `support.expressvpn.com`, `go.expressvpn.com`) and no `expressnetw.com` server catalog. Existing Gluetun `expressnetw.com` hostnames still resolve in samples, but they remain third-party hardcoded data. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Current status | High-value miss, but still source-blocked. The public site proves manual configs exist; it does not publish the config catalog without account state. |
+| Caveats | Do not add inferred `expressnetw.com` patterns or Gluetun hardcoded hostnames. They are operationally tempting but fail both provenance and maintainability: a stale hardcoded list would silently become false positives. |
+| Primary source URLs | `https://www.expressvpn.com/tos`, `https://www.expressvpn.com/privacy-policy`, `https://www.expressvpn.com/support/vpn-setup/manual-config-for-linux-with-openvpn/`, `https://www.expressvpn.com/support/vpn-setup/manual-config-asustor-openvpn/`, `https://www.expressvpn.com/support/vpn-setup/manual-config-for-windows-with-openvpn/`, `https://github.com/qdm12/gluetun/blob/master/internal/provider/expressvpn/updater/hardcoded.go` |
+
+### CyberGhost re-audit
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.cyberghostvpn.com/` |
+| Legal / privacy URLs | `https://www.cyberghostvpn.com/imprint`, `https://www.cyberghostvpn.com/privacypolicy`, `https://www.cyberghostvpn.com/terms`, `https://www.cyberghostvpn.com/features/nospy` |
+| Legal entity shown by official pages | CyberGhost S.R.L. |
+| Address / identifier | Official imprint lists CyberGhost S.R.L., 70-72 Dionisie Lupu street, 1st, 2nd and 3rd floor, District 1, 010458, Bucharest, Romania; email `office@cyberghost.ro`; Trade Register No. `J40/1278/2011`; VAT `RO28003392`; EUID `ROONRC.J40/1278/2011`. The privacy policy says the services are owned and operated by CyberGhost S.R.L. and gives registration number `J40/1278/2011`. |
+| Re-audit URLs | `https://support.cyberghostvpn.com/hc/en-us/articles/213190009-How-to-Set-Up-OpenVPN-on-Linux-Debian-via-Terminal`, `https://support.cyberghostvpn.com/hc/en-us/articles/360012606699-How-to-Use-CyberGhost-VPN-on-Synology-NAS-via-OpenVPN`, `https://support.cyberghostvpn.com/hc/en-us/articles/213269809-Router-How-to-Set-Up-OpenVPN-on-TomatoUSB-Merlin-Build` |
+| What changed in this pass | Official support pages confirm that manual OpenVPN configs are generated inside the CyberGhost account. The user logs in, chooses OpenVPN type, country/region, and server type, saves a configuration, then downloads a ZIP containing certificates and `openvpn.ovpn`. One current Linux article explicitly lists server-type choices that can include Premium, Standard, ZenMate Premium, or Gaming. |
+| Source probes | Public support pages were scanned for real `*.cg-dialup.net` inventories; current HTML did not expose a usable catalog. Search snippets and older examples show illustrative `12345-1-ca.cg-dialup.net`-style server group addresses, and Gluetun derives hostnames from group/country patterns, but pattern generation is not a first-party exact list. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Current status | High-value miss, still source-blocked. The correct future source would be a public CyberGhost server API/config archive, not enumeration of generated names. |
+| Caveats | CyberGhost and ZenMate are entangled at the product layer, but OpenASN must not create a `ZenMate` or `CyberGhost` source by guessing from `cg-dialup.net` DNS behavior. The manual config workflow is account-generated and may vary by subscription, protocol, and selected server type. |
+| Primary source URLs | `https://www.cyberghostvpn.com/imprint`, `https://www.cyberghostvpn.com/privacypolicy`, `https://support.cyberghostvpn.com/hc/en-us/articles/213190009-How-to-Set-Up-OpenVPN-on-Linux-Debian-via-Terminal`, `https://support.cyberghostvpn.com/hc/en-us/articles/360012606699-How-to-Use-CyberGhost-VPN-on-Synology-NAS-via-OpenVPN`, `https://github.com/qdm12/gluetun/blob/master/internal/provider/cyberghost/updater/hosttoserver.go` |
+
+### ZenMate re-audit
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://zenmate.com/` |
+| Legal / privacy URLs | `https://zenmate.com/tos`, `https://zenmate.com/privacy-policy`, `https://zenmate.com/blog/zenmate-changes` |
+| Legal entity shown by official pages | ZenGuard GmbH / ZenMate service under CyberGhost partnership, per current ZenMate legal and migration pages. |
+| Re-audit URLs | `https://zenmate.com/`, `https://zenmate.com/blog/zenmate-changes`, `https://zenmate.com/anonymous-vpn`, `https://zenmate.com/products/vpn-for-windows` |
+| What changed in this pass | Current ZenMate pages still contain historical/product pages for browser, mobile, desktop, OpenVPN, and Linux, and they market server locations. The authoritative migration notice remains stronger: from 2023-03-16 VPN service for subscribers moved to CyberGhost VPN apps, ZenMate apps were supported only until 2023-05-01, and new ZenMate accounts/subscriptions stopped from 2023-03-16. |
+| Source probes | No independent ZenMate exact IP, CIDR, hostname, public config ZIP, or app-server-list source was found. The migration FAQ says CyberGhost receives ZenMate credentials through an API and sees only the total number of ZenMate users using its apps, so even CyberGhost's backend relationship does not give OpenASN a brand-distinguishable egress map. |
+| OpenASN data source | Not added separately. Potential paid ZenMate traffic is a CyberGhost-family product flow, but OpenASN has no exact way to distinguish it at IP level. |
+| Current status | Not a separate source candidate unless ZenMate publishes a distinct public inventory or CyberGhost publishes brand-tagged exits. |
+| Caveats | Do not create a `ZenMate` provider label from CyberGhost examples. That would overstate attribution precision and make downstream decisions worse. |
+| Primary source URLs | `https://zenmate.com/`, `https://zenmate.com/blog/zenmate-changes`, `https://zenmate.com/tos`, `https://zenmate.com/privacy-policy`, `https://www.prnewswire.com/news-releases/zenmate-acquired-by-kape-technologies-300731900.html` |
+
+### Perfect Privacy retry
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.perfect-privacy.com/` |
+| Legal / privacy URLs | `https://www.perfect-privacy.com/en/terms`, `https://www.perfect-privacy.com/en/privacy-policy` |
+| Candidate data URL | `https://www.perfect-privacy.com/downloads/openvpn/get?system=linux&scope=server&filetype=zip&protocol=udp`; TCP variant uses `protocol=tcp`. |
+| Legal entity shown by official pages | Still not verified from live official pages in this environment. |
+| Re-audit result | Ruby `Net::HTTP`, `curl`, and `dig` probes all failed/timed out from this environment for `www.perfect-privacy.com` on 2026-07-05. No home page, legal page, ZIP body, parser output, or resolver smoke was obtained. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Current status | Best technical candidate in this batch, but still blocked by fetch reliability. If the ZIP fetches from another network, it should be tested with the existing `ovpn_zip_remote_hosts` parser, then smoke-resolved locally before adding as opt-in `vpn_dns`. |
+| Caveats | Do not ship Gluetun-derived Perfect Privacy source definitions until the first-party URL is fetched successfully. A manifest entry that cannot be smoked would become CI noise and a false sense of coverage. |
+| Primary source URLs | `https://www.perfect-privacy.com/`, `https://www.perfect-privacy.com/en/terms`, `https://www.perfect-privacy.com/en/privacy-policy`, `https://www.perfect-privacy.com/downloads/openvpn/get?system=linux&scope=server&filetype=zip&protocol=udp`, `https://github.com/qdm12/gluetun/tree/master/internal/provider/perfectprivacy` |
+
+### hide.me
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://hide.me/`, `https://hide.me/en/` |
+| Legal / privacy URLs | `https://hide.me/en/legal`, `https://hide.me/en/privacy`, `https://hide.me/en/about`, `https://hide.me/en/offshore-vpn`, `https://hide.me/en/network` |
+| Legal entity shown by official pages | eVenture Ltd. The privacy policy says eVenture Ltd. operates the hide.me VPN service; the terms say the service is operated by eVenture Ltd. App-store disclosures render the name as `EVENTURE LTD.` / `EVENTURE LIMITED`. |
+| Address / identifier | Apple App Store trader disclosure lists `EVENTURE LTD.`, D-U-N-S `534305302`, Level 2 Lot 19 Lazenda Commercial Centre Phase 3, 87007 Labuan, Malaysia, phone `+60 1546000451`, email `support@hide.me`. Google Play developer disclosure lists `EVENTURE LIMITED`, Unit 12F (1), Main Office Tower Financial Park Labuan, Jalan Merdeka, 87007 Labuan, Malaysia, same support email and phone. |
+| Registry / incorporation evidence | Official/app-store pages verify legal name, Malaysia/Labuan addresses, D-U-N-S, and contact data. A Malaysia/Labuan registry extract, incorporation date, and company number were not captured in this batch. The official About page says hide.me was built in 2012; treat that as service founding, not legal-entity incorporation. |
+| Who is behind it | Official pages do not name individual founders in the pages checked. Secondary press/profile material attributes the 2012 founding to Sebastian Schaub; this remains secondary context until a primary company page or registry filing is added. |
+| Claimed network | Official network page says hide.me runs a self-managed VPN network without third-party involvement, supports WireGuard, OpenVPN, IKEv2 IPsec, SoftEther, and SSTP, and lists 91 VPN locations on 6 continents. The offshore-VPN page says hide.me is a product of eVenture Ltd., a Malaysian IT security company headquartered in Labuan. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official network pages expose location names and marketing text, not exact IPs/CIDRs/hostnames. Official OpenVPN docs say third-party/router `.ovpn` files require a Premium plan and are downloaded from the Members/Servers area. Unauthenticated `https://member.hide.me/en/server-status` redirects to `/en/user/login`. A direct scan of the public network page found only `www.hide.me` and `community.hide.me`, not server hostnames. |
+| Live smoke | No parser smoke because no public exact source was found. Public home/about/network/legal/privacy/setup pages fetched successfully on 2026-07-05. `member.hide.me/en/server-status` returned HTTP 302 to login and then a login page. |
+| Caveats | `nl.hide.me` appears in setup docs as an example remote address, not as a complete server inventory. Do not derive country hostnames from examples, scrape authenticated members pages, or import user-exported config files. If hide.me publishes a public server API or config bundle later, it could be a good opt-in `vpn_dns` candidate because the existing parser stack already supports OpenVPN remotes. |
+| Primary source URLs | `https://hide.me/en/legal`, `https://hide.me/en/privacy`, `https://hide.me/en/about`, `https://hide.me/en/offshore-vpn`, `https://hide.me/en/network`, `https://hide.me/en/knowledgebase/where-can-i-download-openvpn-configuration-files/`, `https://hide.me/en/vpnsetup/openwrt-legacy/openvpn/`, `https://member.hide.me/en/server-status`, `https://apps.apple.com/ee/app/hide-me-vpn/id953040671`, `https://play.google.com/store/apps/details?id=hideme.android.vpn`, `https://www.forbes.com/sites/alisoncoleman/2019/07/19/the-privacy-entrepreneur-keeping-10-million-people-safe-online/`, `https://medium.com/authority-magazine/sebastian-schaub-of-hideme-vpn-five-things-you-need-to-create-a-highly-successful-startup-45d7f5ea84fd` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 16: ExpressVPN, CyberGhost, ZenMate, Perfect Privacy, hide.me.
-2. Batch 17+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 17: OVPN.com, HMA / HideMyAss, VyprVPN, Giganews VPN, VPN Unlimited / KeepSolid.
+2. Batch 18+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

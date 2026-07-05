@@ -121,14 +121,14 @@ End-to-end sample classifications from the live run:
 | VPN Unlimited / KeepSolid | Not added. | Gluetun notes hardcoded data from a user-provided ZIP behind a login wall. Not a redistributable or unauthenticated source. |
 | SlickVPN | Not added. | Gluetun hardcodes hostnames because the public listing degraded. Hardcoded third-party inventory is not a source. |
 | CalyxVPN | Not added in this pass. | LEAP-shaped endpoint `https://api.calyx.net/3/config/eip-service.json` timed out from this environment. Retry later; parser already supports LEAP EIP JSON. |
-| Cloudflare WARP / 1.1.1.1 | Not added as VPN. | Cloudflare publishes global IP ranges, already held as context-only `cloudflare_ranges`. No WARP-specific exact egress list found. |
+| Cloudflare WARP / 1.1.1.1 | Context-only, not `vpn`. | Cloudflare publishes global proxy IP ranges, already held as context-only `cloudflare_ranges`. Cloudflare One docs explicitly say Cloudflare One Client/WARP egress ranges are not published and are not the same as the public Cloudflare IP Ranges page. |
 | Apple "VPN" / Private Relay | Covered as `relay`. | Same source as above; semantics are not `vpn`. |
 | Google One VPN | Not added. | Product has been discontinued; no current exact public egress source. |
 | Firefox built-in/free VPN | Not added separately. | Paid Mozilla VPN is Mullvad-backed. Newer built-in/browser-only Firefox VPN does not have a verified separate exact egress source in this pass. |
-| Opera VPN | Not added. | Browser VPN/proxy product; no public exact egress list verified. |
-| Brave VPN | Not added. | Product page only; no public exact egress list verified. |
-| Hotspot Shield | Not added. | Pango/Aura family; no public exact egress list verified. |
-| Touch VPN | Not added. | Touch VPN legal/App Store references point into the Pango/Aura family; no public exact egress list verified. |
+| Opera VPN | Not added. | Opera Norway AS operates the free browser VPN on Opera infrastructure; VPN Pro is provided in collaboration with Nord. Public pages and audit posts do not publish exact exit IPs/CIDRs. Reverse-engineered SurfEasy/Opera proxy flows require app-style registration/client keys, and public `opera-proxy.net` hostnames did not resolve here. |
+| Brave VPN | Not added. | Brave Firewall + VPN is powered by Guardian. Guardian exposes a public country/city region endpoint with server counts, but no IPs/CIDRs/hostnames; connection APIs are credentialed. No OpenASN-compatible exact source verified. |
+| Hotspot Shield | Not added. | Anchorfree/Pango/Point Wild family. Official legal pages identify operators and server-location marketing, but no public exact egress inventory. Gluetun has no Hotspot Shield provider because it also requires a public server/config source. |
+| Touch VPN | Not added. | VPN Proxy Pro, LLC / TouchVPN LLC within the Pango/Point Wild family. Official pages and stores publish server counts/locations only, not exact IPs, CIDRs, or hostnames. |
 | Bitdefender VPN | Not added. | Evidence points to Hotspot Shield/Pango infrastructure, but no exact first-party egress source. |
 | Kaspersky VPN | Not added. | Product/support pages only; no exact egress source verified. |
 | ESET VPN | Not added. | Product/support pages only; no exact egress source verified. |

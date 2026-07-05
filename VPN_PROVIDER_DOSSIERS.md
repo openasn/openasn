@@ -431,10 +431,97 @@ Ground rules:
 | Caveats | This should be retried from another network/resolver before being abandoned. If the ZIP fetches, verify license/legal identity and run the parser/resolver smoke before adding. Do not add Gluetun-derived Perfect Privacy data without a successful first-party fetch. |
 | Primary source URLs | `https://www.perfect-privacy.com/`, `https://www.perfect-privacy.com/en/terms`, `https://www.perfect-privacy.com/en/privacy-policy`, `https://www.perfect-privacy.com/downloads/openvpn/get?system=linux&scope=server&filetype=zip&protocol=udp`, `https://github.com/qdm12/gluetun/tree/master/internal/provider/perfectprivacy` |
 
+## Batch 6 - Browser VPNs, Cloudflare WARP, And Pango/Guardian Brands
+
+This batch is intentionally published even though it did not add new OpenASN
+data. Negative provenance matters: downstream developers should be able to see
+that major brands were checked, what evidence was found, and why OpenASN did
+not inflate weak marketing/location data into exact VPN-exit classifications.
+
+### Opera VPN / Opera VPN Pro
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.opera.com/features/free-vpn`, `https://www.opera.com/features/vpn-pro` |
+| Legal / privacy URLs | `https://legal.opera.com/privacy/`, `https://blogs.opera.com/security/2024/09/opera-free-browser-vpn-no-log-audit-deloitte/` |
+| Legal entity shown by official pages | Opera Norway AS |
+| Address / identifier | Opera's privacy statement identifies Opera Norway AS as part of the Opera Group and gives postal contact as Opera Norway AS, P.O. Box 4214, Nydalen 0401, Oslo, Norway. Footer copyright on the privacy page says Opera Norway. |
+| Registry / incorporation evidence | Official pages verify the current Norwegian operator and address. Registry-grade Norwegian organization number/incorporation date was not pulled in this batch. Treat older Opera Software ASA / Opera Software AS history separately from current Opera Norway AS legal-page evidence. |
+| Who is behind it | Opera develops and publishes the Opera browsers. Opera says the free browser VPN is built into Opera for desktop and mobile. Opera's 2024 no-log audit post says the free browser VPN uses Opera's own server infrastructure, while VPN Pro servers are provided in collaboration with Nord. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Public Opera pages publish product claims, no-log audit evidence, and server-count/location marketing, but no exact IP, CIDR, or unauthenticated server-hostname inventory. The historical SurfEasy/Opera proxy reverse-engineering path uses app-like subscriber/device registration and client keys, which fails OpenASN's no-impersonation/no-private-client-state rule. |
+| Live smoke | On 2026-07-05, `de.opera-proxy.net`, `us.opera-proxy.net`, `ca.opera-proxy.net`, and numbered variants `de0`, `us0`, `ca0` under `opera-proxy.net` did not resolve from this environment. That does not prove Opera has no exits; it proves those reverse-engineered hostnames are not a usable public source. |
+| Caveats | Opera VPN Pro may overlap Nord infrastructure at the network layer, but OpenASN should not label Nord IPs as Opera unless Opera or Nord publishes a source that distinguishes Opera-branded egress. The free browser VPN may be a browser proxy rather than a full device VPN in some product modes; OpenASN only cares about exact observed egress IPs, and none were published. |
+| Primary source URLs | `https://www.opera.com/features/free-vpn`, `https://www.opera.com/features/vpn-pro`, `https://legal.opera.com/privacy/`, `https://blogs.opera.com/security/2024/09/opera-free-browser-vpn-no-log-audit-deloitte/`, `https://github.com/spaze/oprah-proxy`, `https://www.michalspacek.com/opera-browsers-vpn-is-just-a-proxy` |
+
+### Brave Firewall + VPN / Guardian Firewall
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://brave.com/firewall-vpn/`, `https://guardianapp.com/`, `https://guardianapp.com/company/partners/brave/` |
+| Legal / privacy URLs | `https://brave.com/terms-of-use/`, `https://brave.com/privacy/browser/`, `https://guardianapp.com/privacy-policy/`, `https://guardianapp.com/newsroom/dnsfilter-acquistion-release/` |
+| Legal entity shown by official pages | Brave Software, Inc. for Brave services; Guardian Firewall is part of DNSFilter, Inc. |
+| Address / identifier | Brave's terms and footer list Brave, Inc. / Brave Software, Inc. at 580 Howard St. Unit 402, San Francisco, CA 94105. Guardian's privacy policy says Guardian Firewall is part of DNSFilter, Inc. and operates under its own privacy policy, infrastructure, and separate data-retention systems. |
+| Registry / incorporation evidence | Official Brave pages verify the San Francisco address and current service terms. Brave says the company dates from 2015 in its footer/copyright and public materials, but no California/Delaware registry extract was captured here. Guardian official launch material says Guardian Firewall's public release happened in 2019; DNSFilter announced the Guardian acquisition on 2022-08-10. |
+| Who is behind it | Brave was founded by Brendan Eich and Brian Bondy. Guardian launch material identifies co-founders Will Strafach and Joshua Hill. Guardian was acquired by DNSFilter in 2022 and remains the backend technology partner called out in Brave's VPN materials. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Brave and Guardian public pages establish the relationship, but not exit addresses. A public Guardian endpoint, `https://connect-api.guardianapp.com/api/v1.3/servers/all-server-regions/city-by-country`, returned country/city metadata and server counts on 2026-07-05, but no IPs, CIDRs, or provider hostnames. Public Brave issues reference Guardian connection/credential APIs and server-status endpoints; those are product control-plane APIs, not redistributable OpenASN data. |
+| Live smoke | On 2026-07-05, the Guardian regions endpoint returned HTTP 200 with 41 country rows, 57 city rows, and `server-count` totals summing to 615. Observed keys were location/region fields plus count/status fields; there were no exact egress addresses. The documented `/api/v1.3/server-status` candidate returned 404 without the app flow. |
+| Caveats | This is high-value future coverage because Brave is mainstream and Guardian appears to expose structured control-plane data. Do not infer IPs from city names or server counts. Revisit if Guardian publishes a public exit list, a config archive, or an endpoint that returns exact egress hostnames/IPs without credentials or client impersonation. |
+| Primary source URLs | `https://brave.com/firewall-vpn/`, `https://support.brave.com/hc/en-us/articles/4410838268429-How-do-I-use-the-Built-in-VPN-Firewall-Android`, `https://brave.com/blog/brave-and-guardian/`, `https://brave.com/blog/android-vpn/`, `https://brave.com/blog/desktop-vpn/`, `https://brave.com/terms-of-use/`, `https://brave.com/about/`, `https://guardianapp.com/privacy-policy/`, `https://guardianapp.com/newsroom/launch-press-release/`, `https://guardianapp.com/newsroom/dnsfilter-acquistion-release/`, `https://connect-api.guardianapp.com/api/v1.3/servers/all-server-regions/city-by-country`, `https://github.com/brave/brave-browser/issues/36277`, `https://github.com/brave/brave-browser/issues/55678` |
+
+### Cloudflare WARP / 1.1.1.1
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://1.1.1.1/`, `https://developers.cloudflare.com/1.1.1.1/`, `https://developers.cloudflare.com/warp-client/` |
+| Legal / privacy URLs | `https://www.cloudflare.com/privacypolicy/`, `https://www.cloudflare.com/website-terms/`, `https://developers.cloudflare.com/1.1.1.1/privacy/`, `https://www.cloudflare.com/ips/` |
+| Legal entity shown by official pages | Cloudflare, Inc. |
+| Address / identifier | Cloudflare privacy and terms pages list Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA. Cloudflare's about page also lists 101 Townsend St as the San Francisco headquarters. |
+| Registry / incorporation evidence | Official pages verify the current legal entity and headquarters. No Delaware/SEC incorporation extract was added in this batch. Cloudflare is a public company, but that corporate history is not needed for the OpenASN source decision. |
+| Who is behind it | Cloudflare operates the 1.1.1.1 resolver, WARP client, and Cloudflare One/Gateway products. These services can create egress traffic from Cloudflare infrastructure, but the semantics differ from a commercial consumer VPN: WARP, Zero Trust Gateway, dedicated egress IPs, and ordinary Cloudflare reverse-proxy traffic are distinct products. |
+| OpenASN data source | Existing `cloudflare_ranges` source uses `https://www.cloudflare.com/ips-v4` and `https://www.cloudflare.com/ips-v6`, maps to context flag `cloudflare_range`, not `vpn`. |
+| Source quality / status | Context-only. Cloudflare's public IP ranges are authoritative for Cloudflare proxy/source infrastructure, but Cloudflare's own Cloudflare One egress-policy docs say Cloudflare does not publish Cloudflare One Client egress IP ranges and that those egress IPs are not listed at the Cloudflare IP Ranges page. Therefore the public range list is too broad for a `vpn` verdict and incomplete/misaligned for WARP-specific egress. |
+| Live smoke | On 2026-07-05, `https://www.cloudflare.com/ips-v4` returned 14 IPv4 CIDRs and `https://www.cloudflare.com/ips-v6` returned 6 IPv6 CIDRs. Those are already represented by `cloudflare_ranges` as context, not blocking classification. |
+| Caveats | Never map all Cloudflare ranges to `vpn` or `hosting`. Doing so would label ordinary Cloudflare-fronted websites, Apple Private Relay overlap, CDN traffic, and Zero Trust traffic as a VPN signal. If Cloudflare ever publishes consumer WARP exit ranges, add a separate exact source id and keep `cloudflare_ranges` context-only. |
+| Primary source URLs | `https://www.cloudflare.com/privacypolicy/`, `https://www.cloudflare.com/website-terms/`, `https://www.cloudflare.com/about-overview/`, `https://developers.cloudflare.com/1.1.1.1/privacy/`, `https://www.cloudflare.com/ips/`, `https://www.cloudflare.com/ips-v4`, `https://www.cloudflare.com/ips-v6`, `https://developers.cloudflare.com/cloudflare-one/traffic-policies/egress-policies/`, `https://developers.cloudflare.com/cloudflare-one/traffic-policies/egress-policies/dedicated-egress-ips/`, `https://developers.cloudflare.com/fundamentals/concepts/cloudflare-ip-addresses/` |
+
+### Hotspot Shield
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.hotspotshield.com/` |
+| Legal / privacy URLs | `https://www.hotspotshield.com/terms/`, `https://www.hotspotshield.com/pp/`, `https://www.hotspotshield.com/legal/dmca/`, `https://blog.hotspotshield.com/hotspot-shield-is-now-part-of-aura/` |
+| Legal entity shown by official pages | Anchorfree, LLC or Pango GmbH, depending on purchase context |
+| Address / identifier | Hotspot Shield terms list Anchorfree, LLC with offices at 250 Northern Ave, 3rd Floor, Boston, MA 02210, United States, or Pango GmbH depending on purchase. Privacy contact lists Anchorfree LLC - Hotspot Shield, 250 Northern Ave, Floor 3, Boston, MA 02210, and Pango GmbH, Hansmatt 32, 6370 Stans, Switzerland. |
+| Registry / incorporation evidence | Official pages verify the operator names and addresses. No Delaware/Massachusetts/Swiss registry extract was added in this batch. Hotspot Shield historical material identifies AnchorFree as the company behind the product; current Point Wild/Pango material should be treated as corporate-group context rather than a source of IP data. |
+| Who is behind it | Hotspot Shield was historically the flagship AnchorFree VPN product. Aura acquired Pango in 2020; Point Wild says Aura later split into Aura and Pango Group in 2024, then Pango Group and Total Security merged and rebranded as Point Wild in December 2024. Pango/Point Wild portfolio material includes Hotspot Shield. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Product pages publish country/location counts, speed claims, and privacy/legal language, but no public exact egress IPs, CIDRs, or server hostnames. Public support articles list virtual locations by platform, not exit addresses. Gluetun has no Hotspot Shield provider; its provider-request template requires a public config ZIP, structured server list, or public server list plus sample configs, none of which were verified here. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official pages fetched successfully on 2026-07-05 and confirmed operator/legal facts. |
+| Caveats | Hotspot Shield's Catapult Hydra/partner technology is widely white-labeled, so exact attribution may be difficult even with future IP observations. Do not import Netify/commercial/aggregator claims unless a license-clean exact feed is obtained. Revisit router/manual-setup pages only if they expose unauthenticated OpenVPN/WireGuard configs with redistribution-safe provenance. |
+| Primary source URLs | `https://www.hotspotshield.com/`, `https://www.hotspotshield.com/terms/`, `https://www.hotspotshield.com/pp/`, `https://www.hotspotshield.com/legal/dmca/`, `https://support.hotspotshield.com/hc/en-us/articles/360040214211-What-are-the-current-Virtual-locations-on-Windows`, `https://blog.hotspotshield.com/hotspot-shield-is-now-part-of-aura/`, `https://www.pointwild.com/news/aura-splits-into-two-world-class-online-safety-companies/`, `https://www.pointwild.com/news/pango-group-merges-with-total-security-combined-company-rebranded-point-wild/`, `https://github.com/passteque/gluetun/issues/2055`, `https://github.com/qdm12/gluetun/discussions/2666` |
+
+### Touch VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.touchvpn.net/` |
+| Legal / privacy URLs | `https://www.touchvpn.net/privacy-policy.html`, `https://www.touchvpn.net/general-terms-and-conditions.html`, `https://www.touchvpn.net/legal-dmca.html` |
+| Legal entity shown by official pages | VPN Proxy Pro, LLC, a Pango Group company; affiliates include TouchVPN LLC |
+| Address / identifier | Touch VPN terms and privacy policy identify VPN Proxy Pro, LLC, 250 Northern Ave, 3rd Floor / Floor 3, Boston, MA 02210, United States. Terms say VPN Proxy Pro, LLC is a division of Pango Group and references affiliates including TouchVPN LLC. DMCA/contact pages use the same Boston address and `legalnotices@pango.co` / `support@pango.co` contact flow. |
+| Registry / incorporation evidence | Official pages verify the operator names, Pango group relationship, and address. No state registry extracts for VPN Proxy Pro, LLC or TouchVPN LLC were obtained in this batch. |
+| Who is behind it | Touch VPN is part of the Pango/Point Wild portfolio. The Android package observed from official links is `com.northghost.touchvpn`, preserving historical NorthGhost/TouchVPN app lineage, but current legal pages control OpenASN's operator dossier. Point Wild's 2024 portfolio material lists Touch VPN alongside Hotspot Shield, Betternet, VPN 360, and Ultra VPN. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Touch VPN pages publish product/platform links and marketing counts such as servers/countries, but no exact IP, CIDR, hostname, public config archive, or documented server-list API. Privacy policy references connecting to nearest/fastest VPN server and identifying server locations for diagnostics, but that is not a public inventory. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official privacy/terms pages fetched successfully on 2026-07-05 and confirmed legal/operator details. |
+| Caveats | This provider is likely entangled with Pango/AnchorFree infrastructure. Do not label Touch VPN by borrowing Hotspot Shield/Pango ranges unless a source can distinguish Touch-branded exits. App-store packages, Firebase installer URLs, and browser-extension links are product distribution endpoints, not exit inventories. |
+| Primary source URLs | `https://www.touchvpn.net/`, `https://www.touchvpn.net/privacy-policy.html`, `https://www.touchvpn.net/general-terms-and-conditions.html`, `https://www.touchvpn.net/legal-dmca.html`, `https://play.google.com/store/apps/details?id=com.northghost.touchvpn`, `https://apps.apple.com/us/app/touch-vpn-secure-hotspot-proxy/id991744383`, `https://www.pointwild.com/news/aura-splits-into-two-world-class-online-safety-companies/`, `https://www.pointwild.com/news/pango-group-merges-with-total-security-combined-company-rebranded-point-wild/` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 6: Opera VPN, Brave VPN, Cloudflare WARP / 1.1.1.1, Hotspot Shield, Touch VPN.
-2. Batch 7: Bitdefender VPN, Kaspersky VPN, ESET VPN, F-Secure VPN / Freedome, Avast SecureLine / AVG VPN.
-3. Batch 8+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 7: Bitdefender VPN, Kaspersky VPN, ESET VPN, F-Secure VPN / Freedome, Avast SecureLine / AVG VPN.
+2. Batch 8: Betternet, VPN 360, UltraVPN, Norton Secure VPN, McAfee VPN.
+3. Batch 9+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

@@ -48,6 +48,7 @@ concurrency:
   cancel-in-progress: false # never kill a publish mid-upload
 
 permissions:
+  actions: write  # gh workflow enable needs this; unspecified permissions are not writable.
   contents: write # create/update releases in this repo
   issues: write   # open pipeline-failure issues
 
@@ -72,6 +73,18 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4"
+
+      # GitHub auto-disables cron workflows in public repos after 60 days
+      # WITHOUT COMMITS — and a healthy data repo is exactly one that can
+      # go quiet between curation PRs while the nightly hums along. The
+      # documented reset is re-enabling the workflow via API, which counts
+      # as workflow activity. Run this BEFORE the pipeline so even a gate
+      # failure still resets the schedule's inactivity timer.
+      - name: Keep the schedule alive through commit-quiet periods
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow enable nightly-build.yml --repo ${{ github.repository }} || true
 
       # Upstream downloads are cached between runs so conditional GETs
       # (ETag) can 304 and we stay polite to third-party mirrors.
@@ -106,18 +119,6 @@ jobs:
           path: pipeline-repo/build/dist/
           retention-days: 7
           if-no-files-found: ignore
-
-      # GitHub auto-disables cron workflows in public repos after 60 days
-      # WITHOUT COMMITS — and a healthy data repo is exactly one that can
-      # go quiet between curation PRs while the nightly hums along. The
-      # documented reset is re-enabling the workflow via API, which counts
-      # as workflow activity. Without this, the nightly dies silently ~60
-      # days after the last commit (GitHub does email a warning first).
-      - name: Keep the schedule alive through commit-quiet periods
-        if: github.event_name == 'schedule'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow enable nightly-build.yml --repo ${{ github.repository }} || true
 
       # A failed nightly must page a human. Reuses one open issue instead
       # of spamming a new one per failure night.

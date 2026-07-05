@@ -1149,10 +1149,101 @@ when the result is only location/accelerator metadata rather than exact exits.
 | Caveats | Do not import proxy credentials, browser-extension configs, encrypted Telegraph blobs, or country page locations. Do not infer VPN exits from S3 bucket names, `freeruproxy.ink` hostnames, or marketing server counts. A future accepted source needs exact Free VPN Unlimited AG-published exits and no secret material. |
 | Primary source URLs | `https://vpnly.com/`, `https://vpnly.com/policy/`, `https://vpnly.com/terms/`, `https://vpnly.com/servers/`, `https://vpnly.com/premium-servers/`, `https://vpnly.com/sitemap.xml`, `https://vpnly.com/servers-sitemap.xml`, `https://www.uid.admin.ch/Detail.aspx?lang=fr&uid_id=CHE467694739`, `https://www.moneyhouse.ch/en/company/free-vpn-unlimited-ag-21450053451`, `https://play.google.com/store/apps/details?id=free.vpn.proxy.vpnly`, `https://apps.apple.com/us/app/vpnly-vpn-unlimited-proxy/id6739255199`, `https://addons.mozilla.org/en-US/firefox/addon/vpn-free-unlimited-vpnly/`, `https://api.telegra.ph/getPage/fvp-11-30?return_content=true`, `https://s3.hub-vpn.com/servers.json` |
 
+## Batch 14 - Free / Public / Residential-Style Providers
+
+### SuperFree VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.superfreevpn.com/`, `https://www.superfreevpn.com/download`, `https://app.superfreevpn.com/` |
+| Legal / privacy URLs | `https://www.superfreevpn.com/terms`, `https://www.superfreevpn.com/privacy-policy`, `https://www.superfreevpn.com/contact-us` |
+| Legal entity shown by official pages | The official pages identify the contracting party only as `SuperFree VPN` / `Super Free VPN`. No registered company name, registration number, or street address was verified from official pages. |
+| Address / identifier | Contact page lists `support@superfreevpn.com`. No official address or company number was captured. |
+| Registry / incorporation evidence | Not verified. Third-party software directories describe SuperFree VPN as founded in 2023 in the United States, but this was not registry-grade evidence and is not used as a legal fact. The about page makes broad history claims, including "10 years of SuperFree VPN", without registry evidence. |
+| Who is behind it | Official pages do not name individuals or a registered corporate operator. Terms disclose a third-party bandwidth-sharing network relationship: in exchange for app access, users may participate as peers in a network including the Infatica P2B network. |
+| App/store identity | Official download page links platform-specific downloads and login/registration flow, but this batch did not verify a stable app-store package id suitable for provenance. Public web pages reference `app.superfreevpn.com` and `api.superfreevpn.com`. |
+| Claimed network | Official pages claim 20+ server locations, 25+ global servers/locations in snippets, unlimited bandwidth/IP changes, DPI bypassing, and apps for Windows, macOS, Linux, Android, iOS, Chrome, Firefox, Edge, Android TV, tvOS, and other platforms. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official product, about, download, terms, privacy, and contact pages were fetched on 2026-07-05. They expose marketing locations and account/client flows, not exact IPs, CIDRs, hostnames, config archives, or a public server-status API. Terms also restrict the software to personal, non-commercial use unless written consent is obtained. |
+| Live smoke | `https://www.superfreevpn.com/`, `/about-us`, `/terms`, `/privacy-policy`, `/contact-us`, and `/download` returned HTTP 200 with a browser User-Agent. Direct no-UA curl previously returned 406 on the homepage, so clients should not assume UA-less fetching works. |
+| Caveats | Do not infer VPN exits from country lists, screenshots, app domains, or the Infatica relationship. The peer/bandwidth-sharing economics are exactly the residential-proxy-adjacent area where OpenASN should prefer false negatives; a future source must identify provider-operated VPN exit IPs separately from user-peer traffic. |
+| Primary source URLs | `https://www.superfreevpn.com/`, `https://www.superfreevpn.com/about-us`, `https://www.superfreevpn.com/download`, `https://www.superfreevpn.com/terms`, `https://www.superfreevpn.com/privacy-policy`, `https://www.superfreevpn.com/contact-us`, `https://app.superfreevpn.com/`, `https://infatica.io/p2b-network/` |
+
+### FreeVPN.us
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.freevpn.us/`, `https://www.freevpn.us/openvpn/`, `https://www.freevpn.us/wireguard/`, `https://www.freevpn.us/v2ray/`, `https://www.freevpn.us/pages/server-status.html` |
+| Legal / privacy URLs | `https://www.freevpn.us/pages/term-of-service.html`, `https://www.freevpn.us/pages/privacy-policy.html`, `https://www.freevpn.us/pages/disclaimer.html`, `https://www.freevpn.us/pages/refund-policy.html` |
+| Legal entity shown by official pages | Footer and schema metadata identify `Roosterkid x FreeVPN.us`; no incorporated company name was verified. |
+| Address / identifier | Official schema/footer/contact material lists `freedom@roosterkid.com`, Roosterkid social/GitHub/Telegram links, and Indonesia / East Java locality metadata. Terms say governing law is Indonesia. |
+| Registry / incorporation evidence | Not verified. Official site says FreeVPN.us has operated free VPN service since 2016; treat 2016 as service-start branding, not incorporation. |
+| Who is behind it | FreeVPN.us is operated under the Roosterkid brand. Official pages link Roosterkid properties including `https://roosterkid.com`, `https://opentunnel.net`, GitHub `roosterkid`, and Telegram `freevpnus`. |
+| App/store identity | Official pages promote an "Official FreeVPN Tunnel" Android app and Google Play link in site chrome, but the accepted OpenASN source is the first-party web status table, not the app. |
+| Claimed network | The site exposes SSH Tunnel, SSH Custom, OpenVPN, PPTP/L2TP, WireGuard, and V2Ray products. Live status on 2026-07-05 listed OpenVPN, PPTP/L2TP, SSH Tunnel, and WireGuard rows with load/bandwidth/status values. |
+| OpenASN data source | Added `freevpn_us_servers`: `https://www.freevpn.us/pages/server-status.html`, parser `freevpn_us_status_html`, provider `FreeVPN.us`, source group `public_relays`, disabled by default. |
+| Source quality / status | Accepted as opt-in public-relay Tier B. The server-status page publishes first-party `data-type` and `data-host` attributes. Parser keeps only `openvpn`, `wireguard`, and `pptp` rows whose hostnames match the expected `ovpn-*`, `wireguard-*`, or `pptp-*` `vpnv.cc` forms. SSH Tunnel and V2Ray rows are deliberately excluded from the VPN overlay. |
+| Live smoke | Parser found 17 VPN hostnames on 2026-07-05: 7 OpenVPN, 7 WireGuard, and 3 PPTP/L2TP. Local DNS from this environment resolved them to 14 IPv4 addresses and 0 IPv6 addresses; sample hostname `ovpn-ee-1.vpnv.cc` resolved to `5.189.254.17`, which classified as `vpn`, provider `FreeVPN.us`, source `freevpn_us_servers`. `robots.txt` allows `*` and points to `https://freevpn.us/sitemap.xml`. |
+| Caveats | Keep this behind `public_relays`: endpoints are free/public, high-churn, and DNS-vantage-dependent. Do not add SSH Tunnel or V2Ray to `vpn` without a separate proxy/relay semantic model. Do not scrape generated account credentials or server-specific account pages. |
+| Primary source URLs | `https://www.freevpn.us/`, `https://www.freevpn.us/openvpn/`, `https://www.freevpn.us/wireguard/`, `https://www.freevpn.us/v2ray/`, `https://www.freevpn.us/pages/server-status.html`, `https://www.freevpn.us/pages/term-of-service.html`, `https://www.freevpn.us/pages/privacy-policy.html`, `https://www.freevpn.us/pages/disclaimer.html`, `https://www.freevpn.us/pages/refund-policy.html`, `https://www.freevpn.us/robots.txt`, `https://www.trustpilot.com/review/www.freevpn.us` |
+
+### VpnHood
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.vpnhood.com/`, `https://www.vpnhood.com/vpnhood-manager/`, `https://github.com/vpnhood/VpnHood` |
+| Legal / privacy URLs | `https://www.vpnhood.com/terms-of-use/`, `https://www.vpnhood.com/privacy-policy/`, `https://www.vpnhood.com/vpnhood-client-privacy-policy/` |
+| Legal entity shown by official pages | Official pages brand the operator as `VpnHood`; no registered company name, company number, or street address was verified in this batch. |
+| Address / identifier | Google Play and public pages list `support@vpnhood.com` for support. No official street address was captured. |
+| Registry / incorporation evidence | Not verified. The GitHub project history and Open Technology Fund audit show the project was active by 2023, but that is project history, not incorporation evidence. |
+| Who is behind it | VpnHood is an open-source .NET VPN engine/client/server ecosystem. GitHub organization `vpnhood` publishes the source under LGPL-2.1. Product pages split `VpnHood! CONNECT` (free/premium app), `VpnHood! CLIENT`, self-hosting/manager, reseller, and store/account surfaces. |
+| App/store identity | Google Play package `com.vpnhood.client.android` is the client app and says it requires a server key. The Connect app source contains store/account integration using `https://store-api.vpnhood.com`; debug builds include sample access keys, but those are not public egress inventory. |
+| Claimed network | Official homepage claims a free VPN with resilient servers, no registration/personal data for the free app, and a global server network. It also states the Windows app does not have a free server. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Source and site were inspected on 2026-07-05. The repo changelog says public servers moved to VpnHood Connect, and source code shows access-key, store-account, and subscription flows rather than a clean static server/IP list. GitHub discussion context says VpnHood is software and that public servers are for testing. No unauthenticated exact IP/CIDR/hostname inventory was verified. |
+| Live smoke | `https://www.vpnhood.com/` returned HTTP 200 and states "Windows app does not have a free server." `https://www.vpnhood.com/terms-of-use/` returned HTTP 200. The cloned GitHub repo contained public-server changelog lines and `store-api.vpnhood.com` account integration, but no accepted list. |
+| Caveats | Do not import sample/debug access keys, generated server tokens, account/store API responses, or self-hosted third-party VpnHood servers. A future accepted source would need VpnHood-operated exact exits published for recognition, not client/session state. |
+| Primary source URLs | `https://www.vpnhood.com/`, `https://www.vpnhood.com/terms-of-use/`, `https://www.vpnhood.com/privacy-policy/`, `https://www.vpnhood.com/vpnhood-client-privacy-policy/`, `https://www.vpnhood.com/vpnhood-manager/`, `https://github.com/vpnhood/VpnHood`, `https://github.com/vpnhood/VpnHood/discussions/1`, `https://play.google.com/store/apps/details?id=com.vpnhood.client.android`, `https://www.opentech.fund/wp-content/uploads/2023/11/OTF-2023-Q3-VPN-Hood-Final-V2.pdf` |
+
+### FreeVPN724 / WorldVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://freevpn724.com/`, `https://worldvpn.net/`, `https://worldvpn.net/servers`, `https://worldvpn.net/about-us` |
+| Legal / privacy URLs | `https://freevpn724.com/terms`, `https://freevpn724.com/privacy`, `https://worldvpn.net/privacy-policy`, `https://worldvpn.net/refund-policy` |
+| Legal entity shown by official pages | Official web pages identify the service/brand as `WorldVPN`; no registered company name is shown on the WorldVPN legal pages. Apple App Store metadata for the iOS app lists developer `MEMETRIX LIMITED`, but this was not verified as the legal operator of the website/service. |
+| Address / identifier | No official WorldVPN street address or registration number was captured. FreeVPN724 footer says it is powered and supported by WorldVPN. WorldVPN support/billing lives under `billing.worldvpn.net`. |
+| Registry / incorporation evidence | Not verified. WorldVPN about page says the service has operated since 2008; treat this as service history, not company incorporation. No registry-grade evidence for WorldVPN or MEMETRIX LIMITED was captured in this batch. |
+| Who is behind it | FreeVPN724 is a free front-door/client profile powered by WorldVPN. WorldVPN markets shared VPN, dedicated VPN, and reseller products, and publishes the backend server table accepted by OpenASN. App-store identity is inconsistent: Google Play package `io.world.vpn` is titled WorldVPN / myWorldVPN, while Apple app id `1598393107` lists MEMETRIX LIMITED. |
+| App/store identity | Google Play: `https://play.google.com/store/apps/details?id=io.world.vpn`. Apple: `https://apps.apple.com/us/app/worldvpn-fast-vpn-services/id1598393107`. FreeVPN724 pages also QR/link these app stores. |
+| Claimed network | WorldVPN pages claim 200+ server locations, 50+ countries on `/servers`, 1 Gbps server speed, and support for PPTP, L2TP, OpenConnect, and WireGuard. FreeVPN724 describes a "WorldVPN for Free" app profile with free server selection and no account needed. |
+| OpenASN data source | Added `worldvpn_servers`: `https://worldvpn.net/servers`, parser `worldvpn_servers_html`, provider `WorldVPN`, source group `vpn_providers`, enabled by default. |
+| Source quality / status | Accepted as exact-IP Tier B. The first-party server table publishes location, exact IP, exact hostname, protocol availability columns, and per-row OpenVPN profile download links. Parser reads only table rows whose host cell is `*.ocservvpn.com` and emits the exact IP cell. It intentionally does not scrape arbitrary IP-looking text and does not need DNS expansion. |
+| Live smoke | Parser found 180 IPv4 tokens and 0 IPv6 tokens on 2026-07-05; the Tier B executor merged them to 170 IPv4 overlay ranges. Sample IP `116.203.253.222` came from `de1.ocservvpn.com` and classified as `vpn`, provider `WorldVPN`, source `worldvpn_servers`. `https://worldvpn.net/robots.txt` returned HTTP 200 with `Disallow:` empty. FreeVPN724 homepage exposed a smaller free list including `ch1.ocservvpn.com`, `de10.ocservvpn.com`, `de6.ocservvpn.com`, `lv1.ocservvpn.com`, `pl3.ocservvpn.com`, `pl4.ocservvpn.com`, `us21.ocservvpn.com`, and `us32.ocservvpn.com`, but OpenASN uses the fuller WorldVPN server table. |
+| Caveats | Tier B only: WorldVPN does not grant redistribution rights for republishing the table. FreeVPN724 location/router pages indexed by search currently resolve to 404/SPA fallback content in direct fetches, so do not use them as source data. Provider attribution is `WorldVPN`; FreeVPN724 is a free-client/profile brand unless it later publishes a distinct exact inventory. |
+| Primary source URLs | `https://freevpn724.com/`, `https://freevpn724.com/terms`, `https://freevpn724.com/privacy`, `https://worldvpn.net/`, `https://worldvpn.net/servers`, `https://worldvpn.net/about-us`, `https://worldvpn.net/privacy-policy`, `https://worldvpn.net/refund-policy`, `https://worldvpn.net/robots.txt`, `https://play.google.com/store/apps/details?id=io.world.vpn`, `https://apps.apple.com/us/app/worldvpn-fast-vpn-services/id1598393107` |
+
+### StarVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.starvpn.com/`, `https://www.starvpn.com/free-vpn`, `https://www.starvpn.com/frequently-asked-questions`, `https://www.starvpn.com/setup-instructions` |
+| Legal / privacy URLs | `https://www.starvpn.com/terms-of-service`, `https://www.starvpn.com/terms-of-service-free-vpn`, `https://www.starvpn.com/privacy-policy`, `https://www.starvpn.com/contact-us` |
+| Legal entity shown by official pages | Terms identify `Star Internet Services A.K.A. STARVPN INC.` as a corporation incorporated under Ontario law. Footer/app stores use `StarVPN Inc.`. |
+| Address / identifier | Contact page lists 595 Bay Street, Toronto ON M5G 0B4 (Operating space), Ontario Business Corporation `#5019951`. Terms/free terms list notices to `STARVPN INC.`, 595 Bay St., PO Box 99900 UA 997 652, RPO Atrium on Bay, Toronto ON M5G 0B4. |
+| Registry / incorporation evidence | Official pages verify Ontario corporation number `5019951`, but the exact Ontario incorporation date was not verified from a registry-grade source in this batch. |
+| Who is behind it | StarVPN presents itself as a global VPN and SOCKS proxy provider specializing in residential IP network services. Public pages do not name founders/individual owners. |
+| App/store identity | Google Play: `https://play.google.com/store/apps/details?id=com.starvpn`, publisher StarVPN Inc., 500K+ downloads in fetched metadata. Apple: `https://apps.apple.com/us/app/residential-vpn/id1624494670`, developer StarVPN Inc. |
+| Claimed network | Official pages claim the world's largest residential VPN service provider, static/rotating/mobile/datacenter IPs, 10M+ rotating residential IPs in homepage metadata, 1000+ servers/access points, 10 Gbps global access network in app-store copy, and dedicated/static residential IPs. FAQ says residential IPs come through contracts with LLC ISP providers and include broadband residential carriers such as Comcast/Verizon. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages, app stores, setup pages, and legal pages were inspected on 2026-07-05. Public setup docs require registration/login to the member dashboard, then user-specific selection of IP type (Static Residential, Mobile, Rotating, or Datacenter), country, region, and ISP, followed by account-generated OpenVPN/WireGuard configs. No unauthenticated exact IP/CIDR/hostname feed was verified. |
+| Live smoke | `https://www.starvpn.com/privacy-policy`, `/terms-of-service`, `/terms-of-service-free-vpn`, `/free-vpn`, `/frequently-asked-questions`, `/setup-instructions`, and multiple OpenVPN setup pages returned HTTP 200. Setup pages repeatedly route users to member-dashboard config download rather than a public config archive. |
+| Caveats | Do not classify StarVPN's claimed residential/mobile pool as provider-operated `vpn` exits from marketing claims. Residential and mobile IP products are real-user/ISP-space sensitive, and a static offline source would need exact first-party egress inventory plus semantics separating datacenter VPN, static residential, rotating residential, and free network-sharing traffic. |
+| Primary source URLs | `https://www.starvpn.com/`, `https://www.starvpn.com/contact-us`, `https://www.starvpn.com/privacy-policy`, `https://www.starvpn.com/terms-of-service`, `https://www.starvpn.com/terms-of-service-free-vpn`, `https://www.starvpn.com/free-vpn`, `https://www.starvpn.com/frequently-asked-questions`, `https://www.starvpn.com/setup-instructions`, `https://www.starvpn.com/how-to-setup-openvpn-connect-on-macos`, `https://www.starvpn.com/openvpn-configuration-setup-on-iphone-ipad`, `https://play.google.com/store/apps/details?id=com.starvpn`, `https://apps.apple.com/us/app/residential-vpn/id1624494670` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 14: SuperFree VPN, FreeVPN.us, VpnHood, FreeVPN724 / WorldVPN, StarVPN.
-2. Batch 15: GoFlyVPN, iTop VPN, Total VPN, SetupVPN, Radmin VPN.
-3. Batch 16+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 15: GoFlyVPN, iTop VPN, Total VPN, SetupVPN, Radmin VPN.
+2. Batch 16+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

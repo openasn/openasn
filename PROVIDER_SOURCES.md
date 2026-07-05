@@ -31,6 +31,7 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `privadovpn` | PrivadoVPN | `https://privadovpn.com/apps/servers_export.json` | default `vpn_providers` | `privado_servers_json` | 166 v4, 0 v6 |
 | `riseup_vpn` | RiseupVPN | `https://api.black.riseup.net/3/config/eip-service.json` | default `vpn_providers` | `leap_eip_service_json` | 21 v4, 0 v6 |
 | `wlvpn_server_list` | WLVPN | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml` | default `vpn_providers` | `wlvpn_server_list_xml` | 3483 active visible v4, 0 v6 |
+| `worldvpn_servers` | WorldVPN | `https://worldvpn.net/servers` | default `vpn_providers` | `worldvpn_servers_html` | 180 exact v4 IPs -> 170 merged v4 ranges, 0 v6 |
 | `surfshark_generic` | Surfshark | `https://api.surfshark.com/v4/server/clusters/generic` | opt-in `vpn_dns` | `surfshark_clusters_json` | 142 hostnames / 280 v4, 0 v6 |
 | `surfshark_static` | Surfshark | `https://api.surfshark.com/v4/server/clusters/static` | opt-in `vpn_dns` | `surfshark_clusters_json` | 36 hostnames / 36 v4, 0 v6 |
 | `surfshark_obfuscated` | Surfshark | `https://api.surfshark.com/v4/server/clusters/obfuscated` | opt-in `vpn_dns` | `surfshark_clusters_json` | 7 hostnames / 7 v4, 0 v6 |
@@ -45,6 +46,7 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `tunnelbear_openvpn` | TunnelBear | `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 47 hostnames / 925 resolved v4 -> 571 merged v4 ranges, 0 v6 |
 | `strongvpn_locations` | StrongVPN | `https://strongtech.org/locations/` | opt-in `vpn_dns` | `strongvpn_locations_html` | 145 hostnames / 74 resolved v4 -> 59 merged v4 ranges, 0 v6; 71 DNS misses |
 | `vpnbook_openvpn` | VPNBook | `https://www.vpnbook.com/freevpn/openvpn` | opt-in `public_relays` | `vpnbook_html_hosts` | 10 hostnames / 9 v4, 0 v6; 1 DNS miss |
+| `freevpn_us_servers` | FreeVPN.us | `https://www.freevpn.us/pages/server-status.html` | opt-in `public_relays` | `freevpn_us_status_html` | 17 VPN hostnames / 14 v4, 0 v6 |
 
 DNS-expanded counts are resolver-vantage-specific. Hostname counts are the
 stable parser smoke; resolved IP counts can move when provider DNS changes,
@@ -78,7 +80,9 @@ End-to-end sample classifications from the live run:
 | `tunnelbear_openvpn` | `5.253.206.35` | `vpn`, provider `TunnelBear` |
 | `strongvpn_locations` | `176.67.81.250` | `vpn`, provider `StrongVPN` |
 | `wlvpn_server_list` | `103.209.254.114` | `vpn`, provider `WLVPN` |
+| `worldvpn_servers` | `116.203.253.222` | `vpn`, provider `WorldVPN` |
 | `vpnbook_openvpn` | `142.4.216.196` | `vpn`, provider `VPNBook` |
+| `freevpn_us_servers` | `5.189.254.17` | `vpn`, provider `FreeVPN.us` |
 | `vpngate` | `1.244.51.251` | `vpn`, provider `VPN Gate` |
 
 ## Provider Audit Ledger
@@ -99,6 +103,7 @@ End-to-end sample classifications from the live run:
 | PrivadoVPN | Added default Tier B. | `https://privadovpn.com/apps/servers_export.json`; a PrivadoVPN developer publicly described this as the official server list, updated hourly. |
 | RiseupVPN | Added default Tier B. | `https://api.black.riseup.net/3/config/eip-service.json`; OONI documents the LEAP provider API shape and that it advertises gateways. |
 | WLVPN | Added default Tier B. | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml` is a public WLVPN/IPVanish white-label server API with exact `ip` attributes. WLVPN's own site says the service is powered by IPVanish and part of VIPRE Security Group / Ziff Davis, so attribution is `WLVPN` rather than a reseller brand. |
+| WorldVPN | Added default Tier B. | `https://worldvpn.net/servers` is a first-party public server table with exact IPs and `*.ocservvpn.com` hostnames. Parser reads only table rows and exact IP cells; no DNS expansion. |
 | Surfshark | Added opt-in DNS-expanded Tier B. | First-party cluster APIs publish `connectionName` hostnames: generic/static/obfuscated. Double-hop was empty live on 2026-07-05. |
 | IPVanish | Added opt-in DNS-expanded Tier B. | First-party OpenVPN config archive `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip` contains thousands of `remote` hostnames. |
 | PrivateVPN | Added opt-in DNS-expanded Tier B. | `https://privatevpn.com/client/PrivateVPN-TUN.zip` contains OpenVPN remotes. |
@@ -110,6 +115,7 @@ End-to-end sample classifications from the live run:
 | StrongVPN | Added opt-in DNS-expanded Tier B. | `https://strongtech.org/locations/` publishes exact `vpn-*.reliablehosting.com` speedtest/server hostnames from the StrongVPN/StrongTech first-party site. |
 | VPN Gate | Existing opt-in public relay Tier B. | `http://www.vpngate.net/api/iphone/` is the official public relay API. |
 | VPNBook | Added opt-in public relay Tier B. | `https://www.vpnbook.com/freevpn/openvpn` publishes current OpenVPN hostnames. |
+| FreeVPN.us | Added opt-in public relay Tier B. | `https://www.freevpn.us/pages/server-status.html` publishes live first-party status rows. Parser keeps only OpenVPN, WireGuard, and PPTP/L2TP hosts and excludes SSH Tunnel / V2Ray rows. |
 
 ### Researched, Not Added
 
@@ -169,12 +175,11 @@ End-to-end sample classifications from the live run:
 | VPN Super | Not added. | Terms name VPN Super Inc; privacy covers Super Unlimited Inc., VPN Super Inc., Free VPN Pte. Ltd, and Mobile Jump Pte. Ltd. Public server pages list locations only. The Windows MSI was inspected offline; embedded `server_list_loc.json` is localization data, not an exit inventory. |
 | FreeVPN.org / FreeVPNApp.org | Not added. | Free VPN LLC app-store brand with current desktop downloads and ActMobile/`dft-cdn42.net` infrastructure visible in the public client package. Not accepted because the useful hostnames/region data are derived from proprietary client inspection and terms prohibit reverse engineering; no clean exact source with redistribution rights. |
 | VPNLY | Not added. | Free VPN Unlimited AG / CHE-467.694.739; official pages list countries/locations only. A public browser-extension S3 config contained proxy credentials and was rejected; secrets are not reproduced and it is not a clean VPN egress source. |
-| SuperFree VPN | Not added. | Product page only; no exact source verified. |
+| SuperFree VPN | Not added. | Official pages expose product/location/account flows, not exact exits. Terms disclose participation in a third-party bandwidth-sharing network including Infatica P2B, so peer/residential semantics must not be mapped to provider-operated `vpn` exits. |
 | FreeVPNApp.org / FreeVPNApp.io | Not added. | `freevpnapp.org` is covered with FreeVPN.org above. `freevpnapp.io` was only a placeholder/coming-soon page in this pass and exposed no source data. |
-| FreeVPN.us | Not added. | Product page only; no exact source verified. |
-| VpnHood | Not added. | Open-source VPN software/service builder, not a single provider egress inventory. |
-| FreeVPN724 / WorldVPN | Not added. | Product/app page only; no exact source verified. |
-| StarVPN | Not added. | Product page only; no exact source verified. |
+| VpnHood | Not added. | Open-source VPN engine/client/server and Connect app. Public-server support exists, but current app flows use access keys/store/account integration and no clean exact egress inventory was verified. |
+| FreeVPN724 | Not added as separate provider. | `worldvpn.net/servers` is accepted as the backend provider source. FreeVPN724 is a free-client/front-door brand powered by WorldVPN and does not need a separate source id unless it publishes a distinct exact inventory. |
+| StarVPN | Not added. | Residential/static/mobile/datacenter VPN/proxy provider. Router/client configs are generated from the member dashboard after selecting IP type, country, region, and ISP; no unauthenticated exact egress source verified. |
 | GoFlyVPN | Not added. | Product page only; no exact source verified. |
 | iTop VPN | Not added. | Product page only; no exact source verified. |
 | Radmin VPN | Not added. | Virtual LAN/remote network product, not a public internet egress VPN source. |

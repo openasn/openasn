@@ -33,6 +33,10 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `wlvpn_server_list` | WLVPN | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml` | default `vpn_providers` | `wlvpn_server_list_xml` | 3483 active visible v4, 0 v6 |
 | `worldvpn_servers` | WorldVPN | `https://worldvpn.net/servers` | default `vpn_providers` | `worldvpn_servers_html` | 180 exact v4 IPs -> 170 merged v4 ranges, 0 v6 |
 | `ovpn_status_servers` | OVPN | `https://status.ovpn.com/datacenters/{slug}/servers` | default `vpn_providers` | `ovpn_status_servers_json` | 32 datacenter JSON endpoints / 97 rows / 96 unique v4 -> 34 merged v4 ranges, 0 v6 |
+| `anonine_status` | Anonine | `https://anonine.com/www/server-status` | default `vpn_providers` | `anonine_status_json` | 38 status rows / 296 exact v4 -> 82 merged v4 ranges, 0 v6 |
+| `azirevpn_locations` | AzireVPN | `https://api.azirevpn.com/v3/locations` | opt-in `vpn_dns` | `azirevpn_locations_json` | 62 pool hostnames / 64 resolved IPs -> 63 v4 + 1 v6 ranges |
+| `vpnac_status` | VPN.AC | `https://vpn.ac/status` | opt-in `vpn_dns` | `vpnac_status_html` | 130 status hostnames / 132 resolved v4 -> 130 merged v4 ranges, 0 v6 |
+| `trustzone_servers` | Trust.Zone | `https://trust.zone/servers` | opt-in `vpn_dns` | `trustzone_servers_html` | 70 server hostnames / 90 resolved v4 -> 86 merged v4 ranges, 0 v6 |
 | `surfshark_generic` | Surfshark | `https://api.surfshark.com/v4/server/clusters/generic` | opt-in `vpn_dns` | `surfshark_clusters_json` | 142 hostnames / 280 v4, 0 v6 |
 | `surfshark_static` | Surfshark | `https://api.surfshark.com/v4/server/clusters/static` | opt-in `vpn_dns` | `surfshark_clusters_json` | 36 hostnames / 36 v4, 0 v6 |
 | `surfshark_obfuscated` | Surfshark | `https://api.surfshark.com/v4/server/clusters/obfuscated` | opt-in `vpn_dns` | `surfshark_clusters_json` | 7 hostnames / 7 v4, 0 v6 |
@@ -89,6 +93,10 @@ End-to-end sample classifications from the live run:
 | `wlvpn_server_list` | `103.209.254.114` | `vpn`, provider `WLVPN` |
 | `worldvpn_servers` | `116.203.253.222` | `vpn`, provider `WorldVPN` |
 | `ovpn_status_servers` | `5.181.234.131` | `vpn`, provider `OVPN` |
+| `anonine_status` | `198.57.26.18` | `vpn`, provider `Anonine` |
+| `azirevpn_locations` | `200.110.149.179` | `vpn`, provider `AzireVPN` |
+| `vpnac_status` | `103.231.88.140` | `vpn`, provider `VPN.AC` |
+| `trustzone_servers` | `102.165.60.216` | `vpn`, provider `Trust.Zone` |
 | `vpnbook_openvpn` | `142.4.216.196` | `vpn`, provider `VPNBook` |
 | `freevpn_us_servers` | `5.189.254.17` | `vpn`, provider `FreeVPN.us` |
 | `vpngate` | `1.244.51.251` | `vpn`, provider `VPN Gate` |
@@ -113,6 +121,10 @@ End-to-end sample classifications from the live run:
 | WLVPN | Added default Tier B. | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml` is a public WLVPN/IPVanish white-label server API with exact `ip` attributes. WLVPN's own site says the service is powered by IPVanish and part of VIPRE Security Group / Ziff Davis, so attribution is `WLVPN` rather than a reseller brand. |
 | WorldVPN | Added default Tier B. | `https://worldvpn.net/servers` is a first-party public server table with exact IPs and `*.ocservvpn.com` hostnames. Parser reads only table rows and exact IP cells; no DNS expansion. |
 | OVPN | Added default Tier B. | `https://status.ovpn.com` is the official OVPN status page; its Vue `Servers-List` component calls `/datacenters/{slug}/servers` JSON endpoints with exact server IPs and `online` flags. Parser keeps online exact IPs only. |
+| Anonine | Added default Tier B. | `https://anonine.com/www/server-status` is the first-party JSON endpoint called by Anonine's public Network page. Parser reads exact `primary_ip` and `servers[].ips`; host aliases are ignored because exact IPs are available. |
+| AzireVPN | Added opt-in DNS-expanded Tier B. | Official API docs publish unauthenticated `https://api.azirevpn.com/v3/locations`; parser reads `locations[].pool` hostnames and clients resolve them locally. |
+| VPN.AC | Added opt-in DNS-expanded Tier B. | `https://vpn.ac/status` publishes exact `*.vpn.ac` node hostnames in the official status table; `/ovpn/` config bundles corroborate the same hostname namespace. |
+| Trust.Zone | Added opt-in DNS-expanded Tier B. | `https://trust.zone/servers` publishes exact `*.trust.zone` server hostnames; setup pages hide `.ovpn` files behind login, so the public server hostnames are the source. |
 | Surfshark | Added opt-in DNS-expanded Tier B. | First-party cluster APIs publish `connectionName` hostnames: generic/static/obfuscated. Double-hop was empty live on 2026-07-05. |
 | IPVanish | Added opt-in DNS-expanded Tier B. | First-party OpenVPN config archive `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip` contains thousands of `remote` hostnames. |
 | PrivateVPN | Added opt-in DNS-expanded Tier B. | `https://privatevpn.com/client/PrivateVPN-TUN.zip` contains OpenVPN remotes. |
@@ -169,6 +181,8 @@ End-to-end sample classifications from the live run:
 | VeePN | Not added. | VeePN Corp., Panama; official server page lists 2,600+ servers / 109 locations / 85 countries, while legal pages name Laraun Limited and IT Research LLC for payments. No exact public egress source verified. |
 | SkyVPN | Not added. | SkyVPN, Inc.; terms say Hong Kong office control and product pages claim 3000+ servers / 30M users, but no exact IP/CIDR/hostname list, config archive, or server API was found. |
 | X-VPN | Not added. | LIGHTNINGLINK NETWORKS PTE. LTD.; official pages claim 10,000+ servers / 80+ countries / 250+ locations. Router OpenVPN configs are premium/account-gated; no public exact source verified. |
+| Ivacy | Promising but not added. | Official browser-rendered server list publishes exact `*.dns2use.com` hostnames, and official support links S3 RAR config artifacts, but local/gem fetches of support pages returned 403 and the artifacts are RAR, which OpenASN's dependency-free ZIP parser does not support. |
+| SaferVPN | Not added. | Official site/support returned 403 and current public material did not expose a first-party exact IP/CIDR/hostname source. Historical third-party router/config references are discovery leads only, not OpenASN source data. |
 | Total VPN | Not added. | Total Security Limited / Total Security U.S. LLC / Point Wild legal pages and product pages were checked. Public material is legal text, help pages, and country/server-count marketing only; no exact IP/CIDR/hostname/config source verified. |
 | SetupVPN | Not added. | SetupVPN Inc. public pages, FAQ, registration/download routes, and `baseserver.io` download endpoints were checked. FAQ says locations change daily and no exact public inventory is published. |
 | uVPN | Not added. | Product page only; no exact source verified. |

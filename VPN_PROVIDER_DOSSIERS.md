@@ -1564,8 +1564,123 @@ other three remain documented negative findings.
 | Caveats | Do not label Nord, Express/Lightway-capable, SurfEasy/Pango, or generic Opera infrastructure as Opera VPN unless Opera publishes an exact exit inventory or unauthenticated config source that distinguishes Opera-branded egress. |
 | Primary source URLs | `https://www.opera.com/features/free-vpn`, `https://www.opera.com/features/vpn-pro`, `https://help.opera.com/en/mobile/vpn/`, `https://www.opera.com/legal/privacy`, `https://blogs.opera.com/security/2024/09/opera-free-browser-vpn-no-log-audit-deloitte/`, `https://investor.opera.com/news-releases/news-release-details/opera-unveils-revamped-vpn-pro-its-premium-vpn-service-offering`, `https://github.com/spaze/oprah-proxy` |
 
+## Batch 19 - Anonine, AzireVPN, VPN.AC, Trust.Zone, Ivacy, SaferVPN
+
+This batch focused on first-party provider surfaces that were either hidden
+behind modern app bundles, published as server-status pages, or surfaced only
+after following support/setup paths. Four sources crossed the OpenASN bar:
+Anonine as default exact IP data, plus AzireVPN, VPN.AC, and Trust.Zone as
+opt-in DNS-expanded provider hostname data. Ivacy and SaferVPN remain documented
+negative findings: both have useful discovery leads, but neither currently has
+a locally fetchable, dependency-light, first-party exact source suitable for the
+gem.
+
+### Anonine
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://anonine.com/`, `https://anonine.com/network/` |
+| Legal / privacy URLs | `https://anonine.com/privacy-policy/`, `https://anonine.com/terms-of-service/`, `https://anonine.com/about/`, `https://anonine.com/contact/` |
+| Legal entity shown by official pages | Current footer says `Edelino Commerce Inc.`. The About page says Anonine was founded in Sweden and later transferred to a Seychelles-based company. |
+| Address / identifier | No street address, registry number, or incorporation year was found on official public pages in this pass. |
+| Registry / incorporation evidence | Official pages provide a service founding claim, not a registry extract. The About page fetched on 2026-07-05 says Anonine was founded "11 years ago in Sweden"; because that text appears stale relative to the 2026 page footer, OpenASN records it only as a site claim and not as a verified incorporation year. |
+| Who is behind it | Anonine presents itself as a privacy-focused VPN team originally founded in Sweden and now operated through a Seychelles-based company; current public footer names Edelino Commerce Inc. |
+| Source discovery | The public Network page is a Gatsby app. Its JavaScript bundle calls `serverStatusUrl()`, which resolves to `https://anonine.com/www/server-status` for the English site. |
+| OpenASN data source | Added default `vpn_providers` source id `anonine_status`; parser id `anonine_status_json`. |
+| Source quality / status | First-party exact-IP JSON. The endpoint returns an array of location rows with `primary_ip`, `alias`, and nested `servers[].ips`; parser collects exact IPs only and ignores host aliases because DNS expansion is unnecessary here. |
+| Live smoke | On 2026-07-05, the endpoint yielded 38 rows, 39 host aliases, and 296 unique IPv4 addresses, merged by the executor into 82 IPv4 ranges. Sample exact IP `198.57.26.18` classified end-to-end as `vpn`, provider `Anonine`, source `anonine_status`. |
+| Caveats | Do not import haugene or other third-party OpenVPN config inventories for Anonine. The accepted source is the first-party status JSON; if that endpoint starts emitting empty IP arrays, keep stale data and investigate the Network page bundle again. |
+| Primary source URLs | `https://anonine.com/network/`, `https://anonine.com/www/server-status`, `https://anonine.com/about/`, `https://anonine.com/privacy-policy/`, `https://anonine.com/terms-of-service/`, `https://anonine.com/contact/` |
+
+### AzireVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.azirevpn.com/`, `https://www.azirevpn.com/about`, `https://www.azirevpn.com/support` |
+| Legal / privacy URLs | `https://www.azirevpn.com/docs/api/locations`, `https://www.azirevpn.com/legal/privacy`, `https://www.azirevpn.com/legal/terms`, `https://www.malwarebytes.com/tos`, `https://www.malwarebytes.com/privacy` |
+| Legal entity shown by official pages | AzireVPN's current site says it is owned by Malwarebytes. Current AzireVPN footer says `2012-2026 Malwarebytes`; Malwarebytes legal pages name Malwarebytes Inc. and related Malwarebytes entities. |
+| Address / identifier | Malwarebytes terms/footer identify `2445 Augustine Drive, Suite 550, Santa Clara, CA, USA 95054` and `One Albert Quay, 2nd Floor, Cork T12 X8N6, Ireland`. |
+| Registry / incorporation evidence | AzireVPN official About page says the service was founded in Stockholm, Sweden in 2012. Malwarebytes announced the AzireVPN acquisition on 2024-11-07; no separate AzireVPN registry number was found on public pages in this pass. |
+| Who is behind it | AzireVPN was founded by a Stockholm security team in 2012 and joined Malwarebytes in 2024; the current About page says the original team remains in Sweden. |
+| Claimed network | Current About page says 62 locations and 153 servers. |
+| Source discovery | Official API docs publish unauthenticated `GET https://api.azirevpn.com/v3/locations` and document `pool` as the hostname pool with IPs available for a location. |
+| OpenASN data source | Added opt-in `vpn_dns` source id `azirevpn_locations`; parser id `azirevpn_locations_json`. |
+| Source quality / status | First-party location API with exact provider-published pool hostnames. Because the API publishes hostnames rather than raw exits, clients resolve locally and the source stays behind `config.tier_b[:vpn_dns]`. |
+| Live smoke | On 2026-07-05, the API yielded 62 pool hostnames and the local resolver returned 64 IPs, merged by the executor into 63 IPv4 ranges and 1 IPv6 range. Sample `ar-bue.azirevpn.net -> 200.110.149.179` classified as `vpn`, provider `AzireVPN`, source `azirevpn_locations`. |
+| Caveats | The source is DNS-vantage-specific. In this local Mac environment, Ruby `TCPSocket`/`Net::HTTP` connections to `api.azirevpn.com:443` were transparently redirected to loopback port `10011`, while `curl` and `openssl s_client` reached `193.187.90.89` and verified the public certificate; the source/parser/DNS/overlay smoke therefore used a curl-fetched body for Azire only. Do not use Azire marketing location pages as source data, do not widen by ASN, and do not reattribute all Malwarebytes/IPVanish/other partner infrastructure as AzireVPN. |
+| Primary source URLs | `https://www.azirevpn.com/about`, `https://www.azirevpn.com/docs/api/locations`, `https://api.azirevpn.com/v3/locations`, `https://www.malwarebytes.com/blog/news/2024/11/malwarebytes-acquires-azirevpn`, `https://www.malwarebytes.com/tos`, `https://www.malwarebytes.com/privacy` |
+
+### VPN.AC
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://vpn.ac/`, `https://vpn.ac/status`, `https://vpn.ac/ovpn/` |
+| Legal / privacy URLs | `https://vpn.ac/tos`, `https://vpn.ac/privacy`, `https://vpn.ac/about`, `https://vpn.ac/contact` |
+| Legal entity shown by official pages | Terms say VPN.AC and the VPN service are operated by `Cryptolayer SRL`, formerly `Netsec Interactive Solutions SRL`. |
+| Address / identifier | Terms list `76 Calea Dumbravii Street, 550399, Sibiu, Romania`, company registration `J32/500/2015`, VAT `RO34573525`. |
+| Registry / incorporation evidence | The company registration number indicates the current Romanian entity was registered in 2015. Official About page says the team's security company roots go back to Netsec Interactive Solutions in 2009 and that VPN.AC launched at the end of 2012. |
+| Who is behind it | VPN.AC is operated by Cryptolayer SRL / the former Netsec Interactive Solutions team in Romania. |
+| Source discovery | The official status page renders a VPN Nodes Status table with exact `*.vpn.ac` node hostnames. The official `/ovpn/` directory exposes public OpenVPN config bundles that corroborate the same hostname namespace. |
+| OpenASN data source | Added opt-in `vpn_dns` source id `vpnac_status`; parser id `vpnac_status_html`. |
+| Source quality / status | First-party status table with exact provider hostnames, not generated patterns. Parser scans only hostname text inside table cells ending in `.vpn.ac`; clients resolve locally. |
+| Live smoke | On 2026-07-05, the status page yielded 130 hostnames and the local resolver returned 132 IPv4 addresses, merged by the executor into 130 IPv4 ranges. Sample `au1.vpn.ac -> 103.231.88.140` classified end-to-end as `vpn`, provider `VPN.AC`, source `vpnac_status`. |
+| Caveats | DNS answers can vary by resolver, and VPN.AC has multiple hostname variants per location. Keep the source opt-in; do not infer hostnames from country/location labels or import third-party provider maps. |
+| Primary source URLs | `https://vpn.ac/status`, `https://vpn.ac/ovpn/`, `https://vpn.ac/tos`, `https://vpn.ac/about`, `https://vpn.ac/contact`, `https://vpn.ac/privacy` |
+
+### Trust.Zone
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://trust.zone/`, `https://trust.zone/servers` |
+| Legal / privacy URLs | `https://trust.zone/terms`, `https://trust.zone/privacy`, `https://trust.zone/setup`, `https://trust.zone/contact-us` |
+| Legal entity shown by official pages | Terms say the Trust.Zone website is operated by `Internet Privacy Ltd` as Licensor. The same terms authorize `Tersys Group OÜ` as Distributor for receiving payments and payouts. |
+| Address / identifier | Terms list head office `Unit 117, Orion Mall, Palm Street, P.O. Box 828, Victoria, Mahe, Seychelles` for Internet Privacy Ltd. Distributor address: `Harjumaa, Tallinn, Kesklinna linnaosa, Vesivärava tn 50-201, 10152, Estonia`. |
+| Registry / incorporation evidence | No registry extract or incorporation year was found on official public pages in this pass. |
+| Who is behind it | Trust.Zone is presented as a Seychelles-operated VPN service with an Estonian payment distributor. |
+| Claimed network | The official servers page fetched on 2026-07-05 advertised 188 servers across 90+ zones. |
+| Source discovery | `https://trust.zone/servers` publishes exact `*.trust.zone` server/zone hostnames in the public servers table. Manual setup pages hide downloadable `.ovpn` files behind login, so the servers page is the clean unauthenticated source. |
+| OpenASN data source | Added opt-in `vpn_dns` source id `trustzone_servers`; parser id `trustzone_servers_html`. |
+| Source quality / status | First-party server hostname page. Parser extracts `*.trust.zone` hostnames and excludes the apex and `www`; clients resolve locally because raw IPs are not published. |
+| Live smoke | On 2026-07-05, the page yielded 70 server hostnames and the local resolver returned 90 IPv4 addresses, merged by the executor into 86 IPv4 ranges. Sample `za.trust.zone -> 102.165.60.216` classified end-to-end as `vpn`, provider `Trust.Zone`, source `trustzone_servers`. |
+| Caveats | Keep DNS-expanded and opt-in. Do not use account-hidden `.ovpn` files, app traffic, or inferred country-code hostnames as source data. If the page gains non-server `*.trust.zone` hostnames, tighten the parser to table-row structure before shipping. |
+| Primary source URLs | `https://trust.zone/servers`, `https://trust.zone/terms`, `https://trust.zone/privacy`, `https://trust.zone/setup/openvpn`, `https://trust.zone/contact-us` |
+
+### Ivacy
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.ivacy.com/`, `https://support.ivacy.com/servers-list/` |
+| Legal / privacy URLs | `https://support.ivacy.com/vpnusecases/openvpn-files-windows-routers-ios-linux-and-mac/`, `https://www.ivacy.com/terms-of-usage/`, `https://www.ivacy.com/privacy-policy/`, `https://www.ivacy.com/about/` |
+| Legal entity shown by official pages | Official support footer identified `PMG Pte. Ltd.` during the browser-rendered audit. |
+| Address / identifier | Official support footer identified `38 Beach Road #29-11 South Beach Tower Singapore 189767`. |
+| Registry / incorporation evidence | Ivacy marketing uses a 2006 founding/copyright claim, but no official registry extract was added in this pass. |
+| Who is behind it | Ivacy is presented as a Singapore-associated VPN service under PMG Pte. Ltd. on official support pages. |
+| Source discovery | Browser-rendered official support pages expose exact server hostnames such as `us2-auto-tcp.dns2use.com` and support pages link official S3 config archives. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Promising but not shippable yet. `https://support.ivacy.com/servers-list/` returns 403 to local/gem-style fetches, even though browser search/rendering shows useful hostnames. Official S3 config artifacts such as `https://ivacy.s3.amazonaws.com/support/OpenVPN-Configs.rar` and `https://ivacy.s3.amazonaws.com/support/OpenVPN-Configs-with-certificate.rar` fetch as RAR files, not ZIPs. |
+| Live smoke | On 2026-07-05, local fetch of the server-list page returned HTTP 403. The two S3 RAR artifacts returned HTTP 200, but OpenASN does not have a RAR parser and does not add new archive dependencies lightly for a single provider. |
+| Caveats | Do not bypass the WAF, do not scrape browser-rendered content that cannot be reproduced by the gem updater, and do not add a RAR dependency until it is justified by multiple high-value first-party sources and covered by zip-bomb-equivalent safety tests. |
+| Primary source URLs | `https://support.ivacy.com/servers-list/`, `https://support.ivacy.com/vpnusecases/openvpn-files-windows-routers-ios-linux-and-mac/`, `https://ivacy.s3.amazonaws.com/support/OpenVPN-Configs.rar`, `https://ivacy.s3.amazonaws.com/support/OpenVPN-Configs-with-certificate.rar`, `https://www.ivacy.com/terms-of-usage/`, `https://www.ivacy.com/privacy-policy/` |
+
+### SaferVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.safervpn.com/` |
+| Legal / privacy URLs | `https://www.safervpn.com/terms`, `https://www.safervpn.com/privacy`, `https://support.safervpn.com/` |
+| Legal entity shown by official pages | Not verified from a locally fetchable official page in this batch; official site/support fetches returned 403 from the local environment. Historical public material tied SaferVPN to the Perimeter 81 / J2 Global lineage, but that is not enough for source attribution. |
+| Address / identifier | Not found in locally fetchable official pages in this pass. |
+| Registry / incorporation evidence | Not found in locally fetchable official pages in this pass. |
+| Who is behind it | Historical/legal research indicates SaferVPN is a legacy consumer VPN brand associated with the Perimeter 81/J2 Global acquisition path, but current official public pages did not provide a clean, fetchable operator/source record from this environment. |
+| Source discovery | Third-party router/vendor and community references point to historical SaferVPN OpenVPN configs, but no current first-party exact IP/CIDR/hostname source fetched cleanly. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Blocked by source quality and fetchability. The official pages that might establish legal/operator facts or config paths returned 403 locally; third-party historical config links are not redistributable source data. |
+| Live smoke | On 2026-07-05, official site/support fetches returned 403 or non-useful public pages. No parser smoke because no accepted source body was obtained. |
+| Caveats | Do not import GL.iNet, haugene, or forum-derived SaferVPN hosts. Revisit only if a current first-party config archive/status/API becomes fetchable without account credentials, bot-challenge bypassing, or proprietary client inspection. |
+| Primary source URLs | `https://www.safervpn.com/`, `https://support.safervpn.com/`, `https://www.safervpn.com/terms`, `https://www.safervpn.com/privacy` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 19+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 20+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

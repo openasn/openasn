@@ -42,6 +42,7 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `fastestvpn_udp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=udp` | opt-in `vpn_dns` | `html_table_hostnames` | 68 hostnames / 55 v4, 0 v6 |
 | `vpnsecure_locations` | VPNSecure | `https://www.vpnsecure.me/vpn-locations/` | opt-in `vpn_dns` | `vpnsecure_locations_html` | 60 hostnames / 60 v4, 0 v6 |
 | `tunnelbear_openvpn` | TunnelBear | `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 47 hostnames / 925 resolved v4 -> 571 merged v4 ranges, 0 v6 |
+| `strongvpn_locations` | StrongVPN | `https://strongtech.org/locations/` | opt-in `vpn_dns` | `strongvpn_locations_html` | 145 hostnames / 74 resolved v4 -> 59 merged v4 ranges, 0 v6; 71 DNS misses |
 | `vpnbook_openvpn` | VPNBook | `https://www.vpnbook.com/freevpn/openvpn` | opt-in `public_relays` | `vpnbook_html_hosts` | 10 hostnames / 9 v4, 0 v6; 1 DNS miss |
 
 DNS-expanded counts are resolver-vantage-specific. Hostname counts are the
@@ -74,6 +75,7 @@ End-to-end sample classifications from the live run:
 | `fastestvpn_tcp` | `5.181.233.122` | `vpn`, provider `FastestVPN` |
 | `vpnsecure_locations` | `103.106.228.223` | `vpn`, provider `VPNSecure` |
 | `tunnelbear_openvpn` | `5.253.206.35` | `vpn`, provider `TunnelBear` |
+| `strongvpn_locations` | `176.67.81.250` | `vpn`, provider `StrongVPN` |
 | `vpnbook_openvpn` | `142.4.216.196` | `vpn`, provider `VPNBook` |
 | `vpngate` | `1.244.51.251` | `vpn`, provider `VPN Gate` |
 
@@ -102,6 +104,7 @@ End-to-end sample classifications from the live run:
 | FastestVPN | Added opt-in DNS-expanded Tier B. | Public support page `https://support.fastestvpn.com/vpn-servers/` uses the first-party AJAX endpoint now in the manifest. |
 | VPNSecure | Added opt-in DNS-expanded Tier B. | `https://www.vpnsecure.me/vpn-locations/` publishes per-server labels and status; parser keeps only `status--up` hosts. |
 | TunnelBear | Added opt-in DNS-expanded Tier B. | `https://www.tunnelbear.com/blog/setting-up-tunnelbear-on-linux/` links the first-party public OpenVPN ZIP at `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip`. |
+| StrongVPN | Added opt-in DNS-expanded Tier B. | `https://strongtech.org/locations/` publishes exact `vpn-*.reliablehosting.com` speedtest/server hostnames from the StrongVPN/StrongTech first-party site. |
 | VPN Gate | Existing opt-in public relay Tier B. | `http://www.vpngate.net/api/iphone/` is the official public relay API. |
 | VPNBook | Added opt-in public relay Tier B. | `https://www.vpnbook.com/freevpn/openvpn` publishes current OpenVPN hostnames. |
 
@@ -149,7 +152,6 @@ End-to-end sample classifications from the live run:
 | VeePN | Not added. | VeePN Corp., Panama; official server page lists 2,600+ servers / 109 locations / 85 countries, while legal pages name Laraun Limited and IT Research LLC for payments. No exact public egress source verified. |
 | SkyVPN | Not added. | SkyVPN, Inc.; terms say Hong Kong office control and product pages claim 3000+ servers / 30M users, but no exact IP/CIDR/hostname list, config archive, or server API was found. |
 | X-VPN | Not added. | LIGHTNINGLINK NETWORKS PTE. LTD.; official pages claim 10,000+ servers / 80+ countries / 250+ locations. Router OpenVPN configs are premium/account-gated; no public exact source verified. |
-| StrongVPN | Not added. | Ziff Davis brand; no public exact egress source verified. |
 | Total VPN | Not added. | Product page only; no exact source verified. |
 | SetupVPN | Not added. | Product page only; no exact source verified. |
 | uVPN | Not added. | Product page only; no exact source verified. |

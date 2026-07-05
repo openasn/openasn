@@ -868,10 +868,97 @@ hostname inventory suitable for OpenASN.
 | Caveats | Do not use account-gated router configs, user-exported `.ovpn` files, app traffic, or generated guesses from country pages. X-VPN's 2026 privacy-policy text is current and useful for operator identity, but it is not a source of egress addresses. |
 | Primary source URLs | `https://xvpn.io/`, `https://xvpn.io/about-us`, `https://xvpn.io/policy`, `https://xvpn.io/terms-service`, `https://xvpn.io/vpn-server`, `https://xvpn.io/sitemap.xml`, `https://xvpn.io/help-center/how-to-set-up-x-vpn-on-asus-routers-openvpn`, `https://companieshouse.sg/lightninglink-networks-pte-ltd-202530186D`, `https://recordowl.com/company/lightninglink-networks-pte-ltd`, `https://www.sgpbusiness.com/company/Lightninglink-Networks-Pte-Ltd`, `https://sg.ltddir.com/companies/lightninglink-networks-pte-ltd/` |
 
+## Batch 11 - Mixed Commercial And Extension VPNs
+
+This batch added one OpenASN source. StrongVPN's legacy/current StrongTech
+locations page publishes exact provider hostnames and fits the existing
+opt-in `vpn_dns` model. The other four services were researched and
+documented, but did not publish an unauthenticated exact egress inventory.
+
+### StrongVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://strongvpn.com/`, `https://strongvpn.com/aboutus/`, `https://strongtech.org/locations/` |
+| Legal / privacy URLs | `https://strongvpn.com/privacy-policy/`, `https://strongtech.org/privacy-policy/` |
+| Legal entity shown by official pages | Strong Technology LLC, a Ziff Davis company. |
+| Address / identifier | StrongVPN privacy/contact/footer pages list Strong Technology LLC, 114 5th Ave, New York, NY 10011, USA. The same pages also list Ziff Davis, Inc. at 114 5th Ave, New York, NY 10011, and identify StrongVPN as a registered trademark of Strong Technology, LLC. |
+| Registry / incorporation evidence | Official pages verify the current legal operator and address. No Delaware/New York/other state registry extract or incorporation date for Strong Technology LLC was captured in this batch. Existing OpenASN IPVanish research documents the Ziff Davis / J2 Global acquisition context for the StackPath VPN brands, but provider attribution stays `StrongVPN`. |
+| Who is behind it | StrongVPN is operated by Strong Technology LLC and presented as a Ziff Davis company. Its about page describes a service history beginning from California.net / ReliableHosting roots and says the network has expanded to 950+ servers in 30+ countries. |
+| OpenASN data source | Added `strongvpn_locations`: `https://strongtech.org/locations/`, parser `strongvpn_locations_html`, provider `StrongVPN`, source group `vpn_dns`, enabled by `config.tier_b[:vpn_dns]`. |
+| Source quality / status | Accepted as opt-in DNS-expanded Tier B. The first-party StrongTech locations page publishes exact `vpn-*.reliablehosting.com` speedtest/server hostnames. OpenASN resolves those hostnames locally and publishes no resolved IP list. This matches the Surfshark/IPVanish/TunnelBear DNS-expanded model rather than the default exact-IP provider model. |
+| Live smoke | Live parser smoke on 2026-07-05 found 145 unique hostnames. The Ruby client path resolved 74 IPv4 addresses, 0 IPv6 addresses, and packed them into 59 IPv4 ranges; 71 hostnames did not resolve from this resolver. End-to-end lookup smoke: `176.67.81.250` returned `verdict: :vpn`, `category: "hosting"`, `provider: "StrongVPN"`, `sources: [:strongvpn_locations]`. |
+| Caveats | Keep this source opt-in. The page includes stale DNS names, publishes hostnames rather than raw IPs, and uses ReliableHosting naming that reflects StrongVPN's infrastructure history. Do not widen to neighboring prefixes and do not infer StrongVPN from Ziff Davis, IPVanish, ReliableHosting, or surrounding ASNs. |
+| Primary source URLs | `https://strongvpn.com/`, `https://strongvpn.com/aboutus/`, `https://strongvpn.com/privacy-policy/`, `https://strongtech.org/privacy-policy/`, `https://strongtech.org/locations/`, `https://www.ziffdavis.com/brands/security/ipvanish` |
+
+### Total VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.totalvpn.com/`, `https://help.totalvpn.com/en/vpn` |
+| Legal / privacy URLs | `https://legal.totalvpn.com/terms`, `https://legal.totalvpn.com/privacy`, `https://www.totalvpn.com/privacy` |
+| Legal entity shown by official pages | Total Security Limited, Total Security U.S. LLC, and affiliates, each part of Point Wild. |
+| Address / identifier | Terms identify Total Security Limited as a UK company incorporated under number `10161957`, Total Security U.S. LLC, and affiliates. Terms list U.S. notices to Total Security U.S. LLC, 250 Northern Ave., 3rd Floor, Boston, MA 02210, and non-U.S. notices to Total Security Limited, 16-18 Barnes Wallis Road, Segensworth, Fareham, Hampshire, United Kingdom, PO15 5TT. Privacy pages say the group is part of Point Wild, formerly known as Pango. |
+| Registry / incorporation evidence | UK Companies House lists TOTAL SECURITY LIMITED, company number `10161957`, registered office at 16-18 Barnes Wallis Road, Segensworth, Fareham, Hampshire, England, PO15 5TT, active private limited company, incorporated on May 4, 2016. No U.S. LLC registry extract was captured in this batch. |
+| Who is behind it | Total VPN is part of the Total Security / TotalAV / Point Wild family. Privacy pages explicitly connect the group to Point Wild, formerly Pango, so this belongs in the broader Pango/Point Wild family research set. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages publish legal text, app/product pages, help pages, and marketing claims such as 35+ country locations and thousands of servers in 90+ countries. Common public paths (`/servers`, `/vpn-servers`, `/openvpn`, `/wireguard`, `/router`, help pages, and legal pages) did not expose exact IPs, CIDRs, hostnames, or config archives. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, terms, privacy, help, sitemap/product paths, and legal pages fetched successfully on 2026-07-05. The current Gluetun clone had no Total VPN provider/source match. |
+| Caveats | Do not infer Total VPN exits from Pango/Point Wild sibling brands or from Total Security's country/server-count marketing. A future source needs exact public exits and must distinguish Total VPN from other Point Wild VPN products. |
+| Primary source URLs | `https://www.totalvpn.com/`, `https://legal.totalvpn.com/terms`, `https://legal.totalvpn.com/privacy`, `https://www.totalvpn.com/privacy`, `https://help.totalvpn.com/en/vpn`, `https://find-and-update.company-information.service.gov.uk/company/10161957` |
+
+### SetupVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://setupvpn.com/`, `https://setupvpn.com/download/`, `https://setupvpn.com/faq` |
+| Legal / privacy URLs | `https://setupvpn.com/terms`, `https://setupvpn.com/privacy-policy`, `https://setupvpn.com/register` |
+| Legal entity shown by official pages | SetupVPN Inc. |
+| Address / identifier | Terms list SetupVPN Inc, 815 Ponce De Leon Blvd, Second Floor, 33134 Coral Gables, Florida, USA. The privacy page/footer also lists SetupVPN Inc, Coral Gables, Florida 33134, USA. |
+| Registry / incorporation evidence | Official pages verify the operator name and Florida address. A Sunbiz entity-name search from this environment returned HTTP 403, so no primary Florida registry extract or incorporation date was captured in this batch. |
+| Who is behind it | SetupVPN is a free/premium browser/mobile VPN service. Official FAQ says it avoids sharing users' bandwidth/resources, supports browser extensions and mobile apps, does not support TVs/routers, and requires a valid SetupVPN account. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages expose terms, privacy, FAQ, account/app registration, and public app download links. The download page links `baseserver.io/public/s/...` paths for browser/mobile/desktop downloads; live probes of those paths returned HTML and only exposed app/download/support hostnames such as `api.keepthisdomain.com`, not an egress inventory. FAQ says server locations change every day and that SetupVPN has servers in the listed countries, but no exact list is published. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official terms, privacy, FAQ, register, download, sitemap/common paths, and `baseserver.io` download endpoints fetched successfully on 2026-07-05. The current Gluetun clone had no SetupVPN provider/source match. |
+| Caveats | Do not decompile app packages, use account state, or infer exits from browser extension behavior. The FAQ explicitly says server locations change daily, which makes a public exact source even more important before any provider label is emitted. |
+| Primary source URLs | `https://setupvpn.com/`, `https://setupvpn.com/terms`, `https://setupvpn.com/privacy-policy`, `https://setupvpn.com/faq`, `https://setupvpn.com/download/`, `https://setupvpn.com/register`, `https://baseserver.io/public/s/browser/chrome/`, `https://baseserver.io/public/s/browser/firefox/`, `https://baseserver.io/public/s/browser/edge/`, `https://baseserver.io/public/s/android/`, `https://baseserver.io/public/s/desktop/windows/` |
+
+### uVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://uvpn.me/`, `https://uvpn.me/downloads/`, `https://uvpn.me/servers/` |
+| Legal / privacy URLs | `https://uvpn.me/privacy-policy/` |
+| Legal entity shown by official pages | The Brocode Limited / Brocode Limited. |
+| Address / identifier | The privacy policy lists The Brocode Limited, No. 5, 17/F Bonham Trade Centre, 50 Bonham Strand, Sheung Wan, Hong Kong. |
+| Registry / incorporation evidence | Official privacy policy verifies the Hong Kong operator name and address. No Hong Kong Companies Registry extract, company number, or incorporation date was captured in this batch. |
+| Who is behind it | uVPN is a consumer VPN with apps for Windows, macOS, iOS, Android, and browser extensions for Chrome, Edge, and Firefox. The site presents itself as a one-click VPN and lists country-level server coverage. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | The public `/servers/` page lists countries/regions only: Europe, Asia Pacific, and The Americas country names. The WordPress JSON for that page exposes the page/template metadata but no server records. Download and support pages expose app/product links, not exact IPs, CIDRs, hostnames, or configs. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official privacy, servers, downloads, support, sitemap, and WordPress JSON pages fetched successfully on 2026-07-05. The current Gluetun clone had no uVPN provider/source match. |
+| Caveats | Do not infer current exits from country names. Do not rely on app/extension packages, account state, or marketing claims such as "unlimited servers" without an exact public inventory. |
+| Primary source URLs | `https://uvpn.me/`, `https://uvpn.me/privacy-policy/`, `https://uvpn.me/servers/`, `https://uvpn.me/downloads/`, `https://uvpn.me/support/`, `https://uvpn.me/sitemap.xml`, `https://uvpn.me/wp-json/wp/v2/pages/2026` |
+
+### GOOSE VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://goosevpn.com/`, `https://goosevpn.com/vpn-routers`, `https://goosevpn.com/faq` |
+| Legal / privacy URLs | `https://goosevpn.com/terms-of-service`, `https://goosevpn.com/privacy-policy` |
+| Legal entity shown by official pages | GOOSE B.V.; business name GOOSE VPN, part of GOOSE B.V. |
+| Address / identifier | Terms/privacy pages list GOOSE B.V., Treubstraat 31, 2288EH Rijswijk, The Netherlands, Chamber of Commerce `34278975`, VAT `NL818275066B01`. The terms contact block also lists business address Kreeksehaven 61, 3077 AG Rotterdam, The Netherlands. |
+| Registry / incorporation evidence | Official legal pages verify the Dutch company name, Chamber of Commerce number, VAT number, and addresses. The live KVK site returned an app-shell page from this environment, so no primary KVK extract or incorporation date was captured in this batch. |
+| Who is behind it | GOOSE VPN is a Dutch VPN operated/developed/maintained by Goose B.V. Its privacy policy says the GOOSE server network is property of and administered/monitored by Goose BV in Rotterdam, The Netherlands. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages publish legal details, product pages, router protocol support, country/benefit pages, and support material. The router page says GOOSE supports PPTP, L2TP, OpenVPN, and IKEv2 for routers, but directs users to the portal/support flow and does not publish a public config archive or exact server host/IP inventory. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, terms, privacy, router, FAQ, sitemap, and country/benefit pages fetched successfully on 2026-07-05. Candidate `/faq/openvpn` and `/faq/manual-configuration` paths returned 404. The current Gluetun clone had no GOOSE VPN provider/source match. |
+| Caveats | Do not scrape user portal state or user-exported configs. GOOSE's legal pages are unusually good for operator identity, but operator identity is not egress provenance. A future accepted source needs exact public hostnames/IPs/CIDRs from GOOSE B.V. or a license-clean authority. |
+| Primary source URLs | `https://goosevpn.com/`, `https://goosevpn.com/terms-of-service`, `https://goosevpn.com/privacy-policy`, `https://goosevpn.com/vpn-routers`, `https://goosevpn.com/faq`, `https://goosevpn.com/sitemap.xml`, `https://goosevpn.com/wp-sitemap-posts-page-1.xml` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 11: StrongVPN, Total VPN, SetupVPN, uVPN, GooseVPN.
-2. Batch 12: MEGA VPN, Spaceship/FastVPN, BullVPN, hidemy.name/hide.mn, FineVPN.
-3. Batch 13+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 12: MEGA VPN, Spaceship/FastVPN, BullVPN, hidemy.name/hide.mn, FineVPN.
+2. Batch 13: ZoogVPN, SuperVPN, VPN Super, FreeVPN.org, VPNly.
+3. Batch 14+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

@@ -7,10 +7,10 @@ conservative: exact IPs first, original authority preferred, licensed fallback
 only when rights are clear, no account-only APIs, no bot-challenge bypasses, no
 ShareAlike data, no widened `/24` or ASN inference for `vpn`.
 
-Detailed provider/operator dossiers live in
-`docs/vpn-provider-dossiers.md`. Keep this file focused on source decisions and
-the dossier file focused on who operates each service, exact legal URLs,
-registry evidence, incorporation/founding caveats, and OpenASN data provenance.
+Detailed provider/operator dossiers live in `VPN_PROVIDER_DOSSIERS.md`. Keep
+this file focused on source decisions and the dossier file focused on who
+operates each service, exact legal URLs, registry evidence,
+incorporation/founding caveats, and OpenASN data provenance.
 
 ## Source Quality Modes
 
@@ -27,12 +27,12 @@ registry evidence, incorporation/founding caveats, and OpenASN data provenance.
 | Source id | Provider | URL | Group | Parser | Live smoke on 2026-07-05 |
 |---|---|---|---|---|---|
 | `pia_servers` | Private Internet Access | `https://serverlist.piaservers.net/vpninfo/servers/v7` | default `vpn_providers` | `pia_servers_json` | 1310 v4, 0 v6 |
-| `nordvpn_servers` | NordVPN | `https://api.nordvpn.com/v2/servers?limit=0` | opt-in `vpn_heavy` | `nordvpn_servers_json` | 9108 v4, 1 v6 |
+| `nordvpn_servers` | NordVPN | `https://api.nordvpn.com/v2/servers?limit=0` | opt-in `vpn_heavy` | `nordvpn_servers_json` | 9455 v4, 1 v6 |
 | `privadovpn` | PrivadoVPN | `https://privadovpn.com/apps/servers_export.json` | default `vpn_providers` | `privado_servers_json` | 166 v4, 0 v6 |
-| `riseup_vpn` | RiseupVPN | `https://api.black.riseup.net/3/config/eip-service.json` | default `vpn_providers` | `leap_eip_service_json` | 20 v4, 0 v6 |
-| `surfshark_generic` | Surfshark | `https://api.surfshark.com/v4/server/clusters/generic` | opt-in `vpn_dns` | `surfshark_clusters_json` | 283 v4, 0 v6 |
-| `surfshark_static` | Surfshark | `https://api.surfshark.com/v4/server/clusters/static` | opt-in `vpn_dns` | `surfshark_clusters_json` | 36 v4, 0 v6 |
-| `surfshark_obfuscated` | Surfshark | `https://api.surfshark.com/v4/server/clusters/obfuscated` | opt-in `vpn_dns` | `surfshark_clusters_json` | 7 v4, 0 v6 |
+| `riseup_vpn` | RiseupVPN | `https://api.black.riseup.net/3/config/eip-service.json` | default `vpn_providers` | `leap_eip_service_json` | 21 v4, 0 v6 |
+| `surfshark_generic` | Surfshark | `https://api.surfshark.com/v4/server/clusters/generic` | opt-in `vpn_dns` | `surfshark_clusters_json` | 142 hostnames / 280 v4, 0 v6 |
+| `surfshark_static` | Surfshark | `https://api.surfshark.com/v4/server/clusters/static` | opt-in `vpn_dns` | `surfshark_clusters_json` | 36 hostnames / 36 v4, 0 v6 |
+| `surfshark_obfuscated` | Surfshark | `https://api.surfshark.com/v4/server/clusters/obfuscated` | opt-in `vpn_dns` | `surfshark_clusters_json` | 7 hostnames / 7 v4, 0 v6 |
 | `ipvanish_openvpn` | IPVanish | `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 3463 v4, 0 v6 |
 | `privatevpn_openvpn` | PrivateVPN | `https://privatevpn.com/client/PrivateVPN-TUN.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 101 v4, 0 v6 |
 | `purevpn_openvpn` | PureVPN | `https://d11a57lttb2ffq.cloudfront.net/heartbleed/router/Recommended-CA2.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 122 v4, 0 v6 |
@@ -51,7 +51,7 @@ Also verified unchanged existing sources in the same run:
 | `mullvad_relays` | Mullvad | 496 v4, 532 v6 |
 | `ivpn_servers` | IVPN | 169 v4, 0 v6 |
 | `airvpn_status` | AirVPN | 445 v4, 1004 v6 |
-| `windscribe_servers` | Windscribe | 375 v4, 0 v6 |
+| `windscribe_servers` | Windscribe | 1023 v4, 0 v6 |
 | `vpngate` | VPN Gate | 99 v4, 0 v6 |
 
 End-to-end sample classifications from the live run:

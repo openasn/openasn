@@ -77,14 +77,14 @@ The client-facing `verdict` is the product contract. The raw ASN labels are cont
 
 ## Provider enrichment roadmap
 
-OpenASN's MVP answers the most important question first: human-ish access network vs infrastructure. The next layer is provider attribution: "this hosting IP is AWS" or "this VPN IP is Mullvad." The rules for adding that layer are stricter than "can we scrape it":
+OpenASN's MVP answers the most important question first: human-ish access network vs infrastructure. The next layer is provider attribution: "this hosting IP is AWS" or "this VPN IP is Mullvad." The public source ledger lives in [PROVIDER_SOURCES.md](PROVIDER_SOURCES.md), and the slower provider/operator dossiers live in [VPN_PROVIDER_DOSSIERS.md](VPN_PROVIDER_DOSSIERS.md). The rules for adding that layer are stricter than "can we scrape it":
 
 - **Exact IP hits may set `provider`.** A first-party or license-clean list containing the observed exit IP can produce `provider: "mullvad"` or `provider: "ivpn"`.
 - **Nearby-prefix inference is context only.** Seeing an IP in the same `/24` as known Mullvad relays is useful analyst context, but it must not silently become a provider verdict.
 - **Tier A still requires redistribution rights.** Most provider lists belong in Tier B recipes, where clients fetch from the original authority.
 - **Every source needs parser tests, live smoke fixtures, cadence, keep-stale behavior, and a legal note.**
 
-The enrichment pass added exact-IP Tier B recipes for Mullvad (also Mozilla/Firefox VPN infrastructure), IVPN, Private Internet Access, AirVPN, Windscribe, PrivadoVPN, RiseupVPN, NordVPN (opt-in heavy), and VPN Gate (opt-in public relays). It also added opt-in DNS-expanded recipes for provider-published hostnames from Surfshark, IPVanish, PrivateVPN, PureVPN, TorGuard, FastestVPN, VPNSecure, and VPNBook. Apple Private Relay stays `relay`, and Cloudflare ranges stay context-only. Still-open research candidates include ProtonVPN official alternatives, ExpressVPN, CyberGhost, Perfect Privacy, TunnelBear, Kape/Pango white-label brands, Cloudflare WARP-specific egress, and other provider APIs that expose exact IPs without client impersonation. The standard is source quality first, provider coverage second; the full accepted/rejected source ledger lives in [`docs/provider-source-research.md`](docs/provider-source-research.md).
+The enrichment pass added exact-IP Tier B recipes for Mullvad (also Mozilla/Firefox VPN infrastructure), IVPN, Private Internet Access, AirVPN, Windscribe, PrivadoVPN, RiseupVPN, NordVPN (opt-in heavy), and VPN Gate (opt-in public relays). It also added opt-in DNS-expanded recipes for provider-published hostnames from Surfshark, IPVanish, PrivateVPN, PureVPN, TorGuard, FastestVPN, VPNSecure, and VPNBook. Apple Private Relay stays `relay`, and Cloudflare ranges stay context-only. Still-open research candidates include ProtonVPN official alternatives, ExpressVPN, CyberGhost, Perfect Privacy, TunnelBear, Kape/Pango white-label brands, Cloudflare WARP-specific egress, and other provider APIs that expose exact IPs without client impersonation. The standard is source quality first, provider coverage second.
 
 ## Legal design (load-bearing, do not weaken)
 

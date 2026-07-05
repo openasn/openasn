@@ -1047,10 +1047,112 @@ downloads. Those are useful research facts, but not OpenASN source data.
 | Caveats | Do not use customer/trial WireGuard or Xray configs, Telegram-generated configs, billing-panel state, or country/use-case SEO pages as source data. FineVPN is related to proxy products, so avoid importing proxy lists or surrounding QualityNetwork/FineProxy infrastructure as `vpn` exits without exact FineVPN provenance. |
 | Primary source URLs | `https://finevpn.org/`, `https://finevpn.org/rules-of-use/`, `https://finevpn.org/services/wire/`, `https://finevpn.org/site-map/`, `https://billing.finevpn.org/`, `https://play.google.com/store/apps/details?id=com.fineprotectapp.android`, `https://fineproxy.org/terms-of-service/` |
 
+## Batch 13 - ZoogVPN, SuperVPN, VPN Super, FreeVPN.org, VPNLY
+
+This batch did not add a source. It did improve the negative-evidence ledger
+for five popular/free/mobile-heavy VPN brands. The common pattern was strong
+public product/app evidence, but no legally clean exact egress inventory.
+
+Two tempting candidate paths were deliberately rejected: VPN Super's Windows
+installer and FreeVPN.org's desktop client package. Both are useful research
+evidence, but OpenASN should not turn proprietary client inspection into public
+source data, especially when a service's terms prohibit reverse engineering or
+when the result is only location/accelerator metadata rather than exact exits.
+
+### ZoogVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://zoogvpn.com/`, `https://zoogvpn.com/about/`, `https://zoogvpn.com/zoogvpn-servers/`, `https://zoogvpn.com/vpn-setup-configuration/`, `https://app.zoogvpn.com/` |
+| Legal / privacy URLs | `https://zoogvpn.com/privacy/`, `https://zoogvpn.com/terms/` |
+| Legal entity shown by official pages | Zoog Services IKE / Zoog Services PC / Zoog Services P.C. |
+| Address / identifier | Official about/footer pages list Zoog Services IKE, 130 Germanou, Patras 26224, Greece, phone `+1 321 396 5183`. The privacy policy refers to Zoog Services PC. |
+| Registry / incorporation evidence | The official about page says ZoogVPN was founded in May 2013 and is legally registered in Greece. No Greek registry extract, company number, or incorporation date beyond that product-history statement was captured in this batch. |
+| Who is behind it | ZoogVPN presents itself as an independent Greece-registered consumer VPN founded by networking/IT operators. Apple lists the iOS seller as Zoog Services P.C.; Google Play lists developer Zoog Services IKE. |
+| App/store identity | Apple lookup/app page: `https://itunes.apple.com/lookup?id=1204851407&country=US`, `https://apps.apple.com/us/app/zoogvpn-fast-secure-proxy/id1204851407`; Google Play developer: `https://play.google.com/store/apps/developer?id=Zoog+Services+IKE`. |
+| Claimed network | Official pages currently market 200+ servers across 35+ countries and also describe 100+ locations/thousands of IP addresses in app-store style copy. Those are coverage claims, not exact egress provenance. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Public setup and server pages are explanatory/product pages, not exact inventories. The authenticated app dashboard exposes API surface under `https://api-d.zoogvpn.com`, including setup server/download endpoints, but `https://api-d.zoogvpn.com/api/setup/servers/get` and `https://api-d.zoogvpn.com/api/setup/downloads/get` returned `401` with `WWW-Authenticate: jwt-auth` on 2026-07-05. `https://api-d.zoogvpn.com/api/ip/info` returns only the caller's current IP/country. Third-party GitHub/config mirrors containing `*.zoogvpn.com` hostnames were rejected. |
+| Live smoke | Official home, about, privacy, terms, setup, server, sitemap, and app-dashboard pages fetched successfully on 2026-07-05. API probes confirmed auth gating for exact setup data and no unauthenticated server list. |
+| Caveats | Do not infer exits from product server counts, app-dashboard JS, third-party config mirrors, or customer/account-generated configuration files. A future accepted source needs an unauthenticated Zoog-published exact IP/CIDR/hostname list or explicit license-clean redistribution rights. |
+| Primary source URLs | `https://zoogvpn.com/`, `https://zoogvpn.com/about/`, `https://zoogvpn.com/privacy/`, `https://zoogvpn.com/terms/`, `https://zoogvpn.com/zoogvpn-servers/`, `https://zoogvpn.com/vpn-servers/`, `https://zoogvpn.com/vpn-setup-configuration/`, `https://app.zoogvpn.com/`, `https://api-d.zoogvpn.com/api/setup/servers/get`, `https://api-d.zoogvpn.com/api/setup/downloads/get`, `https://api-d.zoogvpn.com/api/ip/info`, `https://apps.apple.com/us/app/zoogvpn-fast-secure-proxy/id1204851407`, `https://play.google.com/store/apps/developer?id=Zoog+Services+IKE` |
+
+### SuperVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.supervpn.best/`, `https://www.supervpn.best/faq.html`, `https://www.supervpn.best/contact.html` |
+| Legal / privacy URLs | `https://www.supervpn.best/privacy.html`, `https://find-and-update.company-information.service.gov.uk/company/12451849` |
+| Legal entity shown by official pages | NetworkSuper LTD / NETWORKSUPER LTD. The site footer has both `NetworkSuper LTD` and one misspelled `NetwokSuper LTD`; app stores and Companies House use `NETWORKSUPER LTD`. |
+| Address / identifier | Companies House lists company number `12451849`, registered office 44 Mayford Road, London, England, SW12 8SD. Google Play lists the same address, support email `goanalyticsapp@gmail.com`, business email `business@networksuper.net`, and phone `+44 7762 484138`. |
+| Registry / incorporation evidence | Companies House lists NETWORKSUPER LTD as active, private limited company, incorporated `2020-02-10`, SIC `62012 - Business and domestic software development`, previous company name LUNASPEED LTD from `2020-02-10` to `2024-05-30`. |
+| Who is behind it | SuperVPN is a free mobile VPN app currently published by NETWORKSUPER LTD. It appears to be a continuation/rebranding of the long-running `com.jrzheng.supervpnfree` Android package under a UK company identity. |
+| App/store identity | Apple: `https://itunes.apple.com/lookup?id=6673905322&country=US`, `https://apps.apple.com/pk/app/supervpn-fast-vpn-client/id6673905322`; Google Play: `https://play.google.com/store/apps/details?id=com.jrzheng.supervpnfree`, and paid/pro listing `https://play.google.com/store/apps/details?id=com.jrzheng.supervpnpayment`. |
+| Claimed network | Official site markets one-click/free/unlimited VPN and says the app connects to the fastest server automatically. No public server-count, exact hostname, exact IP, or CIDR inventory was found. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official home/privacy/FAQ/contact pages and app-store pages identify the operator and support surface, but do not publish exact VPN exits. No unauthenticated config archive, server API, hostname list, or CIDR list was verified. |
+| Live smoke | Official pages fetched successfully on 2026-07-05. Cloudflare-protected support email on `contact.html` decodes to `goanalyticsapp@gmail.com`; Google Play independently shows the same support email and UK company address. No parser smoke because no OpenASN-compatible source was found. |
+| Caveats | Do not infer exits from package name history, automatic-server UX, app screenshots, or user-observed assignments. The name `SuperVPN` is overloaded across unrelated apps; keep this entry scoped to `www.supervpn.best`, NETWORKSUPER LTD, and `com.jrzheng.supervpnfree`. |
+| Primary source URLs | `https://www.supervpn.best/`, `https://www.supervpn.best/privacy.html`, `https://www.supervpn.best/faq.html`, `https://www.supervpn.best/contact.html`, `https://find-and-update.company-information.service.gov.uk/company/12451849`, `https://apps.apple.com/pk/app/supervpn-fast-vpn-client/id6673905322`, `https://play.google.com/store/apps/details?id=com.jrzheng.supervpnfree`, `https://play.google.com/store/apps/details?id=com.jrzheng.supervpnpayment`, `https://itunes.apple.com/lookup?id=6673905322&country=US` |
+
+### VPN Super
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://vpnsuper.com/`, `https://vpnsuper.com/download-vpn`, `https://vpnsuper.com/vpn-server`, `https://account.vpnsuper.com/en/pricing` |
+| Legal / privacy URLs | `https://vpnsuper.com/privacy-notice`, `https://vpnsuper.com/terms-of-service` |
+| Legal entity shown by official pages | Terms of Service say the agreement is with VPN Super Inc. Privacy Notice says it covers Super Unlimited Inc., VPN Super Inc., Free VPN Pte. Ltd, and Mobile Jump Pte. Ltd. |
+| Address / identifier | No official street address was captured from the VPN Super legal pages. Apple lists seller Mobile Jump Pte Ltd for app id `1370293473`; app-store/secondary Singapore registry pages identify Mobile Jump Pte. Ltd. with UEN `201933447E`. Google Play lists developer VPN Super Inc for package `com.free.vpn.super.hotspot.open`. |
+| Registry / incorporation evidence | Secondary Singapore company directories derived from ACRA list Mobile Jump Pte. Ltd., UEN `201933447E`, incorporated `2019-10-04`, live company, address 36 Robinson Road #20-01, City House, Singapore 068877. No official ACRA paid extract was captured in this batch. Top10VPN has older ownership notes tying Mobile Jump Pte Ltd to Free VPN Pte Ltd; treat those as investigative context, not OpenASN source data. |
+| Who is behind it | VPN Super is a large mobile/Windows consumer VPN brand with a split public identity: VPN Super Inc in terms/Google Play and Mobile Jump Pte Ltd in Apple/app-store metadata. The privacy page groups it with Super Unlimited Inc. and Free VPN Pte. Ltd. |
+| App/store identity | Apple: `https://itunes.apple.com/lookup?id=1370293473&country=US`, `https://apps.apple.com/us/app/vpn-super-unlimited-proxy/id1370293473`; Google Play: `https://play.google.com/store/apps/details?id=com.free.vpn.super.hotspot.open`; Windows MSI: `https://download.vpnsuper.com/win/VPNSuper_x64.msi`. |
+| Claimed network | Official pages claim 100M+ users, 210+ cities / 55+ countries on the home page, 100+ global VPN server locations on the server page, and app/pricing claims such as 80+ locations / 10Gbps servers. These are product/location claims, not exact exits. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Public server pages enumerate country/location pages, not exact IPs/CIDRs/hostnames. The Windows MSI was downloaded and extracted offline on 2026-07-05. Extracted `server_list_loc.json` was a 14-language localization table with translation keys, not a server inventory; JSON settings files only contained local pipe/log/service settings; binary strings exposed support/update/token/location code paths but no clean static exit list. |
+| Live smoke | `https://download.vpnsuper.com/win/VPNSuper_x64.msi` downloaded and extracted with 7-Zip; `server_list_loc.json` contained 14 entries of `language` plus `translations`, each around 292 translation keys. Official privacy and terms pages fetched successfully and identify the corporate scope. No parser smoke because no OpenASN-compatible source was found. |
+| Caveats | Do not import installer-derived hostnames, app state, token endpoints, screenshots, app-store location lists, or generated country pages. If a future clean endpoint appears, verify whether it is operated by VPN Super Inc, Mobile Jump Pte Ltd, Super Unlimited Inc., or another affiliate before assigning provider text. |
+| Primary source URLs | `https://vpnsuper.com/`, `https://vpnsuper.com/download-vpn`, `https://vpnsuper.com/vpn-server`, `https://vpnsuper.com/privacy-notice`, `https://vpnsuper.com/terms-of-service`, `https://account.vpnsuper.com/en/pricing`, `https://download.vpnsuper.com/win/VPNSuper_x64.msi`, `https://apps.apple.com/us/app/vpn-super-unlimited-proxy/id1370293473`, `https://play.google.com/store/apps/details?id=com.free.vpn.super.hotspot.open`, `https://itunes.apple.com/lookup?id=1370293473&country=US`, `https://sg.ltddir.com/companies/mobile-jump/`, `https://www.sgpbusiness.com/company/Mobile-Jump-Pte-Ltd`, `https://www.top10vpn.com/research/free-vpn-investigations/china-vpn-ownership-taiwan/` |
+
+### FreeVPN.org / FreeVPNApp.org
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://freevpn.org/`, `https://freevpnapp.org/`, `https://freevpnapp.org/downloads/`, `https://freevpnapp.org/support.html`, `https://freevpnapp.org/contact/` |
+| Legal / privacy URLs | `https://freevpn.org/privacy-policy/`, `https://freevpn.org/terms-of-use/`, `https://freevpnapp.org/privacy-policy/`, `https://freevpnapp.org/terms-of-use/index.html` |
+| Legal entity shown by official pages | Free VPN LLC appears in Apple and Google Play metadata. The `freevpn.org` and `freevpnapp.org` legal pages are branded as Free VPN / Free VPN .org and list support contacts but did not expose a street address or LLC registration details in the fetched pages. |
+| Address / identifier | Official contact emails: `support@freevpn.org` on `freevpn.org`, `support@freevpnapp.org` on `freevpnapp.org`. No official company address or company number was captured. |
+| Registry / incorporation evidence | No primary LLC registry extract was captured in this batch. Top10VPN's 2018 ownership investigation says Free VPN, LLC is associated with ActMobile Networks, Inc. through California filings; treat this as secondary ownership context unless independently revalidated from current filings. |
+| Who is behind it | Public app-store metadata says Free VPN LLC publishes `Free VPN by Free VPN .org`. The current desktop client package contains Go build paths under `github.com/actmobile/freevpn-cli` and ActMobile/`dft-cdn42.net` control/data-plane strings, which is strong technical evidence of ActMobile infrastructure involvement but not a license-clean source for OpenASN artifacts. |
+| App/store identity | Apple: `https://itunes.apple.com/lookup?id=1050171910&country=US`, `https://apps.apple.com/us/app/free-vpn-by-free-vpn-org/id1050171910`; Google Play: `https://play.google.com/store/apps/details?id=org.freevpn`; package/bundle IDs include `org.freevpn` and `org.freevpn.vpn`. |
+| Claimed network | `freevpnapp.org` claims 100M+ installs, 10+ years, 1,000+ servers/global exits, no account/email/tracking, and current Mac/Windows/Linux/iOS/Android downloads. `freevpn.org` presents Free VPN .org as modular VPN technology for apps/software platforms. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Current `https://freevpnapp.org/downloads/LATEST` returned `0.3.6` on 2026-07-05, and `freevpn-0.3.6-linux-amd64.deb`, `freevpn-0.3.6-linux-arm64.deb`, `freevpn-0.3.6-windows-amd64.msi`, and `freevpn-0.3.6-darwin.pkg` returned 200. The Linux package was downloaded and extracted offline; it contains `freevpnd`, `freevpn`, and `freevpn-gui`. Binary strings exposed region/accelerator concepts, `control.actmobile.com`, `content.actmobile.com`, `content.dft-cdn42.net`, `c.dft-cdn42.net`, and `accel.*.dft-cdn42.net` hostnames. DNS for `accel.closest.f.dft-cdn42.net` returned many IPs. This was rejected as OpenASN source data because the evidence came from proprietary client inspection, `freevpn.org` terms prohibit reverse engineering/disassembly/deriving source code, and DNS accelerator answers do not establish redistribution rights or exact brand-specific VPN egress semantics. |
+| Live smoke | Official product/legal/download pages fetched successfully on 2026-07-05. `LATEST=0.3.6`; Linux `.deb` size was 19,245,588 bytes. Extracted ELF binaries totaled 37,097,380 bytes. No parser smoke because no accepted OpenASN-compatible source was found. |
+| Caveats | Do not publish or compile DNS-expanded `dft-cdn42.net` accelerator pools from the client package. Do not infer FreeVPN exits from ActMobile sibling products, package internals, current DNS answers, or user-observed VPN sessions. A future accepted source needs an explicit public server list/API/config archive with redistribution-safe rights, not client reverse engineering. |
+| Primary source URLs | `https://freevpn.org/`, `https://freevpn.org/privacy-policy/`, `https://freevpn.org/terms-of-use/`, `https://freevpnapp.org/`, `https://freevpnapp.org/privacy-policy/`, `https://freevpnapp.org/terms-of-use/index.html`, `https://freevpnapp.org/downloads/`, `https://freevpnapp.org/downloads/LATEST`, `https://freevpnapp.org/downloads/freevpn-0.3.6-linux-amd64.deb`, `https://freevpnapp.org/downloads/freevpn-0.3.6-windows-amd64.msi`, `https://freevpnapp.org/downloads/freevpn-0.3.6-darwin.pkg`, `https://apps.apple.com/us/app/free-vpn-by-free-vpn-org/id1050171910`, `https://play.google.com/store/apps/details?id=org.freevpn`, `https://www.top10vpn.com/research/free-vpn-investigations/ownership/` |
+
+### VPNLY
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://vpnly.com/`, `https://vpnly.com/servers/`, `https://vpnly.com/premium-servers/`, `https://vpnly.com/download-free-vpn/` |
+| Legal / privacy URLs | `https://vpnly.com/policy/`, `https://vpnly.com/terms/`, `https://vpnly.com/cookie-policy/`, `https://www.uid.admin.ch/Detail.aspx?lang=fr&uid_id=CHE467694739` |
+| Legal entity shown by official pages | Free VPN Unlimited AG. |
+| Address / identifier | Official site footer lists Free VPN Unlimited AG, Rigistrasse 3, CH-6300 Zug, Switzerland. Google Play currently lists Rigistrasse 2, 6300 Zug, Switzerland. Apple EU trader pages list DUNS `480475919`, Rigistrasse 3, phone `+48 793449398`, email `support@vpnly.com`. Swiss UID lists CHE `467.694.739`, active, RC/TVA, Free VPN Unlimited AG. |
+| Registry / incorporation evidence | Swiss UID page verifies active UID `CHE-467.694.739`. Commercial-register-derived sources list commercial register number `CH-170.3.044.734-9`, entry/register date `2020-07-13`, legal form Aktiengesellschaft/AG, capital CHF 100,000, and a 2026 domicile update to Rigistrasse 2. No paid Swiss register extract was captured in this batch. |
+| Who is behind it | VPNLY is operated by Free VPN Unlimited AG in Zug, Switzerland. Public registry-derived purposes include operating/providing VPN services and user databases plus software/application development and IT/consulting. |
+| App/store identity | Apple: `https://itunes.apple.com/lookup?id=6739255199&country=US`, `https://apps.apple.com/us/app/vpnly-vpn-unlimited-proxy/id6739255199`; Google Play: `https://play.google.com/store/apps/details?id=free.vpn.proxy.vpnly`; Firefox add-on: `https://addons.mozilla.org/en-US/firefox/addon/vpn-free-unlimited-vpnly/`; Chrome extension id observed in public metadata: `lneaocagcijjdpkcabeanfpdbmapcjjg`. |
+| Claimed network | Official pages claim a free VPN without registration/traffic/speed limits, 1000+ premium servers, 20+ countries, browser/desktop/mobile apps, and country-specific server pages. Those pages are location/marketing pages, not exact exit inventories. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Website sitemaps and `/servers/*` pages expose country pages only. Chrome-extension public strings referenced `https://api.telegra.ph/getPage/fvp-11-30` and `https://s3.hub-vpn.com`; the Telegraph body contained encrypted-looking blobs, and `https://s3.hub-vpn.com/servers.json` returned three HTTPS proxy entries with credentials. That object was rejected: it is proxy configuration, contains credentials, has unclear publication/redistribution rights, and is not a clean VPN egress inventory. Secrets are intentionally not reproduced in OpenASN docs. |
+| Live smoke | Official home, policy, terms, premium-servers, page sitemap, and server sitemap fetched successfully on 2026-07-05. `https://s3.hub-vpn.com/servers.json` returned HTTP 200 with 898 bytes and `Last-Modified: Tue, 16 Jun 2026 14:12:13 GMT`; it was treated as a rejected candidate, not an OpenASN source. |
+| Caveats | Do not import proxy credentials, browser-extension configs, encrypted Telegraph blobs, or country page locations. Do not infer VPN exits from S3 bucket names, `freeruproxy.ink` hostnames, or marketing server counts. A future accepted source needs exact Free VPN Unlimited AG-published exits and no secret material. |
+| Primary source URLs | `https://vpnly.com/`, `https://vpnly.com/policy/`, `https://vpnly.com/terms/`, `https://vpnly.com/servers/`, `https://vpnly.com/premium-servers/`, `https://vpnly.com/sitemap.xml`, `https://vpnly.com/servers-sitemap.xml`, `https://www.uid.admin.ch/Detail.aspx?lang=fr&uid_id=CHE467694739`, `https://www.moneyhouse.ch/en/company/free-vpn-unlimited-ag-21450053451`, `https://play.google.com/store/apps/details?id=free.vpn.proxy.vpnly`, `https://apps.apple.com/us/app/vpnly-vpn-unlimited-proxy/id6739255199`, `https://addons.mozilla.org/en-US/firefox/addon/vpn-free-unlimited-vpnly/`, `https://api.telegra.ph/getPage/fvp-11-30?return_content=true`, `https://s3.hub-vpn.com/servers.json` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 13: ZoogVPN, SuperVPN, VPN Super, FreeVPN.org, VPNly.
-2. Batch 14: SuperFree VPN, FreeVPNApp.org / FreeVPNApp.io, FreeVPN.us, VpnHood, FreeVPN724 / WorldVPN.
-3. Batch 15+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 14: SuperFree VPN, FreeVPN.us, VpnHood, FreeVPN724 / WorldVPN, StarVPN.
+2. Batch 15: GoFlyVPN, iTop VPN, Total VPN, SetupVPN, Radmin VPN.
+3. Batch 16+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

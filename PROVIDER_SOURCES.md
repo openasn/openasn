@@ -164,13 +164,13 @@ End-to-end sample classifications from the live run:
 | BullVPN | Not added. | PERSEC COMPANY LIMITED publishes location/server-count marketing and app/setup pages, but common API/config paths returned 404 or site pages. No public exact IP/CIDR/hostname inventory was verified. |
 | hidemy.name / hide.mn | Not added. | Public pages list network size and router support, but `.ovpn` downloads/server IP settings require an access code from payment or trial flow. Account-gated configs are not OpenASN source data. |
 | FineVPN | Not added. | QualityNetwork OÜ publishes legal/contact pages and many country/use-case pages, but exact WireGuard/Xray configuration files are behind signup/trial/account flows. No public exact egress source verified. |
-| ZoogVPN | Not added. | Product page only; no exact source verified. |
-| SuperVPN | Not added. | App-store style listing; no exact source verified. |
-| VPN Super | Not added. | Product page only; no exact source verified. |
-| FreeVPN.org | Not added. | Product page only; no exact source verified. |
-| VPNly | Not added. | Product page only; no exact source verified. |
+| ZoogVPN | Not added. | Official pages identify Zoog Services IKE/PC and 200+ servers across 35+ countries, but exact setup/server APIs under `api-d.zoogvpn.com` require JWT auth. Public setup pages and third-party config mirrors are not accepted source data. |
+| SuperVPN | Not added. | NETWORKSUPER LTD / company number `12451849`; official site/app stores expose product, privacy, contact, and auto-fastest-server UX only. No public exact IP/CIDR/hostname source verified. |
+| VPN Super | Not added. | Terms name VPN Super Inc; privacy covers Super Unlimited Inc., VPN Super Inc., Free VPN Pte. Ltd, and Mobile Jump Pte. Ltd. Public server pages list locations only. The Windows MSI was inspected offline; embedded `server_list_loc.json` is localization data, not an exit inventory. |
+| FreeVPN.org / FreeVPNApp.org | Not added. | Free VPN LLC app-store brand with current desktop downloads and ActMobile/`dft-cdn42.net` infrastructure visible in the public client package. Not accepted because the useful hostnames/region data are derived from proprietary client inspection and terms prohibit reverse engineering; no clean exact source with redistribution rights. |
+| VPNLY | Not added. | Free VPN Unlimited AG / CHE-467.694.739; official pages list countries/locations only. A public browser-extension S3 config contained proxy credentials and was rejected; secrets are not reproduced and it is not a clean VPN egress source. |
 | SuperFree VPN | Not added. | Product page only; no exact source verified. |
-| FreeVPNApp.org / FreeVPNApp.io | Not added. | Product/placeholder pages only; no exact source verified. |
+| FreeVPNApp.org / FreeVPNApp.io | Not added. | `freevpnapp.org` is covered with FreeVPN.org above. `freevpnapp.io` was only a placeholder/coming-soon page in this pass and exposed no source data. |
 | FreeVPN.us | Not added. | Product page only; no exact source verified. |
 | VpnHood | Not added. | Open-source VPN software/service builder, not a single provider egress inventory. |
 | FreeVPN724 / WorldVPN | Not added. | Product/app page only; no exact source verified. |

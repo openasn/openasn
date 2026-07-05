@@ -45,6 +45,8 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `vpnsecure_locations` | VPNSecure | `https://www.vpnsecure.me/vpn-locations/` | opt-in `vpn_dns` | `vpnsecure_locations_html` | 60 hostnames / 60 v4, 0 v6 |
 | `tunnelbear_openvpn` | TunnelBear | `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 47 hostnames / 925 resolved v4 -> 571 merged v4 ranges, 0 v6 |
 | `strongvpn_locations` | StrongVPN | `https://strongtech.org/locations/` | opt-in `vpn_dns` | `strongvpn_locations_html` | 145 hostnames / 74 resolved v4 -> 59 merged v4 ranges, 0 v6; 71 DNS misses |
+| `vyprvpn_openvpn` | VyprVPN | `https://support.vyprvpn.com/hc/article_attachments/46761120489229` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 73 hostnames / 73 v4 -> 67 merged v4 ranges, 0 v6 |
+| `giganews_vyprvpn_hosts` | Giganews VyprVPN | `https://support.giganews.com/hc/en-us/articles/360039615432-What-are-the-VyprVPN-Server-Addresses` | opt-in `vpn_dns` | `html_table_hostnames` | 73 hostnames / 73 v4, 0 v6 |
 | `vpnbook_openvpn` | VPNBook | `https://www.vpnbook.com/freevpn/openvpn` | opt-in `public_relays` | `vpnbook_html_hosts` | 10 hostnames / 9 v4, 0 v6; 1 DNS miss |
 | `freevpn_us_servers` | FreeVPN.us | `https://www.freevpn.us/pages/server-status.html` | opt-in `public_relays` | `freevpn_us_status_html` | 17 VPN hostnames / 14 v4, 0 v6 |
 
@@ -79,6 +81,8 @@ End-to-end sample classifications from the live run:
 | `vpnsecure_locations` | `103.106.228.223` | `vpn`, provider `VPNSecure` |
 | `tunnelbear_openvpn` | `5.253.206.35` | `vpn`, provider `TunnelBear` |
 | `strongvpn_locations` | `176.67.81.250` | `vpn`, provider `StrongVPN` |
+| `vyprvpn_openvpn` | `31.6.10.254` | `vpn`, provider `VyprVPN` |
+| `giganews_vyprvpn_hosts` | `31.6.10.253` | `vpn`, provider `Giganews VyprVPN` |
 | `wlvpn_server_list` | `103.209.254.114` | `vpn`, provider `WLVPN` |
 | `worldvpn_servers` | `116.203.253.222` | `vpn`, provider `WorldVPN` |
 | `vpnbook_openvpn` | `142.4.216.196` | `vpn`, provider `VPNBook` |
@@ -113,6 +117,8 @@ End-to-end sample classifications from the live run:
 | VPNSecure | Added opt-in DNS-expanded Tier B. | `https://www.vpnsecure.me/vpn-locations/` publishes per-server labels and status; parser keeps only `status--up` hosts. |
 | TunnelBear | Added opt-in DNS-expanded Tier B. | `https://www.tunnelbear.com/blog/setting-up-tunnelbear-on-linux/` links the first-party public OpenVPN ZIP at `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip`. |
 | StrongVPN | Added opt-in DNS-expanded Tier B. | `https://strongtech.org/locations/` publishes exact `vpn-*.reliablehosting.com` speedtest/server hostnames from the StrongVPN/StrongTech first-party site. |
+| VyprVPN | Added opt-in DNS-expanded Tier B. | `https://support.vyprvpn.com/hc/en-us/articles/360038096131-Where-can-I-find-the-OpenVPN-files` links the public first-party OpenVPN ZIP at `https://support.vyprvpn.com/hc/article_attachments/46761120489229`; parser extracts exact `*.vyprvpn.com` remotes and clients resolve locally. |
+| Giganews VyprVPN | Added opt-in DNS-expanded Tier B. | `https://support.giganews.com/hc/en-us/articles/360039615432-What-are-the-VyprVPN-Server-Addresses` publishes the exact `*.vpn.giganews.com` hostnames used by Giganews accounts with bundled VyprVPN, and says IPs are subject to change. |
 | VPN Gate | Existing opt-in public relay Tier B. | `http://www.vpngate.net/api/iphone/` is the official public relay API. |
 | VPNBook | Added opt-in public relay Tier B. | `https://www.vpnbook.com/freevpn/openvpn` publishes current OpenVPN hostnames. |
 | FreeVPN.us | Added opt-in public relay Tier B. | `https://www.freevpn.us/pages/server-status.html` publishes live first-party status rows. Parser keeps only OpenVPN, WireGuard, and PPTP/L2TP hosts and excludes SSH Tunnel / V2Ray rows. |
@@ -126,11 +132,9 @@ End-to-end sample classifications from the live run:
 | ZenMate | Re-audited, not added separately. | Current ZenMate pages and migration notice route paid VPN service through CyberGhost apps. No independent exact source was found, and CyberGhost cannot distinguish ZenMate users beyond aggregate app-auth counts. |
 | Perfect Privacy | Promising but still blocked. | Gluetun indicates a first-party OpenVPN ZIP path under `www.perfect-privacy.com`, but official home/legal/ZIP URLs timed out from this environment again on 2026-07-05. Not shipped without a fetched body, parser output, and legal/source smoke. |
 | hide.me | Re-audited, not added. | Official network page lists locations/self-managed claims only. Official OpenVPN docs place config ZIPs behind `member.hide.me` Premium/member login, and unauthenticated `member.hide.me/en/server-status` redirects to login. No public exact IP/CIDR/hostname source verified. |
-| OVPN.com | Not added. | No public exact-IP endpoint verified. |
-| HMA / HideMyAss | Not added. | Gluetun points at `https://vpn.hidemyass.com/vpn-config/...`, but `vpn.hidemyass.com` did not resolve here. |
-| VyprVPN | Not added. | Current and old support attachment URLs returned 404. |
-| Giganews VPN | Not added. | Gluetun derives from old VyprVPN archive; that archive returned 404. |
-| VPN Unlimited / KeepSolid | Not added. | Gluetun notes hardcoded data from a user-provided ZIP behind a login wall. Not a redistributable or unauthenticated source. |
+| OVPN.com | Promising but not added yet. | Public configuration page can generate `.conf` files after a CSRF-tokened POST and returned `pool-1.prd.at.ovpn.com` in a live smoke, but the workflow is multi-request/stateful and rate-limited (`x-ratelimit-limit: 6`). It needs a dedicated resolver design before shipping. |
+| HMA / HideMyAss | Not added. | Current official installation page says Linux is no longer supported. Historical/OpenVPN blog links and Gluetun point at `https://vpn.hidemyass.com/vpn-config/...`, but `vpn.hidemyass.com` did not resolve here. |
+| VPN Unlimited / KeepSolid | Not added. | Official manuals generate/download OpenVPN files from the authenticated User Office. Gluetun notes hardcoded data from a user-provided ZIP behind a login wall. Not a redistributable or unauthenticated source. |
 | SlickVPN | Not added. | Gluetun hardcodes hostnames because the public listing degraded. Hardcoded third-party inventory is not a source. |
 | CalyxVPN | Not added in this pass. | LEAP-shaped endpoint `https://api.calyx.net/3/config/eip-service.json` timed out from this environment. Retry later; parser already supports LEAP EIP JSON. |
 | Cloudflare WARP / 1.1.1.1 | Context-only, not `vpn`. | Cloudflare publishes global proxy IP ranges, already held as context-only `cloudflare_ranges`. Cloudflare One docs explicitly say Cloudflare One Client/WARP egress ranges are not published and are not the same as the public Cloudflare IP Ranges page. |

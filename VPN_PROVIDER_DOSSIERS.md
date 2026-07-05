@@ -1387,9 +1387,98 @@ current no-ship reason. hide.me receives a full first dossier here.
 | Caveats | `nl.hide.me` appears in setup docs as an example remote address, not as a complete server inventory. Do not derive country hostnames from examples, scrape authenticated members pages, or import user-exported config files. If hide.me publishes a public server API or config bundle later, it could be a good opt-in `vpn_dns` candidate because the existing parser stack already supports OpenVPN remotes. |
 | Primary source URLs | `https://hide.me/en/legal`, `https://hide.me/en/privacy`, `https://hide.me/en/about`, `https://hide.me/en/offshore-vpn`, `https://hide.me/en/network`, `https://hide.me/en/knowledgebase/where-can-i-download-openvpn-configuration-files/`, `https://hide.me/en/vpnsetup/openwrt-legacy/openvpn/`, `https://member.hide.me/en/server-status`, `https://apps.apple.com/ee/app/hide-me-vpn/id953040671`, `https://play.google.com/store/apps/details?id=hideme.android.vpn`, `https://www.forbes.com/sites/alisoncoleman/2019/07/19/the-privacy-entrepreneur-keeping-10-million-people-safe-online/`, `https://medium.com/authority-magazine/sebastian-schaub-of-hideme-vpn-five-things-you-need-to-create-a-highly-successful-startup-45d7f5ea84fd` |
 
+## Batch 17 - OVPN.com, HMA, VyprVPN, Giganews VyprVPN, VPN Unlimited
+
+This batch found two shippable opt-in DNS-expanded sources and one promising
+future resolver. VyprVPN and Giganews VyprVPN are now in `fetch-manifest.json`
+and the Ruby gem seed/source map. OVPN proved that unauthenticated config
+generation exists, but the current Tier B manifest cannot safely express a
+CSRF-tokened, multi-country, rate-limited POST matrix, so it is documented as a
+resolver follow-up rather than shipped as a brittle partial source.
+
+### OVPN.com
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.ovpn.com/en` |
+| Legal / privacy URLs | `https://www.ovpn.com/en/privacy-notice`, `https://www.ovpn.com/en/tos`, `https://support.ovpn.com/hc/en-us/articles/46236219212307-Who-are-the-people-behind-OVPN`, `https://www.ovpn.com/en/configurations` |
+| Legal entity shown by official pages | Current privacy notice says OVPN Inc and says OVPN was acquired by OVPN Inc. in 2025. The current support article "Who are the people behind OVPN?" says OVPN is operated by OVPN Integritet AB, organization number `556999-4469`, and that the owner is Pango. Treat this as unresolved corporate-transition evidence and cite both, rather than collapsing them into one entity. |
+| Address / identifier | Primary source captured in this batch: OVPN Integritet AB organization number `556999-4469`. No OVPN Inc state registration, address, or incorporation date was captured from a primary registry in this batch. |
+| Who is behind it | OVPN is a Pango/OVPN Inc service according to current privacy/support pages, with OVPN Integritet AB still named by support as operator. Earlier OVPN ownership/founding claims should not be used unless backed by current official or registry evidence. |
+| Claimed network | Public configuration page lists 21 countries: AT, AU, CA, CH, DE, DK, ES, FI, FR, GB, IT, JP, NL, NO, PL, RO, SE, SG, UA, US, plus protocol choices UDP/TCP and DNS default/adblock. The page also markets owned hardware, but that is not exact egress data. |
+| OpenASN data source | Not added. No OpenASN source id yet. |
+| Source quality / status | Promising. `GET https://www.ovpn.com/en/configurations` exposes a form with `_token`, `country`, `protocol`, `dns`, `datacenter_id=all`, `openvpn=2.5`, `output=.conf`, and `ciphter=chacha20`. A live authenticated-by-cookie-but-not-login POST on 2026-07-05 returned `content-disposition: attachment; filename=at.ovpn.com.conf` and OpenVPN remotes `pool-1.prd.at.ovpn.com 1194` / `1195`. The response also included `x-ratelimit-limit: 6`, so fetching all countries naively would violate the site's own rate posture. |
+| Live smoke | Unauthenticated config generation smoke succeeded for Austria/UDP/default DNS on 2026-07-05. No manifest/parser smoke because the current executor only supports static URL(s), static POST forms, and the Azure rotating-download resolver. |
+| Caveats | Do not derive `pool-1.prd.<cc>.ovpn.com` for all countries from one sample. The correct future implementation is a generic resolver with fresh CSRF extraction, cookie retention, form matrix support, throttling/backoff, and an `ovpn_remote_hosts` parser for non-ZIP configs. Until that exists, adding OVPN would be misleading. |
+| Primary source URLs | `https://www.ovpn.com/en/privacy-notice`, `https://www.ovpn.com/en/tos`, `https://support.ovpn.com/hc/en-us/articles/46236219212307-Who-are-the-people-behind-OVPN`, `https://www.ovpn.com/en/configurations` |
+
+### HMA / HideMyAss
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.hidemyass.com/`, `https://www.hidemyass.com/servers` |
+| Legal / privacy URLs | `https://www.hidemyass.com/legal/privacy`, `https://www.hidemyass.com/en-us/legal/vpn-terms`, `https://www.hidemyass.com/installation-files`, `https://support.hidemyass.com/s/article/download-links` |
+| Legal entity shown by official pages | The HMA privacy policy says HMA is part of Gen and that the controller is Avast Software s.r.o., principal place of business 1737/1A Pikrtova, Prague 4, Czech Republic, 140 00. |
+| Address / identifier | Avast Software s.r.o., 1737/1A Pikrtova, Prague 4, Czech Republic, 140 00. UK representative listed by the privacy policy: NortonLifeLock UK Limited, 100 New Bridge Street, London, England EC4V 6JA. No HMA-specific company number or incorporation year was captured from a primary registry in this batch. |
+| Who is behind it | HMA is a Gen/Avast consumer VPN brand. Secondary partner/case-study material says Hide My Ass was founded in 2005 in the UK and became an Avast subsidiary in 2016; keep those as secondary context, not registry-grade evidence. |
+| Claimed network | Official server page says 65+ countries, 100+ locations, and 3400+ VPN servers. It also says OpenVPN is used on PC and Android and IPsec/IKEv2 on iOS/macOS. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Current official installation page says HMA VPN is no longer supported on Linux and offers app downloads, not OpenVPN archives. Historical HMA blog posts and Gluetun point to `hidemyass.com/vpn-config/vpn-configs.zip` / `https://vpn.hidemyass.com/vpn-config/...`, but `vpn.hidemyass.com` did not resolve from this environment on 2026-07-05. Public server pages are location/count marketing only. |
+| Live smoke | `curl -I -L https://vpn.hidemyass.com/vpn-config/TCP/` and UDP equivalent failed DNS resolution here. Public privacy, server, installation, and support pages fetched successfully. No parser smoke because no current exact source was found. |
+| Caveats | Do not use old HMA blog config URLs, Gluetun updater paths, or third-party host dumps as source data. If HMA restores a public config archive or stable server API, it should likely be an opt-in `vpn_dns` source because OpenVPN configs generally publish remotes, not stable provider-owned CIDRs. |
+| Primary source URLs | `https://www.hidemyass.com/legal/privacy`, `https://www.hidemyass.com/en-us/legal/vpn-terms`, `https://www.hidemyass.com/servers`, `https://www.hidemyass.com/installation-files`, `https://support.hidemyass.com/s/article/download-links`, `https://blog.hidemyass.com/en/how-do-i-use-openvpn-on-my-android-device`, `https://github.com/qdm12/gluetun/tree/master/internal/provider/hidemyass` |
+
+### VyprVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.vyprvpn.com/` |
+| Legal / privacy URLs | `https://www.vyprvpn.com/terms-of-service`, `https://www.vyprvpn.com/privacy-policy`, `https://support.vyprvpn.com/hc/en-us/articles/15903991797645-Certida-FAQ`, `https://www.vyprvpn.com/blog/post/trust`, `https://support.vyprvpn.com/hc/en-us/articles/360038096131-Where-can-I-find-the-OpenVPN-files` |
+| Legal entity shown by official pages | Certida, LLC. The current site footer uses Copyright 2026 Certida, LLC, and a VyprVPN trust page states Certida, LLC is the legal name of the company that offers VyprVPN. The Certida FAQ says Certida is VyprVPN's parent company and is operating/supporting/improving the VyprVPN apps. |
+| Address / identifier | No Certida, LLC registry filing, address, or incorporation date was captured from a primary registry in this batch. The old service lineage still appears in artifacts: generated OpenVPN files include certificate metadata naming Golden Frog GmbH / Golden Frog, which should be treated as legacy branding, not the current provider label. |
+| Who is behind it | Current operator is Certida, LLC. The Certida FAQ says Certida has worked closely with and shares the vision of the original VyprVPN founders, Golden Frog. |
+| Claimed network | Homepage says VyprVPN has protected users for more than 15 years. The implemented source is stronger than the marketing claim: it is the current first-party OpenVPN configuration archive. |
+| OpenASN data source | Added opt-in `vpn_dns` source id `vyprvpn_openvpn`. |
+| Source quality / status | First-party support article links `https://support.vyprvpn.com/hc/article_attachments/46761120489229`. Live fetch on 2026-07-05 returned a ZIP attachment named `VyprVPN_OpenVPN_2026-03-06.zip`, content type `application/x-zip-compressed`, `last-modified: Thu, 18 Jun 2026 19:23:09 GMT`, and ETag `"6cf492a2cf9dae94cd4821b0de329a95"`. The archive contained 73 `.ovpn` files with exact `remote *.vyprvpn.com` hostnames. |
+| Live smoke | Parser smoke: 73 hostnames. DNS smoke: 73 hostnames -> 73 IPv4 answers, 0 DNS misses. End-to-end Tier B smoke: 67 merged IPv4 ranges, 0 IPv6 ranges, sample `31.6.10.254` classified as `vpn`, provider `VyprVPN`, source `vyprvpn_openvpn`. |
+| Caveats | This is intentionally opt-in because DNS answers are resolver/vantage dependent. Do not widen resolved hosts into provider ASNs or `/24`s. Keep provider attribution as `VyprVPN`, not `Golden Frog`, even when old cert metadata appears inside configs. |
+| Primary source URLs | `https://support.vyprvpn.com/hc/en-us/articles/360038096131-Where-can-I-find-the-OpenVPN-files`, `https://support.vyprvpn.com/hc/article_attachments/46761120489229`, `https://support.vyprvpn.com/hc/en-us/articles/15903991797645-Certida-FAQ`, `https://www.vyprvpn.com/blog/post/trust`, `https://www.vyprvpn.com/terms-of-service`, `https://www.vyprvpn.com/privacy-policy` |
+
+### Giganews VyprVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://giganews.com/`, `https://www.giganews.com/vyprvpn/` |
+| Legal / privacy URLs | `https://giganews.com/legal/`, `https://giganews.com/legal/privacy/`, `https://support.giganews.com/hc/en-us/articles/360039615432-What-are-the-VyprVPN-Server-Addresses` |
+| Legal entity shown by official pages | Giganews, Inc. Current Giganews footer says "Giganews and the Giganews logo are registered trademarks of Giganews, Inc." and Copyright 2026 Giganews, Inc. Privacy policy says Giganews is the Data Controller. |
+| Address / identifier | No Giganews, Inc. registry filing, address, or incorporation date was captured from a primary registry in this batch. The current legal/privacy pages verify entity name and data-controller role only. |
+| Who is behind it | Giganews, Inc. operates the Usenet service and bundles VyprVPN support for Giganews accounts. The support site routes account management through Giganews control panel links. |
+| Claimed network | Giganews markets "Free VPN Included" and hosts a VyprVPN support category. The source page says Giganews-account manual VyprVPN server addresses are different from server addresses used by direct Golden Frog/VyprVPN customers. |
+| OpenASN data source | Added opt-in `vpn_dns` source id `giganews_vyprvpn_hosts`. |
+| Source quality / status | First-party support page publishes an HTML table of exact `*.vpn.giganews.com` hostnames and explicitly says server IP addresses are subject to change, so users should use hostnames unless Giganews support directs otherwise. The current HTML splits hostnames across inline tags (`ca1.<span>vpn.giganews.com</span>`), so the generic `html_table_hostnames` parser now strips tags inside table cells before scanning. |
+| Live smoke | Parser smoke: 73 hostnames. DNS smoke: 73 hostnames -> 73 IPv4 answers, 0 DNS misses. End-to-end Tier B smoke: 73 IPv4 ranges, 0 IPv6 ranges, sample `31.6.10.253` classified as `vpn`, provider `Giganews VyprVPN`, source `giganews_vyprvpn_hosts`. |
+| Caveats | Keep this as a separate provider label from direct VyprVPN because Giganews itself says these hostnames differ from direct Golden Frog/VyprVPN customer hostnames. This still may share underlying infrastructure; OpenASN records the source/provider provenance visible to downstream users. |
+| Primary source URLs | `https://giganews.com/legal/`, `https://giganews.com/legal/privacy/`, `https://www.giganews.com/vyprvpn/`, `https://support.giganews.com/hc/en-us/articles/360039615432-What-are-the-VyprVPN-Server-Addresses`, `https://support.giganews.com/api/v2/help_center/articles/360039615432.json` |
+
+### VPN Unlimited / KeepSolid
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.vpnunlimited.com/` |
+| Legal / privacy URLs | `https://www.keepsolid.com/eua`, `https://www.keepsolid.com/privacy-policy`, `https://www.vpnunlimited.com/help/manuals/how-to-manually-create-vpn-conf`, `https://www.vpnunlimited.com/help/manuals/openvpn-openwrt`, `https://www.vpnunlimited.com/help/faq/technical-questions` |
+| Legal entity shown by official pages | KeepSolid, Inc. The End User Agreement is titled `KEEPSOLID, INC. END USER AGREEMENT`, last updated July 23, 2025, and defines KeepSolid, Inc. as the provider of the services. |
+| Address / identifier | No KeepSolid, Inc. registry filing, address, or incorporation date was captured from a primary registry in this batch. Public official pages identify the legal name and account/product workflow. |
+| Who is behind it | KeepSolid, Inc. operates VPN Unlimited and related KeepSolid products. The public OEM site also markets a KeepSolid white-label VPN foundation with 3000+ servers across 80+ locations and 50+ countries, but that is marketing/network scale, not exact exits. |
+| Claimed network | VPN Unlimited marketing says 3000+ servers across 80+ locations. OEM page says the white-label VPN foundation uses a worldwide backbone of 3000+ high-speed servers across 80+ locations and 50+ countries. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official manuals instruct users to log into User Office, open VPN Unlimited management, create a manual configuration, choose protocol/device/server, and download account-generated OpenVPN files. Gluetun explicitly hardcodes VPN Unlimited hostnames from a user-provided ZIP because the source is behind a login wall. That is not a redistributable or unauthenticated OpenASN source. |
+| Live smoke | Official home, EULA, User Office/help, manual configuration, OpenWrt/OpenVPN, and FAQ pages fetched successfully on 2026-07-05. No parser smoke because no public exact IP/CIDR/hostname/config archive was verified. |
+| Caveats | Do not import Gluetun's user-ZIP-derived hardcoded map or derive `*.vpnunlimitedapp.com` hostnames from it. A future source needs a first-party public server list/config archive or a terms-cleared API that does not require account credentials. |
+| Primary source URLs | `https://www.vpnunlimited.com/`, `https://www.keepsolid.com/eua`, `https://www.keepsolid.com/privacy-policy`, `https://www.vpnunlimited.com/help/manuals/how-to-manually-create-vpn-conf`, `https://www.vpnunlimited.com/help/manuals/openvpn-openwrt`, `https://www.vpnunlimited.com/help/faq/technical-questions`, `https://oem.vpnunlimited.com/`, `https://github.com/qdm12/gluetun/tree/master/internal/provider/vpnunlimited` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 17: OVPN.com, HMA / HideMyAss, VyprVPN, Giganews VPN, VPN Unlimited / KeepSolid.
-2. Batch 18+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 18: OVPN resolver design spike, SlickVPN, CalyxVPN retry, Cloudflare WARP-specific egress recheck, Opera VPN recheck.
+2. Batch 19+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

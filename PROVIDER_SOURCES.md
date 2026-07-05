@@ -155,7 +155,7 @@ End-to-end sample classifications from the live run:
 | CalyxVPN | Not added in this pass. | CalyxOS, F-Droid, Calyx legal pages, and LEAP pages establish the Calyx Institute/LEAP product, but live probes of `https://api.calyx.net/3/config/provider.json`, `https://api.calyx.net/3/config/eip-service.json`, the same paths on `:4430`, and `https://calyx.net/3/config/eip-service.json` timed out from this environment. Retry later; parser already supports LEAP EIP JSON. |
 | Cloudflare WARP / 1.1.1.1 | Context-only, not `vpn`. | Cloudflare publishes global proxy IP ranges, already held as context-only `cloudflare_ranges`. Cloudflare One egress docs were rechecked on 2026-07-05 and explicitly say Cloudflare One Client/WARP egress ranges are not published and are not the same as the public Cloudflare IP Ranges page. |
 | Apple "VPN" / Private Relay | Covered as `relay`. | Same source as above; semantics are not `vpn`. |
-| Google One VPN | Not added. | Product has been discontinued; no current exact public egress source. |
+| Google One VPN / VPN by Google | Not added. | Google One VPN was discontinued on 2024-06-20. Current Pixel VPN by Google is product documentation only; no public exact egress IP/CIDR/hostname source was found. |
 | Firefox built-in/free VPN | Not added separately. | Paid Mozilla VPN is Mullvad-backed. Newer built-in/browser-only Firefox VPN does not have a verified separate exact egress source in this pass. |
 | Opera VPN | Not added. | Opera Norway AS operates Opera services. Current Free VPN and VPN Pro pages were rechecked on 2026-07-05 and publish browser/device scope, server-count/location marketing (Free VPN 100+ servers / 3 general locations; VPN Pro 3,000+ servers / 47+ locations), but no exact exit IPs/CIDRs/hostnames. Reverse-engineered SurfEasy/Opera proxy flows require app-style registration/client keys, and public `opera-proxy.net` hostnames did not resolve here. |
 | Brave VPN | Not added. | Brave Firewall + VPN is powered by Guardian. Guardian exposes a public country/city region endpoint with server counts, but no IPs/CIDRs/hostnames; connection APIs are credentialed. No OpenASN-compatible exact source verified. |
@@ -205,10 +205,10 @@ End-to-end sample classifications from the live run:
 | GoFlyVPN / RivoVPN | Not added. | SPA, static privacy markdown, Google Play/App Store metadata, and public APK/EXE download endpoints were checked. Web copy says nodes are dynamically assigned by the server; no exact public egress inventory was found. |
 | iTop VPN | Not added. | iTop Inc. legal/about pages and Apple app metadata were checked. The public "VPN server list" is country-level marketing for 3200+ servers / 100+ locations, not exact IP/CIDR/hostname data. |
 | Radmin VPN | Not added. | Famatech's Radmin VPN is a virtual LAN/remote-network product for connecting computers into one local network, not a public internet egress VPN source. |
-| OpenVPN Connect | Not added. | Client software, not a provider. |
-| SoftEther | Not added. | VPN software/project. VPN Gate is the public relay service and is already covered. |
-| Tailscale | Not added. | Mesh/zero-trust private networking product, not a public VPN egress provider. |
-| TP-Link VPN pages | Not added. | Router/vendor documentation, not a provider source. |
+| OpenVPN Connect | Not added. | Client software, not a provider. The exit depends on the imported organization/provider profile. |
+| SoftEther | Not added. | VPN software/project. VPN Gate is the public relay service built on SoftEther and is already covered. |
+| Tailscale | Not added. | Mesh/zero-trust private networking product, not a public VPN egress provider. Mullvad over Tailscale exits are Mullvad-operated and already covered by Mullvad. |
+| TP-Link VPN pages | Not added. | Router/vendor documentation, not a provider source. The exit depends on the third-party VPN profile or private server configured by the user. |
 | Sophos VPN explainer | Not added. | Cybersecurity documentation, not a provider source. |
 | Canadian Centre VPN guidance | Not added. | Government guidance, not a provider source. |
 | VPN.com | Not added. | Review/marketplace site, not a provider source. |

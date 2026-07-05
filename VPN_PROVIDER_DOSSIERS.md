@@ -1679,8 +1679,101 @@ gem.
 | Caveats | Do not import GL.iNet, haugene, or forum-derived SaferVPN hosts. Revisit only if a current first-party config archive/status/API becomes fetchable without account credentials, bot-challenge bypassing, or proprietary client inspection. |
 | Primary source URLs | `https://www.safervpn.com/`, `https://support.safervpn.com/`, `https://www.safervpn.com/terms`, `https://www.safervpn.com/privacy` |
 
+## Batch 20 - Non-Provider And Discontinued VPN Traps
+
+This batch closes common false leads: discontinued Google One VPN, current
+Pixel-only VPN by Google, VPN client/server software, mesh networking, and
+router setup documentation. These products contain the word "VPN" and often
+appear in search results, but they do not publish reusable public egress
+inventories that OpenASN can map to `vpn`.
+
+### Google One VPN / VPN by Google
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://one.google.com/`, `https://support.google.com/pixelphone/answer/2819573` |
+| Legal / privacy URLs | `https://policies.google.com/terms`, `https://policies.google.com/privacy`, `https://support.google.com/pixelphone/answer/2819573` |
+| Legal entity shown by official pages | Google terms identify Google LLC as the service operator for US users. |
+| Address / identifier | Google terms identify `Google LLC, 1600 Amphitheatre Parkway, Mountain View, California 94043, USA` for US users. No service-specific VPN entity or registry number was found in this pass. |
+| Registry / incorporation evidence | Not checked beyond Google public legal pages. The useful product fact is operational: Google One VPN is discontinued, while VPN by Google remains a Pixel-device feature. |
+| Who is behind it | Google. Current support says Pixel 7 and later phones plus Pixel Tablet have access to the built-in VPN by Google in supported countries. |
+| Source discovery | Google One community/help pages say VPN by Google One was discontinued as of 2024-06-20. Pixel support documents current VPN by Google availability and behavior, including that users cannot choose an IP location for content access. |
+| OpenASN data source | Not added. No source id. |
+| Source quality / status | No public exact egress IP/CIDR/hostname source was found for either the discontinued Google One VPN or the current Pixel VPN by Google. Pixel support is product documentation, not an exit inventory. |
+| Live smoke | Official Google One support/community search results returned the discontinuation date. Current Pixel support page fetched on 2026-07-05 and exposed eligibility/country docs, but no server list or config/API endpoint. |
+| Caveats | Do not infer Google VPN exits from all Google ASN ranges, Google Cloud ranges, or `googleusercontent.com`. Google operates many unrelated networks; without a VPN-specific first-party egress list, broad Google labeling would be a high-impact false positive. |
+| Primary source URLs | `https://support.google.com/googleone/thread/339367691/what-happened-to-the-google-one-vpn`, `https://support.google.com/googleone/thread/320108310/is-google-one-vpn-still-operating-in-canada`, `https://support.google.com/pixelphone/answer/2819573`, `https://policies.google.com/terms`, `https://policies.google.com/privacy` |
+
+### OpenVPN Connect
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://openvpn.net/client/`, `https://openvpn.net/` |
+| Legal / privacy URLs | `https://openvpn.net/legal/`, `https://openvpn.net/privacy-policy/` |
+| Legal entity shown by official pages | OpenVPN Inc. |
+| Address / identifier | Public OpenVPN legal/privacy pages did not expose a full street address in the fetched text. A LEI lookup identifies OpenVPN Inc. as a Delaware entity with registration authority entity id `3761256`, but OpenASN treats that as corporate context, not VPN source evidence. |
+| Registry / incorporation evidence | LEI record: Delaware jurisdiction, entity id `3761256`; not needed for data inclusion because OpenVPN Connect is client software, not an egress provider. |
+| Who is behind it | OpenVPN Inc., the company behind OpenVPN Connect, Access Server, and CloudConnexa. |
+| Source discovery | Official OpenVPN Connect page says it is the official client application for securely accessing an organization's network resources and instructs users to import a connection profile or provider-supplied `.ovpn` file. |
+| OpenASN data source | Not added. No source id. |
+| Source quality / status | OpenVPN Connect is a client. It has no universal egress IP inventory; exits are whichever private organization, Access Server, CloudConnexa, or third-party VPN profile the user imports. |
+| Live smoke | Official client page and legal/privacy pages fetched on 2026-07-05. No parser smoke because there is no provider source body. |
+| Caveats | Do not map OpenVPN Inc., OpenVPN protocol usage, `.ovpn` syntax, or Access Server customers to `vpn`. Only provider-published endpoint lists belong in OpenASN. |
+| Primary source URLs | `https://openvpn.net/client/`, `https://openvpn.net/legal/`, `https://openvpn.net/privacy-policy/`, `https://lei.bloomberg.com/leis/view/2549000IB62FH9U1KW87` |
+
+### SoftEther VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.softether.org/`, `https://www.vpngate.net/` |
+| Legal / privacy URLs | `https://www.softether.org/`, `https://www.softether.org/9-about/news/800-open-source`, `https://www.vpngate.net/` |
+| Legal entity shown by official pages | SoftEther VPN Project is described as an academic project from the University of Tsukuba. VPN Gate is the public free relay experiment built on SoftEther. |
+| Address / identifier | No separate SoftEther corporate operator/address was relevant or found in this pass. |
+| Registry / incorporation evidence | Not applicable for OpenASN data inclusion; this is software/project infrastructure, not a commercial egress network. |
+| Who is behind it | SoftEther VPN Project / University of Tsukuba for the software; VPN Gate for the public relay service. |
+| Source discovery | Official SoftEther page says SoftEther is open-source, cross-platform, multi-protocol VPN software. VPN Gate separately publishes public relay endpoints and is already represented by OpenASN's `vpngate` source. |
+| OpenASN data source | No SoftEther source id. Existing `vpngate` source covers the public relay service. |
+| Source quality / status | SoftEther itself is software that anyone can run; it has no global egress list. VPN Gate is the exact public relay network and is already opt-in `public_relays`. |
+| Live smoke | Official SoftEther and VPN Gate pages fetched on 2026-07-05. No new parser smoke; existing VPN Gate parser remains the accepted data path. |
+| Caveats | Do not label arbitrary SoftEther servers as VPN Gate or provider-operated VPN exits. Only the official VPN Gate API/source should feed OpenASN. |
+| Primary source URLs | `https://www.softether.org/`, `https://www.softether.org/9-about/news/800-open-source`, `https://www.vpngate.net/`, `https://www.vpngate.net/en/download.aspx` |
+
+### Tailscale
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://tailscale.com/`, `https://tailscale.com/docs/concepts/what-is-tailscale` |
+| Legal / privacy URLs | `https://tailscale.com/terms`, `https://tailscale.com/privacy-policy`, `https://tailscale.com/security`, `https://tailscale.com/blog/tailscale-privacy-anonymity` |
+| Legal entity shown by official pages | Current footer and legal pages identify Tailscale Inc. |
+| Address / identifier | No street address or registry number was found on the fetched public pages in this pass. |
+| Registry / incorporation evidence | Not needed for source inclusion; OpenASN is rejecting Tailscale because it is not a public egress provider inventory. External company histories say Tailscale started in 2019, but no official registry extract was added. |
+| Who is behind it | Tailscale Inc. |
+| Source discovery | Official docs describe Tailscale as a Zero Trust identity-based connectivity platform. Tailscale's own privacy/anonymity post says it is not trying to be an anonymity tool and that customer traffic is end-to-end encrypted between devices; DERP relays do not decrypt traffic. |
+| OpenASN data source | Not added. No source id. |
+| Source quality / status | Tailscale is a mesh/private-network product, not a public consumer VPN egress list. Exit nodes are user/admin-selected within private tailnets; Tailscale also offers Mullvad over Tailscale, where the exit nodes are Mullvad-operated and already covered by Mullvad. |
+| Live smoke | Official homepage/docs/legal/security/anonymity pages fetched on 2026-07-05. No parser smoke because there is no public egress inventory to parse. |
+| Caveats | Do not map DERP relay infrastructure, Tailscale coordination servers, CGNAT tailnet addresses, or Tailscale-owned ASNs to `vpn`. A public IP seen behind a Tailscale exit node belongs to the user-selected exit provider or device, not to a global Tailscale VPN pool. |
+| Primary source URLs | `https://tailscale.com/`, `https://tailscale.com/docs/concepts/what-is-tailscale`, `https://tailscale.com/blog/tailscale-privacy-anonymity`, `https://tailscale.com/security`, `https://tailscale.com/terms`, `https://tailscale.com/privacy-policy` |
+
+### TP-Link VPN Pages
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.tp-link.com/us/support/faq/3135/`, `https://www.tp-link.com/` |
+| Legal / privacy URLs | `https://www.tp-link.com/us/about-us/privacy/`, `https://privacy.tp-link.com/web/official/privacy-policy`, `https://www.tp-link.com/us/about-us/kasa-terms-of-use/` |
+| Legal entity shown by official pages | TP-Link pages identify TP-Link / TP-Link Systems Inc. depending on product, app, and regional context. |
+| Address / identifier | No VPN-service-specific address or registry number was relevant or found in this pass. |
+| Registry / incorporation evidence | Not applicable for OpenASN source inclusion; TP-Link is a networking hardware/software vendor and documentation publisher here. |
+| Who is behind it | TP-Link, publishing router VPN client/server setup instructions. |
+| Source discovery | Official TP-Link FAQ says the router VPN client feature routes selected devices through a third-party VPN server and that users need credentials or configuration files from their VPN provider. |
+| OpenASN data source | Not added. No source id. |
+| Source quality / status | TP-Link router pages are setup documentation, not an egress provider source. The actual exit depends on the third-party VPN profile the customer uploads or the private VPN server they operate. |
+| Live smoke | Official TP-Link support FAQ fetched on 2026-07-05 and was last updated 2026-04-17. It contained no IP/CIDR/hostname inventory. |
+| Caveats | Do not label TP-Link routers, `tplinkwifi.net`, or TP-Link support examples as VPN exits. If a TP-Link manual mentions a provider example, audit that provider separately from first-party provider sources. |
+| Primary source URLs | `https://www.tp-link.com/us/support/faq/3135/`, `https://www.tp-link.com/pl/support/faq/2801/`, `https://www.tp-link.com/us/about-us/privacy/`, `https://privacy.tp-link.com/web/official/privacy-policy`, `https://www.tp-link.com/us/about-us/kasa-terms-of-use/` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 20+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 21+: remaining non-provider/context entries from `PROVIDER_SOURCES.md` such as Sophos guidance, Canadian Centre VPN guidance, and VPN.com.

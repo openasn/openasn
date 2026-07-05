@@ -1772,8 +1772,65 @@ inventories that OpenASN can map to `vpn`.
 | Caveats | Do not label TP-Link routers, `tplinkwifi.net`, or TP-Link support examples as VPN exits. If a TP-Link manual mentions a provider example, audit that provider separately from first-party provider sources. |
 | Primary source URLs | `https://www.tp-link.com/us/support/faq/3135/`, `https://www.tp-link.com/pl/support/faq/2801/`, `https://www.tp-link.com/us/about-us/privacy/`, `https://privacy.tp-link.com/web/official/privacy-policy`, `https://www.tp-link.com/us/about-us/kasa-terms-of-use/` |
 
+## Batch 21 - Remaining Context Sites
+
+This batch documents the last context-only rows from `PROVIDER_SOURCES.md`.
+They are useful references for humans, but none is a VPN egress provider or a
+redistributable exact endpoint source.
+
+### Sophos VPN Guidance
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.sophos.com/`, `https://docs.sophos.com/nsg/sophos-firewall/20.0/Help/en-us/webhelp/onlinehelp/AdministratorHelp/RemoteAccessVPN/HowToArticles/RAVPNSSLFullTunnel/` |
+| Legal / privacy URLs | `https://www.sophos.com/en-us/legal`, `https://www.sophos.com/en-us/legal/sophos-end-user-terms-of-use`, `https://www.sophos.com/en-us/legal/sophos-group-privacy-notice` |
+| Legal entity shown by official pages | Sophos LTD. |
+| Address / identifier | Official legal page lists company number `02096520`, incorporated in England and Wales, registered office `The Pentagon, Abingdon, OX14 3YP, United Kingdom`, VAT `GB 991 2418 08`. |
+| Registry / incorporation evidence | Official legal page provides company number and incorporation jurisdiction. |
+| Who is behind it | Sophos, publishing firewall and remote-access VPN product documentation. |
+| Source discovery | Sophos Firewall docs describe SSL VPN full-tunnel and split-tunnel configuration. Users establish remote access through Sophos Connect/OpenVPN Connect to their organization's Sophos Firewall, and configuration files are available only from the customer's VPN portal after admin setup. |
+| OpenASN data source | Not added. No source id. |
+| Source quality / status | Sophos is a security/firewall vendor here, not a public consumer VPN egress provider. The public IP seen by the internet is the customer's own firewall or network egress, not a Sophos-operated shared VPN pool. |
+| Live smoke | Official Sophos legal page and Sophos Firewall SSL VPN docs fetched on 2026-07-05. No parser smoke because no public egress inventory exists. |
+| Caveats | Do not map Sophos customer firewalls, Sophos Connect clients, or Sophos documentation examples to `vpn`. Enterprise customer egress belongs in customer-specific BYOD/Tier C data, not the public OpenASN dataset. |
+| Primary source URLs | `https://www.sophos.com/en-us/legal`, `https://www.sophos.com/en-us/legal/sophos-end-user-terms-of-use`, `https://www.sophos.com/en-us/legal/sophos-group-privacy-notice`, `https://docs.sophos.com/nsg/sophos-firewall/20.0/Help/en-us/webhelp/onlinehelp/AdministratorHelp/RemoteAccessVPN/HowToArticles/RAVPNSSLFullTunnel/`, `https://docs.sophos.com/nsg/sophos-firewall/20.0/Help/en-us/webhelp/onlinehelp/VPNAndUserPortalHelp/VPN/RemoteAccessVPN/SSLVPNRemoteAccess/` |
+
+### Canadian Centre VPN Guidance
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.cyber.gc.ca/en/guidance/virtual-private-networks-itsap80101` |
+| Legal / privacy URLs | `https://www.cyber.gc.ca/en/guidance/virtual-private-networks-itsap80101`, `https://publications.gc.ca/site/eng/9.882691/publication.html` |
+| Legal entity shown by official pages | Canadian Centre for Cyber Security, Communications Security Establishment Canada. |
+| Address / identifier | The publication catalogue identifies department/agency as Canadian Centre for Cyber Security / Communications Security Establishment Canada and catalogue number `D97-1/80-101-2019E-PDF`. |
+| Registry / incorporation evidence | Government publication metadata, not a company registry. |
+| Who is behind it | The Canadian Centre for Cyber Security, Canada's national cyber guidance authority within CSE. |
+| Source discovery | ITSAP.80.101 is awareness/guidance explaining VPN concepts, including gateway-to-gateway, host-to-gateway, host-to-host, transport mode, and tunnel mode. |
+| OpenASN data source | Not added. No source id. |
+| Source quality / status | Government cybersecurity guidance, not a VPN service and not an egress inventory. |
+| Live smoke | HTML guidance and Government of Canada publication catalogue pages fetched on 2026-07-05. No parser smoke because no IP/CIDR/hostname source exists. |
+| Caveats | Do not treat government guidance examples, terminology, or recommended controls as provider evidence. The page is useful for vocabulary and user education only. |
+| Primary source URLs | `https://www.cyber.gc.ca/en/guidance/virtual-private-networks-itsap80101`, `https://publications.gc.ca/site/eng/9.882691/publication.html`, `https://publications.gc.ca/collections/collection_2019/cstc-csec/D97-1-80-101-2019-eng.pdf` |
+
+### VPN.com
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.vpn.com/`, `https://www.vpn.com/about/` |
+| Legal / privacy URLs | `https://www.vpn.com/terms/`, `https://www.vpn.com/privacy/`, `https://www.vpn.com/disclosures/` |
+| Legal entity shown by official pages | Terms identify `VPN.com LLC`, a Georgia limited liability company, and `Virtual Private Network LLC (formerly)`, a Georgia limited liability company that has been administratively dissolved. |
+| Address / identifier | Terms/contact footer list `VPN.com LLC, PO BOX 33623, Decatur, GA 30033, USA`; homepage footer also lists `Security Simplified`, the same PO Box, `web@vpn.com`, and `+1-855-VPN-FAST`. |
+| Registry / incorporation evidence | Official terms provide entity names and jurisdiction; no Georgia registry extract was added in this pass. |
+| Who is behind it | VPN.com says it was founded by Michael Gargiulo and describes itself as an independent VPN review platform plus premium domain brokerage. |
+| Source discovery | About page explicitly says VPN.com is not a VPN provider and that it researches, tests, and reviews VPN services. Homepage lists reviewed brands and rankings. |
+| OpenASN data source | Not added. No source id. |
+| Source quality / status | Review/affiliate/domain-brokerage site, not a VPN egress provider and not an authoritative source for third-party provider IPs. Aggregators do not satisfy OpenASN's legal/source bar. |
+| Live smoke | Homepage, about, terms, privacy, and disclosures pages fetched on 2026-07-05. No parser smoke because no original provider source body exists. |
+| Caveats | Do not import provider rankings, reviewed-provider lists, speed-lab outputs, affiliate pages, or any third-party comparison data. Use VPN.com only as discovery context to identify providers that must then be audited from their own first-party sources. |
+| Primary source URLs | `https://www.vpn.com/`, `https://www.vpn.com/about/`, `https://www.vpn.com/terms/`, `https://www.vpn.com/privacy/`, `https://www.vpn.com/disclosures/` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 21+: remaining non-provider/context entries from `PROVIDER_SOURCES.md` such as Sophos guidance, Canadian Centre VPN guidance, and VPN.com.
+1. Batch 22+: net-new provider discovery outside the current ledger; add rows only after first-party legal/source review.

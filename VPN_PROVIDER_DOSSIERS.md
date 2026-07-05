@@ -447,11 +447,11 @@ not inflate weak marketing/location data into exact VPN-exit classifications.
 | Legal entity shown by official pages | Opera Norway AS |
 | Address / identifier | Opera's privacy statement identifies Opera Norway AS as part of the Opera Group and gives postal contact as Opera Norway AS, P.O. Box 4214, Nydalen 0401, Oslo, Norway. Footer copyright on the privacy page says Opera Norway. |
 | Registry / incorporation evidence | Official pages verify the current Norwegian operator and address. Registry-grade Norwegian organization number/incorporation date was not pulled in this batch. Treat older Opera Software ASA / Opera Software AS history separately from current Opera Norway AS legal-page evidence. |
-| Who is behind it | Opera develops and publishes the Opera browsers. Opera says the free browser VPN is built into Opera for desktop and mobile. Opera's 2024 no-log audit post says the free browser VPN uses Opera's own server infrastructure, while VPN Pro servers are provided in collaboration with Nord. |
+| Who is behind it | Opera develops and publishes the Opera browsers. Opera says the free browser VPN is built into Opera for desktop and mobile. Opera's 2024 no-log audit post said the free browser VPN used Opera's own server infrastructure while VPN Pro servers were provided in collaboration with Nord; the Batch 18 recheck records the later 2025/2026 revamped VPN Pro pages, which emphasize Lightway and location/server counts but still publish no exact exits. |
 | OpenASN data source | Not added. No OpenASN source id. |
 | Source quality / status | Public Opera pages publish product claims, no-log audit evidence, and server-count/location marketing, but no exact IP, CIDR, or unauthenticated server-hostname inventory. The historical SurfEasy/Opera proxy reverse-engineering path uses app-like subscriber/device registration and client keys, which fails OpenASN's no-impersonation/no-private-client-state rule. |
 | Live smoke | On 2026-07-05, `de.opera-proxy.net`, `us.opera-proxy.net`, `ca.opera-proxy.net`, and numbered variants `de0`, `us0`, `ca0` under `opera-proxy.net` did not resolve from this environment. That does not prove Opera has no exits; it proves those reverse-engineered hostnames are not a usable public source. |
-| Caveats | Opera VPN Pro may overlap Nord infrastructure at the network layer, but OpenASN should not label Nord IPs as Opera unless Opera or Nord publishes a source that distinguishes Opera-branded egress. The free browser VPN may be a browser proxy rather than a full device VPN in some product modes; OpenASN only cares about exact observed egress IPs, and none were published. |
+| Caveats | Opera VPN Pro may overlap third-party VPN infrastructure at the network layer, but OpenASN should not label Nord/Lightway-capable/other provider IPs as Opera unless Opera or its infrastructure partner publishes a source that distinguishes Opera-branded egress. The free browser VPN may be a browser proxy rather than a full device VPN in some product modes; OpenASN only cares about exact observed egress IPs, and none were published. |
 | Primary source URLs | `https://www.opera.com/features/free-vpn`, `https://www.opera.com/features/vpn-pro`, `https://legal.opera.com/privacy/`, `https://blogs.opera.com/security/2024/09/opera-free-browser-vpn-no-log-audit-deloitte/`, `https://github.com/spaze/oprah-proxy`, `https://www.michalspacek.com/opera-browsers-vpn-is-just-a-proxy` |
 
 ### Brave Firewall + VPN / Guardian Firewall
@@ -1390,11 +1390,10 @@ current no-ship reason. hide.me receives a full first dossier here.
 ## Batch 17 - OVPN.com, HMA, VyprVPN, Giganews VyprVPN, VPN Unlimited
 
 This batch found two shippable opt-in DNS-expanded sources and one promising
-future resolver. VyprVPN and Giganews VyprVPN are now in `fetch-manifest.json`
-and the Ruby gem seed/source map. OVPN proved that unauthenticated config
-generation exists, but the current Tier B manifest cannot safely express a
-CSRF-tokened, multi-country, rate-limited POST matrix, so it is documented as a
-resolver follow-up rather than shipped as a brittle partial source.
+OVPN lead. VyprVPN and Giganews VyprVPN are now in `fetch-manifest.json`
+and the Ruby gem seed/source map. The OVPN config-form route below is
+superseded by Batch 18's status API conversion, which avoids the CSRF-tokened,
+multi-country, rate-limited POST matrix entirely.
 
 ### OVPN.com
 
@@ -1406,10 +1405,10 @@ resolver follow-up rather than shipped as a brittle partial source.
 | Address / identifier | Primary source captured in this batch: OVPN Integritet AB organization number `556999-4469`. No OVPN Inc state registration, address, or incorporation date was captured from a primary registry in this batch. |
 | Who is behind it | OVPN is a Pango/OVPN Inc service according to current privacy/support pages, with OVPN Integritet AB still named by support as operator. Earlier OVPN ownership/founding claims should not be used unless backed by current official or registry evidence. |
 | Claimed network | Public configuration page lists 21 countries: AT, AU, CA, CH, DE, DK, ES, FI, FR, GB, IT, JP, NL, NO, PL, RO, SE, SG, UA, US, plus protocol choices UDP/TCP and DNS default/adblock. The page also markets owned hardware, but that is not exact egress data. |
-| OpenASN data source | Not added. No OpenASN source id yet. |
-| Source quality / status | Promising. `GET https://www.ovpn.com/en/configurations` exposes a form with `_token`, `country`, `protocol`, `dns`, `datacenter_id=all`, `openvpn=2.5`, `output=.conf`, and `ciphter=chacha20`. A live authenticated-by-cookie-but-not-login POST on 2026-07-05 returned `content-disposition: attachment; filename=at.ovpn.com.conf` and OpenVPN remotes `pool-1.prd.at.ovpn.com 1194` / `1195`. The response also included `x-ratelimit-limit: 6`, so fetching all countries naively would violate the site's own rate posture. |
+| OpenASN data source | Superseded by Batch 18 source id `ovpn_status_servers`. No config-form source was added. |
+| Source quality / status | Historical lead only. `GET https://www.ovpn.com/en/configurations` exposes a form with `_token`, `country`, `protocol`, `dns`, `datacenter_id=all`, `openvpn=2.5`, `output=.conf`, and `ciphter=chacha20`. A live authenticated-by-cookie-but-not-login POST on 2026-07-05 returned `content-disposition: attachment; filename=at.ovpn.com.conf` and OpenVPN remotes `pool-1.prd.at.ovpn.com 1194` / `1195`. The response also included `x-ratelimit-limit: 6`, so fetching all countries naively would violate the site's own rate posture. Batch 18 found the better first-party exact-IP status API and shipped that instead. |
 | Live smoke | Unauthenticated config generation smoke succeeded for Austria/UDP/default DNS on 2026-07-05. No manifest/parser smoke because the current executor only supports static URL(s), static POST forms, and the Azure rotating-download resolver. |
-| Caveats | Do not derive `pool-1.prd.<cc>.ovpn.com` for all countries from one sample. The correct future implementation is a generic resolver with fresh CSRF extraction, cookie retention, form matrix support, throttling/backoff, and an `ovpn_remote_hosts` parser for non-ZIP configs. Until that exists, adding OVPN would be misleading. |
+| Caveats | Do not derive `pool-1.prd.<cc>.ovpn.com` for all countries from one sample, and do not implement the config-form route while `ovpn_status_servers` remains public and exact. The status API is safer, simpler, and returns exact IPs without DNS expansion. |
 | Primary source URLs | `https://www.ovpn.com/en/privacy-notice`, `https://www.ovpn.com/en/tos`, `https://support.ovpn.com/hc/en-us/articles/46236219212307-Who-are-the-people-behind-OVPN`, `https://www.ovpn.com/en/configurations` |
 
 ### HMA / HideMyAss
@@ -1476,9 +1475,97 @@ resolver follow-up rather than shipped as a brittle partial source.
 | Caveats | Do not import Gluetun's user-ZIP-derived hardcoded map or derive `*.vpnunlimitedapp.com` hostnames from it. A future source needs a first-party public server list/config archive or a terms-cleared API that does not require account credentials. |
 | Primary source URLs | `https://www.vpnunlimited.com/`, `https://www.keepsolid.com/eua`, `https://www.keepsolid.com/privacy-policy`, `https://www.vpnunlimited.com/help/manuals/how-to-manually-create-vpn-conf`, `https://www.vpnunlimited.com/help/manuals/openvpn-openwrt`, `https://www.vpnunlimited.com/help/faq/technical-questions`, `https://oem.vpnunlimited.com/`, `https://github.com/qdm12/gluetun/tree/master/internal/provider/vpnunlimited` |
 
+## Batch 18 - OVPN Status API Conversion
+
+OVPN moved from "promising but not added" to an implemented default source in
+this batch. The key discovery is that the official status page renders VPN
+server lists through small JSON endpoints; those endpoints are exact, public,
+first-party, and do not require the CSRF-tokened OpenVPN config generator.
+
+### OVPN.com status source
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.ovpn.com/en`, `https://status.ovpn.com` |
+| Legal / privacy URLs | `https://www.ovpn.com/en/privacy-notice`, `https://www.ovpn.com/en/tos`, `https://www.ovpn.com/en/configurations`, `https://www.ovpn.com/en/network`, `https://status.ovpn.com` |
+| Legal entity shown by official pages | Same current evidence as Batch 17: OVPN Inc in the privacy notice and current marketing page; OVPN Integritet AB / `556999-4469` remains documented from the support article as older/current support evidence. |
+| Source discovery | `https://status.ovpn.com` contains `Servers-List datacenter="..."` Vue components for 32 VPN datacenters and loads `/js/app.js`. The app's `ServersList` component calls `GET /datacenters/{datacenter}/servers`, rendering each row's `name`, `ip`, `online`, bandwidth, and uptime. |
+| OpenASN data source | Added default `vpn_providers` source id `ovpn_status_servers`. |
+| Source quality / status | First-party exact-IP JSON. The manifest enumerates the 32 datacenter endpoints (`sydney`, `vienna`, `toronto`, `copenhagen`, `helsinki`, `paris`, `frankfurt`, `erfurt`, `offenbach`, `milan`, `tokyo`, `amsterdam`, `oslo`, `warsaw`, `bucharest`, `singapore`, `madrid`, `sthlm`, `malmo`, `gothenburg`, `sundsvall`, `zurich`, `kyiv`, `london`, `losangeles`, `miami`, `newyork`, `chicago`, `atlanta`, `dallas`, `seattle`, `denver`). Parser keeps rows whose `online` flag is not false and emits the exact `ip` field. |
+| Live smoke | Status API smoke on 2026-07-05: 32 endpoints, 97 rows, 96 unique IPv4 addresses. End-to-end Tier B smoke: 34 merged IPv4 ranges, 0 IPv6 ranges, sample `5.181.234.131` classified as `vpn`, provider `OVPN`, source `ovpn_status_servers`. |
+| Config-form note | The OpenVPN config page remains useful corroboration: it can generate `.conf` files after a fresh CSRF token and returned `pool-1.prd.at.ovpn.com` in Batch 17. It is no longer needed for OpenASN because the status API gives exact IPs with less risk and no rate-limited form matrix. |
+| Caveats | Do not infer pool hostnames, DNS-expand `pool-*.ovpn.com`, or use the config form while the status API remains public and exact. If the status app changes slug names, the manifest should be updated from the page's `Servers-List datacenter="..."` attributes after a live smoke, not guessed. |
+| Primary source URLs | `https://status.ovpn.com`, `https://status.ovpn.com/js/app.js`, `https://status.ovpn.com/datacenters/sydney/servers`, `https://status.ovpn.com/datacenters/sthlm/servers`, `https://www.ovpn.com/en/configurations`, `https://www.ovpn.com/en/privacy-notice`, `https://www.ovpn.com/en/network` |
+
+## Batch 18 - Remaining Rechecks
+
+This batch also rechecked SlickVPN, CalyxVPN, Cloudflare WARP, and Opera
+VPN. Only SlickVPN crossed the source-quality bar: its current public
+locations page publishes exact config-linked hostnames without credentials.
+The linked configs are useful corroboration but not the source of record. The
+other three remain documented negative findings.
+
+### SlickVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.slickvpn.com/`, `https://www.slickvpn.com/locations/`, `https://www.slickvpn.com/press/` |
+| Legal / privacy URLs | `https://www.slickvpn.com/terms-and-conditions/`, `https://www.slickvpn.com/privacy-policy/`, `https://www.slickvpn.com/warrant-canary/`, `https://www.slickvpn.com/refund-policy/` |
+| Legal entity shown by official pages | Terms list notices to `Slick Networks, Inc.`; the current warrant canary names `SlickVPN.com, Slick Networks, Inc., Slick Network, LTD.` as `SlickVPN`; footer contact block says `SLICKVPN`. |
+| Address / identifier | Terms notice address: `Slick Networks, Inc., 3504 Hwy 153 #14, Greenville, SC 29611, USA`, phone `(866) 521-1757`. Footer contact block: `SLICKVPN, Weston Road PMB #231, Weston, Florida 33331, USA`. |
+| Registry / incorporation evidence | Official press page says SlickVPN was founded in 2011 and the website launched in 2012. No state registry extract was added in this batch; official pages disclose a complex structure with US marketing and an operational entity in Nevis, but not the full corporate hierarchy. |
+| Who is behind it | SlickVPN is operated under the Slick Networks/Slick Network entities above. NewsDemon publicly markets SlickVPN as included with NewsDemon subscriptions, and the current SlickVPN locations page links OpenVPN configs hosted under `members.newsdemon.com`. |
+| Source discovery | `https://www.slickvpn.com/locations/` currently says it is "a list of the active VPN servers" and publishes 11 location rows. Each row links a public `https://members.newsdemon.com/vpn/2025/SV-2025-*.ovpn` config. |
+| OpenASN data source | Added opt-in `vpn_dns` source id `slickvpn_locations`; parser id `slickvpn_locations_html`. |
+| Source quality / status | First-party active-server page with exact `gw*.slickvpn.com` hostnames. Parser keeps only visible hostnames whose anchor points at `https://members.newsdemon.com/vpn/2025/*.ovpn`, so page chrome and unrelated domains cannot enter the overlay. This is intentionally DNS-expanded and off by default because SlickVPN publishes hostnames rather than raw IPs, and DNS answers are resolver-vantage data. |
+| Live smoke | On 2026-07-05, the locations page yielded 11 config-linked hostnames and this resolver returned 11 IPv4 addresses. End-to-end Tier B smoke wrote 11 IPv4 ranges, 0 IPv6 ranges; sample `gw2.ams3.slickvpn.com -> 151.236.14.57` classified as `vpn`, provider `SlickVPN`, source `slickvpn_locations`. |
+| Page/config mismatch | All 11 linked configs returned HTTP 200 and contained one `remote` line each, but the Amsterdam page label was `gw2.ams3.slickvpn.com` while the linked official config said `remote gw2.ams2.slickvpn.com 8080`; `gw2.ams2` did not resolve from this environment. OpenASN therefore uses the current active-server page as source of record and treats the config files as corroboration only. |
+| Caveats | Do not import Gluetun hardcoded SlickVPN hostnames, do not infer the older "145 gateways / 45+ countries" press claims into hostnames, and do not crawl arbitrary NewsDemon directories. The only accepted source is the current SlickVPN locations page's config-linked visible hostnames. |
+| Primary source URLs | `https://www.slickvpn.com/locations/`, `https://members.newsdemon.com/vpn/2025/SV-2025-Singapore.ovpn`, `https://members.newsdemon.com/vpn/2025/SV-2025-Amsterdam.ovpn`, `https://www.slickvpn.com/press/`, `https://www.slickvpn.com/terms-and-conditions/`, `https://www.slickvpn.com/privacy-policy/`, `https://www.slickvpn.com/warrant-canary/`, `https://www.newsdemon.com/free-vpn-with-usenet` |
+
+### CalyxVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://calyxos.org/docs/guide/apps/calyx-vpn/`, `https://f-droid.org/en/packages/org.calyxinstitute.vpn/`, `https://leap.se/` |
+| Legal / privacy URLs | `https://calyx.org/legal/privacy-policy`, `https://calyx.org/legal/terms-of-service` |
+| Legal entity shown by official pages | The Calyx Institute. |
+| Address / identifier | Privacy policy contact address: `The Calyx Institute, 254 36th Street, Suite C660, Brooklyn, NY 11232`. |
+| Registry / incorporation evidence | Official pages identify the institute and address. No New York nonprofit/IRS registry extract was added in this batch. |
+| Who is behind it | CalyxVPN is the Calyx Institute's branded LEAP/Bitmask VPN. F-Droid describes it as a free VPN service offered by The Calyx Institute and based on Bitmask; LEAP says LEAP VPN is the shared code base for RiseupVPN, CalyxVPN, and Bitmask. |
+| OpenASN data source | Not added. The existing `leap_eip_service_json` parser would support Calyx if a live LEAP EIP JSON endpoint becomes reachable. |
+| Source quality / status | Blocked by unavailable source, not by parser shape. Public docs prove the product and operator, but no fetched, current, first-party gateway JSON was obtained. |
+| Live smoke | On 2026-07-05, `https://api.calyx.net/3/config/provider.json`, `https://api.calyx.net/3/config/eip-service.json`, the same paths on `:4430`, `https://calyx.net/provider.json`, and `https://calyx.net/3/config/eip-service.json` timed out from this environment. |
+| Caveats | Do not import IPs from community logs, troubleshooting posts, or local client runtime output. Those can be stale, vantage-specific, or Riseup/Calyx-confused. Add Calyx only after a live first-party provider endpoint fetches and the parser smoke passes. |
+| Primary source URLs | `https://calyxos.org/docs/guide/apps/calyx-vpn/`, `https://f-droid.org/en/packages/org.calyxinstitute.vpn/`, `https://gitlab.com/CalyxOS/bitmask_android`, `https://leap.se/`, `https://calyx.org/legal/privacy-policy`, `https://api.calyx.net/3/config/eip-service.json` |
+
+### Cloudflare WARP / 1.1.1.1 recheck
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://1.1.1.1/`, `https://developers.cloudflare.com/warp-client/`, `https://developers.cloudflare.com/cloudflare-one/` |
+| Legal / privacy URLs | `https://www.cloudflare.com/privacypolicy/`, `https://www.cloudflare.com/website-terms/`, `https://developers.cloudflare.com/1.1.1.1/privacy/` |
+| OpenASN data source | Existing `cloudflare_ranges` remains context-only via `https://www.cloudflare.com/ips-v4` and `https://www.cloudflare.com/ips-v6`; no WARP-specific `vpn` source added. |
+| 2026-07-05 recheck | Cloudflare's egress-policy docs, last updated 2026-05-05, explicitly say Cloudflare does not publish Cloudflare One Client egress IP ranges and that those egress IPs are not listed at Cloudflare's public IP Ranges page. |
+| Caveats | Do not map all Cloudflare ranges to `vpn`: that would conflate CDN/reverse-proxy, Cloudflare One, Gateway, Apple Private Relay overlap, and ordinary Cloudflare infrastructure. Keep `cloudflare_ranges` as context unless Cloudflare publishes consumer WARP exits separately. |
+| Primary source URLs | `https://developers.cloudflare.com/cloudflare-one/traffic-policies/egress-policies/`, `https://www.cloudflare.com/ips/`, `https://www.cloudflare.com/ips-v4`, `https://www.cloudflare.com/ips-v6`, `https://developers.cloudflare.com/fundamentals/concepts/cloudflare-ip-addresses/` |
+
+### Opera VPN / Opera VPN Pro recheck
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.opera.com/features/free-vpn`, `https://www.opera.com/features/vpn-pro`, `https://help.opera.com/en/mobile/vpn/` |
+| Legal / privacy URLs | `https://www.opera.com/legal/privacy`, `https://www.opera.com/legal/terms`, `https://blogs.opera.com/security/2024/09/opera-free-browser-vpn-no-log-audit-deloitte/`, `https://investor.opera.com/news-releases/news-release-details/opera-unveils-revamped-vpn-pro-its-premium-vpn-service-offering` |
+| Legal entity shown by official pages | Opera Norway AS. |
+| Address / identifier | Privacy statement contact address: `Opera Norway AS, P.O. Box 4214, Nydalen 0401, Oslo, Norway`. |
+| OpenASN data source | Not added. No exact public exit IP, CIDR, or hostname inventory found. |
+| 2026-07-05 recheck | The Free VPN page says Free VPN is browser-only, has 3 general locations and 100+ servers, while VPN Pro is device-wide. The current VPN Pro page says 3,000+ private servers and 47 global locations; Opera's July 2025 investor release says revamped VPN Pro has 48 locations and Lightway. Opera's 2024 no-log audit post said VPN Pro servers were then provided in collaboration with Nord while free browser VPN used Opera infrastructure. None of these pages publish exact exits. |
+| Live smoke | Previously tested `de.opera-proxy.net`, `us.opera-proxy.net`, `ca.opera-proxy.net`, and numbered variants did not resolve from this environment. Reverse-engineered SurfEasy/Opera proxy flows require app-style registration/client keys and remain outside OpenASN's source bar. |
+| Caveats | Do not label Nord, Express/Lightway-capable, SurfEasy/Pango, or generic Opera infrastructure as Opera VPN unless Opera publishes an exact exit inventory or unauthenticated config source that distinguishes Opera-branded egress. |
+| Primary source URLs | `https://www.opera.com/features/free-vpn`, `https://www.opera.com/features/vpn-pro`, `https://help.opera.com/en/mobile/vpn/`, `https://www.opera.com/legal/privacy`, `https://blogs.opera.com/security/2024/09/opera-free-browser-vpn-no-log-audit-deloitte/`, `https://investor.opera.com/news-releases/news-release-details/opera-unveils-revamped-vpn-pro-its-premium-vpn-service-offering`, `https://github.com/spaze/oprah-proxy` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 18: OVPN resolver design spike, SlickVPN, CalyxVPN retry, Cloudflare WARP-specific egress recheck, Opera VPN recheck.
-2. Batch 19+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 19+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

@@ -32,6 +32,7 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `riseup_vpn` | RiseupVPN | `https://api.black.riseup.net/3/config/eip-service.json` | default `vpn_providers` | `leap_eip_service_json` | 21 v4, 0 v6 |
 | `wlvpn_server_list` | WLVPN | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml` | default `vpn_providers` | `wlvpn_server_list_xml` | 3483 active visible v4, 0 v6 |
 | `worldvpn_servers` | WorldVPN | `https://worldvpn.net/servers` | default `vpn_providers` | `worldvpn_servers_html` | 180 exact v4 IPs -> 170 merged v4 ranges, 0 v6 |
+| `ovpn_status_servers` | OVPN | `https://status.ovpn.com/datacenters/{slug}/servers` | default `vpn_providers` | `ovpn_status_servers_json` | 32 datacenter JSON endpoints / 97 rows / 96 unique v4 -> 34 merged v4 ranges, 0 v6 |
 | `surfshark_generic` | Surfshark | `https://api.surfshark.com/v4/server/clusters/generic` | opt-in `vpn_dns` | `surfshark_clusters_json` | 142 hostnames / 280 v4, 0 v6 |
 | `surfshark_static` | Surfshark | `https://api.surfshark.com/v4/server/clusters/static` | opt-in `vpn_dns` | `surfshark_clusters_json` | 36 hostnames / 36 v4, 0 v6 |
 | `surfshark_obfuscated` | Surfshark | `https://api.surfshark.com/v4/server/clusters/obfuscated` | opt-in `vpn_dns` | `surfshark_clusters_json` | 7 hostnames / 7 v4, 0 v6 |
@@ -47,6 +48,7 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `strongvpn_locations` | StrongVPN | `https://strongtech.org/locations/` | opt-in `vpn_dns` | `strongvpn_locations_html` | 145 hostnames / 74 resolved v4 -> 59 merged v4 ranges, 0 v6; 71 DNS misses |
 | `vyprvpn_openvpn` | VyprVPN | `https://support.vyprvpn.com/hc/article_attachments/46761120489229` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 73 hostnames / 73 v4 -> 67 merged v4 ranges, 0 v6 |
 | `giganews_vyprvpn_hosts` | Giganews VyprVPN | `https://support.giganews.com/hc/en-us/articles/360039615432-What-are-the-VyprVPN-Server-Addresses` | opt-in `vpn_dns` | `html_table_hostnames` | 73 hostnames / 73 v4, 0 v6 |
+| `slickvpn_locations` | SlickVPN | `https://www.slickvpn.com/locations/` | opt-in `vpn_dns` | `slickvpn_locations_html` | 11 config-linked hostnames / 11 v4, 0 v6 |
 | `vpnbook_openvpn` | VPNBook | `https://www.vpnbook.com/freevpn/openvpn` | opt-in `public_relays` | `vpnbook_html_hosts` | 10 hostnames / 9 v4, 0 v6; 1 DNS miss |
 | `freevpn_us_servers` | FreeVPN.us | `https://www.freevpn.us/pages/server-status.html` | opt-in `public_relays` | `freevpn_us_status_html` | 17 VPN hostnames / 14 v4, 0 v6 |
 
@@ -83,8 +85,10 @@ End-to-end sample classifications from the live run:
 | `strongvpn_locations` | `176.67.81.250` | `vpn`, provider `StrongVPN` |
 | `vyprvpn_openvpn` | `31.6.10.254` | `vpn`, provider `VyprVPN` |
 | `giganews_vyprvpn_hosts` | `31.6.10.253` | `vpn`, provider `Giganews VyprVPN` |
+| `slickvpn_locations` | `151.236.14.57` | `vpn`, provider `SlickVPN` |
 | `wlvpn_server_list` | `103.209.254.114` | `vpn`, provider `WLVPN` |
 | `worldvpn_servers` | `116.203.253.222` | `vpn`, provider `WorldVPN` |
+| `ovpn_status_servers` | `5.181.234.131` | `vpn`, provider `OVPN` |
 | `vpnbook_openvpn` | `142.4.216.196` | `vpn`, provider `VPNBook` |
 | `freevpn_us_servers` | `5.189.254.17` | `vpn`, provider `FreeVPN.us` |
 | `vpngate` | `1.244.51.251` | `vpn`, provider `VPN Gate` |
@@ -108,6 +112,7 @@ End-to-end sample classifications from the live run:
 | RiseupVPN | Added default Tier B. | `https://api.black.riseup.net/3/config/eip-service.json`; OONI documents the LEAP provider API shape and that it advertises gateways. |
 | WLVPN | Added default Tier B. | `https://api.wlvpn.com/v2/list/wlvpnserverList.xml` is a public WLVPN/IPVanish white-label server API with exact `ip` attributes. WLVPN's own site says the service is powered by IPVanish and part of VIPRE Security Group / Ziff Davis, so attribution is `WLVPN` rather than a reseller brand. |
 | WorldVPN | Added default Tier B. | `https://worldvpn.net/servers` is a first-party public server table with exact IPs and `*.ocservvpn.com` hostnames. Parser reads only table rows and exact IP cells; no DNS expansion. |
+| OVPN | Added default Tier B. | `https://status.ovpn.com` is the official OVPN status page; its Vue `Servers-List` component calls `/datacenters/{slug}/servers` JSON endpoints with exact server IPs and `online` flags. Parser keeps online exact IPs only. |
 | Surfshark | Added opt-in DNS-expanded Tier B. | First-party cluster APIs publish `connectionName` hostnames: generic/static/obfuscated. Double-hop was empty live on 2026-07-05. |
 | IPVanish | Added opt-in DNS-expanded Tier B. | First-party OpenVPN config archive `https://configs.ipvanish.com/openvpn/v2.6.0-0/configs.zip` contains thousands of `remote` hostnames. |
 | PrivateVPN | Added opt-in DNS-expanded Tier B. | `https://privatevpn.com/client/PrivateVPN-TUN.zip` contains OpenVPN remotes. |
@@ -119,6 +124,7 @@ End-to-end sample classifications from the live run:
 | StrongVPN | Added opt-in DNS-expanded Tier B. | `https://strongtech.org/locations/` publishes exact `vpn-*.reliablehosting.com` speedtest/server hostnames from the StrongVPN/StrongTech first-party site. |
 | VyprVPN | Added opt-in DNS-expanded Tier B. | `https://support.vyprvpn.com/hc/en-us/articles/360038096131-Where-can-I-find-the-OpenVPN-files` links the public first-party OpenVPN ZIP at `https://support.vyprvpn.com/hc/article_attachments/46761120489229`; parser extracts exact `*.vyprvpn.com` remotes and clients resolve locally. |
 | Giganews VyprVPN | Added opt-in DNS-expanded Tier B. | `https://support.giganews.com/hc/en-us/articles/360039615432-What-are-the-VyprVPN-Server-Addresses` publishes the exact `*.vpn.giganews.com` hostnames used by Giganews accounts with bundled VyprVPN, and says IPs are subject to change. |
+| SlickVPN | Added opt-in DNS-expanded Tier B. | `https://www.slickvpn.com/locations/` says it lists active VPN servers and links public 2025 OpenVPN configs under `members.newsdemon.com`. Parser reads only config-linked visible `gw*.slickvpn.com` hostnames from that page. The linked config files are corroboration only because the Amsterdam page label (`gw2.ams3`, resolves) disagreed with the linked config remote (`gw2.ams2`, did not resolve) in the 2026-07-05 smoke. |
 | VPN Gate | Existing opt-in public relay Tier B. | `http://www.vpngate.net/api/iphone/` is the official public relay API. |
 | VPNBook | Added opt-in public relay Tier B. | `https://www.vpnbook.com/freevpn/openvpn` publishes current OpenVPN hostnames. |
 | FreeVPN.us | Added opt-in public relay Tier B. | `https://www.freevpn.us/pages/server-status.html` publishes live first-party status rows. Parser keeps only OpenVPN, WireGuard, and PPTP/L2TP hosts and excludes SSH Tunnel / V2Ray rows. |
@@ -132,16 +138,14 @@ End-to-end sample classifications from the live run:
 | ZenMate | Re-audited, not added separately. | Current ZenMate pages and migration notice route paid VPN service through CyberGhost apps. No independent exact source was found, and CyberGhost cannot distinguish ZenMate users beyond aggregate app-auth counts. |
 | Perfect Privacy | Promising but still blocked. | Gluetun indicates a first-party OpenVPN ZIP path under `www.perfect-privacy.com`, but official home/legal/ZIP URLs timed out from this environment again on 2026-07-05. Not shipped without a fetched body, parser output, and legal/source smoke. |
 | hide.me | Re-audited, not added. | Official network page lists locations/self-managed claims only. Official OpenVPN docs place config ZIPs behind `member.hide.me` Premium/member login, and unauthenticated `member.hide.me/en/server-status` redirects to login. No public exact IP/CIDR/hostname source verified. |
-| OVPN.com | Promising but not added yet. | Public configuration page can generate `.conf` files after a CSRF-tokened POST and returned `pool-1.prd.at.ovpn.com` in a live smoke, but the workflow is multi-request/stateful and rate-limited (`x-ratelimit-limit: 6`). It needs a dedicated resolver design before shipping. |
 | HMA / HideMyAss | Not added. | Current official installation page says Linux is no longer supported. Historical/OpenVPN blog links and Gluetun point at `https://vpn.hidemyass.com/vpn-config/...`, but `vpn.hidemyass.com` did not resolve here. |
 | VPN Unlimited / KeepSolid | Not added. | Official manuals generate/download OpenVPN files from the authenticated User Office. Gluetun notes hardcoded data from a user-provided ZIP behind a login wall. Not a redistributable or unauthenticated source. |
-| SlickVPN | Not added. | Gluetun hardcodes hostnames because the public listing degraded. Hardcoded third-party inventory is not a source. |
-| CalyxVPN | Not added in this pass. | LEAP-shaped endpoint `https://api.calyx.net/3/config/eip-service.json` timed out from this environment. Retry later; parser already supports LEAP EIP JSON. |
-| Cloudflare WARP / 1.1.1.1 | Context-only, not `vpn`. | Cloudflare publishes global proxy IP ranges, already held as context-only `cloudflare_ranges`. Cloudflare One docs explicitly say Cloudflare One Client/WARP egress ranges are not published and are not the same as the public Cloudflare IP Ranges page. |
+| CalyxVPN | Not added in this pass. | CalyxOS, F-Droid, Calyx legal pages, and LEAP pages establish the Calyx Institute/LEAP product, but live probes of `https://api.calyx.net/3/config/provider.json`, `https://api.calyx.net/3/config/eip-service.json`, the same paths on `:4430`, and `https://calyx.net/3/config/eip-service.json` timed out from this environment. Retry later; parser already supports LEAP EIP JSON. |
+| Cloudflare WARP / 1.1.1.1 | Context-only, not `vpn`. | Cloudflare publishes global proxy IP ranges, already held as context-only `cloudflare_ranges`. Cloudflare One egress docs were rechecked on 2026-07-05 and explicitly say Cloudflare One Client/WARP egress ranges are not published and are not the same as the public Cloudflare IP Ranges page. |
 | Apple "VPN" / Private Relay | Covered as `relay`. | Same source as above; semantics are not `vpn`. |
 | Google One VPN | Not added. | Product has been discontinued; no current exact public egress source. |
 | Firefox built-in/free VPN | Not added separately. | Paid Mozilla VPN is Mullvad-backed. Newer built-in/browser-only Firefox VPN does not have a verified separate exact egress source in this pass. |
-| Opera VPN | Not added. | Opera Norway AS operates the free browser VPN on Opera infrastructure; VPN Pro is provided in collaboration with Nord. Public pages and audit posts do not publish exact exit IPs/CIDRs. Reverse-engineered SurfEasy/Opera proxy flows require app-style registration/client keys, and public `opera-proxy.net` hostnames did not resolve here. |
+| Opera VPN | Not added. | Opera Norway AS operates Opera services. Current Free VPN and VPN Pro pages were rechecked on 2026-07-05 and publish browser/device scope, server-count/location marketing (Free VPN 100+ servers / 3 general locations; VPN Pro 3,000+ servers / 47+ locations), but no exact exit IPs/CIDRs/hostnames. Reverse-engineered SurfEasy/Opera proxy flows require app-style registration/client keys, and public `opera-proxy.net` hostnames did not resolve here. |
 | Brave VPN | Not added. | Brave Firewall + VPN is powered by Guardian. Guardian exposes a public country/city region endpoint with server counts, but no IPs/CIDRs/hostnames; connection APIs are credentialed. No OpenASN-compatible exact source verified. |
 | Hotspot Shield | Not added. | Anchorfree/Pango/Point Wild family. Official legal pages identify operators and server-location marketing, but no public exact egress inventory. Gluetun has no Hotspot Shield provider because it also requires a public server/config source. |
 | Touch VPN | Not added. | VPN Proxy Pro, LLC / TouchVPN LLC within the Pango/Point Wild family. Official pages and stores publish server counts/locations only, not exact IPs, CIDRs, or hostnames. |

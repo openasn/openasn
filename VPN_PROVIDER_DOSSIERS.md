@@ -267,10 +267,92 @@ Ground rules:
 | Caveats | This is a good technical source but a weak corporate dossier. The legal operator is not clearly named on FastestVPN's own terms/privacy pages; app-store and review metadata point at several similarly named entities across Cayman Islands, Australia, and the United States. Keep the provider label as `FastestVPN`, keep the source opt-in, and do not make strong company/founder claims without a registry extract or official legal-page update. |
 | Primary source URLs | `https://fastestvpn.com/terms-of-service`, `https://fastestvpn.com/privacy-policy`, `https://support.fastestvpn.com/vpn-servers/`, `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, `https://apps.apple.com/dk/app/fastestvpn-secures-privacy/id1643144565?mt=12`, `https://play.google.com/store/apps/details?id=com.vpn.fastestvpnservice`, `https://publishednotices.asic.gov.au/browsesearch-notices/notice-details/FASTEST-TECHNOLOGY-PTY-LTD-658034336/6b27be62-7e93-4214-8030-03c4336123f0`, `https://uspto.report/TM/98181332` |
 
+## Batch 4 - Public Relays, Relay Semantics, And Mozilla Coverage
+
+### VPNSecure
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.vpnsecure.me/` |
+| Legal / privacy URLs | `https://www.vpnsecure.me/privacy-policy/`, `https://www.vpnsecure.me/terms-of-service/`, `https://www.vpnsecure.me/vpn-locations/` |
+| Legal entity shown by official pages | InfiniteQuant Ltd |
+| Address / identifier | VPNSecure's privacy policy names `InfiniteQuant Ltd` and lists `Suite 219, Lagoon Court - Sandyport, Nassau - New Providence - The Bahamas`, contact `support@vpnsecure.me`. The terms page footer and company block use the same InfiniteQuant Ltd Bahamas address. |
+| Registry / incorporation evidence | Official pages verify the current operator name and Bahamas address, but no Bahamas registry extract, company number, or incorporation date was verified in this batch. Bahamas company-file access appears to require the Registrar General company-search service rather than a public unauthenticated extract. |
+| Who is behind it | Current official pages disclose InfiniteQuant Ltd only. VPNSecure has messy historical ownership: older terms text still says `VPNSecure Trust`, while 2019 user-visible material reported a move from Australia to Hong Kong under Lucro Corp Limited, and 2025 reporting/user records discuss InfiniteQuant's acquisition of VPNSecure assets. Treat those as history, not current legal-page facts. |
+| OpenASN data source | `vpnsecure_locations` uses `https://www.vpnsecure.me/vpn-locations/`, parser `vpnsecure_locations_html`, provider `VPNSecure`. |
+| Source quality / status | Implemented as opt-in `vpn_dns`. The first-party locations page publishes short server labels and status. The parser keeps labels marked `up` and expands them to `*.isponeder.com` hostnames for local DNS resolution. |
+| Live smoke | On 2026-07-05, the parser found 60 active host labels. This resolver returned 60 IPv4 addresses, 0 IPv6 addresses, and 0 DNS misses; sample resolved IP `103.106.228.223`. |
+| Caveats | This is useful but fragile: the locations page does not publish raw IPs, the hostname suffix is parser knowledge, and DNS answers are resolver-specific. Keep it opt-in. The corporate dossier is not registry-grade until a Bahamas extract is obtained. |
+| Primary source URLs | `https://www.vpnsecure.me/privacy-policy/`, `https://www.vpnsecure.me/terms-of-service/`, `https://www.vpnsecure.me/vpn-locations/`, `https://www.bahamas.gov.bs/service/company-search`, `https://www.reddit.com/r/privacytoolsIO/comments/aqix0z/vpnsecure_moves_company_from_australia_to_hong/`, `https://arstechnica.com/gadgets/2025/05/vpnsecure-owner-says-it-had-to-cancel-unsustainable-lifetime-subscriptions/` |
+
+### VPN Gate
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.vpngate.net/` |
+| Legal / privacy URLs | `https://www.vpngate.net/en/about_us.aspx`, `https://www.vpngate.net/en/about_faq.aspx`, `https://www.vpngate.net/en/`, `http://www.vpngate.net/api/iphone/` |
+| Legal entity shown by official pages | VPN Gate Academic Experiment Project at National University of Tsukuba, Japan |
+| Address / identifier | Official footer says the project is at National University of Tsukuba, Japan and is joint research with SoftEther Corporation. The FAQ says VPN Gate is not a commercial corporation and is an online academic research service at the Graduate School of University of Tsukuba. |
+| Registry / incorporation evidence | Not a corporation. Official site states VPN Gate launched on 2013-03-08. The NSDI 2014 paper by Daiyuu Nobori and Yasushi Shinjo also says VPN Gate launched on 2013-03-08. |
+| Who is behind it | The public service identifies Daiyuu Nobori on many relay rows and official FAQ material names him as responsible person, with redundant maintenance staff at University of Tsukuba. VPN Gate is a child project of SoftEther VPN Project. |
+| OpenASN data source | `vpngate` uses `http://www.vpngate.net/api/iphone/`, parser `vpngate_csv`, provider `VPN Gate`. |
+| Source quality / status | Implemented as opt-in `public_relays`. The API is a first-party plain-text CSV whose second column is the current relay IP. Parser ignores the embedded base64 OpenVPN configs and keeps exact IPs only. |
+| Live smoke | On 2026-07-05, the parser returned 98 IPv4 relay IPs and 0 IPv6 addresses; sample IP `1.244.51.251`. The web page count is much larger because it lists many rows, mirrors, and dynamic volunteer information; the API is the exact source OpenASN consumes. |
+| Caveats | VPN Gate is not provider-operated commercial VPN infrastructure. It is a volunteer public relay network, often on residential or ordinary ISP addresses while actively serving VPN traffic. Keep it opt-in to avoid surprising downstream users who treat `vpn` as provider-owned datacenter egress. |
+| Primary source URLs | `https://www.vpngate.net/`, `https://www.vpngate.net/en/about_us.aspx`, `https://www.vpngate.net/en/about_faq.aspx`, `http://www.vpngate.net/api/iphone/`, `https://www.usenix.org/conference/nsdi14/technical-sessions/presentation/nobori`, `https://www.softether.org/9-about` |
+
+### VPNBook
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.vpnbook.com/` |
+| Legal / privacy URLs | `https://www.vpnbook.com/contact`, `https://www.vpnbook.com/freevpn/openvpn` |
+| Legal entity shown by official pages | No legal entity name found on official pages in this batch |
+| Address / identifier | The contact/privacy page lists email `contact@vpnbook.com`, abuse contact `abuse@vpnbook.com`, and location `Zurich, Switzerland`. The footer says copyright 2026 VPNBook and "Located in Zurich, Switzerland", but no company name, registration number, or formal legal address is provided. |
+| Registry / incorporation evidence | No registry-grade entity or incorporation date verified. Treat VPNBook as a service/brand with Zurich location disclosure, not as a verified Swiss company record. |
+| Who is behind it | Official pages do not identify founders, officers, or a legal operator. The service says it is financially supported by website advertisements and donations. |
+| OpenASN data source | `vpnbook_openvpn` uses `https://www.vpnbook.com/freevpn/openvpn`, parser `vpnbook_html_hosts`, provider `VPNBook`. |
+| Source quality / status | Implemented as opt-in `public_relays`. VPNBook publishes current OpenVPN server hostnames on a public first-party page. Parser extracts `*.vpnbook.com` server names except `www.vpnbook.com`; clients resolve hostnames locally. |
+| Live smoke | On 2026-07-05, the parser found 10 hostnames. This resolver returned 9 IPv4 addresses, 0 IPv6 addresses, and 1 DNS miss; sample resolved IP `142.4.216.196`. |
+| Caveats | The corporate/legal identity is weak. VPNBook also logs connection IP and time for abuse mitigation and says those logs are deleted every week. Keep the source opt-in because it is a free public VPN service, high-churn, DNS-expanded, and not backed by a robust legal-entity dossier. |
+| Primary source URLs | `https://www.vpnbook.com/contact`, `https://www.vpnbook.com/freevpn/openvpn`, `https://www.vpnbook.com/` |
+
+### Apple iCloud Private Relay
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.icloud.com/` |
+| Legal / privacy URLs | `https://developer.apple.com/icloud/prepare-your-network-for-icloud-private-relay/`, `https://mask-api.icloud.com/egress-ip-ranges.csv`, `https://www.apple.com/icloud/docs/iCloud_Private_Relay_Overview_Dec2021.pdf`, `https://www.apple.com/legal/privacy/en-ww/`, `https://www.apple.com/legal/internet-services/icloud/` |
+| Legal entity shown by official pages | Apple Inc. |
+| Address / identifier | Apple contact/legal pages list Apple Inc. / Apple at One Apple Park Way, Cupertino, CA 95014, U.S.A. |
+| Registry / incorporation evidence | Apple SEC Form 10-K filings describe Apple Inc. as a California corporation established in 1977. That is corporate context; Private Relay itself launched much later as an iCloud+ privacy service. |
+| Who is behind it | Apple operates the Private Relay service design and publishes the egress geolocation/IP feed. Apple's overview says Private Relay uses two separate internet relays operated by different entities; the second relay assigns the egress relay IP. |
+| OpenASN data source | `apple_private_relay` uses `https://mask-api.icloud.com/egress-ip-ranges.csv`, parser `csv_cidr_first_column`, provider `iCloud Private Relay`, and maps to `relay`, not `vpn`. |
+| Source quality / status | Implemented as default Tier B relay data. The source is first-party CSV with CIDR and geolocation columns. It is large and must be aggregated by the pipeline. |
+| Live smoke | On 2026-07-05, the CSV fetched successfully with 286946 rows and 12129191 bytes. First row observed: `172.224.226.0/27,GB,GB-EN,London,`. |
+| Caveats | This must remain `relay`, not `vpn` or hostile `hosting`. Apple explicitly tells operators to recognize these addresses and consider treating them like carrier-grade NAT or enterprise IPs because many real users may share one relay IP. Relay precedence must outrank cloud/hosting because egress IPs can sit inside Cloudflare/Akamai-style infrastructure. |
+| Primary source URLs | `https://developer.apple.com/icloud/prepare-your-network-for-icloud-private-relay/`, `https://mask-api.icloud.com/egress-ip-ranges.csv`, `https://www.apple.com/icloud/docs/iCloud_Private_Relay_Overview_Dec2021.pdf`, `https://www.apple.com/contact/`, `https://www.apple.com/legal/warranty/warranty-obligor/en/`, `https://www.sec.gov/Archives/edgar/data/320193/000032019318000145/a10-k20189292018.htm` |
+
+### Mozilla VPN / Firefox Built-In VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.mozilla.org/en-US/products/vpn/` |
+| Legal / privacy URLs | `https://www.mozilla.org/en-US/about/legal/terms/subscription-services/`, `https://www.mozilla.org/en-US/privacy/subscription-services/`, `https://www.mozilla.org/en-US/privacy/firefox/`, `https://support.mozilla.org/en-US/kb/built-in-vpn` |
+| Legal entity shown by official pages | Mozilla Corporation |
+| Address / identifier | Mozilla subscription terms name Mozilla Corporation as the service provider. Mozilla website legal notices list `Mozilla, Attn: Mozilla - Legal Notices, 1875 Mission Street, Suite 103, San Francisco, CA 94103, USA`, telephone `650-903-0800`, fax `650-903-0875`. |
+| Registry / incorporation evidence | Mozilla's own corporation page says Mozilla Corporation was established in August 2005 as a wholly owned taxable subsidiary serving the non-profit public-benefit goals of its parent. No California/Delaware registry extract was captured in this batch. |
+| Who is behind it | Mozilla Corporation operates Mozilla VPN as a subscription privacy product. Mozilla's terms say Mozilla VPN is in partnership with Mullvad and routes traffic through the partner's networks. Mullvad's own 2019 partnership post says Mozilla partnered with Mullvad to use Mullvad's global network of VPN servers for Mozilla's VPN application. |
+| OpenASN data source | Paid Mozilla VPN is covered by `mullvad_relays`, parser `mullvad_relays_json`, provider `Mullvad`. Firefox built-in/browser-only VPN is not added separately because no verified exact egress source was found. |
+| Source quality / status | Mozilla's server page explicitly says Mozilla VPN is built on top of Mullvad infrastructure and uses the same servers. OpenASN therefore does not create a separate Mozilla provider label for those IPs; the network operator remains `Mullvad`. |
+| Live smoke | On 2026-07-05, Mullvad's first-party relay API returned 539 active IPv4 relay entry addresses and 532 IPv6 relay entry addresses. Firefox built-in VPN had no source smoke because Mozilla does not publish a separate exact egress list in the official pages checked. |
+| Caveats | Do not conflate three things: paid Mozilla VPN, Firefox built-in VPN, and Firefox Relay email/phone masking. Paid Mozilla VPN is device-level and Mullvad-backed. Firefox built-in VPN is browser-only, free, requires a Mozilla account, has a 50 GB monthly data limit, and only masks Firefox traffic; without an official egress feed it should stay documented but not shipped as data. |
+| Primary source URLs | `https://www.mozilla.org/en-US/about/legal/terms/subscription-services/`, `https://www.mozilla.org/en-US/products/vpn/resource-center/vpn-servers-around-the-world/`, `https://support.mozilla.org/en-US/kb/built-in-vpn`, `https://www.mozilla.org/en-US/privacy/firefox/`, `https://mullvad.net/en/blog/mullvad-partnerships-page-has-been-updated-mozilla`, `https://www.mozilla.org/en-US/foundation/moco/`, `https://api.mullvad.net/www/relays/all/` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 4: VPNSecure, VPN Gate, VPNBook, Apple Private Relay, Mozilla VPN / Firefox VPN.
-2. Batch 5: ExpressVPN, CyberGhost, ZenMate, TunnelBear, Perfect Privacy.
-3. Batch 6+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 5: ExpressVPN, CyberGhost, ZenMate, TunnelBear, Perfect Privacy.
+2. Batch 6: Opera VPN, Brave VPN, Cloudflare WARP / 1.1.1.1, Hotspot Shield, Touch VPN.
+3. Batch 7+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

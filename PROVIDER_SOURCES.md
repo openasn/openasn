@@ -40,8 +40,8 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `torguard_openvpn_udp` | TorGuard | `https://torguard.net/downloads/OpenVPN-UDP-Linux.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 52 hostnames / 430 v4, 0 v6 |
 | `fastestvpn_tcp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=tcp` | opt-in `vpn_dns` | `html_table_hostnames` | 68 hostnames / 55 v4, 0 v6 |
 | `fastestvpn_udp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=udp` | opt-in `vpn_dns` | `html_table_hostnames` | 68 hostnames / 55 v4, 0 v6 |
-| `vpnsecure_locations` | VPNSecure | `https://www.vpnsecure.me/vpn-locations/` | opt-in `vpn_dns` | `vpnsecure_locations_html` | 47 v4, 0 v6 |
-| `vpnbook_openvpn` | VPNBook | `https://www.vpnbook.com/freevpn/openvpn` | opt-in `public_relays` | `vpnbook_html_hosts` | 9 v4, 0 v6 |
+| `vpnsecure_locations` | VPNSecure | `https://www.vpnsecure.me/vpn-locations/` | opt-in `vpn_dns` | `vpnsecure_locations_html` | 60 hostnames / 60 v4, 0 v6 |
+| `vpnbook_openvpn` | VPNBook | `https://www.vpnbook.com/freevpn/openvpn` | opt-in `public_relays` | `vpnbook_html_hosts` | 10 hostnames / 9 v4, 0 v6; 1 DNS miss |
 
 DNS-expanded counts are resolver-vantage-specific. Hostname counts are the
 stable parser smoke; resolved IP counts can move when provider DNS changes,
@@ -52,11 +52,12 @@ Also verified unchanged existing sources in the same run:
 | Source id | Provider | Live smoke on 2026-07-05 |
 |---|---|---|
 | `protonvpn` | ProtonVPN licensed feed | 823 v4, 0 v6 |
-| `mullvad_relays` | Mullvad | 496 v4, 532 v6 |
+| `apple_private_relay` | Apple iCloud Private Relay | 286946 CSV rows |
+| `mullvad_relays` | Mullvad | 539 v4, 532 v6 |
 | `ivpn_servers` | IVPN | 169 v4, 0 v6 |
 | `airvpn_status` | AirVPN | 445 v4, 1004 v6 |
 | `windscribe_servers` | Windscribe | 1023 v4, 0 v6 |
-| `vpngate` | VPN Gate | 99 v4, 0 v6 |
+| `vpngate` | VPN Gate | 98 v4, 0 v6 |
 
 End-to-end sample classifications from the live run:
 
@@ -70,8 +71,9 @@ End-to-end sample classifications from the live run:
 | `purevpn_openvpn` | `5.254.106.8` | `vpn`, provider `PureVPN` |
 | `torguard_openvpn_tcp` | `2.58.46.138` | `vpn`, provider `TorGuard` |
 | `fastestvpn_tcp` | `5.181.233.122` | `vpn`, provider `FastestVPN` |
-| `vpnsecure_locations` | `15.204.48.98` | `vpn`, provider `VPNSecure` |
-| `vpnbook_openvpn` | `5.196.64.200` | `vpn`, provider `VPNBook` |
+| `vpnsecure_locations` | `103.106.228.223` | `vpn`, provider `VPNSecure` |
+| `vpnbook_openvpn` | `142.4.216.196` | `vpn`, provider `VPNBook` |
+| `vpngate` | `1.244.51.251` | `vpn`, provider `VPN Gate` |
 
 ## Provider Audit Ledger
 

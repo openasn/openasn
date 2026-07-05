@@ -161,8 +161,8 @@ End-to-end sample classifications from the live run:
 | VeePN | Not added. | VeePN Corp., Panama; official server page lists 2,600+ servers / 109 locations / 85 countries, while legal pages name Laraun Limited and IT Research LLC for payments. No exact public egress source verified. |
 | SkyVPN | Not added. | SkyVPN, Inc.; terms say Hong Kong office control and product pages claim 3000+ servers / 30M users, but no exact IP/CIDR/hostname list, config archive, or server API was found. |
 | X-VPN | Not added. | LIGHTNINGLINK NETWORKS PTE. LTD.; official pages claim 10,000+ servers / 80+ countries / 250+ locations. Router OpenVPN configs are premium/account-gated; no public exact source verified. |
-| Total VPN | Not added. | Product page only; no exact source verified. |
-| SetupVPN | Not added. | Product page only; no exact source verified. |
+| Total VPN | Not added. | Total Security Limited / Total Security U.S. LLC / Point Wild legal pages and product pages were checked. Public material is legal text, help pages, and country/server-count marketing only; no exact IP/CIDR/hostname/config source verified. |
+| SetupVPN | Not added. | SetupVPN Inc. public pages, FAQ, registration/download routes, and `baseserver.io` download endpoints were checked. FAQ says locations change daily and no exact public inventory is published. |
 | uVPN | Not added. | Product page only; no exact source verified. |
 | GooseVPN | Not added. | Product page only; no exact source verified. |
 | MEGA VPN | Not added. | Official VPN/product/legal pages identify the responsible MEGA entities and list countries/cities for consumer selection, but no public exact VPN exit IP/CIDR/hostname/API/config archive was verified. `https://mega.io/server-locations` is cloud-storage data-centre geography, not VPN egress provenance. |
@@ -180,9 +180,9 @@ End-to-end sample classifications from the live run:
 | VpnHood | Not added. | Open-source VPN engine/client/server and Connect app. Public-server support exists, but current app flows use access keys/store/account integration and no clean exact egress inventory was verified. |
 | FreeVPN724 | Not added as separate provider. | `worldvpn.net/servers` is accepted as the backend provider source. FreeVPN724 is a free-client/front-door brand powered by WorldVPN and does not need a separate source id unless it publishes a distinct exact inventory. |
 | StarVPN | Not added. | Residential/static/mobile/datacenter VPN/proxy provider. Router/client configs are generated from the member dashboard after selecting IP type, country, region, and ISP; no unauthenticated exact egress source verified. |
-| GoFlyVPN | Not added. | Product page only; no exact source verified. |
-| iTop VPN | Not added. | Product page only; no exact source verified. |
-| Radmin VPN | Not added. | Virtual LAN/remote network product, not a public internet egress VPN source. |
+| GoFlyVPN / RivoVPN | Not added. | SPA, static privacy markdown, Google Play/App Store metadata, and public APK/EXE download endpoints were checked. Web copy says nodes are dynamically assigned by the server; no exact public egress inventory was found. |
+| iTop VPN | Not added. | iTop Inc. legal/about pages and Apple app metadata were checked. The public "VPN server list" is country-level marketing for 3200+ servers / 100+ locations, not exact IP/CIDR/hostname data. |
+| Radmin VPN | Not added. | Famatech's Radmin VPN is a virtual LAN/remote-network product for connecting computers into one local network, not a public internet egress VPN source. |
 | OpenVPN Connect | Not added. | Client software, not a provider. |
 | SoftEther | Not added. | VPN software/project. VPN Gate is the public relay service and is already covered. |
 | Tailscale | Not added. | Mesh/zero-trust private networking product, not a public VPN egress provider. |

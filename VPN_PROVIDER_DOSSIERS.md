@@ -1241,9 +1241,71 @@ when the result is only location/accelerator metadata rather than exact exits.
 | Caveats | Do not classify StarVPN's claimed residential/mobile pool as provider-operated `vpn` exits from marketing claims. Residential and mobile IP products are real-user/ISP-space sensitive, and a static offline source would need exact first-party egress inventory plus semantics separating datacenter VPN, static residential, rotating residential, and free network-sharing traffic. |
 | Primary source URLs | `https://www.starvpn.com/`, `https://www.starvpn.com/contact-us`, `https://www.starvpn.com/privacy-policy`, `https://www.starvpn.com/terms-of-service`, `https://www.starvpn.com/terms-of-service-free-vpn`, `https://www.starvpn.com/free-vpn`, `https://www.starvpn.com/frequently-asked-questions`, `https://www.starvpn.com/setup-instructions`, `https://www.starvpn.com/how-to-setup-openvpn-connect-on-macos`, `https://www.starvpn.com/openvpn-configuration-setup-on-iphone-ipad`, `https://play.google.com/store/apps/details?id=com.starvpn`, `https://apps.apple.com/us/app/residential-vpn/id1624494670` |
 
+## Batch 15 - GoFlyVPN, iTop VPN, Radmin VPN
+
+This batch closes the remaining services from the page-2/page-3 Google queue.
+Total VPN and SetupVPN were already captured with full dossiers in Batch 11, so
+this section documents the three still-missing entries. No OpenASN source was
+added: each failed for a different reason, but all failed the same hard rule:
+no clean first-party exact IP/CIDR/hostname source.
+
+### GoFlyVPN / RivoVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://goflyvpn.com/`, `https://goflyvpn.com/download`, `https://goflyvpn.com/help` |
+| Legal / privacy URLs | `https://goflyvpn.com/privacy-policy`, `https://goflyvpn.com/privacy/privacy_us.md`, `https://goflyvpn.com/privacy/privacy_hk.md`, `https://goflyvpn.com/privacy/privacy_tw.md`, `https://goflyvpn.com/privacy/privacy_kr.md`, `https://goflyvpn.com/privacy/privacy_jp.md` |
+| Legal entity shown by official pages | The GoFlyVPN website privacy markdown still contains template placeholders such as `[Company Name]` / `[products/websites/mobile applications/clients]`, so the website itself does not verify a legal operator. Google Play's public page for `com.ambrose.overwall` shows the app title `GoFly VPN,V2ray,Trojan,sock5`, author text `TracySteven`, and About-the-developer details for `NeoMortal LLC`. Apple lookup for app id `6760238667` shows `RivoVPN`, seller `NeoMortal LLC`, bundle `io.rivo.secure`, and seller URL `https://rivovpn.com/`. |
+| Address / identifier | Google Play lists `support@goflyvpn.com`, `AndroidDeveloper@neo-mortal.com`, phone `+44 7543 932026`, and NeoMortal LLC at 30 N Gould St Ste N, Sheridan, WY 82801-6317, United States. Apple lookup lists seller `NeoMortal LLC` for the RivoVPN app. |
+| Registry / incorporation evidence | Not verified. A Wyoming Secretary of State WyoBiz result was discoverable for a similar NeoMortal LLC query, but the direct registry page required a JavaScript/human challenge from this environment and was not accepted as a registry receipt. No incorporation date or entity number is recorded. |
+| Who is behind it | Public evidence ties the GoFlyVPN web/Android surface to `com.ambrose.overwall` and the GoFly/Rivo download set, while Apple and Windows download naming point to RivoVPN / NeoMortal LLC. No individual owner/founder was verified; `TracySteven` appears as Google Play schema/author text, not a registry fact. |
+| App/store identity | Google Play: `https://play.google.com/store/apps/details?id=com.ambrose.overwall`; Google Play testing link: `https://play.google.com/apps/testing/com.ambrose.overwall`; Apple lookup/app id: `https://itunes.apple.com/lookup?id=6760238667&country=US`, `https://apps.apple.com/app/id6760238667`; public downloads: `https://download.goflyclub.com/GoFly20260610.apk?=1`, `https://download.devboo.com/gofly-OpenBeta.apk?=1`, `https://download.goflyclub.com/RivoVPNWindows-amd64-setup.exe?=1`. |
+| Claimed network | Website copy claims free VPN service, multiple countries/regions, global top-tier data-center servers, no activity logging, and encrypted traffic. The FAQ embedded in the website bundle explicitly says server nodes are not fixed and are dynamically assigned by the server. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official web routes are a Vite/React SPA; unknown paths such as `/api/servers`, `/servers`, `/server-list`, `/robots.txt`, and `/sitemap.xml` returned the same HTML app shell, not structured source data. Static privacy markdown exists but is placeholder-heavy and not an egress inventory. Public APK/EXE endpoints are real downloads, but proprietary client inspection is not a clean source and the public bundle says nodes are dynamically assigned. |
+| Live smoke | On 2026-07-05 the website bundle was fetched from `https://goflyvpn.com/assets/index-YBlXSt2Q.js` and the static privacy markdown returned HTTP 200. Download headers returned APK/EXE content for the three public download URLs. No parser smoke because no OpenASN-compatible source was found. |
+| Caveats | Do not decompile or import proprietary app state, embedded endpoints, user-observed assignments, V2Ray/Trojan/SOCKS-specific app behavior, or dynamically assigned nodes. The placeholder privacy policy is a governance warning and makes this a poor candidate until a clean public server manifest or provider-published exact list appears. |
+| Primary source URLs | `https://goflyvpn.com/`, `https://goflyvpn.com/privacy-policy`, `https://goflyvpn.com/privacy/privacy_us.md`, `https://goflyvpn.com/download`, `https://play.google.com/store/apps/details?id=com.ambrose.overwall`, `https://itunes.apple.com/lookup?id=6760238667&country=US`, `https://download.goflyclub.com/GoFly20260610.apk?=1`, `https://download.devboo.com/gofly-OpenBeta.apk?=1`, `https://download.goflyclub.com/RivoVPNWindows-amd64-setup.exe?=1` |
+
+### iTop VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.itopvpn.com/`, `https://www.itopvpn.com/about`, `https://www.itopvpn.com/free-vpn`, `https://www.itopvpn.com/vpn-servers` |
+| Legal / privacy URLs | `https://www.itopvpn.com/terms`, `https://www.itopvpn.com/privacy`, `https://www.itopvpn.com/eula` |
+| Legal entity shown by official pages | iTop Inc. Terms say iTop Inc. provides the website services/products; the privacy policy says `itopvpn.com`, sub-websites, software/apps, and services are owned and operated by iTop Inc. The iOS App Store seller for app id `1538546081` is `ORANGE VIEW LIMITED`, so app-store/payment/distribution identity is not identical to the website legal text. |
+| Address / identifier | Official website pages did not expose a physical address or company number in this batch. Terms route unresolved complaints to `tickets@itopvpn.com`; EULA snippets route arbitration rejection and notices to `feedback@itopvpn.com` for the VPN product and other product-specific support aliases. App Store lookup lists seller `ORANGE VIEW LIMITED`, bundle `com.vpn.itop`, and seller URL `https://www.itopvpn.com/`. |
+| Registry / incorporation evidence | Not verified. Official About page says iTop was founded in 2016 and now has more than 20 million users; treat 2016 as company/product history, not registry-grade incorporation evidence. No Hong Kong Companies Registry extract, Orange View registry receipt, or incorporation date was captured. |
+| Who is behind it | Public pages identify iTop Inc. as website/service operator and present iTop as a multi-product software company: iTop VPN, iTop Screen Recorder, iTop Data Recovery, iTop PDF, iTop Easy Desktop, DualSafe Password Manager, and related utilities. No founders or individual owners were verified from primary sources. |
+| App/store identity | Apple lookup/app page: `https://itunes.apple.com/lookup?id=1538546081&country=US`, `https://apps.apple.com/us/app/itop-vpn-vpn-fast-secure/id1538546081`; seller `ORANGE VIEW LIMITED`, artist `Orange View`, release date 2020-12-22, current version observed 7.1.1 on 2026-07-05. The guessed Android package `itopvpn.free.vpn.proxy` returned 404 in this environment, so no Android package id is accepted here. |
+| Claimed network | Official about/server pages claim 3200+ VPN servers in 100+ locations, country-level free server list entries for France, Germany, Japan, United Kingdom, and United States, and optimized servers for streaming, gaming, torrenting, chatting, and social apps. These are coverage claims, not exact egress provenance. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages expose marketing location lists, app downloads, legal terms, privacy text, and a Windows installer redirect to `https://download.itopvpn.com/insurweb/vpn/iTopVPN_en_server_setup.exe`. Probes of `/vpn-server`, `/openvpn`, `/router-vpn`, `/api/serverlist`, and `/sitemap.xml` returned 404 or normal site pages; `api.itopvpn.com` redirected to Google. No unauthenticated exact IP/CIDR/hostname feed or public config archive was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, free VPN, about, terms, privacy, EULA, VPN servers, and download redirect fetched successfully on 2026-07-05; the public server page produced country names and marketing counts only. |
+| Caveats | Do not infer exits from the 3200+ server count, country pages, optimized app categories, installer download names, or app-store claims. The iTop Inc. / Orange View Limited split should remain explicit until a primary source explains the relationship. A future accepted source needs exact provider-published IPs/CIDRs/hostnames, not a generated location list. |
+| Primary source URLs | `https://www.itopvpn.com/`, `https://www.itopvpn.com/about`, `https://www.itopvpn.com/free-vpn`, `https://www.itopvpn.com/vpn-servers`, `https://www.itopvpn.com/terms`, `https://www.itopvpn.com/privacy`, `https://www.itopvpn.com/eula`, `https://www.itopvpn.com/download?insur=en_server`, `https://itunes.apple.com/lookup?id=1538546081&country=US`, `https://apps.apple.com/us/app/itop-vpn-vpn-fast-secure/id1538546081` |
+
+### Radmin VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.radmin-vpn.com/`, `https://www.radmin-vpn.com/about/`, `https://www.radmin.com/` |
+| Legal / privacy URLs | `https://www.radmin-vpn.com/security/`, `https://www.radmin-vpn.com/privacy/`, `https://www.radmin.com/privacy/`, `https://www.radmin.com/contact/` |
+| Legal entity shown by official pages | Famatech Corp. Radmin VPN security page says the Radmin VPN product and its servers belong to Famatech Corp., a BVI company. Radmin/Radmin VPN footers state copyright 1999-2026 Famatech Corp. |
+| Address / identifier | Radmin contact page lists Famatech Corp., 3rd Floor, Glancina George Building, POB 676, Road Town, Tortola, British Virgin Islands. Sales phone numbers are `+1-866-325-9868` for North America and `+44-20-3519-7885` internationally. |
+| Registry / incorporation evidence | Official pages verify BVI jurisdiction, company name, and BVI address, but no BVI registry extract, company number, or incorporation date was captured. Secondary LEI material identifies Famatech Corp. LEI `529900U3HJPNC34CLE87` at the same BVI agent/address, but that was not used as OpenASN source data. |
+| Who is behind it | Famatech says it was founded in 1999 and develops remote-control and network-management software. The Radmin VPN About page says Radmin VPN launched in 2016 and is integrated with Famatech's Radmin remote-control product. |
+| App/store identity | Windows-only product in official copy: compatible with Windows 11, 10, 8, and 7. Official download link routes through `download.radmin-vpn.com`; no mobile app-store identity is relevant to this dossier. |
+| Claimed network | Radmin VPN creates virtual local networks so remote computers can connect as if on one LAN, including remote-work and LAN-gaming use cases. It is explicitly framed as "Connect remote computers to one local network", not as a commercial public-internet egress VPN. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Not an OpenASN VPN-exit candidate. Public pages expose product/security/privacy/about/contact material, but no public exit IPs because the product is a mesh/virtual-LAN tunnel between user machines rather than a provider-operated public egress network. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, about, security, privacy, Radmin contact, and Radmin privacy pages fetched successfully on 2026-07-05. |
+| Caveats | Do not map Radmin VPN users as `vpn` exits. A Radmin client IP is normally the user's own network endpoint inside a private virtual LAN, not a Famatech public egress address. If Famatech later ships a separate public egress product, it needs a separate source and semantics. |
+| Primary source URLs | `https://www.radmin-vpn.com/`, `https://www.radmin-vpn.com/about/`, `https://www.radmin-vpn.com/security/`, `https://www.radmin-vpn.com/privacy/`, `https://www.radmin.com/contact/`, `https://www.radmin.com/privacy/`, `https://lei.bloomberg.com/leis/view/529900U3HJPNC34CLE87` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 15: GoFlyVPN, iTop VPN, Total VPN, SetupVPN, Radmin VPN.
-2. Batch 16+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 16: ExpressVPN, CyberGhost, ZenMate, Perfect Privacy, hide.me.
+2. Batch 17+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

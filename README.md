@@ -51,9 +51,10 @@ Tier A (this repo, in the artifact)      Tier B (your server fetches directly)
 sapics origin-asn   (PDDL)  backbone     Apple Private Relay egress → :relay
 ipverse as-metadata (CC0)   categories   Tor Project exits          → :tor_exit
 ipverse as-ip-blocks(CC0)   prefixes     AWS/GCP/Azure/OCI/DO/…     → :hosting+provider
-X4BNet lists_vpn    (MIT)   vpn/dc       ProtonVPN licensed feed    → :vpn+provider
+X4BNet lists_vpn    (MIT)   vpn/dc       Proton/Mullvad/IVPN/PIA…   → :vpn+provider
 bad-asn-list        (MIT)   hosting      Cloudflare ranges          → context flag
 data/overrides/     (CC0)   our layer    Zscaler egress             → :enterprise_gateway
+                                         Nord/VPN Gate              → opt-in :vpn+provider
 ```
 
 **Tier A** sources carry explicit redistribution rights and are compiled into the published artifacts. **Tier B** sources are either license-restricted from republishing or too fast-moving for a nightly file (Tor exits change hourly) — so we publish the *recipe* (`fetch-manifest.json`: URL, parser id, cadence, failure policy) and clients pull from the original authorities at runtime. **Tier C** (bring-your-own MaxMind/IP2Location, planned) never touches this pipeline. The catalog of rejected sources and why (PeeringDB's AUP, GPL lists, ShareAlike databases, aggregator repackaging…) lives in the project history — the short version is the next section.
@@ -83,7 +84,7 @@ OpenASN's MVP answers the most important question first: human-ish access networ
 - **Tier A still requires redistribution rights.** Most provider lists belong in Tier B recipes, where clients fetch from the original authority.
 - **Every source needs parser tests, live smoke fixtures, cadence, keep-stale behavior, and a legal note.**
 
-High-value research candidates after the 0.1.0 checkpoint: Apple Private Relay (already supported as `relay`, not a VPN), Mozilla/Firefox VPN, ProtonVPN official alternatives, Mullvad, IVPN, Private Internet Access, NordVPN, Windscribe, Surfshark, ExpressVPN, CyberGhost, AirVPN, Perfect Privacy, TunnelBear, and Cloudflare WARP. The standard is source quality first, provider coverage second.
+The first enrichment pass added exact-IP Tier B recipes for Mullvad (also Mozilla/Firefox VPN infrastructure), IVPN, Private Internet Access, AirVPN, Windscribe, NordVPN (opt-in heavy), and VPN Gate (opt-in public relays), while keeping Apple Private Relay as `relay` and Cloudflare ranges as context-only. Still-open research candidates include ProtonVPN official alternatives, Surfshark, ExpressVPN, CyberGhost, Perfect Privacy, TunnelBear, Kape/Nord Security family brands, Cloudflare WARP-specific egress, and other provider APIs that expose exact IPs without client impersonation. The standard is source quality first, provider coverage second; the full accepted/rejected source ledger lives in [`docs/provider-source-research.md`](docs/provider-source-research.md).
 
 ## Legal design (load-bearing, do not weaken)
 

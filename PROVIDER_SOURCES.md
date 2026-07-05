@@ -139,11 +139,11 @@ End-to-end sample classifications from the live run:
 | UltraVPN | Not added. | Pango/Point Wild brand operated by Fast VPN Pro, S. de R.L.; pages publish virtual-location and capacity claims, and terms prohibit service IP-list compilation. No config/feed/API inventory was found. |
 | Norton Secure VPN | Not added. | Gen Digital brand. Product pages publish country/city locations, server counts, IP rotation, and privacy details, but no exact public IP/CIDR/hostname source. Third-party hostname dumps were rejected as non-authoritative. |
 | McAfee VPN | Not added. | McAfee legal/about pages and support snippets were checked; available material is virtual-location/product behavior only. TunnelBear remains a separate McAfee-owned service and cannot be used to infer McAfee VPN exits. |
-| Urban VPN | Not added. | Peer/residential-style network. No public exact exit list; semantics may be residential peers, not provider-operated VPN exits. |
-| Hola VPN | Not added. | Peer/residential-style network. Do not label arbitrary peers as VPN without first-party exact relay inventory. |
-| Bright VPN | Not added. | Consumer VPN tied to Bright Data-style peer/proxy economics; no exact public egress list. |
-| Mysterium VPN | Not added. | Decentralized/residential node network. Needs separate product semantics before any `vpn` mapping. |
-| Planet VPN | Not added. | No public exact egress/source endpoint verified. |
+| Urban VPN | Not added. | Urban Cyber Security Inc. publishes legal/contact details and a FAQ claiming 80+ countries / 632 locations, with premium dedicated servers, but only location pages/sitemaps were public. No exact IP/CIDR/hostname inventory or config archive was verified. |
+| Hola VPN | Not added. | Hola VPN Ltd. documents a P2P/value-exchange free network, Bright Data resource sharing, and premium dedicated servers. Public sitemap/location pages are country marketing pages only. Do not label Hola peers or Bright Data customer traffic as `vpn` without an exact first-party relay inventory. |
+| Bright VPN | Not added. | Bright Data Ltd. operates BrightVPN as a free VPN tied to Bright Data's peer/proxy network economics. Public pages explain that users allow Bright Data to use their connection, and the server-list page is location marketing only. No exact public egress list was found. |
+| Mysterium VPN | Not added. | UAB MN Intelligence operates the VPN product; Mysterium Network/BlockDev AG publishes a public discovery API with node proposal metadata. Live API smoke returned thousands of proposals but no exact exit IP field, only ASN/ISP/IP-type and NATS broker contacts. Residential/decentralized semantics need a separate model before any `vpn` mapping. |
+| Planet VPN | Not added. | FREE VPN PLANET S.R.L. publishes legal/company details and location/server marketing. OpenVPN/L2TP docs route users through premium/account configuration (`/cabinet/configuration`) and support attachments were screenshots, not configs. No unauthenticated exact source was verified. |
 | Turbo VPN | Not added. | Product/app pages only; no exact source verified. |
 | 1ClickVPN | Not added. | Browser extension/product page only; no exact source verified. |
 | VeePN | Not added. | Product/app pages only; no exact source verified. |

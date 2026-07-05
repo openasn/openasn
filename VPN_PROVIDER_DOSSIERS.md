@@ -693,10 +693,98 @@ scrape/probe paths.
 | Caveats | Do not label McAfee VPN exits from TunnelBear data; TunnelBear is a separate McAfee-owned service with its own source and semantics. Avoid user screenshots, paid-account captures, and third-party review claims. A future accepted source needs exact public exits and clear rights from McAfee or a license-clean authority. |
 | Primary source URLs | `https://www.mcafee.com/en-us/vpn.html`, `https://mcafee.com/support/s/article/000001789?language=en_US`, `https://www.mcafee.com/support/s/article/000001911?language=en_US`, `https://www.mcafee.com/en-us/consumer-support/policy/legal.html`, `https://www.mcafee.com/en-us/consumer-corporate/about.html`, `https://www.mcafee.com/en-us/consumer-corporate/investors.html`, `https://www.sec.gov/Archives/edgar/data/1783317/000119312521072222/d101914dex991.htm`, `https://www.permira.com/news-and-insights/announcements/mcafee-to-be-acquired-by-an-investor-group-for-over-14-billion/` |
 
+## Batch 9 - Peer, Residential, And Decentralized VPNs
+
+This batch added no OpenASN sources. The negative result is important:
+these products often market "VPN" but their infrastructure model includes
+peer, residential, decentralized, or account-gated exits. For OpenASN that is
+a higher-risk area than ordinary hosted VPNs. A false positive here could mark
+real household, mobile, or business IPs as provider-operated VPN exits.
+
+### Urban VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.urban-vpn.com/`, `https://www.urban-vpn.com/faq/` |
+| Legal / privacy URLs | `https://www.urban-vpn.com/about-us/terms-of-service/`, `https://www.urban-vpn.com/about-us/privacy/`, `https://www.urban-vpn.com/about-us/ccpa-notice/` |
+| Legal entity shown by official pages | Urban Cyber Security Inc. |
+| Address / identifier | Urban's privacy and CCPA pages list Urban Cyber Security Inc., 501 Fifth Avenue, New York, NY, 10036, and privacy contact `privacy@urban-vpn.com`. |
+| Registry / incorporation evidence | Official Urban pages verify the current legal name and contact address. No New York/Delaware registry extract or incorporation date was captured in this batch. |
+| Who is behind it | Urban's terms name Urban Cyber Security Inc. as operator. Its privacy page says Urban shares Web Browsing Data with affiliated company B.I Science (2009) Ltd. to create commercial marketing insights. Its FAQ describes two networks: "UrbanVPN Network" with servers in 80+ countries and 632 global server locations, and "UrbanVPN Premium" with dedicated high-speed VPN servers for Mac, iOS, and Android. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Official pages publish location marketing, operator/legal text, and network descriptions, not exact IPs/CIDRs/hostnames. Sitemap probes found page/location sitemaps only (`page-sitemap.xml`, `locations-sitemap.xml`, etc.). No public OpenVPN/WireGuard ZIP, server API, PAC/proxy manifest, or exact egress list was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official terms/privacy/FAQ pages fetched successfully on 2026-07-05. The current Gluetun clone checked in `/tmp/gluetun-openasn` had no Urban VPN provider/source match. |
+| Caveats | Do not infer VPN exits from Urban location pages, browser-extension behavior, user observations, or the B.I Science relationship. Data-broker/affiliate evidence is operator context, not egress provenance. If Urban later publishes an exact public server manifest, premium and free-network semantics need to be distinguished before provider labels are emitted. |
+| Primary source URLs | `https://www.urban-vpn.com/`, `https://www.urban-vpn.com/faq/`, `https://www.urban-vpn.com/about-us/terms-of-service/`, `https://www.urban-vpn.com/about-us/privacy/`, `https://www.urban-vpn.com/about-us/ccpa-notice/`, `https://www.urban-vpn.com/sitemap.xml`, `https://www.urban-vpn.com/locations-sitemap.xml` |
+
+### Hola VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://hola.org/`, `https://hola.org/faq`, `https://hola.org/locations` |
+| Legal / privacy URLs | `https://hola.org/legal/sla`, `https://hola.org/legal/privacy`, `https://hola.org/legal/sdk`, `https://hola.org/dna/dict` |
+| Legal entity shown by official pages | Hola VPN Ltd. |
+| Address / identifier | Hola's EULA and privacy pages identify Hola VPN Ltd. as the service operator. The EULA gives `info@hola.org` as contact. No official street address was found in the official legal pages checked in this batch. |
+| Registry / incorporation evidence | Official legal pages verify the current legal name. Official FAQ/DNA pages say Hola was founded in 2008; no corporate-registry extract, incorporation number, or primary founder record was captured in this batch. |
+| Who is behind it | Hola describes itself as a collaborative P2P/value-exchange internet service. The FAQ says Hola free works by sharing contributed user resources, recommends Bright Data for commercial proxy use, and says Hola Premium uses a dedicated network of high-performance servers. The EULA says free use may allow other Hola devices to reroute through the user's device, and separately says free use may make the user a peer on the Bright Data network. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Hola publishes extensive country/location marketing (`sitemap_vpn.xml`) and legal explanations of P2P / Bright Data resource sharing, but no exact IP/CIDR/hostname inventory. Location pages prove product coverage, not current exits. Premium's dedicated-server claim is not enough without exact public host/IP data. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official FAQ, EULA, privacy, SDK, and VPN-location sitemap pages fetched successfully on 2026-07-05. The current Gluetun clone had no Hola provider/source match. |
+| Caveats | Do not label arbitrary Hola peers as `vpn`; they may be residential or mobile customers. Do not import Bright Data proxy network claims as Hola VPN exits. Do not scrape client traffic, user devices, browser extension internals, or paid-account state. A future source needs exact public exits and must separate free P2P, Premium dedicated servers, and Bright Data business/proxy flows. |
+| Primary source URLs | `https://hola.org/faq`, `https://hola.org/legal/sla`, `https://hola.org/legal/privacy`, `https://hola.org/legal/sdk`, `https://hola.org/dna/dict`, `https://hola.org/locations`, `https://hola.org/sitemap_vpn.xml` |
+
+### Bright VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://brightvpn.com/`, `https://brightvpn.com/vpn-servers-list` |
+| Legal / privacy URLs | `https://brightvpn.com/legal/sla`, `https://brightvpn.com/legal/privacy`, `https://brightvpn.com/service-terms-simplified`, `https://brightvpn.com/service-privacy-simplified`, `https://brightdata.com/privacy`, `https://brightdata.com/contact`, `https://brightdata.com/luminati`, `https://bright-sdk.com/privacy-policy` |
+| Legal entity shown by official pages | Bright Data Ltd. |
+| Address / identifier | Bright Data's official contact/privacy pages list Bright Data Ltd. headquarters at 4 Hamahshev St., Netanya 4250714, Israel (POB 8025), plus U.S. Bright Data, Inc. offices in San Francisco and New York. |
+| Registry / incorporation evidence | Official Bright Data pages verify the legal name and headquarters. Bright Data's own Luminati page says Luminati Networks was founded in 2014 and later became Bright Data. No Israeli registry extract or BrightVPN-specific incorporation record was captured in this batch. |
+| Who is behind it | BrightVPN's EULA names Bright Data Ltd. as operator. The EULA says BrightVPN is a full VPN app and is free in return for allowing use of the user's internet connection when available. BrightVPN's simplified terms say Bright Data is BrightVPN's parent company and accesses the web from the user's IP address. Bright SDK's privacy policy describes Bright Data customers routing traffic through peers' available resources and treating peer devices as nodes in the Bright Data network. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | The public `vpn-servers-list` page is location/product marketing only. Sitemap and asset probes found translated pages, extension-store links, WordPress AJAX metadata, and a stale `zs-www-brightvpn-b.luminati.io` reference that did not resolve from this environment. `https://brightvpn.com/default.json` and likely theme JSON paths returned 404. No exact IP/CIDR/hostname feed, config archive, or unauthenticated server API was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official BrightVPN legal/privacy/product pages, Bright Data contact/privacy/Luminati pages, and Bright SDK privacy pages fetched successfully on 2026-07-05. The current Gluetun clone had no BrightVPN provider/source match. |
+| Caveats | BrightVPN is a consumer VPN wrapped around Bright Data peer/proxy economics. Do not classify Bright Data residential/proxy peers as BrightVPN exits. Do not use browser-extension packages, client traffic, or partner/customer APIs as source material. If a future source appears, OpenASN may need a separate residential-proxy/decentralized-peer model rather than a normal `vpn` provider label. |
+| Primary source URLs | `https://brightvpn.com/`, `https://brightvpn.com/vpn-servers-list`, `https://brightvpn.com/legal/sla`, `https://brightvpn.com/legal/privacy`, `https://brightvpn.com/service-terms-simplified`, `https://brightvpn.com/service-privacy-simplified`, `https://brightdata.com/privacy`, `https://brightdata.com/contact`, `https://brightdata.com/luminati`, `https://bright-sdk.com/privacy-policy` |
+
+### Mysterium VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.mysteriumvpn.com/`, `https://www.mysterium.network/mysteriumvpn`, `https://docs.mysterium.network/about-mysterium` |
+| Legal / privacy URLs | `https://www.mysteriumvpn.com/privacy-policy-vpn`, `https://www.mysteriumvpn.com/terms-conditions-vpn`, `https://www.mysterium.network/privacypolicy` |
+| Legal entity shown by official pages | UAB MN Intelligence for the Mysterium VPN product terms; UAB "MN Intelligence" in the Mysterium VPN footer; BlockDev AG for Mysterium Network docs/site footer. |
+| Address / identifier | Mysterium VPN terms identify UAB MN Intelligence as VPN service/software provider and `help@mysteriumvpn.com` as contact. Mysterium Network docs list BlockDev AG, Alpenstrasse 14, 6300 Zug, Switzerland, and say discovery services within Mysterium Network are run by NetSys Inc. |
+| Registry / incorporation evidence | Official pages verify the current product operator and network developer names. No Lithuanian, Swiss, or NetSys registry extract or incorporation date was captured in this batch. Mysterium docs say Mysterium Network was founded in 2017 and launched mainnet in 2021. |
+| Who is behind it | Mysterium VPN is built on the Mysterium decentralized node network. Official pages describe it as a hybrid of residential and regular VPN, where users pay peers in the distributed network to connect to residential IP addresses. The protocol/network documentation says Mysterium is an open-source ecosystem with a permissionless P2P marketplace, WireGuard-based connectivity, and APIs/SDKs for builders. |
+| OpenASN data source | Not added. Candidate research endpoint: `https://discovery.mysterium.network/api/v3/proposals?include_monitoring_failed=true`. |
+| Source quality / status | The discovery API is public and structured, but it did not expose exact exit IPs in live smoke. It returned proposal ids, provider ids, service type, location metadata (`country`, `region`, `city`, `asn`, `isp`, `ip_type`), quality metrics, and `nats/p2p/v1` broker contacts. Broker addresses are infrastructure contacts, not the node's exit IP. Without an exact exit IP/CIDR/hostname field, OpenASN cannot map lookups to Mysterium providers. |
+| Live smoke | Live API smoke on 2026-07-05 fetched 12,251 proposals with contact type `nats/p2p/v1` and no exact exit-IP field. `ip_type` counts included 6,727 residential, 4,630 hosting, 457 cellular, 225 business, 192 content-delivery-network, 6 education, 5 government, 4 organization, 4 search-engine-spider, and 1 datacenter. Official VPN/legal/network/doc pages fetched successfully except the Mysterium VPN home page returned 403 to direct curl from this environment. The current Gluetun clone had no Mysterium provider/source match. |
+| Caveats | This is not a normal hosted VPN source. Even if exact node IPs become available later, default ingestion would be risky because the network deliberately includes residential and cellular peers. A future implementation probably needs an opt-in decentralized/residential-peer source group, very explicit provider semantics, high churn handling, and a warning that "Mysterium node" is not the same as "commercial datacenter VPN exit." |
+| Primary source URLs | `https://www.mysteriumvpn.com/privacy-policy-vpn`, `https://www.mysteriumvpn.com/terms-conditions-vpn`, `https://www.mysterium.network/mysteriumvpn`, `https://docs.mysterium.network/about-mysterium`, `https://docs.mysterium.network/faq`, `https://github.com/mysteriumnetwork/node`, `https://github.com/mysteriumnetwork/discovery`, `https://discovery.mysterium.network/api/v3/proposals?include_monitoring_failed=true` |
+
+### Planet VPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://freevpnplanet.com/`, `https://freevpnplanet.com/servers/`, `https://freevpnplanet.com/openvpn/`, `https://freevpnplanet.com/router/` |
+| Legal / privacy URLs | `https://freevpnplanet.com/terms/`, `https://freevpnplanet.com/policy/` |
+| Legal entity shown by official pages | FREE VPN PLANET S.R.L. in terms/footer; FREE PLANET VPN S.R.L. appears in the privacy-policy body while the footer keeps FREE VPN PLANET S.R.L. |
+| Address / identifier | Official footer/legal text lists FREE VPN PLANET S.R.L., Hermes Business Campus, Sectorul 2, Bulevardul Dimitrie Pompeiu 5-7, Bucharest, Romania, 020335, Reg.N `44667783`. Google Play snippets observed in search results list the same CUI/reg number and a more specific office address at Hermes Business Campus, Building B, Office 211, 2nd floor. |
+| Registry / incorporation evidence | Official pages verify the Romanian entity name, address, and registration number. Third-party Romanian registry mirrors found during research identify CUI `44667783` and indicate formation in July 2021, but no primary ONRC/official Romanian registry extract was captured in this batch. |
+| Who is behind it | Planet VPN is operated by FREE VPN PLANET S.R.L. The public pages market a free tier with 5 or 6 locations depending on page/context, premium access to 60+ countries and 1,260+ servers, and protocols including OpenVPN, IKEv2, PlanetX, and StarGuard. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Planet publishes useful product/legal pages and country landing pages, but exact configs are account/premium gated. The router page says users must sign in to a Planet VPN account to select a country and get the L2TP server name or IP address. The OpenVPN page says OpenVPN configuration is available in Premium only and instructs users to download selected-country `.ovpn` files from the Planet VPN website. Public link probes exposed `https://freevpnplanet.com/cabinet/configuration`, which returned 404 without account context, and support article attachments were PNG/JPEG screenshots, not `.ovpn` files. No unauthenticated exact IP/CIDR/hostname feed was verified. |
+| Live smoke | No parser smoke because no OpenASN-compatible source was found. Official home, terms, privacy, servers, router, OpenVPN, and OpenVPN Connect help pages fetched successfully on 2026-07-05. Support attachments referenced by the help page were confirmed to be images. The current Gluetun clone had no Planet VPN provider/source match. |
+| Caveats | Do not script the account cabinet, scrape paid configs, or import user-exported `.ovpn` files. The public country pages are not an inventory. If Planet later publishes an unauthenticated config archive, it may be a good opt-in DNS/IP source, but the current public flow is account/premium gated. |
+| Primary source URLs | `https://freevpnplanet.com/`, `https://freevpnplanet.com/servers/`, `https://freevpnplanet.com/openvpn/`, `https://freevpnplanet.com/router/`, `https://freevpnplanet.com/help/how-to-set-up-planetvpn-with-openvpn-connect/`, `https://freevpnplanet.com/terms/`, `https://freevpnplanet.com/policy/`, `https://freevpnplanet.com/wp-sitemap-posts-page-1.xml`, `https://freevpnplanet.com/cabinet/configuration` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 9: Urban VPN, Hola VPN, Bright VPN, Mysterium VPN, Planet VPN.
-2. Batch 10: Turbo VPN, 1ClickVPN, VeePN, SkyVPN, X-VPN.
-3. Batch 11+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 10: Turbo VPN, 1ClickVPN, VeePN, SkyVPN, X-VPN.
+2. Batch 11: StrongVPN, Total VPN, SetupVPN, uVPN, GooseVPN.
+3. Batch 12+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

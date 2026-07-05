@@ -149,3 +149,14 @@ by its `test/publish_test.rb`; gem side pinned in `test/updater_test.rb`):
   Release bodies are human convenience; machines read `manifest.json`.
 - Net effect: the UI badge always sits on the rolling release, but that is
   cosmetic alignment — nothing may DEPEND on the badge.
+
+## D-IMPL-NAMING — Release tags: v-prefixed, dot-separated, hyphen-free (2026-07-05)
+
+Cross-project standard shared with VehiclesDB: dated pins are `vYYYY.MM.DD`
+(this project, nightly cadence — the date IS the version); monthly-cadence
+datasets use `vYYYY.MM.P` (VehiclesDB, where the patch auto-increments).
+Rationale: one recognizable family format, no hyphens, `v` prefix matches
+ecosystem conventions, lexicographic order == chronological order. The
+rolling `latest` release is a service pointer, not a version, and is
+unchanged. Pre-standard tags (`2026-07-05` style) remain valid pin targets;
+`pin_version` is a free string so no client change is needed.

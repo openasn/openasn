@@ -349,10 +349,92 @@ Ground rules:
 | Caveats | Do not conflate three things: paid Mozilla VPN, Firefox built-in VPN, and Firefox Relay email/phone masking. Paid Mozilla VPN is device-level and Mullvad-backed. Firefox built-in VPN is browser-only, free, requires a Mozilla account, has a 50 GB monthly data limit, and only masks Firefox traffic; without an official egress feed it should stay documented but not shipped as data. |
 | Primary source URLs | `https://www.mozilla.org/en-US/about/legal/terms/subscription-services/`, `https://www.mozilla.org/en-US/products/vpn/resource-center/vpn-servers-around-the-world/`, `https://support.mozilla.org/en-US/kb/built-in-vpn`, `https://www.mozilla.org/en-US/privacy/firefox/`, `https://mullvad.net/en/blog/mullvad-partnerships-page-has-been-updated-mozilla`, `https://www.mozilla.org/en-US/foundation/moco/`, `https://api.mullvad.net/www/relays/all/` |
 
+## Batch 5 - Kape Family, TunnelBear, And Perfect Privacy Research
+
+### ExpressVPN
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.expressvpn.com/` |
+| Legal / privacy URLs | `https://www.expressvpn.com/tos`, `https://www.expressvpn.com/privacy-policy`, `https://www.expressvpn.com/about-us`, `https://www.expressvpn.com/blog/expressvpn-officially-joins-kape/` |
+| Legal entity shown by official pages | Express Technologies Ltd. |
+| Address / identifier | ExpressVPN's privacy policy says ExpressVPN's headquarters and registered place of business is in the British Virgin Islands, and that Express Technologies Ltd. operates under BVI jurisdiction and laws. A registry number or formal street address was not verified from official pages in this batch. |
+| Registry / incorporation evidence | No BVI registry extract, company number, or incorporation date was obtained. Official ExpressVPN material verifies the service has been built since 2009 and that ExpressVPN joined Kape Technologies on 2021-12-16. |
+| Who is behind it | ExpressVPN identifies itself as a Kape Technologies family product after the 2021 acquisition. Official ExpressVPN copy does not name founders on the legal pages checked; secondary and founder-controlled pages identify Peter Burchhardt and Dan Pomerantz as co-founders and 2009 as the service founding year. Keep those as secondary/founder-page context, not registry-grade corporate proof. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Public ExpressVPN pages list countries, virtual locations, products, audits, and legal/privacy posture, but no first-party exact IP, CIDR, or unauthenticated hostname catalog was found. Gluetun carries hardcoded `expressnetw.com` hostnames and sample DNS resolution works, but that is a third-party hardcoded inventory, not an original provider source. |
+| Live smoke | On 2026-07-05, sample Gluetun-style hostnames such as `usa-newyork-ca-version-2.expressnetw.com` resolved from this network, proving the hostname pattern exists. It still was not shipped because source provenance failed. |
+| Caveats | ExpressVPN is high-value coverage, but adding inferred or hardcoded hostnames would make OpenASN worse: stale third-party inventories create false positives and cannot be defended legally or operationally. Revisit only if ExpressVPN publishes a config archive, app server API, DNS zone-style inventory, or licensed exact feed. |
+| Primary source URLs | `https://www.expressvpn.com/privacy-policy`, `https://www.expressvpn.com/tos`, `https://www.expressvpn.com/about-us`, `https://www.expressvpn.com/blog/expressvpn-officially-joins-kape/`, `https://www.kape.com/about-us/`, `https://www.peterburchhardt.com/`, `https://sg.linkedin.com/in/dan-pomerantz-4679a52a9`, `https://github.com/qdm12/gluetun/blob/master/internal/provider/expressvpn/updater/hardcoded.go` |
+
+### CyberGhost
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.cyberghostvpn.com/` |
+| Legal / privacy URLs | `https://www.cyberghostvpn.com/imprint`, `https://www.cyberghostvpn.com/privacypolicy`, `https://www.cyberghostvpn.com/terms`, `https://www.cyberghostvpn.com/features/nospy` |
+| Legal entity shown by official pages | CyberGhost S.R.L. |
+| Address / identifier | CyberGhost's imprint lists CyberGhost S.R.L., 70-72 Dionisie Lupu street, 1st, 2nd and 3rd floor, District 1, 010458, Bucharest, Romania; email `office@cyberghost.ro`; Trade Register No. `J40/1278/2011`; VAT ID `RO28003392`; EUID `ROONRC.J40/1278/2011`. Its privacy policy also names CyberGhost S.R.L. and uses a Polona Street Bucharest office address. |
+| Registry / incorporation evidence | Official imprint provides Romanian register number `J40/1278/2011`. Exact incorporation date was not independently pulled from the Romanian registry in this batch. The register number and public company history indicate 2011 as the relevant registration/service era, but OpenASN should cite the official imprint for the hard identifier. |
+| Who is behind it | CyberGhost is part of the Kape Technologies group. Secondary conference/profile material identifies Robert Knapp as co-founder and CEO in earlier CyberGhost history; current official pages only need the CyberGhost S.R.L. legal identity for OpenASN provenance. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Public CyberGhost pages list countries, server counts, NoSpy positioning, and virtual-location concepts. Gluetun derives `cg-dialup.net` names from country and group-number patterns, and sample generated names resolve, but this is generated DNS probing rather than a provider-published exact list. |
+| Live smoke | On 2026-07-05, sample generated names like `1-ro.cg-dialup.net`, `1-us.cg-dialup.net`, and `1-de.cg-dialup.net` returned A records while other group numbers did not. That confirms partial pattern behavior, not source validity. |
+| Caveats | CyberGhost is a major missing provider. Do not ship generated `cg-dialup.net` sweeps unless CyberGhost documents the namespace as an authoritative inventory or exposes a client server-list API/config archive with exact hosts/IPs. Pattern enumeration would be incomplete, noisy, and hard to audit. |
+| Primary source URLs | `https://www.cyberghostvpn.com/imprint`, `https://www.cyberghostvpn.com/privacypolicy`, `https://www.cyberghostvpn.com/terms`, `https://www.cyberghostvpn.com/features/nospy`, `https://www.kape.com/about-us/`, `https://github.com/qdm12/gluetun/blob/master/internal/provider/cyberghost/updater/hosttoserver.go` |
+
+### ZenMate
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://zenmate.com/` |
+| Legal / privacy URLs | `https://zenmate.com/tos`, `https://zenmate.com/privacy-policy`, `https://zenmate.com/blog/zenmate-changes` |
+| Legal entity shown by official pages | ZenGuard GmbH / ZenMate service under CyberGhost partnership |
+| Address / identifier | Current ZenMate legal pages reference ZenGuard in their terms/privacy stack. The service pages now position ZenMate as a gateway to CyberGhost VPN rather than an independent VPN infrastructure product. |
+| Registry / incorporation evidence | Registry-grade ZenGuard GmbH incorporation data was not captured in this batch. Public acquisition material says Kape acquired ZenGuard GmbH, a Berlin company, in 2018; secondary/startup material reports ZenMate launched in 2013 in Berlin. |
+| Who is behind it | ZenMate was acquired by Kape Technologies in 2018. ZenMate's own 2023 migration notice says the VPN service for subscribers would be provided by CyberGhost VPN apps from 2023-03-16, ZenMate VPN apps would be supported until 2023-05-01, and paying subscribers would then use CyberGhost VPN apps. |
+| OpenASN data source | Not added as a separate provider. Potential ZenMate paid-app traffic should be considered CyberGhost-family infrastructure unless an independent ZenMate exact source reappears. |
+| Source quality / status | No independent first-party exact IP, CIDR, hostname, OpenVPN archive, or public app server-list source was verified. Current product state points to CyberGhost for the VPN backend. |
+| Live smoke | No source smoke. ZenMate's own migration page is the key evidence, not a server inventory. |
+| Caveats | Do not create a `ZenMate` provider label from CyberGhost-derived infrastructure unless a source can distinguish ZenMate egress from CyberGhost egress. A separate brand label would imply attribution precision OpenASN does not have. |
+| Primary source URLs | `https://zenmate.com/`, `https://zenmate.com/tos`, `https://zenmate.com/privacy-policy`, `https://zenmate.com/blog/zenmate-changes`, `https://www.prnewswire.com/news-releases/zenmate-acquired-by-kape-technologies-300731900.html`, `https://www.winheller.com/en/news/press-releases/detail/acquisition-zenguard-kape-technologies.html` |
+
+### TunnelBear
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.tunnelbear.com/` |
+| Legal / privacy URLs | `https://www.tunnelbear.com/privacy-policy/`, `https://www.tunnelbear.com/terms-of-service/`, `https://www.tunnelbear.com/blog/tunnelbear-transparency-report/`, `https://www.tunnelbear.com/blog/trust/`, `https://help.tunnelbear.com/hc/en-us/articles/360007004351-Where-can-I-tunnel-to-and-from` |
+| Legal entity shown by official pages | TunnelBear LLC |
+| Address / identifier | TunnelBear's privacy policy identifies TunnelBear LLC and says TunnelBear stores personal data inside Canada's physical borders. Public trust/transparency pages say TunnelBear LLC is incorporated in Delaware, has offices in Toronto, and is wholly owned by McAfee. |
+| Registry / incorporation evidence | Official pages verify the Delaware LLC claim and the McAfee acquisition context. Exact Delaware file number and formation date were not verified from the Delaware registry in this batch. |
+| Who is behind it | TunnelBear's transparency report says McAfee acquired TunnelBear in April 2018 and transitioned the prior Canadian TunnelBear Inc. to TunnelBear LLC; the business remained office-based in Toronto. Current pages identify McAfee ownership while asserting operational privacy separation. |
+| OpenASN data source | `tunnelbear_openvpn` uses `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip`, parser `ovpn_zip_remote_hosts`, provider `TunnelBear`. |
+| Source quality / status | Implemented as opt-in `vpn_dns`. TunnelBear's first-party Linux setup article links the public OpenVPN configuration archive. Parser extracts exact `remote` hostnames and accepts both `.ovpn` and `.ovpn.txt`, because the live archive currently suffixes several valid OpenVPN configs as `.ovpn.txt`. Clients resolve the hostnames locally. |
+| Live smoke | On 2026-07-05, the archive fetched with HTTP 200, `Content-Length: 60247`, and `Last-Modified: Mon, 25 Aug 2025 18:58:11 GMT`. Parser found 47 hostnames. The OpenASN Tier B executor resolved 925 IPv4 addresses, 0 IPv6 addresses, and 0 DNS misses, merged them to 571 IPv4 overlay ranges, and classified sample IP `5.253.206.35` as `vpn`, provider `TunnelBear`, source `tunnelbear_openvpn`. |
+| Caveats | Keep this opt-in. TunnelBear advertises more than 8000 servers in over 45 countries, while the Linux OpenVPN archive exposes country-level hostnames that fan out heavily through DNS. The resolved IP set is resolver-vantage-specific and may undercount or overcount compared with TunnelBear apps' internal server selection. |
+| Primary source URLs | `https://www.tunnelbear.com/privacy-policy/`, `https://www.tunnelbear.com/terms-of-service/`, `https://www.tunnelbear.com/blog/linux_support/`, `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip`, `https://www.tunnelbear.com/blog/tunnelbear-transparency-report/`, `https://www.tunnelbear.com/blog/trust/`, `https://help.tunnelbear.com/hc/en-us/articles/360007004351-Where-can-I-tunnel-to-and-from` |
+
+### Perfect Privacy
+
+| Field | Detail |
+|---|---|
+| Public service URL | `https://www.perfect-privacy.com/` |
+| Legal / privacy URLs | `https://www.perfect-privacy.com/en/terms`, `https://www.perfect-privacy.com/en/privacy-policy`, `https://www.perfect-privacy.com/downloads/openvpn/get?system=linux&scope=server&filetype=zip&protocol=udp` |
+| Legal entity shown by official pages | Not verified from live official pages in this batch |
+| Address / identifier | Not verified. Secondary/current-review material conflicts: some pages identify Swiss `Vectura Datamanagement LTD`; other historical/legal references point to German `CyberDock IT Solutions GmbH`. Treat the operator as unresolved until the official legal pages are fetched directly. |
+| Registry / incorporation evidence | None obtained. No company number, incorporation date, or registry extract was verified. |
+| Who is behind it | Secondary sources generally describe Perfect Privacy as an older privacy VPN service dating to around 2008, but OpenASN has no primary-source founder/operator proof in this batch. |
+| OpenASN data source | Not added. No OpenASN source id. |
+| Source quality / status | Promising but blocked. Gluetun points to a first-party OpenVPN ZIP endpoint under `www.perfect-privacy.com`, which would be a good `ovpn_zip_remote_hosts` candidate if it fetches cleanly. From this environment, `www.perfect-privacy.com` failed DNS resolution on 2026-07-05, so no body, parser output, or legal-page smoke could be verified. |
+| Live smoke | Failed. `curl` could not resolve `www.perfect-privacy.com` for the candidate ZIP URL during this batch. |
+| Caveats | This should be retried from another network/resolver before being abandoned. If the ZIP fetches, verify license/legal identity and run the parser/resolver smoke before adding. Do not add Gluetun-derived Perfect Privacy data without a successful first-party fetch. |
+| Primary source URLs | `https://www.perfect-privacy.com/`, `https://www.perfect-privacy.com/en/terms`, `https://www.perfect-privacy.com/en/privacy-policy`, `https://www.perfect-privacy.com/downloads/openvpn/get?system=linux&scope=server&filetype=zip&protocol=udp`, `https://github.com/qdm12/gluetun/tree/master/internal/provider/perfectprivacy` |
+
 ## Batch Queue
 
 Suggested next batches, five-ish services each:
 
-1. Batch 5: ExpressVPN, CyberGhost, ZenMate, TunnelBear, Perfect Privacy.
-2. Batch 6: Opera VPN, Brave VPN, Cloudflare WARP / 1.1.1.1, Hotspot Shield, Touch VPN.
-3. Batch 7+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.
+1. Batch 6: Opera VPN, Brave VPN, Cloudflare WARP / 1.1.1.1, Hotspot Shield, Touch VPN.
+2. Batch 7: Bitdefender VPN, Kaspersky VPN, ESET VPN, F-Secure VPN / Freedome, Avast SecureLine / AVG VPN.
+3. Batch 8+: remaining not-added/free/peer/Pango/Kape/Nord Security/browser/mobile-app providers from `PROVIDER_SOURCES.md`.

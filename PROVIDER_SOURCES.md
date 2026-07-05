@@ -41,6 +41,7 @@ incorporation/founding caveats, and OpenASN data provenance.
 | `fastestvpn_tcp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=tcp` | opt-in `vpn_dns` | `html_table_hostnames` | 68 hostnames / 55 v4, 0 v6 |
 | `fastestvpn_udp` | FastestVPN | `https://support.fastestvpn.com/wp-admin/admin-ajax.php`, form `action=vpn_servers&protocol=udp` | opt-in `vpn_dns` | `html_table_hostnames` | 68 hostnames / 55 v4, 0 v6 |
 | `vpnsecure_locations` | VPNSecure | `https://www.vpnsecure.me/vpn-locations/` | opt-in `vpn_dns` | `vpnsecure_locations_html` | 60 hostnames / 60 v4, 0 v6 |
+| `tunnelbear_openvpn` | TunnelBear | `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip` | opt-in `vpn_dns` | `ovpn_zip_remote_hosts` | 47 hostnames / 925 resolved v4 -> 571 merged v4 ranges, 0 v6 |
 | `vpnbook_openvpn` | VPNBook | `https://www.vpnbook.com/freevpn/openvpn` | opt-in `public_relays` | `vpnbook_html_hosts` | 10 hostnames / 9 v4, 0 v6; 1 DNS miss |
 
 DNS-expanded counts are resolver-vantage-specific. Hostname counts are the
@@ -72,6 +73,7 @@ End-to-end sample classifications from the live run:
 | `torguard_openvpn_tcp` | `2.58.46.138` | `vpn`, provider `TorGuard` |
 | `fastestvpn_tcp` | `5.181.233.122` | `vpn`, provider `FastestVPN` |
 | `vpnsecure_locations` | `103.106.228.223` | `vpn`, provider `VPNSecure` |
+| `tunnelbear_openvpn` | `5.253.206.35` | `vpn`, provider `TunnelBear` |
 | `vpnbook_openvpn` | `142.4.216.196` | `vpn`, provider `VPNBook` |
 | `vpngate` | `1.244.51.251` | `vpn`, provider `VPN Gate` |
 
@@ -99,6 +101,7 @@ End-to-end sample classifications from the live run:
 | TorGuard | Added opt-in DNS-expanded Tier B. | Public TCP/UDP OpenVPN archives fetched cleanly; challenged `servers.json` is not used. |
 | FastestVPN | Added opt-in DNS-expanded Tier B. | Public support page `https://support.fastestvpn.com/vpn-servers/` uses the first-party AJAX endpoint now in the manifest. |
 | VPNSecure | Added opt-in DNS-expanded Tier B. | `https://www.vpnsecure.me/vpn-locations/` publishes per-server labels and status; parser keeps only `status--up` hosts. |
+| TunnelBear | Added opt-in DNS-expanded Tier B. | `https://www.tunnelbear.com/blog/setting-up-tunnelbear-on-linux/` links the first-party public OpenVPN ZIP at `https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip`. |
 | VPN Gate | Existing opt-in public relay Tier B. | `http://www.vpngate.net/api/iphone/` is the official public relay API. |
 | VPNBook | Added opt-in public relay Tier B. | `https://www.vpnbook.com/freevpn/openvpn` publishes current OpenVPN hostnames. |
 
@@ -110,7 +113,6 @@ End-to-end sample classifications from the live run:
 | CyberGhost | Open candidate. | Public docs list locations/virtual locations. Gluetun derives possible `cg-dialup.net` hostnames from patterns and country codes; this is generated DNS probing, not a provider-published exact list. Owned by Kape. |
 | ZenMate | Open candidate through Kape/CyberGhost family. | No independent exact first-party list found. |
 | Perfect Privacy | Promising but blocked. | Public docs/Gluetun indicate an exact OpenVPN ZIP/API path under `www.perfect-privacy.com`, but live DNS/connection timed out repeatedly from this environment. Not shipped without smoke. |
-| TunnelBear | Not added. | Public docs are location-only. Third-party feeds indicate account/API auth is required; no unauthenticated exact list verified. |
 | hide.me | Not added. | Network page and Linux client were checked; no unauthenticated exact-IP endpoint verified. |
 | OVPN.com | Not added. | No public exact-IP endpoint verified. |
 | HMA / HideMyAss | Not added. | Gluetun points at `https://vpn.hidemyass.com/vpn-config/...`, but `vpn.hidemyass.com` did not resolve here. |

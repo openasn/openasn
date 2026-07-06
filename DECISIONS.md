@@ -160,3 +160,34 @@ ecosystem conventions, lexicographic order == chronological order. The
 rolling `latest` release is a service pointer, not a version, and is
 unchanged. Pre-standard tags (`2026-07-05` style) remain valid pin targets;
 `pin_version` is a free string so no client change is needed.
+
+## D-CUR-1 — Curation inputs are consult-with-care; only published data must be redistribution-clean (2026-07-06)
+
+The legal invariant (README "Legal design") governs what OpenASN
+**publishes**: no byte enters the artifacts without explicit redistribution
+rights on the exact redistributed data. It does not govern what a curator may
+**read** while deciding a label: consulting a source and writing an original,
+evidenced conclusion is ordinary curation — the same act as a human reading
+PeeringDB before writing a sourced override line. This applies equally when
+the reading is done by an LLM-assisted drafting tool (the pipeline repo's
+`pipeline/enrich/` curation aids).
+
+Four rules bind all curation-time consultation:
+
+1. **Per-record, never bulk.** Look up one ASN as evidence; never mirror a
+   restricted database (no dump downloads, no reconstructed copies).
+2. **Never republish fetched text.** External evidence lives in prompts and
+   gitignored build caches only. The only thing that reaches this repo is a
+   human-reviewed override/correction line whose comment cites a URL any
+   reviewer can check.
+3. **No active scanning.** PTR lookups and homepage GETs are ordinary client
+   behavior; port scans and banner grabs are not, and would need their own
+   documented decision.
+4. **Politeness.** Per-host rate caps, an identifying User-Agent, and
+   keep-partial-on-failure semantics.
+
+Tier A compilation inputs are untouched by this decision — the artifact
+source rules (explicit redistribution rights only; aggregators never qualify)
+stand unchanged. Drafted candidates carry no upstream text into this repo, so
+published data stays CC0-clean regardless of what was consulted during
+drafting.

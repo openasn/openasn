@@ -116,6 +116,21 @@ jobs:
           fi
           ruby pipeline/run.rb
 
+      # Mirror the freshly published artifacts to the HuggingFace dataset
+      # (https://huggingface.co/datasets/openasn/openasn — CSV backs the
+      # dataset viewer). NON-FATAL by design: HF_TOKEN is an OAuth token
+      # that can expire — a dead token must never block the nightly release.
+      # To restore: create a WRITE token at huggingface.co/settings/tokens
+      # (scope: openasn datasets) and `gh secret set HF_TOKEN`.
+      - name: Mirror release to HuggingFace
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then echo "no HF_TOKEN — skipping mirror"; exit 0; fi
+          pip install -q "huggingface_hub[cli]" 2>/dev/null || pipx install huggingface_hub 2>/dev/null || true
+          bash pipeline-repo/huggingface/push.sh || echo "::warning::HF mirror failed (release itself is fine) — check/replace HF_TOKEN"
+
       - name: Upload artifacts for inspection (PR/push builds)
         if: always() && github.event_name != 'schedule'
         uses: actions/upload-artifact@v7

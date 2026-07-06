@@ -27,7 +27,9 @@ The artifact format is public and language-neutral ([FORMAT.md](FORMAT.md)) — 
 | `fetch-manifest.json` | The Tier B recipe (see "Legal design") that clients execute themselves |
 | `ATTRIBUTION.md` / `SHA256SUMS` | Credits and checksums |
 
-Always download via the tag-addressed URL `releases/download/latest/<file>` — assets are replaced nightly. A dated release is cut weekly for pinning (`releases/download/<YYYY-MM-DD>/<file>`). Do NOT use `releases/latest/download/<file>`: it resolves via GitHub's "Latest" badge, not the `latest` tag, and can serve a stale weekly snapshot (see DECISIONS.md D-REL-1).
+Always download via the tag-addressed URL `releases/download/latest/<file>` — assets are replaced nightly. A dated release is cut weekly for pinning (`releases/download/<vYYYY.MM.DD>/<file>`; pre-standard `YYYY-MM-DD` tags remain valid, see DECISIONS.md). Do NOT use `releases/latest/download/<file>`: it resolves via GitHub's "Latest" badge, not the `latest` tag, and can serve a stale weekly snapshot (see DECISIONS.md D-REL-1).
+
+The same artifacts are also mirrored nightly to Hugging Face — [`datasets/openasn/openasn`](https://huggingface.co/datasets/openasn/openasn) — where `asn-categories.csv` is browsable in the dataset viewer.
 
 ## Verdict taxonomy
 

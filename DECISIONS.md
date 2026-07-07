@@ -158,8 +158,17 @@ datasets use `vYYYY.MM.P` (VehiclesDB, where the patch auto-increments).
 Rationale: one recognizable family format, no hyphens, `v` prefix matches
 ecosystem conventions, lexicographic order == chronological order. The
 rolling `latest` release is a service pointer, not a version, and is
-unchanged. Pre-standard tags (`2026-07-05` style) remain valid pin targets;
-`pin_version` is a free string so no client change is needed.
+unchanged. `pin_version` is a free string so no client change is needed.
+The one pre-standard tag, `2026-07-05`, was renamed to `v2026.07.05` on
+2026-07-07 for coherence (same snapshot commit; old URL now 404s); no
+other pre-standard tags exist.
+
+Release **titles** share the same family: `<Project> <dotted-version>`
+(`OpenASN 2026.07.05`, mirroring `VehiclesDB 2026.07.3` — the title drops
+the tag's `v`). OpenASN appends ` · Nightly rolling` / ` · Weekly snapshot`
+to disambiguate its two streams (VehiclesDB has one, so needs no suffix);
+dates are dotted, never hyphenated, and the short `OpenASN ` lead keeps the
+date inside GitHub's ~25-char sidebar truncation.
 
 ## D-CUR-1 — Curation inputs are consult-with-care; only published data must be redistribution-clean (2026-07-06)
 

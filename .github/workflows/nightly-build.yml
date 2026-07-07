@@ -32,7 +32,7 @@ on:
   workflow_dispatch:
     inputs:
       dated_tag:
-        description: "Also cut a dated pinnable release (YYYY-MM-DD)"
+        description: "Also cut a dated pinnable release (vYYYY.MM.DD)"
         type: boolean
         default: false
   push:

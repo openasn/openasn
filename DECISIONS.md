@@ -200,3 +200,36 @@ source rules (explicit redistribution rights only; aggregators never qualify)
 stand unchanged. Drafted candidates carry no upstream text into this repo, so
 published data stays CC0-clean regardless of what was consulted during
 drafting.
+
+## D-ENRICH-1 — `enterprise_gateway` is SWG/SASE vendor egress ONLY; a company's own ASN is `business` (2026-07-07)
+
+**The ambiguity.** An enrichment swarm classifying corporate ASNs (Intel
+AS4983, Bank of America AS10794, Cleveland Clinic AS22093, Adhesives Research
+AS2020) kept proposing the `enterprise_gateway` verdict, reasoning "these are
+humans-at-work, don't block them." That is a defensible reading of the words
+but it is NOT how this project uses the class, and left unresolved it makes the
+verdict axis inconsistent across the dataset.
+
+**The ruling (one decision, permanent, project-wide).** The `enterprise_gateway`
+verdict (flags bit 11, classifier precedence rule 7, membership via
+`data/overrides/enterprise_gateway.txt`) is reserved for ASNs registered to a
+recognized **Secure Web Gateway / SSE / SASE vendor** whose product proxies
+**other organizations'** employee web traffic through vendor-operated egress
+(Zscaler, Netskope, Forcepoint, Menlo, iboss, Cloudflare WARP/Gateway, Check
+Point Harmony SASE / Perimeter 81). A company that runs **its own** ASN for
+**its own** corporate traffic — bank, hospital, manufacturer, tech firm,
+retailer — is `business` (ipverse `category==business` → `:business`), **never**
+`enterprise_gateway`, even though its users are employees.
+
+**Why.** The class exists solely to prevent the documented false positive of
+blocking an entire *third-party* company/school hidden behind a *shared* vendor
+gateway (the iboss/Zscaler case, `enterprise_gateway.txt` header). A single
+company's own ASN is already handled correctly and safely as `business`; adding
+it to the gateway class buys nothing and dilutes the class's meaning.
+
+**Binding on all enrichment.** Swarms map corporate own-ASNs to `business` on
+the OpenASN verdict axis. The Linnaeus org axis still labels them richly
+(`Enterprise > Technology`, `Financial > Bank`, `Health > Hospitals`, …) — the
+two axes are orthogonal (org identity vs. security action). `enterprise_gateway.txt`
+membership remains the ONLY path to the `enterprise_gateway` verdict, curated to
+the SWG/SASE-vendor bar above. Full enrichment spec: `docs/enrichment/PRD.md`.

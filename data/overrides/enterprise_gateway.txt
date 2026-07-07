@@ -47,3 +47,33 @@ AS396253  # iboss inc (US). src: ipverse as-metadata description "iboss inc" (20
 
 # --- Check Point (checkpoint.com — Harmony SASE / Perimeter 81 SSE) ---
 AS398391  # Check Point Software Technologies Inc. — Harmony SASE / Perimeter 81 SSE egress (US): enterprise employee web traffic, not a consumer VPN. src: ipverse as-metadata handle "CHECK-POINT-SASE" + https://www.checkpoint.com/harmony/sase/ (2026-07-07). Reclassified from vpn_provider.txt — X4BNet lists_vpn miscategorized it.
+
+# --- Cato Networks (catonetworks.com — SASE cloud; customer web traffic transits Cato-operated PoPs) ---
+AS13150   # CATO NETWORKS LTD (IL) — SASE PoP egress. src: ipverse as-metadata description "CATO NETWORKS LTD" + https://www.catonetworks.com/sase/ (2026-07-08). Cross-checked live vs our Layer-A quant: CAIDA asn_name CATON, 242 announced v4 prefixes.
+AS138627  # Cato Networks Inc. — APAC PoPs (HK). src: ipverse as-metadata description "Cato Networks Inc." + https://www.catonetworks.com/ (2026-07-08).
+
+# --- Skyhigh Security (skyhighsecurity.com — SSE/SWG, the ex-McAfee-Enterprise Skyhigh spinoff) ---
+AS14600   # SKYHIGH SECURITY LLC (US) — SSE (SWG/CASB/ZTNA) egress. src: ipverse as-metadata description "SKYHIGH SECURITY LLC" + https://www.skyhighsecurity.com/products/security-service-edge.html (2026-07-08).
+
+# --- Cisco Umbrella (umbrella.cisco.com — Secure Internet Gateway / SWG) ---
+# DUAL-USE HEADS-UP: AS36692 also serves the public OpenDNS resolver (208.67.222.222 /
+# 208.67.220.220) — benign DNS infra, not a corporate gateway. We still classify the AS
+# as enterprise_gateway because at ASN granularity it IS Cisco Umbrella's network and the
+# load-bearing case is not blocking Umbrella-proxied employees; the resolver IPs are
+# harmless either way. Revisit only if IP-level splitting is ever needed.
+AS36692   # CISCO-UMBRELLA (US) — Cisco Umbrella SIG/SWG egress (+ public OpenDNS resolver, dual-use). src: ipverse as-metadata "Cisco OpenDNS LLC" family + CAIDA asn_name "CISCO-UMBRELLA" + https://umbrella.cisco.com/products/secure-internet-gateway (2026-07-08).
+
+# --- Considered and EXCLUDED (2026-07-08 audit; keep out unless the picture changes) ---
+# - Cloudflare (AS13335 + siblings): primarily a CDN / content network (verdict :hosting,
+#   D-ENRICH-1). Cloudflare Gateway/WARP egress is not separable from the CDN at ASN level
+#   and the dominant use is content. NOT enterprise_gateway.
+# - Palo Alto Networks own ASNs (AS2763 / 54538 / 64280 / 396421): the vendor's CORPORATE
+#   networks, not customer egress — Prisma Access egresses from hyperscaler clouds, not
+#   these ASNs. => :business (D-ENRICH-1), not enterprise_gateway.
+# - AS30607: ipverse labels it "Cisco OpenDNS LLC" but CAIDA asn_name is
+#   "302-DIRECT-MEDIA-ASN" and it announces nothing — identity ambiguous, so excluded.
+# - Barracuda (AS15324) / Versa (AS133374, AS198365): broad security vendors whose SWG is
+#   not a clear own-ASN egress (Versa announces nothing; Barracuda is firewall/email first).
+#   Hold pending clearer evidence.
+# - "Prisma Health" / "Umbrella Cable Systems" / "Prisma Medios de Pago" / PARC etc.: name
+#   collisions, not Palo Alto Prisma / Cisco Umbrella.

@@ -18,8 +18,20 @@
 #     source_url: "https://evidence"
 #     date: YYYY-MM-DD
 #
-# No entries yet: as of the 2026-07-04 review, every disagreement we found
-# with as-metadata was better expressed as an override flag (see the .txt
-# files) than as a category correction. First real entry should follow the
-# schema above exactly — the loader validates it (pipeline/lib/overrides.rb).
-{}
+# First entries filed 2026-07-07 — surfaced by the enrichment pilot's
+# flywheel (docs/openasn-enrichment-plan-v1.md §17): the LLM draft flagged
+# these ipverse category errors and a human verified each against the
+# company's own site before publishing. The loader validates every field
+# (pipeline/lib/overrides.rb); the PR lint mirrors it (scripts/lint_overrides.rb).
+
+393961:
+  category: business
+  reason: "Farm Bureau Bank FSB is a private, FDIC-insured federally-chartered savings bank; ipverse as-metadata mislabels it government_admin (misled by the 'Farm Bureau' name)."
+  source_url: "https://www.farmbureau.bank/"
+  date: 2026-07-07
+
+2020:
+  category: business
+  reason: "Adhesives Research Inc. is a private specialty-materials / adhesive-tape manufacturer (est. 1961); ipverse as-metadata mislabels it education_research (misled by the word 'Research')."
+  source_url: "https://www.adhesivesresearch.com/"
+  date: 2026-07-07

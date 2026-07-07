@@ -32,7 +32,6 @@ AS207137  # Packethub S.A. (NordVPN). src: https://raw.githubusercontent.com/X4B
 AS208172  # ProtonVPN. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt + https://github.com/X4BNet/lists_vpn/issues/248 (2026-07-04)
 AS209854  # Surfshark. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
 AS212238  # Datacamp Limited — flagged "Datacamp VPN?" by X4B (VPN egress arm; sibling AS60068 deliberately NOT listed). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
-AS398391  # Checkpoint VPN. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
 AS401401  # Unredacted Inc. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
 AS401720  # Unredacted Inc. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
 

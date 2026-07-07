@@ -44,3 +44,6 @@ AS152150  # Menlo Security Japan K.K. (JP). src: ipverse as-metadata description
 AS137922  # IBOSS Inc. (US). src: ipverse as-metadata description "IBOSS Inc." (2026-07-04)
 AS202276  # IBOSS INC (US). src: ipverse as-metadata description "IBOSS INC" (2026-07-04)
 AS396253  # iboss inc (US). src: ipverse as-metadata description "iboss inc" (2026-07-04)
+
+# --- Check Point (checkpoint.com — Harmony SASE / Perimeter 81 SSE) ---
+AS398391  # Check Point Software Technologies Inc. — Harmony SASE / Perimeter 81 SSE egress (US): enterprise employee web traffic, not a consumer VPN. src: ipverse as-metadata handle "CHECK-POINT-SASE" + https://www.checkpoint.com/harmony/sase/ (2026-07-07). Reclassified from vpn_provider.txt — X4BNet lists_vpn miscategorized it.

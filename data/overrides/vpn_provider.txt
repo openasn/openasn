@@ -21,7 +21,6 @@
 
 # --- Seeded from X4BNet lists_vpn input/vpn/ASN.txt (hand-curated, MIT) ---
 AS9009    # M247 Europe SRL — NordVPN/major VPN infra per X4B. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
-AS20448   # VPNtranet, LLC. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
 AS32751   # Octovpn / xbox VPN. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
 AS50525   # Privado VPN. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
 AS60729   # Stiftung Erneuerbare Freiheit — Tor exit host ("Tor Servers" per X4B). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)

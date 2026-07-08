@@ -54,6 +54,7 @@ AS138627  # Cato Networks Inc. — APAC PoPs (HK). src: ipverse as-metadata desc
 
 # --- Skyhigh Security (skyhighsecurity.com — SSE/SWG, the ex-McAfee-Enterprise Skyhigh spinoff) ---
 AS14600   # SKYHIGH SECURITY LLC (US) — SSE (SWG/CASB/ZTNA) egress. src: ipverse as-metadata description "SKYHIGH SECURITY LLC" + https://www.skyhighsecurity.com/products/security-service-edge.html (2026-07-08).
+AS203724  # Musarubra Germany GmbH (DE) — Skyhigh Security / McAfee-Enterprise SWG PoP egress; announces the BULK of Skyhigh's egress ranges (185.221.68.0/24, 185.221.70.0/24, 185.125.225.0/24) vs AS14600's two /24s — added 2026-07-08 after the adversarial audit flagged the primary egress ASN was missing. src: RDAP registrant "Musarubra Germany GmbH" (McAfee-Enterprise/Skyhigh legal entity) + our Layer-A prefix2as data (those /24s originate AS203724) + https://www.skyhighsecurity.com/.
 
 # --- Cisco Umbrella (umbrella.cisco.com — Secure Internet Gateway / SWG) ---
 # DUAL-USE HEADS-UP: AS36692 also serves the public OpenDNS resolver (208.67.222.222 /
@@ -61,7 +62,7 @@ AS14600   # SKYHIGH SECURITY LLC (US) — SSE (SWG/CASB/ZTNA) egress. src: ipver
 # as enterprise_gateway because at ASN granularity it IS Cisco Umbrella's network and the
 # load-bearing case is not blocking Umbrella-proxied employees; the resolver IPs are
 # harmless either way. Revisit only if IP-level splitting is ever needed.
-AS36692   # CISCO-UMBRELLA (US) — Cisco Umbrella SIG/SWG egress (+ public OpenDNS resolver, dual-use). src: ipverse as-metadata "Cisco OpenDNS LLC" family + CAIDA asn_name "CISCO-UMBRELLA" + https://umbrella.cisco.com/products/secure-internet-gateway (2026-07-08).
+AS36692   # CISCO-UMBRELLA (US) — Cisco Umbrella SIG/SWG egress (+ public OpenDNS resolver, dual-use). src: ipverse as-metadata description "OpenDNS" (AS36692; the "Cisco OpenDNS LLC" string is AS30607's) + CAIDA asn_name "CISCO-UMBRELLA" + https://umbrella.cisco.com/products/secure-internet-gateway (2026-07-08).
 
 # --- Considered and EXCLUDED (2026-07-08 audit; keep out unless the picture changes) ---
 # - Cloudflare (AS13335 + siblings): primarily a CDN / content network (verdict :hosting,

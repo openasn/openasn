@@ -23,6 +23,17 @@
 # prototype, whose logic had no :business verdict); ipverse now categorizes
 # AS20597 (Vimpelcom) as business/stub, so the correct §9 verdict is
 # :business via rule 13. Updated 2026-07-04 at implementation time.
+#
+# Panel history: the Vodafone DE probe was 95.90.200.10 (AS3209) until
+# 2026-08-08. Vodafone is re-homing ex-Kabel-Deutschland cable /23s from
+# VODANET AS3209 to KABELDEUTSCHLAND-AS AS31334 (both "Vodafone GmbH", both
+# German residential; AS31334 is a stub customer of AS3209): the nightly saw
+# AS31334 from 2026-07-16, flapped back to AS3209 for one night (2026-07-24),
+# then AS31334 again from 2026-07-25 on. A probe on a live migration boundary
+# is noise, not signal, so it moved to 2.201.10.10 in the ex-Arcor DSL pool
+# 2.200.0.0/13 - same ASN, same verdict, same German-residential intent, but
+# announced whole by AS3209 (stable, 320+ RIS full-feed peers, zero AS31334
+# more-specifics even at min_peers_seeing=1).
 
 checks:
   # --- infrastructure: hosting via category and via curated flags ---
@@ -58,10 +69,10 @@ checks:
     expect: residential_isp
     asn: 3352
     note: "Telefonica de Espana - isp + major_transit role (regression: transit-role eyeballs stay residential)"
-  - ip: "95.90.200.10"
+  - ip: "2.201.10.10"
     expect: residential_isp
     asn: 3209
-    note: "Vodafone DE residential"
+    note: "Vodafone DE residential DSL (ex-Arcor pool 2.200.0.0/13, netname DE-ARCOR). Probe was 95.90.200.10 until 2026-08-08 - that ex-Kabel-Deutschland cable range is mid-migration to AS31334 and flapped (panel history note above)"
   - ip: "99.49.80.100"
     expect: residential_isp
     asn: 7018

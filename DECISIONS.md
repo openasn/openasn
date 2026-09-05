@@ -305,8 +305,10 @@ The mechanism was not an upstream outage. It was the gate's own design:
    hosting-ASN count fell 12,393 → 9,342 (**−24.6%**). The drift gate's single
    symmetric threshold pair was warn 5% / fail 30%, so −24.6% sat *inside* the
    fail line: it only WARNED, and **the degraded build was published**.
-2. On 2026-08-25 upstream was back at 12,442. Against the newly-published
-   9,342 that is **+33.2%** — past the 30% line → FAIL.
+2. On 2026-08-25 the 03:17 UTC run saw upstream restored to 12,393 (the
+   revert was still HEAD; the day's own commit landed 76 minutes after our
+   cron). Against the newly-published 9,342 that is **+32.7%** — past the 30%
+   line → FAIL.
 3. A failed build publishes nothing, so `latest` stayed at 9,342, so the next
    night compared 12,4xx against 9,342 again, and failed identically. **A
    deadlock with no self-heal**, in which the *correct* value is the one that

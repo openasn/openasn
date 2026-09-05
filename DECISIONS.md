@@ -333,6 +333,14 @@ format and one unblock procedure:
    `drift RECOVERY`: the *previous* build was the anomaly. The gate PASSES,
    logs the reasoning loudly, and stamps `stats.drift_recovery` into
    `manifest.json`. This is what breaks the deadlock automatically.
+   A rescuing pin must itself be healthy — within the same band of the best
+   pin — and the closest qualifying pin anchors the decision, not the newest.
+   Without that test the rule is direction-agnostic and licenses the opposite
+   of a recovery: a failing DROP "rescued" by a pin cut from an already
+   degraded build (12,400 → 10,001, −19.3%, passed unacked and was stamped as
+   a recovery). **And a pin is only ever cut from a CLEAN build** — the pins
+   are this rule's only frozen reference, so freezing a build the gates
+   warned about poisons the one thing that can break a deadlock.
 3. **Asymmetric, evidence-based lines.** Drops fail above **10%**, rises above
    **20%**, both warn above **5%**. Evidence: the weekly pins moved 12,256 →
    12,316 → 12,363 → 12,377 → 12,393 across 2026-07-05…08-23, at most +0.5%

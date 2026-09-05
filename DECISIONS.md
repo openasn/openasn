@@ -233,3 +233,42 @@ the OpenASN verdict axis. The Linnaeus org axis still labels them richly
 two axes are orthogonal (org identity vs. security action). `enterprise_gateway.txt`
 membership remains the ONLY path to the `enterprise_gateway` verdict, curated to
 the SWG/SASE-vendor bar above. Full enrichment spec: `docs/enrichment/PRD.md`.
+
+## D-DATA-1 — Two dataset tiers: the CC0 core and the maximal-information extended dataset (2026-09-05)
+
+**The goal (owner, 2026-09-05).** OpenASN aims to be the biggest and most complete
+open-source database of ASNs and everything related to them — rich information
+about every ASN and who operates it (organization, ownership chain, brands,
+services, customers, related websites and domains, infrastructure footprint,
+jurisdiction, contacts, history, reputation). Information completeness and
+richness are goals in themselves; extra information is always good. Reading
+Wikipedia, Wikidata, registries, PeeringDB, company sites, news and papers to
+become more complete and more accurate is encouraged.
+
+**The tension.** The published artifacts are CC0 with strict provenance (README
+"Legal design"): nothing enters them without explicit redistribution rights on
+the exact data, aggregators never, ShareAlike never. That bar is right for the
+core and wrong for maximal information — most rich sources are CC BY-SA
+(Wikipedia text), NC (PeeringDB data) or terms-bound.
+
+**The ruling.** Two tiers, permanently separated:
+
+- **Core** — `openasn-ipv4.bin`/`ipv6.bin`/`orgs.bin`, `asn-categories.csv`,
+  `data/overrides/`. CC0. Strict provenance. Unchanged; every legal invariant
+  stands. Curators may still *consult* anything per record (D-CUR-1); only the
+  sourced conclusion line enters.
+- **Extended** — the maximal-information dataset (per-ASN dossiers, traits,
+  research records). Compiled from every source we may legally consult and
+  record, per record, in our own words, with the exact source URL and date on
+  every field. Licensed per its inputs — **CC BY-SA 4.0 by default** (Wikidata
+  is CC0; Wikipedia text is CC BY-SA; own-words facts from terms-bound sources
+  are cited, never copied in bulk). Published as separate files/repo with its
+  own LICENSE and ATTRIBUTION; **never compiled into the core artifacts** and
+  never used to relicense them. Staged owner-private under `docs/enrichment/`
+  until the publication decision.
+
+**Rules that still bind the extended tier:** per-record consultation (no bulk
+mirroring of restricted databases), no active scanning, politeness
+(identifying User-Agent, rate caps), short attributed quotes only, and a source
+URL on every fact — a fact without a URL is not data. Sibling project with the
+same ethos: VehiclesDB.

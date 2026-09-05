@@ -331,7 +331,20 @@ format and one unblock procedure:
    **10,000**: the 9,342 defect cleared the old floor, and the floor is the
    only guard on a night with neither a previous manifest nor a pin. Moving it
    requires a reviewed PR carrying the measurement that justifies it.
-6. **Silence is a bug.** Every evaluation logs exactly one
+6. **Slow slides are measured against the pins, and warn.** Every
+   night-vs-night threshold shares one blind spot: a move small enough to
+   clear the warn line each night accumulates without a single night ever
+   tripping — 4% a night for a week is the same −25% that, taken in one step,
+   *was* this incident. So every evaluation also measures the total distance
+   from the best value the weekly pins have seen, and warns loudly when that
+   exceeds the drop line. This one deliberately **warns rather than fails**,
+   and it is the single place where "the lines lean strict" is knowingly not
+   applied: a failure here would publish nothing, publishing nothing cuts no
+   new pin, the anchor would never move, and every later night would fail
+   against it — a new deadlock of exactly the shape this decision exists to
+   forbid. The hard stop for a slide that reaches dangerous territory is the
+   absolute floor, which does not move and cannot be acked.
+7. **Silence is a bug.** Every evaluation logs exactly one
    `drift <PASS|WARN|FAIL|RECOVERY|ACKED|SKIP> <metric>:` line carrying the
    numbers and the thresholds, so a green log always answers "did this gate
    run, and against what?". A stale `latest` (>48h) is warned about at build

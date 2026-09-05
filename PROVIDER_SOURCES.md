@@ -213,6 +213,107 @@ End-to-end sample classifications from the live run:
 | Canadian Centre VPN guidance | Not added. | Government guidance, not a provider source. |
 | VPN.com | Not added. | Review/marketplace site, not a provider source. |
 
+## Health Check 2026-09-05
+
+Every recipe in `fetch-manifest.json` as of the 2026-07-05 pass (47 sources) was fetched
+ONCE, live, with the identifying User-Agent `openasn-research/1.0
+(+https://github.com/openasn/openasn)` and parsed with the gem's own parsers. "Tokens" is
+what the parser returned; "v4/v6 ranges" is after merging; "Hostnames" counts DNS-expanded
+sources, which report hostnames rather than ranges because the health check does no DNS.
+
+**42 of 47 healthy. 5 failures, all diagnosed below — none was a silent data-quality
+problem, and none required guessing.**
+
+| Source id | HTTP | Bytes | Tokens | v4 ranges | v6 ranges | Hostnames | Result |
+|---|---|---|---|---|---|---|---|
+| `apple_private_relay` | 200 | 12,167,779 | 287,841 | 953 | 5,920 | 0 | ok |
+| `tor_exits` | 200 | 19,025 | 1,339 | 660 | 0 | 0 | ok |
+| `aws` | 200 | 2,606,812 | 16,869 | 932 | 1,945 | 0 | ok |
+| `gcp` | 200 | 112,291 | 1,098 | 157 | 17 | 0 | ok |
+| `azure` | 200 | 4,314,150 | 95,557 | 594 | 954 | 0 | ok |
+| `oracle` | 200 | 234,112 | 1,107 | 478 | 0 | 0 | ok |
+| `digitalocean` | 200 | 52,881 | 1,228 | 101 | 39 | 0 | ok |
+| `linode` | 200 | 192,744 | 5,505 | 95 | 22 | 0 | ok |
+| `vultr` | 200 | 21,353 | 499 | 82 | 17 | 0 | ok |
+| `cloudflare_ranges` | 200 | 334 | 22 | 14 | 7 | 0 | ok |
+| `protonvpn` | 200 | 12,589 | 855 | 528 | 0 | 0 | ok |
+| `mullvad_relays` | 200 | 294,427 | 1,093 | 516 | 543 | 0 | ok |
+| `ivpn_servers` | 200 | 38,752 | 176 | 169 | 0 | 0 | ok |
+| `pia_servers` | 200 | 162,698 | 1,471 | 1,348 | 0 | 0 | ok |
+| `airvpn_status` | 200 | 220,524 | 2,056 | 448 | 1,012 | 0 | ok |
+| `windscribe_servers` | 403 | 0 | 0 | 0 | 0 | 0 | FAIL 403 |
+| `nordvpn_servers` | 200 | 9,049,393 | 8,035 | 7,764 | 1 | 0 | ok |
+| `privadovpn` | 200 | 44,178 | 165 | 164 | 0 | 0 | ok |
+| `riseup_vpn` | 200 | 9,956 | 21 | 20 | 0 | 0 | ok |
+| `wlvpn_server_list` | 200 | 1,143,725 | 3,611 | 3,611 | 0 | 0 | ok |
+| `worldvpn_servers` | 200 | 601,026 | 180 | 166 | 0 | 0 | ok |
+| `ovpn_status_servers` | 200 | 12,362 | 96 | 34 | 0 | 0 | ok |
+| `anonine_status` | 200 | 19,335 | 293 | 77 | 0 | 0 | ok |
+| `azirevpn_locations` | 200 | 9,693 | 62 | 0 | 0 | 62 | ok |
+| `vpnac_status` | 200 | 37,052 | 130 | 0 | 0 | 130 | ok |
+| `trustzone_servers` | 200 | 39,680 | 70 | 0 | 0 | 70 | ok |
+| `surfshark_generic` | 200 | 100,538 | 142 | 0 | 0 | 142 | ok |
+| `surfshark_static` | 200 | 27,241 | 38 | 0 | 0 | 38 | ok |
+| `surfshark_obfuscated` | 200 | 4,813 | 7 | 0 | 0 | 7 | ok |
+| `ipvanish_openvpn` | 200 | 5,207,382 | 3,612 | 0 | 0 | 3,612 | ok |
+| `privatevpn_openvpn` | 200 | 377,342 | 101 | 1 | 0 | 100 | ok |
+| `purevpn_openvpn` | 200 | 1,311,428 | 166 | 0 | 0 | 166 | ok |
+| `torguard_openvpn_tcp` | 403 | 0 | 0 | 0 | 0 | 0 | FAIL 403 |
+| `torguard_openvpn_udp` | 403 | 0 | 0 | 0 | 0 | 0 | FAIL 403 |
+| `fastestvpn_tcp` | 200 | 5,231 | 63 | 0 | 0 | 63 | ok |
+| `fastestvpn_udp` | 200 | 5,293 | 63 | 0 | 0 | 63 | ok |
+| `vpnsecure_locations` | 404 | 0 | 0 | 0 | 0 | 0 | FAIL 404 |
+| `tunnelbear_openvpn` | 200 | 60,247 | 47 | 0 | 0 | 47 | ok |
+| `strongvpn_locations` | 200 | 181,994 | 145 | 0 | 0 | 145 | ok |
+| `vyprvpn_openvpn` | 200 | 149,595 | 73 | 0 | 0 | 73 | ok |
+| `giganews_vyprvpn_hosts` | 200 | 43,750 | 73 | 0 | 0 | 73 | ok |
+| `slickvpn_locations` | 200 | 60,820 | 0 | 0 | 0 | 0 | FAIL parse |
+| `vpnbook_openvpn` | 200 | 151,794 | 10 | 0 | 0 | 10 | ok |
+| `freevpn_us_servers` | 200 | 90,522 | 15 | 0 | 0 | 15 | ok |
+| `vpngate` | 200 | 1,320,355 | 98 | 97 | 0 | 0 | ok |
+| `zscaler` | 200 | 130,036 | 935 | 136 | 28 | 0 | ok |
+| `nazgul_mixed` | 200 | 230,037 | 14,375 | 5,742 | 415 | 0 | ok |
+
+### The five failures, and what was done
+
+| Source id | Symptom | Diagnosis | Action |
+|---|---|---|---|
+| `slickvpn_locations` | 200, parser returned 0 | SlickVPN redesigned `https://www.slickvpn.com/locations/` since 2026-07-05. Server addresses moved out of the `.ovpn` link text into `<button data-host="gw1.bos1.slickvpn.com" title="Copy server address">` next to an "Active" badge. | Parser rewritten to read `data-host`. Stricter than the old link-pairing heuristic: it is the exact address SlickVPN gives its own users. 11 hosts live. |
+| `vpnsecure_locations` | 404 | `https://www.vpnsecure.me/vpn-locations/` is gone. `https://www.vpnsecure.me/locations` returns 200 but is now a marketing page: 0 server hostnames, 0 status markers, no `isponeder.com` references. The source is dead, not moved. | Recipe removed from the manifest and from the gem's `vpn_dns` group. The `vpnsecure_locations_html` parser stays registered so clients pinned to an older manifest keep working. |
+| `windscribe_servers` | 403 | Cloudflare "Sorry, you have been blocked" interstitial on every path tried (`assets.windscribe.com/serverlist/mob-v2/1/0`, `.../openvpn/1/0`, `api.windscribe.com/ServerList/mob-v2/1/0`). OpenASN does not defeat bot challenges (D-CUR-1, and rule 3 below). | `enabled_default` changed true -> false so default clients stop failing this fetch every 24 hours. The recipe and its `vpn_providers` group membership are KEPT: Tier B runs on the end user's own network, the block may be vantage-specific, and `keep_stale` means an overlay fetched earlier keeps classifying. |
+| `torguard_openvpn_tcp` | 403 | Cloudflare `error code: 1005` — an ASN-level ban of the network the check ran from. This is a fact about our vantage point, not about the archive. | No change beyond a dated note. Already opt-in (`vpn_dns`). |
+| `torguard_openvpn_udp` | 403 | Same. | Same. |
+
+Two 403s therefore mean two different things, and the distinction decides the fix: 1005 is
+"your network is banned" (leave the recipe alone, another client will succeed), a challenge
+interstitial is "we do not want automated fetchers" (stop recommending it on by default).
+
+### Sources added in this pass
+
+| Source id | Provider | URL | Group | Parser | Live smoke 2026-09-05 |
+|---|---|---|---|---|---|
+| `zscaler_gov` | Zscaler (US government cloud) | `https://config.zscaler.com/api/zscalergov.net/cenr/json` | opt-in `zscaler` | `zscaler_json` | 6 v4 + 7 v6 |
+| `github_meta` | GitHub | `https://api.github.com/meta` | opt-in `clouds_extra` | `github_meta_json` | 2101 v4 + 648 v6 |
+| `atlassian` | Atlassian | `https://ip-ranges.atlassian.com/` | opt-in `clouds_extra` | `atlassian_ipranges_json` | 68 v4 + 8 v6 |
+
+**Zscaler sibling clouds: measured, then deliberately skipped.** Zscaler serves several named
+clouds from the same CENR API path. All seven return 200 with the identical nested shape:
+
+| Cloud | Ranges | Networks | New vs `zscaler.net` |
+|---|---|---|---|
+| `zscaler.net` (existing recipe) | 935 | 673 | — |
+| `zscalerone.net` | 8 | 8 | 0 |
+| `zscalertwo.net` | 951 | 672 | 3 |
+| `zscalerthree.net` | 918 | 666 | 5 |
+| `zscloud.net` | 948 | 674 | 5 |
+| `zscalerbeta.net` | 23 | 20 | 1 |
+| `zscalergov.net` | 30 | 30 | **30 (all of them)** |
+
+Five extra fetches would buy 14 additional networks; the government cloud alone buys 30 and
+is the only one whose address space is genuinely disjoint. Only `zscaler_gov` was added. The
+FedRAMP cloud's users are US federal and state agency employees browsing from the office, so
+`enterprise_gateway` (a likely-human verdict) is exactly the right mapping.
+
 ## Future Implementation Rules
 
 1. Add a manifest source only when the endpoint has exact IP/CIDR tokens or exact provider-published server hostnames.

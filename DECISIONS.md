@@ -272,3 +272,74 @@ mirroring of restricted databases), no active scanning, politeness
 (identifying User-Agent, rate caps), short attributed quotes only, and a source
 URL on every fact — a fact without a URL is not data. Sibling project with the
 same ethos: VehiclesDB.
+## D-GATE-1 — Drift gates compare against a frozen weekly baseline, fail asymmetrically, and have an operator ack (2026-09-05)
+
+**The incident.** Between 2026-08-25 and 2026-09-05 the nightly build failed
+**twelve nights in a row** and published nothing, while `latest` served a
+degraded 2026-08-24 build in which ~3,100 hosting ASNs had lost their category
+and therefore classified `:unknown` (rule `no_category`).
+
+The mechanism was not an upstream outage. It was the gate's own design:
+
+1. On 2026-08-24 the upstream ipverse as-metadata `as.json` regressed and the
+   hosting-ASN count fell 12,393 → 9,342 (**−24.6%**). The drift gate's single
+   symmetric threshold pair was warn 5% / fail 30%, so −24.6% sat *inside* the
+   fail line: it only WARNED, and **the degraded build was published**.
+2. On 2026-08-25 upstream was back at 12,442. Against the newly-published
+   9,342 that is **+33.2%** — past the 30% line → FAIL.
+3. A failed build publishes nothing, so `latest` stayed at 9,342, so the next
+   night compared 12,4xx against 9,342 again, and failed identically. **A
+   deadlock with no self-heal**, in which the *correct* value is the one that
+   fails and the *wrong* value is the one being protected.
+
+Three distinct defects: a fail line loose enough to ship a −24.6% regression,
+a reference that only moves when the gate passes, and no way for an operator
+to say "I checked, this move is real" short of editing pipeline source.
+
+**The ruling (permanent, project-wide).** Drift gates — `crosscheck.rb`'s
+hosting-ASN count and `validate.rb`'s G4 layer counts, which had the same
+shape — share one policy module (`pipeline/lib/drift_gate.rb`) with one log
+format and one unblock procedure:
+
+1. **A frozen long-run baseline, not just yesterday.** Every run also reads
+   the **two most recent weekly dated pins** (`vYYYY.MM.DD` releases) via
+   tag-addressed URLs only (D-REL-1; the Latest badge is never load-bearing).
+   Dated pins are immutable and are cut on a schedule, so they are the one
+   reference a publish outage cannot corrupt.
+2. **Recovery beats the day-over-day comparison.** A move that fails against
+   the previous build but lands **within ±5% of a weekly pin** is classified
+   `drift RECOVERY`: the *previous* build was the anomaly. The gate PASSES,
+   logs the reasoning loudly, and stamps `stats.drift_recovery` into
+   `manifest.json`. This is what breaks the deadlock automatically.
+3. **Asymmetric, evidence-based lines.** Drops fail above **10%**, rises above
+   **20%**, both warn above **5%**. Evidence: the weekly pins moved 12,256 →
+   12,316 → 12,363 → 12,377 → 12,393 across 2026-07-05…08-23, at most +0.5%
+   per week, and the nightly series moves well under 1% per night — so 5% is
+   already >10x observed noise and the only larger move ever seen was a defect.
+   Drops are stricter because a missing upstream input produces *blanks*, and
+   blanks are exactly this project's D8 tripwire scenario: a slice of ASNs
+   silently turning `:unknown`. Rises cannot be produced by a missing input
+   and are independently guarded by the spot panel.
+4. **An auditable operator path.** `OPENASN_ACK_DRIFT="<reason>"` downgrades a
+   drift FAIL to a loud WARN **for that one run** and stamps the reason into
+   `manifest.json` (`stats.drift_ack`). It is exposed as the `ack_drift`
+   input of the `Build & publish data` workflow, so unblocking a verified-real
+   upstream move is a dispatch with a sentence of evidence — and the sentence
+   is on the public record forever. The ack does **not** touch absolute floors,
+   size bounds, or the spot panel.
+5. **Absolute floors are not ackable.** `MIN_HOSTING_ASNS` rises 8,000 →
+   **10,000**: the 9,342 defect cleared the old floor, and the floor is the
+   only guard on a night with neither a previous manifest nor a pin. Moving it
+   requires a reviewed PR carrying the measurement that justifies it.
+6. **Silence is a bug.** Every evaluation logs exactly one
+   `drift <PASS|WARN|FAIL|RECOVERY|ACKED|SKIP> <metric>:` line carrying the
+   numbers and the thresholds, so a green log always answers "did this gate
+   run, and against what?". A stale `latest` (>48h) is warned about at build
+   start with its age in hours, and the failure issue quotes the gate lines
+   from the run rather than listing possible causes.
+
+**The general lesson, binding on every future gate.** A tripwire whose
+reference is written *by the thing it guards* can deadlock. Any gate that
+compares against previous output must also have a reference that is frozen,
+externally dated, and independent of whether the gate passed — and a
+documented, recorded way for a human to overrule it once.

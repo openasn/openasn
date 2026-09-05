@@ -99,8 +99,9 @@ The enrichment pass added exact-IP Tier B recipes for Mullvad (also Mozilla/Fire
 ## Data quality gates (every nightly build)
 
 - **License pin gate** — any upstream license drift fails the build and opens an issue.
-- **Cross-check gate** — ipverse's `category` field is young (added 2026-02) and single-maintainer, so every build measures its hosting coverage against two independent hand-curated reference sets (X4BNet datacenter ASNs ∪ bad-asn-list; 91.3% coverage at floor-setting time, hard floor 60%) and fails on collapse or >30% day-over-day swings.
-- **Delta gate** — every artifact layer must stay within ±20% of the previous build's record count.
+- **Cross-check gate** — ipverse's `category` field is young (added 2026-02) and single-maintainer, so every build measures its hosting coverage against two independent hand-curated reference sets (X4BNet datacenter ASNs ∪ bad-asn-list; 91.3% coverage at floor-setting time, hard floor 60%), holds the hosting-ASN count above an absolute floor of 10,000, and gates day-over-day drift.
+- **Delta gate** — every artifact layer must stay within ±20% of the previous build's record count (warning at 5%).
+- **Drift policy** ([D-GATE-1](DECISIONS.md)) — drift is judged against the previous build **and** the two most recent weekly dated pins, which are immutable and therefore survive a publish outage. Drops fail above 10%, rises above 20%, both warn above 5%. A move that fails against yesterday but lands within ±5% of a weekly pin is a **recovery** — yesterday was the anomaly — so the build passes and says so in `manifest.json`. A verified-real upstream move can be published by re-running the workflow with an `ack_drift` reason, which is stamped into the manifest permanently. This design replaced a single symmetric threshold that deadlocked the nightly for twelve nights in 2026-08/09 (write-up in [DECISIONS.md](DECISIONS.md)).
 - **Round-trip gate** — artifacts are reparsed and sample records re-found via the same binary search clients use.
 - **Spot panel** — [spotchecks.yml](spotchecks.yml): known IPs (Google, AWS, Cloudflare-via-category, M247, Telefónica residential, T-Mobile, Zscaler, Cogent-stays-unknown, CGNAT boundaries, …) must classify exactly as expected, including *which rule* fired.
 

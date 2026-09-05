@@ -213,6 +213,103 @@ End-to-end sample classifications from the live run:
 | Canadian Centre VPN guidance | Not added. | Government guidance, not a provider source. |
 | VPN.com | Not added. | Review/marketplace site, not a provider source. |
 
+## Verified Crawlers (added 2026-09-05)
+
+The agent-era thesis made concrete: signed agents are verified by Web Bot Auth, everything
+else is classified by network origin — and PROVIDER ATTRIBUTION is what lets a site allow
+Googlebot while throttling anonymous cloud bots.
+
+**Design (no verdict-enum change).** A source may declare an optional `role`. The verdict
+stays `hosting` — a crawler egress genuinely IS a datacenter — while the operator id rides
+alongside as `Result#crawler` plus a context flag. `Result::VERDICTS` remains closed and
+append-only (D-IMPL-6).
+
+**Attribution is read from a separate role index, not the verdict ladder.** This is
+load-bearing, and the measurements are why:
+
+| Feed | Overlap with a cloud recipe OpenASN already ships |
+|---|---|
+| Bingbot | 27 of 28 prefixes inside Azure ServiceTags |
+| GPTBot / ChatGPT-User / OAI-SearchBot | 21/21, 207/207, 35/35 — all inside Azure |
+| ClaudeBot | spans AWS + GCP + Azure at once; 20 of 26 entries are single `/32` hosts |
+| Googlebot | 23 of 317 inside GCP `cloud.json` (the geo-crawl `/28`s) |
+| Applebot | 0 — the only operator identifiable by ASN alone (AS714) |
+
+Crawler space is almost entirely borrowed. If attribution came from the ladder, whichever
+cloud overlay indexed first would swallow the entire agent web.
+
+**Two roles, deliberately not one.**
+
+| Role | Meaning | Examples |
+|---|---|---|
+| `verified_crawler` | Autonomous software on its own schedule; honors robots.txt; nobody is waiting. | Googlebot, GPTBot, ClaudeBot, Applebot, CCBot, DuckDuckBot |
+| `verified_fetcher` | A PERSON asked for this page and is waiting. These deliberately do not follow all robots.txt directives. | ChatGPT-User, Perplexity-User, Google user-triggered fetchers, Google-Agent, Amzn-User |
+
+Collapsing them would tell an app that a live user's request is well-behaved automation and
+invite it to throttle a human — the exact false positive this project exists to avoid.
+
+### Added (live-smoked 2026-09-05, counts are merged ranges)
+
+| Source id | Operator | URL | Role | Default | v4 / v6 |
+|---|---|---|---|---|---|
+| `google_common_crawlers` | Googlebot | `developers.google.com/static/crawling/ipranges/common-crawlers.json` | crawler | on | 28 / 8 |
+| `google_special_crawlers` | Google AdsBot/AdSense/Safety | `.../special-crawlers.json` | crawler | on | 9 / 8 |
+| `google_user_triggered_fetchers_google` | Google fetchers | `.../user-triggered-fetchers-google.json` | fetcher | on | 17 / 20 |
+| `google_user_triggered_agents` | Google-Agent (Web Bot Auth) | `.../user-triggered-agents.json` | fetcher | on | 5 / 1 |
+| `openai_gptbot` | OpenAI GPTBot | `openai.com/gptbot.json` | crawler | on | 14 / 0 |
+| `openai_chatgpt_user` | OpenAI ChatGPT-User | `openai.com/chatgpt-user.json` | fetcher | on | 184 / 0 |
+| `openai_searchbot` | OpenAI OAI-SearchBot | `openai.com/searchbot.json` | crawler | on | 30 / 0 |
+| `openai_adsbot` | OpenAI OAI-AdsBot | `openai.com/adsbot.json` | crawler | on | 2 / 0 |
+| `anthropic_bots` | Anthropic (ClaudeBot + Claude-User + Claude-SearchBot) | `claude.com/crawling/bots.json` | crawler | on | 26 / 0 |
+| `applebot` | Applebot | `search.developer.apple.com/applebot.json` | crawler | on | 18 / 0 |
+| `commoncrawl_ccbot` | Common Crawl CCBot | `index.commoncrawl.org/ccbot.json` | crawler | on | 3 / 1 |
+| `duckduckbot` | DuckDuckBot | `duckduckgo.com/duckduckbot.json` | crawler | on | 479 / 0 |
+| `perplexitybot` | PerplexityBot | `www.perplexity.ai/perplexitybot.json` | crawler | on | 8 / 0 |
+| `perplexity_user` | Perplexity-User | `www.perplexity.ai/perplexity-user.json` | fetcher | on | 4 / 0 |
+| `bingbot` | Microsoft Bingbot | `www.bing.com/toolbox/bingbot.json` | crawler | opt-in | 27 / 0 |
+| `google_infra` | Google infrastructure | `www.gstatic.com/ipranges/goog.json` | (none) | opt-in | 98 / 15 |
+| `google_user_triggered_fetchers_gae` | shared App Engine egress | `.../user-triggered-fetchers.json` | (none) | opt-in | 50 / 58 |
+| `amazonbot` | Amazonbot | `developer.amazon.com/amazonbot/ip-addresses/` | crawler | opt-in | 524 / 0 |
+| `amzn_searchbot` | Amzn-SearchBot | `.../searchbot-ip-addresses/` | crawler | opt-in | 512 / 0 |
+| `amzn_user` | Amzn-User | `.../live-ip-addresses/` | fetcher | opt-in | 1023 / 0 |
+
+Live classification check against the shipped dataset: `66.249.66.1` -> hosting/googlebot
+AS15169; `20.171.207.1` -> hosting/gptbot AS8075 (Azure); `216.73.216.1` -> hosting/claudebot
+AS16509 (AWS); `17.241.219.1` -> applebot AS714; `8.8.8.8` -> provider `google-infra`, crawler
+nil (goog.json carries no role, by design).
+
+### Deliberate non-additions
+
+| Candidate | Decision | Evidence |
+|---|---|---|
+| DuckAssistBot (`duckduckgo.com/duckassistbot.json`) | Reject | BYTE-IDENTICAL to `duckduckbot.json` (32,101 bytes, same MD5, same creationTime). DuckDuckGo publishes one shared egress pool; a second source would imply an IP-level search-vs-AI distinction the operator does not make. |
+| Meta / Facebook crawlers | Reject | `developers.facebook.com/docs/sharing/webmasters/crawler/` names only user-agent strings and publishes no addresses. An `AS32934` origin-set query is a registry lookup, not a first-party recognition list. Verified: `57.141.0.1` gets no attribution. |
+| Google `user-triggered-fetchers.json` | Added WITHOUT a role | These resolve to `*.gae.googleusercontent.com`: shared App Engine egress running arbitrary tenant code. Attributing it to Google as a verified fetcher would be a false statement about whoever's app is actually calling. 1058 prefixes; 0 inside GCP `cloud.json`. |
+| `goog.json` | Added WITHOUT a role | Infrastructure, not a crawler list. Contains `8.8.8.0/24` (Public DNS) and aggregated `/15`–`/12` blocks, and is a superset of GCP customer space the `gcp` recipe already covers precisely. Answers the open question in the `gcp` recipe note: `cloud.json` stays the default, `goog.json` stays opt-in. |
+| Bingbot | Added but opt-in | An EVIDENCE gap, not a technical one. Bing Webmaster help is a JS SPA serving no prose to a plain fetcher, and the only first-party text retrievable says the opposite — Bing Webmaster Blog, Dec 2018: "Since Bing does not release the list of IPs". Promote to default once a current Microsoft page can be quoted. |
+
+### Traps future maintainers should not rediscover
+
+1. **Google's crawler URLs moved.** The legacy `/search/apis/ipranges/googlebot.json` still
+   answers, but the docs now point at `/static/crawling/ipranges/common-crawlers.json`.
+2. **`www.anthropic.com/claudebot.json` does not exist.** It 404s with a 59 KB Next.js error
+   page — which an earlier run stored as if it were the feed. The real feed is
+   `claude.com/crawling/bots.json`, and it is COMBINED: ClaudeBot, Claude-User and
+   Claude-SearchBot cannot be separated by IP.
+3. **Freshness signals are inconsistent and contradictory.** Bing's in-body `creationTime` is
+   frozen at 2024-01-03 while its HTTP `Last-Modified` is current — use the header. Anthropic
+   serves no `Last-Modified` at all and its `creationTime` is Z-suffixed where everyone else
+   emits naive microseconds — use the body. They are exact opposites.
+4. **Only Google publishes IPv6.** Bing, OpenAI, Anthropic, Apple, Perplexity, DuckDuckGo and
+   Amazon are IPv4-only today.
+5. **Prefix lengths vary.** Perplexity publishes `/30` and `/29`, Amazon publishes BARE
+   addresses with no suffix in two of its three files and `/32` in the third. Never assume `/32`.
+6. **PerplexityBot's list is known-incomplete.** Cloudflare reported in August 2025 that
+   Perplexity also crawled from undeclared IPs using a generic browser user agent. Absence
+   from the list is not evidence a request is not Perplexity — a false negative, the safe
+   direction, but worth knowing.
+
+
 ## Health Check 2026-09-05
 
 Every recipe in `fetch-manifest.json` as of the 2026-07-05 pass (47 sources) was fetched

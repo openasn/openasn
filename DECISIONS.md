@@ -275,9 +275,29 @@ same ethos: VehiclesDB.
 ## D-GATE-1 — Drift gates compare against a frozen weekly baseline, fail asymmetrically, and have an operator ack (2026-09-05)
 
 **The incident.** Between 2026-08-25 and 2026-09-05 the nightly build failed
-**twelve nights in a row** and published nothing, while `latest` served a
-degraded 2026-08-24 build in which ~3,100 hosting ASNs had lost their category
-and therefore classified `:unknown` (rule `no_category`).
+**twelve nights in a row** and published nothing, leaving `latest` frozen on a
+2026-08-24 build made from regressed upstream metadata.
+
+**How bad was the published data, measured rather than assumed.** The manifest
+metric collapsed — `hosting_asns` 12,393 → 9,342, −24.6% — but that metric
+counts hosting-category ASNs across the *whole* upstream table (124,591 ASNs),
+and the ASNs it lost turned out to be overwhelmingly ones with no routed IPv4
+presence. Classifying one representative IP per ASN through both shipped IPv4
+artifacts (85,193 vs 85,311 routed ASNs) gives the real blast radius:
+
+| | published 2026-08-24 | rebuilt 2026-09-05 |
+|---|---|---|
+| ASNs verdicting `hosting` | 7,702 | 7,919 |
+| ASNs verdicting `unknown` via `no_category` | 1,283 | 1,321 |
+| ASNs that go `unknown` → `hosting` between the two | — | **34** |
+
+So consumers saw a **~2.8% shortfall in hosting coverage, not 24.6%**, and 34
+ASNs (median ASN 202934 — the 32-bit tail) actually flipped verdict for the
+worse. That is a real regression and the gate was right to catch it, but it is
+nothing like the manifest number, and this decision records the gap on purpose:
+**a gate metric is a proxy, and its movement is not a measure of user harm.**
+Say what was measured, measure before claiming impact, and never quote the
+tripwire's number as if it were the damage.
 
 The mechanism was not an upstream outage. It was the gate's own design:
 

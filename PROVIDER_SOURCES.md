@@ -599,7 +599,7 @@ Nothing here needed a fix, so nothing was changed except the note above.
 
 D-ENRICH-1 says `enterprise_gateway` is SWG/SASE vendor egress only — the addresses real
 human employees browse the web from through a vendor-operated cloud proxy. It is a
-likely-human, never-blocking verdict. Ten vendors were checked; three publish a usable
+likely-human, never-blocking verdict. Sixteen vendors were checked; three publish a usable
 first-party list.
 
 | Source id | Vendor | URL | Group | Parser | Live smoke 2026-09-12 |
@@ -626,7 +626,7 @@ dominate it. Two consequences: it overlaps the `gcp` recipe, and an ASN-level Br
 override would be actively wrong. Keep the refresh tight — released space reverts to
 ordinary GCP.
 
-### The seven that publish nothing usable, and the pattern behind it
+### The thirteen that publish nothing usable, and the pattern behind it
 
 | Vendor | Why not | Evidence |
 |---|---|---|
@@ -637,6 +637,13 @@ ordinary GCP.
 | Forcepoint | The single authoritative KB article is a Salesforce Lightning SPA: 409,479 bytes of JS shell, zero addresses without running JavaScript. | `support.forcepoint.com/s/article/Cloud-service-data-center-IP-addresses-port-numbers` |
 | Fortinet FortiSASE | A public IP feed exists but "you must use a FortiCloud IAM API user token", and the URL is per-instance. | Fortinet docs |
 | Lookout, Versa | Lookout: Cloudflare interstitial on the help centre (no bypass attempted). Versa: full 1,058-URL sitemap enumerated, including all 127 SSE pages — no such document exists. | — |
+
+| Check Point | No egress list anywhere in the doc tree; SK articles are JS-only behind reCAPTCHA; `ip.checkpoint.com` is NXDOMAIN. | `support.checkpoint.com` SK tree |
+| Proofpoint | `help.proofpoint.com` denies anonymous reads entirely (MindTouch 403). | — |
+| Sophos | No cloud SWG product exists. ZTNA gateways are CUSTOMER-hosted, which makes them `business`, not `enterprise_gateway`. | — |
+| Barracuda SecureEdge | A real SSE with vendor PoPs, but no addresses published — verified through the anonymous Confluence REST/CQL API, not just the UI. | — |
+| Trend Micro | **Not exhaustive — the one "could not find" rather than "does not exist".** Trend Vision One genuinely runs a globally-available cloud gateway for Internet Access; their docs have no sitemap and both TOC and search are JS-rendered. One targeted search for the article slug would likely close it. | — |
+| Akamai | Standing rejection re-recorded: terms forbid our use. Separately, no SIA egress list exists — the firewall docs are hostname-only. | — |
 
 **The pattern is architectural, not editorial.** Four of these reject for the same reason:
 the vendor gives each customer *dedicated* egress IPs, so there is no shared pool to
@@ -656,6 +663,29 @@ return 403 to every client tried, so the actual anti-automation clause could not
 Unreadable terms plus an explicit robots Disallow is where this project stops (the Akamai
 precedent). Recorded in full in the research ledger; reversible in minutes if the owner
 reads the terms and disagrees.
+
+### ASN-level fallbacks for the vendors with no list (RDAP-confirmed 2026-09-12)
+
+Where no range list exists an ASN override is sometimes the honest substitute, and sometimes
+actively wrong. Both cases were checked, so neither has to be rediscovered:
+
+- **AS44444 -> `enterprise_gateway`, RECOMMENDED** (Forcepoint). RIPE RDAP: handle AS44444,
+  name `Forcepoint-Cloud-AS`, org ORG-FUL16-RIPE "Forcepoint UK Limited". Their cloud proxy
+  `webdefence.global.blackspider.com` resolves into it, and `rdap.db.ripe.net/ip/157.167.56.0`
+  returns netname `Forcepoint-Cloud-LIS`. This is the only viable way to cover Forcepoint.
+- **AS13150 -> `enterprise_gateway`, RECOMMENDED** (Cato). RIPE RDAP: name CATON, org
+  ORG-CNL17-RIPE "CATO NETWORKS LTD"; RPKI ROAs to AS13150 for 45.62.176.0/20,
+  199.27.32.0/19, 216.205.112.0/20. Cheaper than the range recipe, though the recipe also
+  catches leased China/Casablanca space AS13150 does not announce. **AS37927 is NOT Cato** —
+  that is NOMURATRADE in JPNIC, and the mistake is in circulation.
+- **AS203724 (Skyhigh) — the existing override is CONFIRMED correct.** RIPE and ARIN both
+  return handle AS203724, name MGG4-AS1, org "Musarubra Germany GmbH", mnt
+  SKYHIGH-SECURITY-MNT.
+- **AS25046 (Check Point) — DO NOT USE.** It is corporate/R&D space (`business`); the
+  Harmony/Infinity SASE cloud actually runs inside AWS AS16509.
+- **No ASN override for Broadcom, Cloudflare, Akamai, Barracuda or Trend Micro.** Broadcom's
+  egress is leased Google Cloud; Cloudflare shares AS13335 with the entire CDN; the rest run
+  on AWS/Azure. An ASN claim on any of them would be wrong at scale.
 
 Also re-verified 2026-09-12: **Cloudflare One / WARP egress ranges are still not published**
 and are still distinct from the public Cloudflare IP Ranges page, so `cloudflare_ranges`

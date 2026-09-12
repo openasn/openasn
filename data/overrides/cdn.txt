@@ -91,3 +91,126 @@ AS14210   # Edgecast Inc. (US). src: ipverse as-metadata description "Edgecast I
 AS15133   # Edgecast Inc. (US) — main (Edgio). src: ipverse as-metadata description "Edgecast Inc." (2026-07-04)
 AS30081   # CacheFly (US). src: ipverse as-metadata description "CacheFly" (2026-07-04)
 AS200325  # BUNNYWAY informacijske storitve d.o.o. (SI) — bunny.net CDN. src: ipverse as-metadata description "BUNNYWAY" (2026-07-04)
+
+# ============================ Sweep 2026-09-05 ============================
+# Second curation pass (M1). The 67 lines above were re-verified line-by-line
+# against the compiled org name in build/dist/asn-categories.csv: 67/67 match
+# their brand, 0 mismatches — no lookalike slipped in since 2026-07-04.
+#
+# BAR EXTENDED (documented, deliberate): the original bar said "globally
+# recognized CDN brands only". The lines below keep the hard part of that rule
+# — the ASN must be REGISTERED TO THE BRAND ITSELF, proven per-record via RDAP
+# (aut-num name + registrant entity), not by a keyword match on the org string
+# — but admit strong REGIONAL CDN brands (Medianova/TR, Azion/BR, CDNvideo/RU,
+# ArvanCloud/IR-AE, EdgeNext/SG). Rationale: the cdn flag's job is to say
+# "these IPs are edge servers, not people", and that is exactly as true of a
+# Turkish CDN as of a US one. Each line names the RDAP aut-num name that proves
+# registration, so a reviewer can re-check it in one curl.
+#
+# Verdict effect of this batch: AS199524 (Gcore, 126,720 addrs) and AS57568
+# (ArvanCloud TR, 4,864 addrs) are labelled category=isp upstream and therefore
+# classify :residential_isp TODAY — CDN edge nodes sold as home users. The cdn
+# flag corrects both to :hosting. AS52580 and AS149981 move :business -> :hosting.
+# The rest were already :hosting; for them this batch adds the brand signal only.
+
+# --- Gcore (G-Core Labs S.A., LU) — global CDN / edge cloud ---
+AS199524  # G-Core Labs S.A. (LU) — Gcore CDN backbone; RDAP aut-num name "GCORE", registrant "G-Core Labs S.A."; 455 announced v4 prefixes. Upstream ipverse says category=isp (wrong: this is edge/CDN infrastructure, not an access network). src: https://rdap.db.ripe.net/autnum/199524 + https://gcore.com (2026-09-05)
+AS59245   # G-Core Labs S.A. (SG/APNIC) - RDAP aut-num name "GCORELABSSA-AS-AP", registrant ORG-GLS1-AP "G-Core Labs S.A"; tiny (2 prefixes / 768 addrs); 78.111.101.0/24 is inetnum LU-GCORELABS-ZA (mnt GCL1-MNT) with rDNS ct2-hw-edge-gc5.fe.gc.onl, but 195.13.54.0/23 is inetnum DC-NET registered to a third party (DomainContext). src: https://rdap.apnic.net/autnum/59245 + https://rdap.db.ripe.net/ip/195.13.54.0 (2026-09-12)
+
+# --- CDNetworks (KR/US) — global CDN ---
+AS36408   # CDNetworks Inc. (US) — RDAP aut-num name "CDNETWORKSUS-02", registrant "CDNetworks Inc.". src: https://rdap.arin.net/registry/autnum/36408 + https://www.cdnetworks.com (2026-09-05)
+AS38107   # CDNetworks (KR) - RDAP aut-num name "CDNETWORKS-AS-KR"; APNIC carries no registrant (KRNIC-delegated), so the holder is proven via KRNIC whois: organisation "CDNetworks" (씨디네트웍스), Seoul Jung-gu, gnoc@cdnetworks.com. Edge confirmed by rDNS i0-h0-s2308.p51-icn.cdngp.net (cdngp.net = CDNetworks Global Platform). src: whois -h whois.kisa.or.kr AS38107 + https://rdap.apnic.net/autnum/38107 (2026-09-12)
+
+# --- Imperva / Incapsula (US) — CDN + WAF edge ---
+AS19551   # Imperva Cloud (Incapsula, now a Thales company) (US) - RDAP aut-num name "INCAPSULA", registrant handle INCAP-5 "Incapsula Inc"; ~233,000 v4 addresses of reverse-proxy edge; rDNS *.ip.incapdns.net; PeeringDB net 7063 "Thales/Imperva" info_type=Content. src: https://rdap.arin.net/registry/autnum/19551 + https://www.peeringdb.com/api/net?asn=19551 (2026-09-12)
+
+# --- Sucuri (US, GoDaddy) — website firewall / CDN edge ---
+AS30148   # Sucuri (US) — RDAP aut-num name "SUCURI-SEC", registrant "Sucuri" / "Security Operations Center". src: https://rdap.arin.net/registry/autnum/30148 + https://sucuri.net (2026-09-05)
+
+# --- Regional CDN brands (see "BAR EXTENDED" above) ---
+AS57568   # ArvanCloud (ARVANCLOUD GLOBAL TECHNOLOGIES L.L.C, AE) — RDAP aut-num name "TR_Arvancloud" (their Turkey edge PoP), registrant ARVANCLOUD. Upstream ipverse says category=isp (wrong: CDN PoP). src: https://rdap.db.ripe.net/autnum/57568 + https://www.arvancloud.ir (2026-09-05)
+AS208006  # ArvanCloud (AE) - RDAP aut-num name "ARVANCLOUD-CDN", registrant ORG-AGTL2-RIPE "ARVANCLOUD GLOBAL TECHNOLOGIES L.L.C"; 185.215.232.0/22 is ALLOCATED PA "AE-ARVANCLOUD-20170802" to that org. PeeringDB net 26232 lists it as "Softqloud" (arvancloud.com), info_type=Content. Caveat: 37.32.3.0/24 is inetnum IR-ABRARVAN remark "AbrArvan IaaS" - part IaaS, not pure edge. src: https://rdap.db.ripe.net/autnum/208006 + https://rdap.db.ripe.net/ip/185.215.232.0 (2026-09-12)
+AS21245   # Medianova (TR) — RDAP aut-num name "Medianova", registrant "MEDIANOVA INTERNET HIZMETLERI VE TICARET ANONIM SIRKETI"; mnt MNCDN-MNT. src: https://rdap.db.ripe.net/autnum/21245 + https://www.medianova.com (2026-09-05)
+AS52580   # Azion Technologies Ltda. (BR) — edge/CDN platform; RDAP registrant "Azion Technologies Ltda."; 40 announced v4 prefixes. src: https://rdap.registro.br/autnum/52580 + https://www.azion.com (2026-09-05)
+AS57363   # CDNvideo LLC (RU) — RDAP aut-num name "CDNvideo-AS", registrant "CDNvideo LLC". src: https://rdap.db.ripe.net/autnum/57363 (2026-09-05)
+AS139057  # EdgeNext (Edgenext Legend Dynasty Pte. Ltd., SG) - RDAP aut-num name "ELD-AS-AP", registrant ORG-LDPL1-AP, APNIC remark "trading as EdgeNext"; 167 announced v4 prefixes; PeeringDB net 25380 info_type=Content, 20-50Tbps, 173 peers. Address space is largely LEASED (Internet Utilities/netutils-mnt, AFRINIC Cloud Innovation): the 82.27.x and 87.82.51.0/24 blocks are NOT UK retail broadband any more - they are assigned to "Legend Next (UK) Limited" (EdgeNext's UK entity) and to "ELD-SG-GTT"; a minority sits under anonymised "Private Customer" orgs. No rDNS resolves anywhere. src: https://rdap.apnic.net/autnum/139057 + https://rdap.db.ripe.net/ip/82.27.176.0 (2026-09-12)
+AS149981  # EdgeNext (SG) - same registrant ORG-LDPL1-AP "Edgenext Legend Dynasty Pte. Ltd." and aut-num name "ELD-AS-AP" as AS139057; small (9 v4 prefixes / 2,304 addrs, CAIDA rank 26,639, 1 peer); PeeringDB net 33764 "EdgeNext Cloud", info_type=Content, Asia Pacific. Space is leased: 82.27.189.0/24 is assigned to "Legend Next (UK) Limited" (EdgeNext's UK entity, not UK retail), 155.117.107.0/24 to an anonymised "Private Customer". No rDNS resolves. src: https://rdap.apnic.net/autnum/149981 + https://rdap.db.ripe.net/ip/82.27.189.0 (2026-09-12)
+
+# --- Considered 2026-09-05 and deliberately NOT added (keep this list; it is
+#     the answer to "why isn't X here?" and stops the next sweep re-litigating) ---
+#   Limelight Networks / Edgio — AS22822, AS23059, AS23135, AS23164, AS25804, AS26506,
+#     AS27191, AS37277, AS38622, AS55429 announce no IPv4 today (Edgio wound down in 2025),
+#     so flagging them buys nothing and they would rot silently.
+#     CORRECTION 2026-09-12: the 2026-09-05 note claimed NONE of the Limelight ASNs is routed.
+#     That is false for AS38621 (LLNW-DEL, Limelight Networks New Delhi, registrant "Limelight
+#     Networks, Inc."), which is routed today. It stays out anyway, but for an HONEST reason:
+#     it is category=business upstream, so adding it would move ~19,700 addresses of APAC space
+#     (111.119.0.0/19, 117.121.248.0/21, 203.9.176.0/21, 203.77.184.0/21, 103.53.12.0/22,
+#     45.113.116.0/22, plus 208.111.184.0/24 and 69.28.143.0/24) from :business to :hosting on
+#     the strength of a brand that wound down last year. Post-wind-down space can be transferred
+#     or re-purposed, and a false :hosting on space that has acquired real users is the error
+#     this project refuses to make. Needs per-prefix research before it can be added.
+#     src: https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS38621 (2026-09-12)
+#   AS33438 StackPath IP Network (US) — StackPath exited the CDN business; already
+#     :hosting via bad_asn. No verdict change, brand no longer meaningful.
+#   AS210559 "MOONAIR" — stays out, but the 2026-09-05 rationale ("G-Core is a RIPE LIR and
+#     sponsors third-party ASNs; the aut-num name is a customer's") was WRONG and is corrected
+#     here so it does not mislead the next sweep. RIPE's org: attribute names the resource
+#     HOLDER, and on AS210559 it is ORG-WIG6-RIPE "G-Core Labs S.A." with maintainer GCL1-MNT —
+#     identical to AS199524 and AS202422. There is no third-party customer org in the record.
+#     The reasoning was also internally inconsistent: the same batch ADDED AS202422, whose
+#     aut-num name "GHOST" is just as far from the brand as "MOONAIR". The correct ground for
+#     exclusion is the one that also removed AS202422 on 2026-09-12: nothing shows it carries
+#     CDN edge rather than Gcore hosting/IaaS.
+#     src: https://rdap.db.ripe.net/autnum/210559 (2026-09-12)
+#   AS14960 Incapsula Inc, AS38670 CDNetworks AP, AS40366 CDNetworks Inc,
+#     AS210296 ArvanCloud — registered to the right brands but announce no IPv4.
+#   DDoS-Guard (AS44556/AS49612/AS57724) and Qrator (AS200449/AS209671/AS211112) —
+#     DDoS scrubbing / reverse proxy, not content delivery brands; the scrubbed
+#     traffic is other people's. Left to hosting_extra/upstream category instead.
+#   AS922 Vercel Inc (US) — a deploy platform whose serving runs on other people's
+#     CDNs; its own AS is a single /24. Not a CDN brand in the sense of this file.
+#   AS19834/AS25751/AS26762/AS41041 Conversant — ad tech, not a CDN (name trap).
+#   Alibaba/Tencent/Baidu/Huawei/Google/Microsoft/Amazon CDN arms — their ASNs are
+#     already category=hosting upstream, so the flag would change no verdict; adding
+#     ~40 lines for zero behaviour is how a curated file stops being reviewable.
+
+# ================= Adversarial review of the 2026-09-05 batch (N1, 2026-09-12) =================
+# An independent reviewer re-fetched the authoritative RDAP record for all 14 additions and tried
+# to falsify each one, cross-checking against PeeringDB, RIPEstat, per-prefix RIR inetnum records
+# and rDNS. Outcome: 7 kept as written, 4 kept with the comment corrected, 2 kept but weak (the
+# weakness is now stated in the line itself), 1 DROPPED. Two entries in the "NOT added" list above
+# were falsified and have been rewritten.
+#
+# DROPPED: AS202422 (G-Core Labs S.A., aut-num "GHOST"). Registration was never in doubt and the
+#   author's vrrp.gcore.lu rDNS reproduced exactly - but that proves OWNERSHIP, not what the ASN
+#   carries, and this bar needs both. Sampling 14 of its 267 prefixes, the gateway PTR is
+#   gateway.reserved.ispsystem.net (an ISPsystem VPS control-panel default) on four distinct /24s
+#   and the host PTRs are customer-set vanity names: a VPS/IaaS tenancy pattern, i.e. Gcore's
+#   hosting product, not its edge. networkRole=access_provider and 123,907 measured eyeball users
+#   point the same way. Compare AS19551, where every sampled host is *.ip.incapdns.net - that is
+#   what an edge AS looks like. No verdict changes: ipverse already has AS202422 as
+#   category=hosting. src: https://rdap.db.ripe.net/autnum/202422 + rDNS (2026-09-12)
+#
+# METHODOLOGY DEFECT WORTH REMEMBERING. This header promises every line is proven by "aut-num name
+#   + registrant entity" via RDAP. AS38107's APNIC record contains NO registrant entity at all - it
+#   is KRNIC-delegated, and the APNIC object carries only an abuse handle and an anonymous "AS
+#   Manager". The line cited that record anyway, and mis-transcribed the aut-num name on top of it
+#   ("CDNETWORKS-AS-KR-KR" for "CDNETWORKS-AS-KR"). The ASN does belong to CDNetworks - KRNIC whois
+#   names the organisation and rDNS lands on cdngp.net - but the cited proof proved nothing.
+#   LESSON: for KRNIC/JPNIC/TWNIC-delegated resources the APNIC RDAP object is a stub; cite the NIR.
+#   AS208006 had the same shape of defect: its only stated evidence was that the aut-num name
+#   contains the string "CDN", which is exactly the keyword-matching this header disclaims.
+#
+# UK-SPACE RISK CHECKED AND CLEARED. AS139057 and AS149981 announce the 82.27.176.0/20 family and
+#   87.82.51.0/24, historically UK consumer broadband. Per-prefix RIR records show the /13 parent
+#   has been recycled to the IP-leasing broker Internet Utilities Europe and Asia Limited, and the
+#   specific /24s are ASSIGNED PA to "Legend Next (UK) Limited" (EdgeNext's own UK entity) or
+#   sub-allocated by GTT. No UK retail subscriber is caught by these two lines.
+#
+# STANDING WEAKNESS, ACCEPTED WITH EYES OPEN. Three lines rest on registration plus a PeeringDB
+#   self-listing with no observable edge behaviour: AS59245 (two thirds of its 768 addresses are an
+#   inetnum registered to a third party), AS139057 and AS149981 (no PTR resolves anywhere on either
+#   ASN; most space is leased from IP brokers). All three are already :hosting or move :business ->
+#   :hosting, which is the right verdict for leased server space either way, so the downside of
+#   being wrong is nil. They are kept and labelled rather than dropped or silently trusted.

@@ -50,3 +50,223 @@ AS5089    # Virgin Media Limited (GB). src: ipverse as-metadata description "Vir
 AS5607    # Sky UK Limited (GB). src: ipverse as-metadata description "Sky UK Limited" (2026-07-04)
 AS1136    # KPN B.V. (NL). src: ipverse as-metadata description "KPN B.V." (2026-07-04)
 AS3269    # Telecom Italia S.p.A. (IT). src: ipverse as-metadata description "Telecom Italia S.p.A." (2026-07-04)
+
+# ============================ Sweep 2026-09-05 ============================
+# Job 1 (the tier-1 fix) RE-MEASURED and still complete: the isp+tier1_transit
+# set is now 15 ASNs worldwide (was 19 on 2026-07-04) and contains NO new
+# consumer giant — Cogent AS174, Lumen AS3356, GTT AS3257, Arelion AS1299,
+# Zayo AS6461, Tata AS6453, NTT AS2914, PCCW AS3491, Orange OpenTransit AS5511,
+# Telefonica Global Solutions AS12956, Sparkle AS6762, plus AMS-IX AS6777,
+# SwissIX AS58115, Chief Telecom AS10133, TESPOK AS37704. All are genuine
+# pure-transit carriers or IXPs; rule 16's honest :unknown is right for them
+# and the four confirmed above still cover every consumer-heavy tier-1.
+#
+# Job 2 (DRIFT INSURANCE) is what this batch extends, from 19 pins covering
+# 7 countries to 98 pins covering 42. Selection was mechanical and is
+# reproducible: the top-2 ASNs by APNIC estimated end users in each of the 45
+# largest countries by summed end users, keeping only ASNs that ipverse
+# already categorizes `isp` and that appear in NO infrastructure list
+# (X4BNet datacenter input, X4BNet VPN input, brianhama/bad-asn-list — checked
+# programmatically, 0 collisions). Every line carries its measured user
+# population and world eyeball rank so a reviewer can see WHY it is pinned.
+#
+# NO VERDICT CHANGES TODAY: all 79 already classify :residential_isp via
+# precedence rule 12. The pin is the hedge the design calls for — if ipverse
+# has a bad day (recategorization, partial data loss, an org rename that
+# breaks a heuristic), 1.55 BILLION estimated end users (1.80 billion across the whole file) keep their
+# :residential_isp verdict instead of silently becoming :business or :unknown.
+#
+# Deliberately NOT pinned though they ranked top-2 in their country:
+#   AS20011 Dimension Data (ZA) — IT services/systems integrator, not a
+#     consumer ISP; the eyeball count is managed-service NAT.
+#   AS209847 WorkTitans B.V. (NL) — 2.35M "users" behind 33,280 addresses with
+#     no consumer brand; the shape of proxy egress, not a broadband network.
+#   AS47204 MCS LLC (RU) — 6.3M "users" behind 2,048 addresses; unresolved
+#     identity, needs research before any pin.
+#   AS11664 Techtel (AR) — Telecom Argentina's business/wholesale arm.
+#   AS6167 Verizon Business (US) — believed to be the Verizon Wireless AS;
+#     left to the mobile_carrier workstream so it gets :mobile, not a pin here.
+#   AS37282 Mainone / AS29091 ipNX (NG) — Nigeria's top-2 slots only because
+#     MTN AS29465 and Airtel AS36873 are miscategorized upstream (being fixed
+#     via corrections.yml); Mainone is a wholesale/transit carrier.
+#   BD, MM top-2 — the real national eyeballs there are miscategorized upstream
+#     and are handled in corrections.yml this sweep; re-run the pin after.
+#
+# REMOVED 2026-09-12 (N1 adversarial review of this commit):
+#   AS131445 "AIS AWN (TH)" — pinned here on 2026-09-05 on the strength of the ipverse
+#     description string. That string names the legal HOLDER (Advanced Wireless Network Co.
+#     Ltd), which holds BOTH of AIS's ASNs. APNIC RDAP shows this one is aut-num
+#     "AIS3G-2100-AS-AP" — the dedicated 2100 MHz cellular network, 9.49M end users behind
+#     144,896 addresses — so its verdict should be :mobile (D-IMPL-4), not :residential_isp.
+#     Moved to mobile_carrier.txt, swapping with AS133481 ("AIS-Fibre-AS-AP") which had been
+#     wrongly filed there. src: https://rdap.apnic.net/autnum/131445 (2026-09-12)
+#     LESSON for the next sweep: an ipverse description identifies the holder, not the network.
+#     Where one legal entity holds a fixed AS and a mobile AS, only the RIR aut-num name or a
+#     remark can tell them apart, and this file's selection method (top-2 by APNIC users among
+#     category=isp ASNs) cannot. 12 further pins in this batch are dedicated cellular networks
+#     by the same test; they stay for now because :residential_isp and :mobile are both
+#     likely_human verdicts, and they are the seed list for the mobile_carrier expansion.
+#
+# REVIEWED 2026-09-12 (N1 adversarial per-line review of the 78 lines this branch adds,
+# largest eyeball population first; method: live RDAP for the top 20 by users plus 21
+# targeted lookups, joined against build/dist/asn-categories.csv and build/enrich/quant.jsonl,
+# with live rDNS where the registry was inconclusive. Each line below carries the
+# evidence the review turned on, so the file itself is the report).
+#   Result: 78 reviewed, 66 kept as written, 12 comments corrected, 0 dropped.
+#   All 78 are genuine consumer eyeball networks: none is hosting, transit-only,
+#   government or enterprise, every registrant matches the comment after the 12 fixes,
+#   and every measured user/rank/address figure reproduces exactly.
+#
+#   CORRECTION to the sweep header above: "the isp+tier1_transit set is now 15 ASNs
+#   worldwide (was 19 on 2026-07-04)" is WRONG. Re-measured 2026-09-12 the set is still
+#   19; the 15 the header lists are the 19 minus the four already pinned (AS7018, AS701,
+#   AS3320, AS6830). The substantive claim — no new consumer giant among the unpinned —
+#   still holds. Left in place above so the audit trail is visible; do not re-derive 15.
+#
+#   RE-DERIVED 2026-09-12 (P3-C). The 15-pin list below is a LEAD LIST, NOT an authority: an
+#   independent per-record pass (RDAP + a census of the INETNUM netnames inside each ASN own
+#   announced space + live rDNS + PeeringDB) overturned three of the fifteen.
+#     MOVED to mobile_carrier.txt (pin deleted here in the same commit): AS45609, AS23693,
+#       AS39891, AS17421.
+#     KEPT here, the seed was WRONG: AS4818 (aut-num DIGIIX-AP "DiGi Internet Exchange";
+#       CelcomDigi own PeeringDB record says "We are mobile and fixed operator in Malaysia",
+#       info_type Cable/DSL/ISP) and AS12252 (LACNIC registrant handle PE-TPSA4 = Telmex Peru,
+#       the FIXED company America Movil absorbed; rDNS still exposes fixed naming).
+#     KEPT here, downgraded to UNSURE: AS44244 MTN Irancell - empty RIPE remarks, only untyped
+#       city pools, and positive counter-evidence (2.145.192.0/18 Colo-Reserved, 85.185.36.0/22
+#       MTN-Irancell-Datacenter-Services) plus a TD-LTE fixed-wireless home product.
+#     STILL PENDING research, pin stays for now: AS26611, AS327712, AS328988, AS327931,
+#       AS201767, AS39603, AS17853, AS21497.
+#   src: https://rdap.apnic.net/autnum/4818 + https://rdap.lacnic.net/rdap/autnum/12252 +
+#   https://rdap.db.ripe.net/autnum/44244 (2026-09-12)
+#
+#   THE 15 DEDICATED-CELLULAR PINS (authoritative seed for the mobile_carrier workstream;
+#   each verified against the RIR aut-num name or remark, never the ipverse description,
+#   which names the holder). Moving any of them to mobile_carrier.txt REQUIRES deleting
+#   the pin here in the same commit — sanity_check! does not cover mobile_carrier, so a
+#   double entry builds green and silently makes this pin a no-op:
+#     AS45609 Bharti Airtel Mobility (IN), AS23693 Telkomsel (ID), AS44244 MTN Irancell (IR),
+#     AS39891 STC Al Jawwal (SA), AS17421 Chunghwa emome (TW), AS4818 DiGi/CelcomDigi (MY),
+#     AS26611 Claro Comcel (CO), AS12252 Claro Peru (PE), AS327712 Mobilis/ATM (DZ),
+#     AS327931 Djezzy/Optimum (DZ), AS201767 Uzmobile (UZ), AS21497 Vodafone Ukraine/UMC (UA),
+#     AS39603 Play/P4 (PL), AS17853 LG Uplus mobile (KR), AS328988 Safaricom Ethiopia (ET).
+#   Converged fixed+mobile operators (AS55836 Jio, AS9808 China Mobile, AS1267 WIND TRE,
+#   AS15895 Kyivstar, AS7552 Viettel, AS36992 Etisalat Misr, AS5378 Vodafone UK,
+#   AS6805 O2 DE, AS24757 Ethio Telecom, AS29571 Orange CI, AS36903 Maroc Telecom) are
+#   NOT on that list: D-IMPL-4's mobile_carrier bar is mobile-only, so they stay here.
+
+AS4134    # China Telecom (CN) — 205,710,269 APNIC-estimated end users (world eyeball rank 2), 111,759,616 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "China Telecom" category "isp" (2026-09-05)
+AS9808    # China Mobile (CN) — 126,874,874 APNIC-estimated end users (world eyeball rank 4), 56,475,392 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "China Mobile Communications Group Co. Ltd" category "isp" (2026-09-05)
+
+AS55836   # Reliance Jio (IN) — 297,688,551 APNIC-estimated end users (world eyeball rank 1), 7,799,040 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Reliance Jio Infocomm Limited" category "isp" (2026-09-05)
+
+AS14593   # SpaceX Starlink (US) — 44,289,362 APNIC-estimated end users (world eyeball rank 9), 832,768 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Space Exploration Technologies Corporation" category "isp" (2026-09-05)
+
+AS28573   # Claro NXT (BR) — 20,776,645 APNIC-estimated end users (world eyeball rank 28), 10,075,648 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Claro NXT Telecomunicacoes Ltda" category "isp" (2026-09-05)
+AS26599   # Telefonica Brasil Vivo (BR) — 12,537,792 APNIC-estimated end users (world eyeball rank 53), 19,410,432 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "TELEFÔNICA BRASIL S.A" category "isp" (2026-09-05)
+
+AS12389   # Rostelecom (RU) — 3,544,630 APNIC-estimated end users (world eyeball rank 226), 17,216,768 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "PJSC Rostelecom" category "isp" (2026-09-05)
+
+AS7713    # Telkom Indonesia (ID) — 21,752,925 APNIC-estimated end users (world eyeball rank 26), 8,169,472 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Telekomunikasi Indonesia (PT)" category "isp" (2026-09-05)
+
+AS2516    # KDDI (JP) — 21,264,391 APNIC-estimated end users (world eyeball rank 27), 18,154,752 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "KDDI CORPORATION" category "isp" (2026-09-05)
+AS17676   # SoftBank (JP) — 19,298,133 APNIC-estimated end users (world eyeball rank 31), 48,730,368 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "SoftBank Corp." category "isp" (2026-09-05)
+
+AS8151    # Telmex Uninet (MX) — 31,123,057 APNIC-estimated end users (world eyeball rank 14), 23,166,464 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Uninet S.A. de C.V." category "isp" (2026-09-05)
+AS13999   # Mega Cable (MX) — 13,960,522 APNIC-estimated end users (world eyeball rank 48), 3,122,176 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Mega Cable S.A. de C.V." category "isp" (2026-09-05)
+
+AS9299    # PLDT (PH) — 27,584,574 APNIC-estimated end users (world eyeball rank 19), 4,367,360 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Philippine Long Distance Telephone Co." category "isp" (2026-09-05)
+AS17639   # Converge ICT (PH) — 14,927,027 APNIC-estimated end users (world eyeball rank 43), 1,031,424 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "ComClark Network & Technology Corp" category "isp" (2026-09-05)
+
+AS13285   # TalkTalk (GB) — 4,182,789 APNIC-estimated end users (world eyeball rank 187), 8,380,416 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "TalkTalk Communications Limited" category "isp" (2026-09-05)
+AS5378    # Vodafone UK (GB) — 3,595,249 APNIC-estimated end users (world eyeball rank 221), 2,793,216 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Vodafone Limited" category "isp" (2026-09-05)
+
+AS6805    # Telefonica O2 Germany (DE) — 6,467,406 APNIC-estimated end users (world eyeball rank 113), 8,351,232 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Telefonica Germany GmbH & Co.OHG" category "isp" (2026-09-05)
+AS8881    # 1&1 Versatel (DE) — the carrier AS behind 1&1's consumer DSL/FTTH as well as B2B customers; the RIPE remarks block is a customer/peering map (AS212403 Robert-Bosch-Krankenhaus, AS50064 TK Networks), so registry text alone does NOT evidence an eyeball network. Consumer confirmed by live rDNS instead: 5 of 8 sampled prefix midpoints resolve to residential pools (i59F5EE09.versanet.de, i5C750009.versanet.de, i53878009.versanet.de, i6DFA8009.versanet.de, 9-128-142-46.pool.kielnet.net), 2026-09-12. 5,293,168 APNIC-estimated end users (world eyeball rank 139), 2,448,384 IPv4 addresses. src: https://rdap.db.ripe.net/autnum/8881 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "1&1 Versatel GmbH" category "isp" (2026-09-05)
+
+AS44244   # MTN Irancell (IR) — 17,495,585 APNIC-estimated end users (world eyeball rank 38), 3,468,032 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Iran Cell Service and Communication Company" category "isp" (2026-09-05)
+AS58224   # TCI (IR) — 14,922,951 APNIC-estimated end users (world eyeball rank 44), 3,440,896 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Iran Telecommunication Company PJS" category "isp" (2026-09-05)
+
+AS9121    # Turk Telekom (TR) — 24,675,733 APNIC-estimated end users (world eyeball rank 23), 13,926,656 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Turk Telekomunikasyon Anonim Sirketi" category "isp" (2026-09-05)
+AS34984   # Turkcell Superonline (TR) — 8,399,075 APNIC-estimated end users (world eyeball rank 79), 2,059,776 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Superonline Iletisim Hizmetleri A.S." category "isp" (2026-09-05)
+
+AS8452    # Telecom Egypt (EG) — 38,349,698 APNIC-estimated end users (world eyeball rank 11), 15,136,768 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Telecom Egypt" category "isp" (2026-09-05)
+AS36992   # Etisalat Misr (EG) — 4,965,198 APNIC-estimated end users (world eyeball rank 148), 14,414,592 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Etisalat-Misr AS" category "isp" (2026-09-05)
+
+AS12322   # Free SAS (FR) — 10,109,168 APNIC-estimated end users (world eyeball rank 67), 15,704,064 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Free SAS" category "isp" (2026-09-05)
+AS5410    # Bouygues Telecom (FR) — 9,450,747 APNIC-estimated end users (world eyeball rank 71), 7,092,224 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Bouygues Telecom SA" category "isp" (2026-09-05)
+
+AS7552    # Viettel (VN) — 22,320,503 APNIC-estimated end users (world eyeball rank 25), 19,294,720 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Viettel Group" category "isp" (2026-09-05)
+AS45899   # VNPT (VN) — 17,989,418 APNIC-estimated end users (world eyeball rank 36), 15,574,272 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "VNPT Corp" category "isp" (2026-09-05)
+
+AS4766    # Korea Telecom (KR) — 23,724,530 APNIC-estimated end users (world eyeball rank 24), 69,929,472 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Korea Telecom" category "isp" (2026-09-05)
+AS17853   # LG Uplus MOBILE, ex-LG Telecom (KR) — APNIC aut-num name "LGTELECOM-AS-KR-KR"; this is the cellular AS. LG Uplus's residential FTTH (netname Xpeed-KR) is the SEPARATE AS17858, handled in corrections.yml — do not conflate them. 3,499,999 APNIC-estimated end users (world eyeball rank 228), 730,624 IPv4 addresses. Dedicated cellular -> mobile_carrier.txt candidate (D-IMPL-4). src: https://rdap.apnic.net/autnum/17853 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "LGTELECOM" category "isp" (2026-09-05)
+
+AS45758   # 3BB Triple T (TH) — 5,829,634 APNIC-estimated end users (world eyeball rank 120), 973,568 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Triple T Broadband Public Company Limited" category "isp" (2026-09-05)
+
+AS15704   # Xtra Telecom MasMovil (ES) — 5,393,270 APNIC-estimated end users (world eyeball rank 136), 960,768 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "XTRA TELECOM S.A." category "isp" (2026-09-05)
+AS200845  # Avatel (ES) — 956,152 APNIC-estimated end users (world eyeball rank 560), 359,936 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "AVATEL TELECOM SA" category "isp" (2026-09-05)
+
+AS9541    # Cybernet (PK) — 6,672,318 APNIC-estimated end users (world eyeball rank 108), 262,144 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Cyber Internet Services (Private) Limited" category "isp" (2026-09-05)
+AS17557   # PTCL (PK) — 5,657,132 APNIC-estimated end users (world eyeball rank 124), 7,907,840 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Pakistan Telecommuication company limited" category "isp" (2026-09-05)
+
+AS7303    # Telecom Argentina (AR) — 10,647,789 APNIC-estimated end users (world eyeball rank 63), 18,787,072 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Telecom Argentina S.A." category "isp" (2026-09-05)
+
+AS15895   # Kyivstar (UA) — 5,335,753 APNIC-estimated end users (world eyeball rank 138), 1,206,528 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Kyivstar PJSC" category "isp" (2026-09-05)
+AS21497   # Vodafone Ukraine (UA) — 2,519,999 APNIC-estimated end users (world eyeball rank 297), 1,710,848 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "PrJSC VF UKRAINE" category "isp" (2026-09-05)
+
+AS5713    # Telkom SA (ZA) — 4,540,730 APNIC-estimated end users (world eyeball rank 166), 2,248,448 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Telkom SA Ltd." category "isp" (2026-09-05)
+
+AS577     # Bell Canada (CA) — 7,146,042 APNIC-estimated end users (world eyeball rank 100), 11,471,616 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Bell Canada" category "isp" (2026-09-05)
+AS852     # TELUS (CA) — 5,489,031 APNIC-estimated end users (world eyeball rank 133), 4,929,280 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "TELUS Communications Inc." category "isp" (2026-09-05)
+
+AS25019   # STC SaudiNet, the FIXED-line arm (SA) — RIPE aut-num name "SAUDINETSTC-AS", remark "Autonomus System Number for SaudiNet"; the cellular arm is AS39891 Al Jawwal. Both carry the same ipverse holder string "Saudi Telecom Company JSC", so the description cannot tell them apart. 8,608,410 APNIC-estimated end users (world eyeball rank 76), 8,817,152 IPv4 addresses. src: https://rdap.db.ripe.net/autnum/25019 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json category "isp" (2026-09-05)
+
+AS5617    # Orange Polska (PL) — 7,577,423 APNIC-estimated end users (world eyeball rank 94), 8,445,184 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Orange Polska Spolka Akcyjna" category "isp" (2026-09-05)
+AS39603   # Play P4 (PL) — 3,473,775 APNIC-estimated end users (world eyeball rank 232), 647,168 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "P4 Sp. z o.o." category "isp" (2026-09-05)
+
+AS3816    # Movistar Colombia (CO) — 5,606,015 APNIC-estimated end users (world eyeball rank 126), 4,084,992 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "COLOMBIA TELECOMUNICACIONES S.A. ESP BIC" category "isp" (2026-09-05)
+AS26611   # Claro Comcel (CO) — 4,288,741 APNIC-estimated end users (world eyeball rank 183), 4,465,408 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "COMUNICACIÓN CELULAR S.A. COMCEL S.A." category "isp" (2026-09-05)
+
+AS203214  # Hulum Almustakbal (IQ) — 7,936,720 APNIC-estimated end users (world eyeball rank 88), 559,872 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Hulum Almustakbal Company for Communication Engineering and Services Ltd" category "isp" (2026-09-05)
+AS206206  # Kurdistan Net (IQ) — 3,154,489 APNIC-estimated end users (world eyeball rank 246), 16,384 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Kurdistan Net Company for Computer and Internet Ltd." category "isp" (2026-09-05)
+
+AS1267    # WIND TRE (IT) — 7,246,939 APNIC-estimated end users (world eyeball rank 99), 10,162,176 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "WIND TRE S.P.A." category "isp" (2026-09-05)
+AS30722   # Fastweb + Vodafone Italia (IT) — post-merger entity: RIPE aut-num name is now "VODAFONE-IT-ASN" and the object carries both FASTWEB-MNT and VODAFONE-IT-MNT; registrant is still Fastweb SpA. Consumer fixed broadband either way. 6,428,269 APNIC-estimated end users (world eyeball rank 114), 7,062,784 IPv4 addresses. src: https://rdap.db.ripe.net/autnum/30722 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Fastweb SpA" category "isp" (2026-09-05)
+
+AS24757   # Ethio Telecom (ET) — 25,867,804 APNIC-estimated end users (world eyeball rank 21), 1,061,120 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "ISP in Ethiopia" category "isp" (2026-09-05)
+AS328988  # Safaricom Ethiopia (ET) — 5,231,302 APNIC-estimated end users (world eyeball rank 141), 9,216 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "SAFARICOM TELECOMMUNICATIONS ETHIOPIA PLC" category "isp" (2026-09-05)
+
+AS4788    # TM Unifi (MY) — 9,782,460 APNIC-estimated end users (world eyeball rank 69), 10,153,984 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "TM TECHNOLOGY SERVICES SDN BHD" category "isp" (2026-09-05)
+AS4818    # DiGi (MY) — 7,642,273 APNIC-estimated end users (world eyeball rank 93), 599,040 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "DiGi Telecommunications Sdn Bhd. Digi Internet Exchange" category "isp" (2026-09-05)
+
+AS327712  # Mobilis (DZ) — 4,038,954 APNIC-estimated end users (world eyeball rank 197), 115,200 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Mobilis AS Number" category "isp" (2026-09-05)
+AS327931  # Djezzy Optimum (DZ) — 3,528,134 APNIC-estimated end users (world eyeball rank 227), 104,192 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Optimum Telecom Algeria" category "isp" (2026-09-05)
+
+AS3462    # Chunghwa Telecom (TW) — 8,527,803 APNIC-estimated end users (world eyeball rank 77), 16,359,936 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Chunghwa Telecom Co. Ltd." category "isp" (2026-09-05)
+
+AS36903   # Maroc Telecom (MA) — 16,193,302 APNIC-estimated end users (world eyeball rank 40), 2,642,432 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Office National des Postes et Telecommunications ONPT (Maroc Telecom) / IAM" category "isp" (2026-09-05)
+AS36884   # inwi / Wana Corporate (MA) — the WEAKEST "major" claim in this batch: only 263,654 APNIC-estimated end users (world eyeball rank 1217) against 3,376,640 IPv4 addresses (0.08 users/address, the inverse of every other line here), and no rDNS at all on 5 sampled prefixes. Kept because inwi is one of Morocco's three licensed national consumer operators and AFRINIC confirms the registrant is Wana Corporate; the pin rests on brand identity, not on the measurement. src: https://rdap.afrinic.net/rdap/autnum/36884 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Wana Corporate" category "isp" (2026-09-05)
+
+AS1221    # Telstra (AU) — 9,093,802 APNIC-estimated end users (world eyeball rank 74), 13,403,136 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Telstra Limited" category "isp" (2026-09-05)
+AS4804    # Optus consumer (AU) — APNIC registrant is SingTel Optus Pty Ltd, but the aut-num NAME is the legacy "MPX-AS" with remark "Microplex PTY LTD | Australia Border AS" (an acquired AS Optus never renamed). Recorded so a future name-based sweep does not read it as a lookalike. 4,010,424 APNIC-estimated end users (world eyeball rank 198), 9,207,040 IPv4 addresses. src: https://rdap.apnic.net/autnum/4804 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "SingTel Optus Pty Ltd" category "isp" (2026-09-05)
+
+AS8193    # Uzbektelekom, the FIXED incumbent AS (UZ) — RIPE aut-num name "BRM-AS", registrant "Uzbektelekom" Joint Stock Company; the group's cellular arm is AS201767 Uzmobile, pinned separately under the same holder string. 8,381,504 APNIC-estimated end users (world eyeball rank 80), 96,256 IPv4 addresses. src: https://rdap.db.ripe.net/autnum/8193 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Uzbektelekom Joint Stock Company" category "isp" (2026-09-05)
+AS201767  # Uzmobile, Uzbektelekom's CELLULAR arm (UZ) — RIPE aut-num name "UZMOBILE-AS"; same holder string as AS8193, only the aut-num name separates them. 3,561,842 APNIC-estimated end users (world eyeball rank 222) behind 2,816 IPv4 addresses (1,265 users/address — the mobile CGNAT signature). Dedicated cellular -> mobile_carrier.txt candidate (D-IMPL-4). src: https://rdap.db.ripe.net/autnum/201767 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json category "isp" (2026-09-05)
+
+AS21826   # Inter Telemic (VE) — 2,590,008 APNIC-estimated end users (world eyeball rank 290), 660,992 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Corporación Telemic C.A." category "isp" (2026-09-05)
+AS264628  # Fibex (VE) — 1,972,748 APNIC-estimated end users (world eyeball rank 350), 8,448 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "CORPORACION FIBEX TELECOM C.A." category "isp" (2026-09-05)
+
+AS12252   # Claro Peru (PE) — 4,955,260 APNIC-estimated end users (world eyeball rank 150), 1,561,088 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "America Movil Peru S.A.C." category "isp" (2026-09-05)
+AS6147    # Integratel Peru, Movistar brand (PE) — LACNIC registrant is "INTEGRATEL PERU S.A.A.", the buyer of Telefonica del Peru; the Movistar retail brand continues under licence, so the ipverse string no longer names Telefonica. Consumer fixed broadband. 4,727,199 APNIC-estimated end users (world eyeball rank 157), 2,635,264 IPv4 addresses. src: https://rdap.lacnic.net/rdap/autnum/6147 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "INTEGRATEL PERU S.A.A." category "isp" (2026-09-05)
+
+AS199739  # EarthLink (IQ operator, AE-registered holder) — Iraq's largest retail ISP; the RIPE holder is a Dubai free-zone trading company, which is why ipverse/RIR country is AE. RIPE aut-num name "Earthlink-DMCC-IQ" carries the operating country explicitly. 7,537,310 APNIC-estimated end users (world eyeball rank 95), 112,128 IPv4 addresses. src: https://rdap.db.ripe.net/autnum/199739 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Earthlink Telecommunications Equipment Trading & Services DMCC" category "isp" (2026-09-05)
+AS5384    # Etisalat (AE) — 7,324,848 APNIC-estimated end users (world eyeball rank 96), 7,646,208 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "EMIRATES TELECOMMUNICATIONS GROUP COMPANY (ETISALAT GROUP) PJSC" category "isp" (2026-09-05)
+
+AS29571   # Orange Cote dIvoire (CI) — 8,091,766 APNIC-estimated end users (world eyeball rank 83), 560,896 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Orange CI Autonomous system number" category "isp" (2026-09-05)
+AS36924   # GVA Cote dIvoire (CI) — 4,211,670 APNIC-estimated end users (world eyeball rank 185), 262,912 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "GVA Cote d'Ivoire SAS" category "isp" (2026-09-05)
+
+AS33915   # VodafoneZiggo Libertel (NL) — 4,549,419 APNIC-estimated end users (world eyeball rank 164), 12,033,280 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Vodafone Libertel B.V." category "isp" (2026-09-05)
+
+AS7418    # Telefonica Chile (CL) — 3,596,278 APNIC-estimated end users (world eyeball rank 220), 2,673,152 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "TELEFÓNICA CHILE S.A." category "isp" (2026-09-05)
+AS22047   # VTR (CL) — 2,893,999 APNIC-estimated end users (world eyeball rank 265), 2,706,176 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "VTR BANDA ANCHA S.A." category "isp" (2026-09-05)

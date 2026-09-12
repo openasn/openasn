@@ -499,7 +499,7 @@ User-Agent `openasn-research/1.0 (+https://github.com/openasn/openasn)` and pars
 the parser returned; "v4/v6 ranges" is after merging; "Hostnames" counts DNS-expanded
 sources, which report hostnames rather than ranges because the health check does no DNS.
 
-**77 of 77 healthy.** Reproduce with `ruby scripts/tier_b_healthcheck.rb` (all recipes),
+**81 of 81 healthy.** The table below is a SAME-DAY composite: 64 rows from the 01:31 UTC full run, and 17 rows re-fetched at 15:00-15:20 UTC by the adversarial audit (the 12 sampled recipes plus the 5 the 01:31 run predates). No recipe is older than one day, and nothing was fetched twice to build it. Reproduce with `ruby scripts/tier_b_healthcheck.rb` (all recipes),
 `ruby scripts/tier_b_healthcheck.rb <source_id> …` for one, or `ONLY=vpn …` for a subset.
 It writes `<OUT>.json` plus this table as `<OUT>.md`, and exits non-zero on any failure.
 
@@ -548,19 +548,20 @@ It writes `<OUT>.json` plus this table as `<OUT>.md`, and exits non-zero on any 
 | `protonvpn` | 200 | 13,405 | 907 | 525 | 0 | 0 | ok |
 | `mullvad_relays` | 200 | 291,324 | 1083 | 512 | 538 | 0 | ok |
 | `ivpn_servers` | 200 | 38,752 | 176 | 169 | 0 | 0 | ok |
-| `pia_servers` | 200 | 128,290 | 1117 | 1038 | 0 | 0 | ok |
-| `airvpn_status` | 200 | 220,593 | 2056 | 448 | 1012 | 0 | ok |
+| `pia_servers` | 200 | 127,930 | 1133 | 1055 | 0 | 0 | ok |
+| `airvpn_status` | 200 | 220,596 | 2056 | 448 | 1012 | 0 | ok |
 | `windscribe_servers` | 200 | 305,203 | 1076 | 395 | 0 | 0 | ok |
-| `nordvpn_servers` | 200 | 9,062,425 | 8044 | 7772 | 1 | 0 | ok |
+| `nordvpn_servers` | 200 | 9,062,384 | 8044 | 7772 | 1 | 0 | ok |
 | `privadovpn` | 200 | 44,719 | 167 | 166 | 0 | 0 | ok |
 | `riseup_vpn` | 200 | 9,956 | 21 | 20 | 0 | 0 | ok |
-| `wlvpn_server_list` | 200 | 1,137,010 | 3596 | 3596 | 0 | 0 | ok |
+| `wlvpn_server_list` | 200 | 1,137,011 | 3596 | 3596 | 0 | 0 | ok |
 | `worldvpn_servers` | 200 | 601,026 | 180 | 166 | 0 | 0 | ok |
-| `ovpn_status_servers` | 200 | 12,375 | 96 | 34 | 0 | 0 | ok |
+| `ovpn_servers` | 200 | 36,192 | 96 | 34 | 0 | 0 | ok |
 | `anonine_status` | 200 | 19,337 | 293 | 77 | 0 | 0 | ok |
 | `azirevpn_locations` | 200 | 9,693 | 62 | 0 | 0 | 62 | ok |
-| `vpnac_status` | 200 | 37,097 | 130 | 0 | 0 | 130 | ok |
+| `vpnac_status` | 200 | 37,101 | 130 | 0 | 0 | 130 | ok |
 | `trustzone_servers` | 200 | 39,732 | 70 | 0 | 0 | 70 | ok |
+| `cryptostorm_configs` | 200 | 485,048 | 138 | 0 | 0 | 138 | ok |
 | `surfshark_generic` | 200 | 100,547 | 142 | 0 | 0 | 142 | ok |
 | `surfshark_static` | 200 | 25,837 | 36 | 0 | 0 | 36 | ok |
 | `surfshark_obfuscated` | 200 | 4,813 | 7 | 0 | 0 | 7 | ok |
@@ -580,6 +581,11 @@ It writes `<OUT>.json` plus this table as `<OUT>.md`, and exits non-zero on any 
 | `freevpn_us_servers` | 200 | 90,532 | 15 | 0 | 0 | 15 | ok |
 | `vpngate` | 200 | 1,320,837 | 98 | 96 | 0 | 0 | ok |
 | `zscaler` | 200 | 130,041 | 935 | 136 | 29 | 0 | ok |
+| `zscaler_gov` | 200 | 4,431 | 30 | 6 | 7 | 0 | ok |
+| `cisco_sse_geofeed` | 200 | 56,539 | 1866 | 86 | 65 | 0 | ok |
+| `cato_pop_ranges` | 200 | 1,644,566 | 43 | 40 | 0 | 0 | ok |
+| `broadcom_cloud_swg` | 200 | 186,959 | 720 | 232 | 36 | 0 | ok |
+| `nazgul_mixed` | 200 | 230,338 | 14394 | 5748 | 413 | 0 | ok |
 
 **Zero failures — and three of the five 2026-09-05 failures healed on their own.** That is
 the finding worth keeping, because it validates how the last pass triaged them:

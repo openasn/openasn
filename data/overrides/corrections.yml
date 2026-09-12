@@ -18,11 +18,15 @@
 #     source_url: "https://evidence"
 #     date: YYYY-MM-DD
 #
-# First entries filed 2026-07-07 — surfaced by the enrichment pilot's
-# flywheel (docs/openasn-enrichment-plan-v1.md §17): the LLM draft flagged
-# these ipverse category errors and a human verified each against the
-# company's own site before publishing. The loader validates every field
-# (pipeline/lib/overrides.rb); the PR lint mirrors it (scripts/lint_overrides.rb).
+# First entries filed 2026-07-07 — surfaced by the correction flywheel this
+# file exists to serve: an LLM-assisted enrichment pass reads public sources
+# per ASN and DRAFTS candidate category errors, a human verifies each against
+# the company's own site, and only the verified, source-cited line is
+# published. LLM output never writes this file directly; a human-reviewable,
+# evidenced line does (AGENTS.md rule 2, and DECISIONS.md D-CUR-1 for what a
+# curator may consult per record while deciding).
+# The loader validates every field (pipeline/lib/overrides.rb); the PR lint
+# mirrors it (scripts/lint_overrides.rb).
 
 393961:
   category: business

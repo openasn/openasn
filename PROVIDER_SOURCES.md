@@ -419,3 +419,75 @@ FedRAMP cloud's users are US federal and state agency employees browsing from th
 4. Do not import generated hostname patterns unless a first-party page/API publishes the actual hostnames.
 5. Public/free relay networks stay opt-in because they can be high-churn and residential-looking.
 6. Every new parser needs unit tests plus at least one live source smoke showing nonzero ranges and a real lookup classification.
+
+## Documentation-as-data clouds (added 2026-09-12)
+
+Three large hosters — Scaleway, IBM Cloud Classic and OVHcloud shared hosting — never built
+an `ip-ranges` endpoint. Their authoritative address list is a page in their own
+documentation, and all three now serve that page as raw markdown from their own domain
+(an LLM-era docs-platform feature that turns out to be the cleanest machine path they have).
+
+| Source id | Provider | URL | Group | Parser | Live smoke 2026-09-12 |
+|---|---|---|---|---|---|
+| `scaleway_ranges` | Scaleway (Online SAS / Iliad) | `https://www.scaleway.com/en/docs/account/reference-content/scaleway-network-information.md` | opt-in `clouds_extra` | `scaleway_network_mdx` | 11 v4 + 1 v6 |
+| `ibm_cloud_classic` | IBM Cloud Classic (ex-SoftLayer) | `https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges&format=markdown` | opt-in `clouds_extra` | `ibm_cloud_ip_ranges_markdown` | 60 v4 + 0 v6 |
+| `ovh_web_hosting_clusters` | OVHcloud (shared web hosting) | `https://docs.ovhcloud.com/en/guides/web-cloud/web-hosting/clusters-and-shared-hosting-ip.md` | opt-in `clouds_extra` | `ovh_web_hosting_cluster_md` | 259 v4 + 66 v6 |
+
+All three are opt-in for the same reason Zscaler is: the operators' ASNs already carry
+`hosting` from the core artifact, so what these recipes buy is range-level precision and
+provider attribution, not new coverage.
+
+### The IBM page is the most dangerous document in the manifest
+
+509 of its 759 CIDRs are RFC1918. A parser that ingested the page whole would label every
+home and office LAN on Earth as IBM hosting — the single worst false positive available to
+this project. Two independent guards therefore both have to hold:
+
+1. **Section allowlist.** Only `## Front-end (public) network`, `## Load balancer IPs` and
+   `## Legacy networks` are read. `## Back-end (private) network`, `### Customer private
+   network space`, `## Service network`, `### Service by data center` and the two SSL VPN
+   sections are private space. `## Red Hat Enterprise Linux server requirements` and
+   `## Windows virtual server instance requirements` are excluded on a different ground: they
+   list endpoints an IBM CUSTOMER must be able to reach (Red Hat, Microsoft WSUS), which are
+   not IBM address space and must never be attributed to IBM.
+2. **RFC1918 guard** applied regardless of section, so a renamed heading degrades to "too few
+   rows" (`keep_stale`) rather than to a catastrophe.
+
+`## Legacy networks` is in the allowlist on evidence, not on faith. Its rows are
+ex-ThePlanet/SoftLayer space and ARIN still answers IBM for them — checked 2026-09-12:
+`209.85.4.0` → `NETBLK-THEPLANET-BLK-EV1-15`, registrant "IBM Cloud"; `12.96.160.0` →
+`SOFTLAYER TECHNOLOGIES, INC`; `70.84.160.0` → `NETBLK-THEPLANET-BLK-13`, "IBM Cloud". The
+209.85 prefix looks like Google at a glance (Google holds 209.85.128.0/17) and is not; that
+near-miss is exactly why the section is allowlisted by hand instead of by heuristic.
+
+Coverage is thin by design: these are IBM's own infrastructure subnets, not customer
+allocations, and IBM Cloud VPC — the modern platform — is published nowhere. Do **not**
+substitute `https://ibm.biz/cidr-calculator`; IBM itself disclaims it as a community tool.
+
+### Traps in the other two
+
+- **Scaleway**: the page has two bullet lists of addresses in identical syntax. The first
+  (`## IP ranges used by Scaleway`) is prefix data; the second (`## DNS cache servers and NTP
+  servers`) is bare resolver hosts. The parser stops dead at the next H2. A whole-page CIDR
+  regex additionally picks up `62.210.16.0/24` from a later Dedibox section — harmless,
+  because it is inside the published `62.210.0.0/16`, but proof that scraping the page
+  wholesale reads out-of-scope content.
+  `78.232.0.0/16` looks like Free SAS residential space and is not: RIPE gives netname
+  SCALEWAY, org Scaleway, status ASSIGNED PA. Labelling it `hosting` corrects stale
+  geolocation data rather than mislabelling French home users.
+  The `.md` URL on `www.scaleway.com` is byte-identical (2,373 bytes) to the MDX in
+  `github.com/scaleway/docs-content`, so we cite the first-party domain and depend on nobody.
+- **OVHcloud**: the payload is 24 clusters, each with a per-country inbound VIP table, a
+  shared-CDN address, and one **outgoing NAT gateway**. The gateways are the prize: every PHP
+  script on a cluster — thousands of tenant sites — egresses from that single address, so
+  traffic a site receives from `91.134.248.230` is server-side automation by construction.
+  The flip side is shared fate: one gateway fronts an entire multi-tenant cluster, so a per-IP
+  reputation decision punishes every tenant at once. Classify, do not block.
+  Fetch gotcha: the same URL **with** a trailing slash returns a 404 page (the site strips
+  trailing slashes client-side); the `.md` form is the only stable one.
+  Scope: shared hosting only. OVH's bare metal, VPS and Public Cloud estates — the
+  overwhelming majority of OVH space and of OVH-sourced abuse — are published nowhere: no
+  ip-ranges endpoint exists, `geofeed.ovh.net` does not resolve, and OVH's RIPE objects carry
+  no `geofeed:` attribute. OVH's RIPE data is also noisy because failover IPs are reassigned
+  to end customers under their own org handles (`141.94.0.0/28` → netname `OVH_355850375`,
+  org "Doskoil Toma"), which is why registry scraping is a poor substitute here.

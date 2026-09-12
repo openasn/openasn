@@ -161,7 +161,7 @@ checks:
     expect: hosting
     asn: 16509
     gem_sources: [x4b_dc]
-    note: "AWS ca-central — X4B dc overlay"
+    note: "AWS ca-central — X4B dc overlay. With Tier B enabled the gem answers the same verdict through the aws source instead (rule 8 above rule 9), gaining provider attribution: that is by design, which is why gem_sources on Tier A rows is asserted with Tier B OFF"
   - ip: "16.16.10.10"
     expect: hosting
     asn: 16509
@@ -524,20 +524,150 @@ checks:
     expect: unknown
     rule: unrouted
     gem_sources: [unrouted]
-    note: "TEST-NET-1 (RFC 5737) — not announced anywhere: the unrouted path"
+    note: "TEST-NET-1 (RFC 5737) — not announced anywhere: the unrouted path. WITH Tier B enabled this currently returns :hosting/vultr, because Vultr geofeed (https://geofeed.constant.com/) publishes 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:2::/48, 2001:10::/28, 2001:db8::/32 and 2002::/16 as its own space (verified 2026-09-12). That is an upstream defect, not an expectation"
   - ip: "198.51.100.1"
     expect: unknown
     rule: unrouted
     gem_sources: [unrouted]
-    note: "TEST-NET-2 — unrouted"
+    note: "TEST-NET-2 — unrouted (same Vultr geofeed caveat as TEST-NET-1)"
   - ip: "203.0.113.1"
     expect: unknown
     rule: unrouted
     gem_sources: [unrouted]
-    note: "TEST-NET-3 — unrouted"
+    note: "TEST-NET-3 — unrouted (same Vultr geofeed caveat as TEST-NET-1)"
   - ip: "2001:db8::1"
     expect: unknown
     rule: unrouted
     gem_sources: [unrouted]
-    note: "RFC 3849 documentation prefix — unrouted, v6 side"
+    note: "RFC 3849 documentation prefix — unrouted, v6 side (same Vultr geofeed caveat; 2001:db8::/32 is in their published list)"
+
+
+  # --- Tier B (context: gem) — rules 3, 4, 5 and 8, which only exist client-side ---
+  - ip: "172.225.24.4"
+    expect: relay
+    context: gem
+    asn: 36183
+    tier_b: apple_private_relay
+    provider: "iCloud Private Relay"
+    gem_sources: [apple_private_relay]
+    note: "iCloud Private Relay egress living inside AKAMAI space (AS36183). Rule 3 outranks every data-driven rule for exactly this reason: without it, paying iCloud+ customers classify as datacenter traffic"
+  - ip: "104.28.28.4"
+    expect: relay
+    context: gem
+    asn: 13335
+    tier_b: apple_private_relay
+    provider: "iCloud Private Relay"
+    gem_sources: [apple_private_relay]
+    note: "iCloud Private Relay egress inside CLOUDFLARE space (AS13335) — the case the classifier's rule-3 comment describes"
+  - ip: "2606:54c0::4"
+    expect: relay
+    context: gem
+    asn: 13335
+    tier_b: apple_private_relay
+    provider: "iCloud Private Relay"
+    gem_sources: [apple_private_relay]
+    note: "iCloud Private Relay v6 egress — relay parity across families"
+  - ip: "107.189.29.8"
+    expect: tor_exit
+    context: gem
+    asn: 53667
+    tier_b: tor_exits
+    provider: "Tor"
+    gem_sources: [tor_exits]
+    note: "Tor exit (rule 4). Tor exits re-number constantly: clients assert this row with a fixture overlay for tor_exits, so the row proves the RULE, not this host's tenure"
+  - ip: "63.246.112.4"
+    expect: hosting
+    context: gem
+    asn: 16509
+    tier_b: aws
+    provider: "aws"
+    gem_sources: [aws]
+    note: "AWS published range (rule 8) — the value of Tier B over the anonymous canonical dc overlay is the provider attribution"
+  - ip: "2600:1f14::4"
+    expect: hosting
+    context: gem
+    asn: 16509
+    tier_b: aws
+    provider: "aws"
+    gem_sources: [aws]
+    note: "AWS v6 published range"
+  - ip: "34.128.4.4"
+    expect: hosting
+    context: gem
+    asn: 396982
+    tier_b: gcp
+    provider: "gcp"
+    gem_sources: [gcp]
+    note: "Google Cloud published range — provider gcp, and the base ASN is the GCP-only AS396982"
+  - ip: "51.116.0.4"
+    expect: hosting
+    context: gem
+    asn: 8075
+    tier_b: azure
+    provider: "azure"
+    gem_sources: [azure]
+    note: "Azure published range (Germany West Central)"
+  - ip: "164.92.64.4"
+    expect: hosting
+    context: gem
+    asn: 14061
+    tier_b: digitalocean
+    provider: "digitalocean"
+    gem_sources: [digitalocean]
+    note: "DigitalOcean published range"
+  - ip: "23.92.16.4"
+    expect: hosting
+    context: gem
+    asn: 63949
+    tier_b: linode
+    provider: "linode"
+    gem_sources: [linode]
+    note: "Linode published range — note the base ASN is Akamai's AS63949 after the acquisition; Tier B attribution says linode where the ASN would say Akamai"
+  - ip: "104.238.128.4"
+    expect: hosting
+    context: gem
+    asn: 20473
+    tier_b: vultr
+    provider: "vultr"
+    gem_sources: [vultr]
+    note: "Vultr published range (The Constant Company)"
+  - ip: "155.248.160.4"
+    expect: hosting
+    context: gem
+    asn: 31898
+    tier_b: oracle
+    provider: "oracle"
+    gem_sources: [oracle]
+    note: "Oracle Cloud published range"
+  - ip: "162.158.0.10"
+    expect: hosting
+    context: gem
+    asn: 13335
+    gem_sources: [asn_cdn, asn_category]
+    context_flags: [cloudflare_range]
+    note: "Cloudflare published range — a CONTEXT FLAG, not a verdict: the verdict stays :hosting from Tier A and context_flags gains cloudflare_range. Context flags never decide verdicts; they ride along for app logic"
+  - ip: "135.136.22.2"
+    expect: vpn
+    context: gem
+    asn: 9009
+    tier_b: mullvad_relays
+    provider: "Mullvad"
+    gem_sources: [mullvad_relays]
+    note: "Mullvad relay (rule 5) — provider attribution beats the anonymous x4b_vpn overlay for the same verdict. Base ASN is M247, itself a vpn_provider ASN"
+  - ip: "2.58.241.66"
+    expect: vpn
+    context: gem
+    asn: 9678
+    tier_b: protonvpn
+    provider: "ProtonVPN"
+    gem_sources: [protonvpn]
+    note: "ProtonVPN server — the base ASN (AS9678 HostingInside) is plain hosting, so ONLY the Tier B list produces :vpn here"
+  - ip: "31.171.155.131"
+    expect: vpn
+    context: gem
+    asn: 197706
+    tier_b: pia_servers
+    provider: "Private Internet Access"
+    gem_sources: [pia_servers]
+    note: "Private Internet Access server — same shape, a third provider"
 

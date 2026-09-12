@@ -110,8 +110,8 @@ AS3269    # Telecom Italia S.p.A. (IT). src: ipverse as-metadata description "Te
 # REVIEWED 2026-09-12 (N1 adversarial per-line review of the 78 lines this branch adds,
 # largest eyeball population first; method: live RDAP for the top 20 by users plus 21
 # targeted lookups, joined against build/dist/asn-categories.csv and build/enrich/quant.jsonl,
-# with live rDNS where the registry was inconclusive. Full report:
-# docs/swarm-2026-09-12/work/review-eyeball.md in the pipeline repo).
+# with live rDNS where the registry was inconclusive. Each line below carries the
+# evidence the review turned on, so the file itself is the report).
 #   Result: 78 reviewed, 66 kept as written, 12 comments corrected, 0 dropped.
 #   All 78 are genuine consumer eyeball networks: none is hosting, transit-only,
 #   government or enterprise, every registrant matches the comment after the 12 fixes,

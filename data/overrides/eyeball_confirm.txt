@@ -91,6 +91,21 @@ AS3269    # Telecom Italia S.p.A. (IT). src: ipverse as-metadata description "Te
 #     via corrections.yml); Mainone is a wholesale/transit carrier.
 #   BD, MM top-2 — the real national eyeballs there are miscategorized upstream
 #     and are handled in corrections.yml this sweep; re-run the pin after.
+#
+# REMOVED 2026-09-12 (N1 adversarial review of this commit):
+#   AS131445 "AIS AWN (TH)" — pinned here on 2026-09-05 on the strength of the ipverse
+#     description string. That string names the legal HOLDER (Advanced Wireless Network Co.
+#     Ltd), which holds BOTH of AIS's ASNs. APNIC RDAP shows this one is aut-num
+#     "AIS3G-2100-AS-AP" — the dedicated 2100 MHz cellular network, 9.49M end users behind
+#     144,896 addresses — so its verdict should be :mobile (D-IMPL-4), not :residential_isp.
+#     Moved to mobile_carrier.txt, swapping with AS133481 ("AIS-Fibre-AS-AP") which had been
+#     wrongly filed there. src: https://rdap.apnic.net/autnum/131445 (2026-09-12)
+#     LESSON for the next sweep: an ipverse description identifies the holder, not the network.
+#     Where one legal entity holds a fixed AS and a mobile AS, only the RIR aut-num name or a
+#     remark can tell them apart, and this file's selection method (top-2 by APNIC users among
+#     category=isp ASNs) cannot. 12 further pins in this batch are dedicated cellular networks
+#     by the same test; they stay for now because :residential_isp and :mobile are both
+#     likely_human verdicts, and they are the seed list for the mobile_carrier expansion.
 
 AS4134    # China Telecom (CN) — 205,710,269 APNIC-estimated end users (world eyeball rank 2), 111,759,616 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "China Telecom" category "isp" (2026-09-05)
 AS9808    # China Mobile (CN) — 126,874,874 APNIC-estimated end users (world eyeball rank 4), 56,475,392 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "China Mobile Communications Group Co. Ltd" category "isp" (2026-09-05)
@@ -141,7 +156,6 @@ AS45899   # VNPT (VN) — 17,989,418 APNIC-estimated end users (world eyeball ra
 AS4766    # Korea Telecom (KR) — 23,724,530 APNIC-estimated end users (world eyeball rank 24), 69,929,472 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Korea Telecom" category "isp" (2026-09-05)
 AS17853   # LG Uplus (KR) — 3,499,999 APNIC-estimated end users (world eyeball rank 228), 730,624 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "LGTELECOM" category "isp" (2026-09-05)
 
-AS131445  # AIS AWN (TH) — 9,492,714 APNIC-estimated end users (world eyeball rank 70), 144,896 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "ADVANCED WIRELESS NETWORK COMPANY LIMITED" category "isp" (2026-09-05)
 AS45758   # 3BB Triple T (TH) — 5,829,634 APNIC-estimated end users (world eyeball rank 120), 973,568 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Triple T Broadband Public Company Limited" category "isp" (2026-09-05)
 
 AS15704   # Xtra Telecom MasMovil (ES) — 5,393,270 APNIC-estimated end users (world eyeball rank 136), 960,768 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "XTRA TELECOM S.A." category "isp" (2026-09-05)

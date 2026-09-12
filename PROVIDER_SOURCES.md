@@ -594,3 +594,101 @@ the finding worth keeping, because it validates how the last pass triaged them:
 The generalisation for future maintainers: **a fetch failure is a claim about the observer as
 often as about the endpoint.** Before changing a recipe, decide which one you are looking at.
 Nothing here needed a fix, so nothing was changed except the note above.
+
+## SWG/SASE egress beyond Zscaler (added 2026-09-12)
+
+D-ENRICH-1 says `enterprise_gateway` is SWG/SASE vendor egress only — the addresses real
+human employees browse the web from through a vendor-operated cloud proxy. It is a
+likely-human, never-blocking verdict. Ten vendors were checked; three publish a usable
+first-party list.
+
+| Source id | Vendor | URL | Group | Parser | Live smoke 2026-09-12 |
+|---|---|---|---|---|---|
+| `cisco_sse_geofeed` | Cisco (Umbrella SWG **and** Secure Access) | `https://geofeed.network.strln.net/` | opt-in `swg_egress` | `geofeed_csv_no_widen` | 86 v4 + 65 v6 |
+| `broadcom_cloud_swg` | Broadcom / Symantec Cloud SWG (ex-WSS) | `https://servicepoints.threatpulse.com/api/v2/full` | opt-in `swg_egress` | `broadcom_servicepoints_json` | 232 v4 + 36 v6 |
+| `cato_pop_ranges` | Cato Networks | `https://knowledge.catonetworks.com/docs/production-pop-guide` | opt-in `swg_egress` | `cato_pop_html` | 40 v4 |
+
+**Check RIR whois for a `geofeed:` attribute before anything else.** That single move found
+the Cisco feed, which is the best source in this category and which no amount of reading
+Cisco's documentation would have surfaced: `whois 151.186.1.1` returns
+`remarks: Geofeed https://geofeed.network.strln.net/`. One feed covers two products —
+"the feed includes deployed egress prefixes for Cisco SSE products, including Secure Access
+and Umbrella" — so Umbrella and Secure Access need no separate recipes.
+
+**The D-ENRICH-1 trap in this category is the public DNS resolver, and the geofeed dodges it
+by construction.** Cisco's static allowlist TechNote gives `208.67.216.0/21`, which swallows
+the OpenDNS public resolvers at 208.67.220.0/24 and 208.67.222.0/24. The geofeed lists
+208.67.216–219 and deliberately omits the resolver /24s. Anyone tempted to shortcut to the
+documented /16s would label a public DNS resolver as an enterprise gateway.
+
+**Broadcom's list is mostly rented Google Cloud.** 34.x, 35.x, 130.211.x and 144.49.x
+dominate it. Two consequences: it overlaps the `gcp` recipe, and an ASN-level Broadcom
+override would be actively wrong. Keep the refresh tight — released space reverts to
+ordinary GCP.
+
+### The seven that publish nothing usable, and the pattern behind it
+
+| Vendor | Why not | Evidence |
+|---|---|---|
+| Netskope | Public page carries 5 CIDRs; the consolidated NewEdge list is login-gated; `wp-json` 403s. Site ToU restricts material to "personal, non-commercial" use. | `docs.netskope.com/en/newedge-ip-ranges-for-allowlisting`, `support.netskope.com/s/article/NewEdge-Consolidated-List-of-IP-Range-for-Allowlisting` |
+| Palo Alto Prisma Access | Per-tenant only. Unauthenticated GET → 403 "Missing Authentication Token", POST → 401. The legacy `api.gpcloudservice.com` presents a private Palo Alto root CA no public trust store validates. | `api.prod.datapath.prismaaccess.com/getPrismaAccessIP/v2`; 22,898-URL sitemap grepped |
+| iboss | Docs 307 to an authenticated GitBook app; support/KB hosts dead; iboss's own copy says each customer gets dedicated gateway IPs, so no shared pool exists to publish. | `docs.iboss.com`, `www.iboss.com/ip-ranges/` (SPA shell, 0 CIDRs) |
+| Menlo Security | KB is login-gated — Zendesk's public API reports exactly one public article, unrelated. Terms also prohibit automated robots/spiders. | `csportal.menlosecurity.com/api/v2/help_center/en-us/articles.json` |
+| Forcepoint | The single authoritative KB article is a Salesforce Lightning SPA: 409,479 bytes of JS shell, zero addresses without running JavaScript. | `support.forcepoint.com/s/article/Cloud-service-data-center-IP-addresses-port-numbers` |
+| Fortinet FortiSASE | A public IP feed exists but "you must use a FortiCloud IAM API user token", and the URL is per-instance. | Fortinet docs |
+| Lookout, Versa | Lookout: Cloudflare interstitial on the help centre (no bypass attempted). Versa: full 1,058-URL sitemap enumerated, including all 127 SSE pages — no such document exists. | — |
+
+**The pattern is architectural, not editorial.** Four of these reject for the same reason:
+the vendor gives each customer *dedicated* egress IPs, so there is no shared pool to
+publish. Tier B `enterprise_gateway` coverage is realistically limited to vendors running
+shared egress — Zscaler, Cisco SSE, Broadcom, Cato. That is a ceiling on this category, and
+worth knowing before anyone budgets another pass against it.
+
+**Skyhigh Security is deliberately NOT added, and needs an owner decision.** The data is
+good: `success.skyhighsecurity.com/docs/allow-ip-address-ranges-for-points-of-presence.md`
+returns 200 with 6 CIDRs, all RDAP-confirmed as Musarubra/Skyhigh WGCS space, and **five of
+the six are not captured by the existing AS203724 override** (only 131.229.128.0/17
+originates from it). The blocker is legal, not technical: that host's `robots.txt` is a
+blanket `User-agent: * / Disallow: /` with the comment "Block all web crawlers from
+accessing any part of the site", while the *same host's* `llms.txt` explicitly instructs
+automated agents to fetch page `.md` variants — and the governing Trellix terms of service
+return 403 to every client tried, so the actual anti-automation clause could not be read.
+Unreadable terms plus an explicit robots Disallow is where this project stops (the Akamai
+precedent). Recorded in full in the research ledger; reversible in minutes if the owner
+reads the terms and disagrees.
+
+Also re-verified 2026-09-12: **Cloudflare One / WARP egress ranges are still not published**
+and are still distinct from the public Cloudflare IP Ranges page, so `cloudflare_ranges`
+stays a context flag and never `enterprise_gateway`.
+
+## VPN re-check 2026-09-12
+
+Re-checking sources a previous pass wrote off was the highest-value VPN work of this pass:
+three of them had changed.
+
+| Provider | 2026-09-05 | 2026-09-12 | Action |
+|---|---|---|---|
+| Windscribe | 403 Cloudflare challenge on every path | 200, 305 KB, 395 v4 | `enabled_default` restored to true |
+| TorGuard | 403 Cloudflare `error code: 1005` | 200, 52 v4 + 52 hostnames each | No change — it stays opt-in because `vpn_dns` is opt-in by policy, not because of the ban |
+| OVPN | 32 status-page URLs, one per datacenter | one API call, same 96 IPs | `ovpn_status_servers` → `ovpn_servers` |
+| Cryptostorm | not researched | 200, 92 configs, 138 hostnames | added to opt-in `vpn_dns` |
+| Perfect Privacy | "timed out from this environment, retry later" | **the provider shut down in January 2026** | Closed permanently; stop retrying |
+| CalyxVPN | "timed out, retry later" | `api.calyx.net` authoritative NODATA; pinned fallback times out | Still no |
+| Ivacy, hide.me, ExpressVPN, CyberGhost | account-gated | unchanged (Ivacy is now behind a managed challenge, i.e. worse) | Still no |
+| Astrill, CactusVPN, VPNArea, Speedify, Njalla, Obscura, Mozilla VPN | not researched | marketing counts, dead endpoints, or auth gates | Documented as negative findings |
+
+**OVPN is a 32× reduction in requests aimed at a provider's own infrastructure**, for the
+same data. `https://www.ovpn.com/v2/api/client/entry` returns the whole fleet; both sources
+were verified to yield 96 exact IPs and 34 merged v4 ranges. Never log that response body:
+its sibling `shadowsocks` object carries a shared credential.
+
+**ProtonVPN stays on the licensed third-party feed.** Proton's own `/vpn/logicals` requires
+an `x-pm-appversion` header naming a whitelisted Proton platform — app impersonation, which
+this project does not do.
+
+All twelve default-on exact-IP endpoints were re-verified live: **12/12 HTTP 200**. Three
+notes for whoever maintains the health check: `check.torproject.org/torbulkexitlist` sends
+no `Content-Type` at all, PIA's v7 list is JSON on line 1 with a signature blob after it (so
+whole-file `jq` fails), and `worldvpn.net/servers` is the only HTML source in the default
+set and therefore the likeliest to break silently — assert a minimum IP count there, not
+just a 200.

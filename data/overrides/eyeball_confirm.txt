@@ -123,6 +123,23 @@ AS3269    # Telecom Italia S.p.A. (IT). src: ipverse as-metadata description "Te
 #   AS3320, AS6830). The substantive claim — no new consumer giant among the unpinned —
 #   still holds. Left in place above so the audit trail is visible; do not re-derive 15.
 #
+#   RE-DERIVED 2026-09-12 (P3-C). The 15-pin list below is a LEAD LIST, NOT an authority: an
+#   independent per-record pass (RDAP + a census of the INETNUM netnames inside each ASN own
+#   announced space + live rDNS + PeeringDB) overturned three of the fifteen.
+#     MOVED to mobile_carrier.txt (pin deleted here in the same commit): AS45609, AS23693,
+#       AS39891, AS17421.
+#     KEPT here, the seed was WRONG: AS4818 (aut-num DIGIIX-AP "DiGi Internet Exchange";
+#       CelcomDigi own PeeringDB record says "We are mobile and fixed operator in Malaysia",
+#       info_type Cable/DSL/ISP) and AS12252 (LACNIC registrant handle PE-TPSA4 = Telmex Peru,
+#       the FIXED company America Movil absorbed; rDNS still exposes fixed naming).
+#     KEPT here, downgraded to UNSURE: AS44244 MTN Irancell - empty RIPE remarks, only untyped
+#       city pools, and positive counter-evidence (2.145.192.0/18 Colo-Reserved, 85.185.36.0/22
+#       MTN-Irancell-Datacenter-Services) plus a TD-LTE fixed-wireless home product.
+#     STILL PENDING research, pin stays for now: AS26611, AS327712, AS328988, AS327931,
+#       AS201767, AS39603, AS17853, AS21497.
+#   src: https://rdap.apnic.net/autnum/4818 + https://rdap.lacnic.net/rdap/autnum/12252 +
+#   https://rdap.db.ripe.net/autnum/44244 (2026-09-12)
+#
 #   THE 15 DEDICATED-CELLULAR PINS (authoritative seed for the mobile_carrier workstream;
 #   each verified against the RIR aut-num name or remark, never the ipverse description,
 #   which names the holder). Moving any of them to mobile_carrier.txt REQUIRES deleting
@@ -142,7 +159,6 @@ AS4134    # China Telecom (CN) — 205,710,269 APNIC-estimated end users (world 
 AS9808    # China Mobile (CN) — 126,874,874 APNIC-estimated end users (world eyeball rank 4), 56,475,392 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "China Mobile Communications Group Co. Ltd" category "isp" (2026-09-05)
 
 AS55836   # Reliance Jio (IN) — 297,688,551 APNIC-estimated end users (world eyeball rank 1), 7,799,040 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Reliance Jio Infocomm Limited" category "isp" (2026-09-05)
-AS45609   # Bharti Airtel MOBILITY (IN) — Airtel's cellular access AS, NOT its fixed-broadband arm: APNIC aut-num name "BHARTI-MOBILITY-AS-AP", remark "Bharti Airtel Ltd. AS for GPRS Service". 142,258,928 APNIC-estimated end users (world eyeball rank 3), 3,700,992 IPv4 addresses. Dedicated cellular -> belongs in mobile_carrier.txt (D-IMPL-4); pinned here until that workstream moves it. src: https://rdap.apnic.net/autnum/45609 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Bharti Airtel Limited" category "isp" (2026-09-05)
 
 AS14593   # SpaceX Starlink (US) — 44,289,362 APNIC-estimated end users (world eyeball rank 9), 832,768 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Space Exploration Technologies Corporation" category "isp" (2026-09-05)
 
@@ -151,7 +167,6 @@ AS26599   # Telefonica Brasil Vivo (BR) — 12,537,792 APNIC-estimated end users
 
 AS12389   # Rostelecom (RU) — 3,544,630 APNIC-estimated end users (world eyeball rank 226), 17,216,768 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "PJSC Rostelecom" category "isp" (2026-09-05)
 
-AS23693   # Telkomsel (ID) — 27,094,979 APNIC-estimated end users (world eyeball rank 20), 2,416,384 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "PT. Telekomunikasi Selular" category "isp" (2026-09-05)
 AS7713    # Telkom Indonesia (ID) — 21,752,925 APNIC-estimated end users (world eyeball rank 26), 8,169,472 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Telekomunikasi Indonesia (PT)" category "isp" (2026-09-05)
 
 AS2516    # KDDI (JP) — 21,264,391 APNIC-estimated end users (world eyeball rank 27), 18,154,752 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "KDDI CORPORATION" category "isp" (2026-09-05)
@@ -205,7 +220,6 @@ AS5713    # Telkom SA (ZA) — 4,540,730 APNIC-estimated end users (world eyebal
 AS577     # Bell Canada (CA) — 7,146,042 APNIC-estimated end users (world eyeball rank 100), 11,471,616 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Bell Canada" category "isp" (2026-09-05)
 AS852     # TELUS (CA) — 5,489,031 APNIC-estimated end users (world eyeball rank 133), 4,929,280 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "TELUS Communications Inc." category "isp" (2026-09-05)
 
-AS39891   # STC Al Jawwal, the MOBILE arm (SA) — RIPE aut-num name "ALJAWWALSTC-AS", remark "3G AlJawwal, Saudi Telecom Company"; the fixed-line arm is AS25019 SaudiNet, pinned separately. 12,625,712 APNIC-estimated end users (world eyeball rank 52), 2,365,952 IPv4 addresses. Dedicated cellular -> mobile_carrier.txt candidate (D-IMPL-4). src: https://rdap.db.ripe.net/autnum/39891 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Saudi Telecom Company JSC" category "isp" (2026-09-05)
 AS25019   # STC SaudiNet, the FIXED-line arm (SA) — RIPE aut-num name "SAUDINETSTC-AS", remark "Autonomus System Number for SaudiNet"; the cellular arm is AS39891 Al Jawwal. Both carry the same ipverse holder string "Saudi Telecom Company JSC", so the description cannot tell them apart. 8,608,410 APNIC-estimated end users (world eyeball rank 76), 8,817,152 IPv4 addresses. src: https://rdap.db.ripe.net/autnum/25019 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json category "isp" (2026-09-05)
 
 AS5617    # Orange Polska (PL) — 7,577,423 APNIC-estimated end users (world eyeball rank 94), 8,445,184 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Orange Polska Spolka Akcyjna" category "isp" (2026-09-05)
@@ -230,7 +244,6 @@ AS327712  # Mobilis (DZ) — 4,038,954 APNIC-estimated end users (world eyeball 
 AS327931  # Djezzy Optimum (DZ) — 3,528,134 APNIC-estimated end users (world eyeball rank 227), 104,192 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Optimum Telecom Algeria" category "isp" (2026-09-05)
 
 AS3462    # Chunghwa Telecom (TW) — 8,527,803 APNIC-estimated end users (world eyeball rank 77), 16,359,936 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Chunghwa Telecom Co. Ltd." category "isp" (2026-09-05)
-AS17421   # Chunghwa Mobile (TW) — 4,458,441 APNIC-estimated end users (world eyeball rank 169), 1,689,600 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Mobile Business Group" category "isp" (2026-09-05)
 
 AS36903   # Maroc Telecom (MA) — 16,193,302 APNIC-estimated end users (world eyeball rank 40), 2,642,432 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Office National des Postes et Telecommunications ONPT (Maroc Telecom) / IAM" category "isp" (2026-09-05)
 AS36884   # inwi / Wana Corporate (MA) — the WEAKEST "major" claim in this batch: only 263,654 APNIC-estimated end users (world eyeball rank 1217) against 3,376,640 IPv4 addresses (0.08 users/address, the inverse of every other line here), and no rDNS at all on 5 sampled prefixes. Kept because inwi is one of Morocco's three licensed national consumer operators and AFRINIC confirms the registrant is Wana Corporate; the pin rests on brand identity, not on the measurement. src: https://rdap.afrinic.net/rdap/autnum/36884 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Wana Corporate" category "isp" (2026-09-05)

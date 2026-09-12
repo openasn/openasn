@@ -272,3 +272,117 @@ mirroring of restricted databases), no active scanning, politeness
 (identifying User-Agent, rate caps), short attributed quotes only, and a source
 URL on every fact — a fact without a URL is not data. Sibling project with the
 same ethos: VehiclesDB.
+## D-GATE-1 — Drift gates compare against a frozen weekly baseline, fail asymmetrically, and have an operator ack (2026-09-05)
+
+**The incident.** Between 2026-08-25 and 2026-09-05 the nightly build failed
+**twelve nights in a row** and published nothing, leaving `latest` frozen on a
+2026-08-24 build made from regressed upstream metadata.
+
+**How bad was the published data, measured rather than assumed.** The manifest
+metric collapsed — `hosting_asns` 12,393 → 9,342, −24.6% — but that metric
+counts hosting-category ASNs across the *whole* upstream table (124,591 ASNs),
+and the ASNs it lost turned out to be overwhelmingly ones with no routed IPv4
+presence. Classifying one representative IP per ASN through both shipped IPv4
+artifacts (85,193 vs 85,311 routed ASNs) gives the real blast radius:
+
+| | published 2026-08-24 | rebuilt 2026-09-05 |
+|---|---|---|
+| ASNs verdicting `hosting` | 7,702 | 7,919 |
+| ASNs verdicting `unknown` via `no_category` | 1,283 | 1,321 |
+| ASNs that go `unknown` → `hosting` between the two | — | **34** |
+
+So consumers saw a **~2.8% shortfall in hosting coverage, not 24.6%**, and 34
+ASNs (median ASN 202934 — the 32-bit tail) actually flipped verdict for the
+worse. That is a real regression and the gate was right to catch it, but it is
+nothing like the manifest number, and this decision records the gap on purpose:
+**a gate metric is a proxy, and its movement is not a measure of user harm.**
+Say what was measured, measure before claiming impact, and never quote the
+tripwire's number as if it were the damage.
+
+The mechanism was not an upstream outage. It was the gate's own design:
+
+1. On 2026-08-24 the upstream ipverse as-metadata `as.json` regressed and the
+   hosting-ASN count fell 12,393 → 9,342 (**−24.6%**). The drift gate's single
+   symmetric threshold pair was warn 5% / fail 30%, so −24.6% sat *inside* the
+   fail line: it only WARNED, and **the degraded build was published**.
+2. On 2026-08-25 the 03:17 UTC run saw upstream restored to 12,393 (the
+   revert was still HEAD; the day's own commit landed 76 minutes after our
+   cron). Against the newly-published 9,342 that is **+32.7%** — past the 30%
+   line → FAIL.
+3. A failed build publishes nothing, so `latest` stayed at 9,342, so the next
+   night compared 12,4xx against 9,342 again, and failed identically. **A
+   deadlock with no self-heal**, in which the *correct* value is the one that
+   fails and the *wrong* value is the one being protected.
+
+Three distinct defects: a fail line loose enough to ship a −24.6% regression,
+a reference that only moves when the gate passes, and no way for an operator
+to say "I checked, this move is real" short of editing pipeline source.
+
+**The ruling (permanent, project-wide).** Drift gates — `crosscheck.rb`'s
+hosting-ASN count and `validate.rb`'s G4 layer counts, which had the same
+shape — share one policy module (`pipeline/lib/drift_gate.rb`) with one log
+format and one unblock procedure:
+
+1. **A frozen long-run baseline, not just yesterday.** Every run also reads
+   the **two most recent weekly dated pins** (`vYYYY.MM.DD` releases) via
+   tag-addressed URLs only (D-REL-1; the Latest badge is never load-bearing).
+   Dated pins are immutable and are cut on a schedule, so they are the one
+   reference a publish outage cannot corrupt.
+2. **Recovery beats the day-over-day comparison.** A move that fails against
+   the previous build but lands **within ±5% of a weekly pin** is classified
+   `drift RECOVERY`: the *previous* build was the anomaly. The gate PASSES,
+   logs the reasoning loudly, and stamps `stats.drift_recovery` into
+   `manifest.json`. This is what breaks the deadlock automatically.
+   A rescuing pin must itself be healthy — within the same band of the best
+   pin — and the closest qualifying pin anchors the decision, not the newest.
+   Without that test the rule is direction-agnostic and licenses the opposite
+   of a recovery: a failing DROP "rescued" by a pin cut from an already
+   degraded build (12,400 → 10,001, −19.3%, passed unacked and was stamped as
+   a recovery). **And a pin is only ever cut from a CLEAN build** — the pins
+   are this rule's only frozen reference, so freezing a build the gates
+   warned about poisons the one thing that can break a deadlock.
+3. **Asymmetric, evidence-based lines.** Drops fail above **10%**, rises above
+   **20%**, both warn above **5%**. Evidence: the weekly pins moved 12,256 →
+   12,316 → 12,363 → 12,377 → 12,393 across 2026-07-05…08-23, at most +0.5%
+   per week, and the nightly series moves well under 1% per night — so 5% is
+   already >10x observed noise and the only larger move ever seen was a defect.
+   Drops are stricter because a missing upstream input produces *blanks*, and
+   blanks are exactly this project's D8 tripwire scenario: a slice of ASNs
+   silently turning `:unknown`. Rises cannot be produced by a missing input
+   and are independently guarded by the spot panel.
+4. **An auditable operator path.** `OPENASN_ACK_DRIFT="<reason>"` downgrades a
+   drift FAIL to a loud WARN **for that one run** and stamps the reason into
+   `manifest.json` (`stats.drift_ack`). It is exposed as the `ack_drift`
+   input of the `Build & publish data` workflow, so unblocking a verified-real
+   upstream move is a dispatch with a sentence of evidence — and the sentence
+   is on the public record forever. The ack does **not** touch absolute floors,
+   size bounds, or the spot panel.
+5. **Absolute floors are not ackable.** `MIN_HOSTING_ASNS` rises 8,000 →
+   **10,000**: the 9,342 defect cleared the old floor, and the floor is the
+   only guard on a night with neither a previous manifest nor a pin. Moving it
+   requires a reviewed PR carrying the measurement that justifies it.
+6. **Slow slides are measured against the pins, and warn.** Every
+   night-vs-night threshold shares one blind spot: a move small enough to
+   clear the warn line each night accumulates without a single night ever
+   tripping — 4% a night for a week is the same −25% that, taken in one step,
+   *was* this incident. So every evaluation also measures the total distance
+   from the best value the weekly pins have seen, and warns loudly when that
+   exceeds the drop line. This one deliberately **warns rather than fails**,
+   and it is the single place where "the lines lean strict" is knowingly not
+   applied: a failure here would publish nothing, publishing nothing cuts no
+   new pin, the anchor would never move, and every later night would fail
+   against it — a new deadlock of exactly the shape this decision exists to
+   forbid. The hard stop for a slide that reaches dangerous territory is the
+   absolute floor, which does not move and cannot be acked.
+7. **Silence is a bug.** Every evaluation logs exactly one
+   `drift <PASS|WARN|FAIL|RECOVERY|ACKED|SKIP> <metric>:` line carrying the
+   numbers and the thresholds, so a green log always answers "did this gate
+   run, and against what?". A stale `latest` (>48h) is warned about at build
+   start with its age in hours, and the failure issue quotes the gate lines
+   from the run rather than listing possible causes.
+
+**The general lesson, binding on every future gate.** A tripwire whose
+reference is written *by the thing it guards* can deadlock. Any gate that
+compares against previous output must also have a reference that is frozen,
+externally dated, and independent of whether the gate passed — and a
+documented, recorded way for a human to overrule it once.

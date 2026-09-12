@@ -25,6 +25,14 @@ name: Build & publish data
 #   * On gate failure a `pipeline-failure` issue is opened/updated here so
 #     a broken nightly is impossible to miss (license drift, delta trips,
 #     upstream URL scheme changes — sapics changed theirs 2026-06-18).
+#   * UNBLOCKING A DRIFT FAIL (DECISIONS.md D-GATE-1): when a drift gate
+#     fails on a move you have verified is genuine upstream reality, run
+#     this workflow from the Actions tab with the `ack_drift` input set to
+#     the REASON (a sentence with evidence, e.g. an upstream commit URL).
+#     That downgrades the drift FAIL to a loud WARN for that one run and
+#     stamps the reason into manifest.json (`stats.drift_ack`), so the
+#     override is on the public record forever. It does NOT disable the
+#     absolute floors (MIN_HOSTING_ASNS, size bounds, spot panel).
 
 on:
   schedule:
@@ -35,6 +43,11 @@ on:
         description: "Also cut a dated pinnable release (vYYYY.MM.DD)"
         type: boolean
         default: false
+      ack_drift:
+        description: "Acknowledge a drift-gate FAIL for THIS run: the reason (with evidence) is stamped into manifest.json. Leave empty for a normal build."
+        type: string
+        required: false
+        default: ""
   push:
     branches: [main]
     paths:
@@ -107,14 +120,25 @@ jobs:
           # PRs or ordinary pushes (those validate only).
           PUBLISH: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '1' || '0' }}
           OPENASN_DATED_TAG: ${{ inputs.dated_tag == true && '1' || '' }}
+          # Empty on every scheduled run. Set only from the workflow_dispatch
+          # `ack_drift` input, and only for that one run: it downgrades a
+          # drift-gate FAIL to a loud WARN and stamps the reason into
+          # manifest.json stats.drift_ack (DECISIONS.md D-GATE-1).
+          OPENASN_ACK_DRIFT: ${{ inputs.ack_drift }}
           GH_TOKEN: ${{ github.token }}
         working-directory: pipeline-repo
         run: |
-          # Weekly pinnable snapshot: Sundays on the scheduled run.
+          # Weekly pinnable snapshot: Sundays on the scheduled run. These
+          # dated pins are also the drift gate's long-run baseline (they are
+          # frozen, so they survive a publish outage) — do not stop cutting
+          # them without reading D-GATE-1 first.
           if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%u)" = "7" ]; then
             export OPENASN_DATED_TAG=1
           fi
-          ruby pipeline/run.rb
+          # Tee the log so the failure step below can quote the gate that
+          # actually tripped into the issue, instead of guessing at causes.
+          set -o pipefail
+          ruby pipeline/run.rb 2>&1 | tee "$GITHUB_WORKSPACE/pipeline.log"
 
       # Mirror the freshly published artifacts to the HuggingFace dataset
       # (https://huggingface.co/datasets/openasn/openasn — CSV backs the
@@ -141,7 +165,10 @@ jobs:
           if-no-files-found: ignore
 
       # A failed nightly must page a human. Reuses one open issue instead
-      # of spamming a new one per failure night.
+      # of spamming a new one per failure night. Every message quotes the
+      # gate lines from the run itself: the 2026-08/09 deadlock ran for 12
+      # nights partly because each "Failed again" comment was a bare URL,
+      # so the repeat *shape* of the failure was invisible from the issue.
       #
       # Every gh call carries -R: this step runs at the workspace ROOT,
       # which is not a git repo (the checkouts live in data-repo/ and
@@ -155,15 +182,51 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
-          title="Nightly data build failed"
-          body="The scheduled data build failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          # The gate verdicts this run logged (one line each, with numbers).
+          gates=$(grep -aE 'drift (PASS|WARN|FAIL|RECOVERY|ACKED|SKIP)|\[(ERROR|WARN)\]|^G[0-9]:' pipeline.log 2>/dev/null | tail -25 || true)
+          [ -n "$gates" ] || gates="(no gate lines captured — the run failed before or outside the pipeline step)"
+          {
+            echo "The scheduled data build failed: $run_url"
+            echo
+            echo "Gate lines from this run:"
+            echo '```'
+            echo "$gates"
+            echo '```'
+          } > comment.md
+
+          {
+            cat comment.md
+            cat <<'EOF'
 
           Most likely causes (see the job log for the gate that tripped):
           - Pipeline checkout: PIPELINE_REPO_TOKEN missing/expired (needed while openasn-pipeline is private)
           - License gate: an upstream changed its license text (data/licenses/ pins)
-          - Delta gate: a layer's record count moved more than ±20% overnight
-          - Crosscheck: ipverse as-metadata category quality collapsed
-          - An upstream URL scheme changed (sapics did this 2026-06-18)"
+          - Delta gate (G4): a layer's record count moved more than ±20% overnight
+          - Crosscheck drift: the ipverse hosting-ASN count moved more than 10% down / 20% up
+          - An upstream URL scheme changed (sapics did this 2026-06-18)
+
+          ### If a drift gate tripped
+
+          A failed build publishes nothing, so the drift gate's day-over-day
+          reference stops moving: if the *previous* build was the degraded one,
+          every following night compares against that same bad number and fails
+          identically. That is what happened 2026-08-25 → 2026-09-05 (12 nights).
+          The gate now self-heals — a value back within ±5% of a weekly dated pin
+          is logged as `drift RECOVERY` and PASSES — so check the gate lines above
+          before assuming a real upstream problem.
+
+          If the move is genuine upstream reality and you have verified it:
+          re-run this workflow from the Actions tab (Run workflow) with the
+          **`ack_drift`** input set to the reason, including evidence (e.g. the
+          upstream commit URL). The drift FAIL becomes a loud WARN for that one
+          run and the reason is stamped into `manifest.json` (`stats.drift_ack`)
+          permanently. It does not disable the absolute floors, the size bounds,
+          or the spot panel — those still have to be green.
+
+          Background: DECISIONS.md → D-GATE-1.
+          EOF
+          } > body.md
           # `gh issue create --label` fails hard on a nonexistent label and
           # this repo starts with none; --force makes re-runs idempotent.
           gh label create pipeline-failure -R "$REPO" --color B60205 \
@@ -176,7 +239,7 @@ jobs:
           existing=$(gh issue list -R "$REPO" --label pipeline-failure --state open \
             --json number --jq '.[0].number // empty')
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" -R "$REPO" --body "Failed again: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            gh issue comment "$existing" -R "$REPO" --body-file comment.md
           else
-            gh issue create -R "$REPO" --title "$title" --body "$body" --label pipeline-failure
+            gh issue create -R "$REPO" --title "Nightly data build failed" --body-file body.md --label pipeline-failure
           fi

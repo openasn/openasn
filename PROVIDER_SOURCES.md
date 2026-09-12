@@ -642,8 +642,28 @@ ordinary GCP.
 | Proofpoint | `help.proofpoint.com` denies anonymous reads entirely (MindTouch 403). | — |
 | Sophos | No cloud SWG product exists. ZTNA gateways are CUSTOMER-hosted, which makes them `business`, not `enterprise_gateway`. | — |
 | Barracuda SecureEdge | A real SSE with vendor PoPs, but no addresses published — verified through the anonymous Confluence REST/CQL API, not just the UI. | — |
-| Trend Micro | **Not exhaustive — the one "could not find" rather than "does not exist".** Trend Vision One genuinely runs a globally-available cloud gateway for Internet Access; their docs have no sitemap and both TOC and search are JS-rendered. One targeted search for the article slug would likely close it. | — |
+| Trend Micro | **CLOSED 2026-09-12 — now a positive finding, not an absence of evidence.** The allow-list document itself was located and read: its "Internet Access Cloud Gateway" row lists FQDNs only (`proxy.ztsa-iag.trendmicro.com`, `proxy.jp.ztsa-iag.trendmicro.com`, `d9vbqsel5dvrs.cloudfront.net`) and no addresses. Trend does run a qualifying shared gateway; it simply does not publish its egress IPs. | `docs.trendmicro.com/en-us/documentation/article/trend-vision-one-firewall-japan-all-exceptions` (200, 213,773 B, server-rendered) |
 | Akamai | Standing rejection re-recorded: terms forbid our use. Separately, no SIA egress list exists — the firewall docs are hostname-only. | — |
+
+**Two traps inside the Trend Micro answer, recorded so nobody re-walks them.** The article
+`trend-vision-one-corporate-network-locations-ia` is titled "Internet Access gateways and
+corporate network locations" and says "IP address" eleven times — every one of them is the
+*customer's own* office IP, registered inbound ("Specify the externally-facing IP addresses
+of your organization's internet gateways and register the IP addresses to the Internet
+Access Cloud Gateway"). That is the exact inverse of what a Tier B recipe needs. And the
+only CIDRs anywhere in the firewall-exceptions article — thirteen Azure /28s — belong to the
+**Private** Access connector (ZTNA), and are outbound destinations for the customer's
+on-prem connector: wrong product, wrong direction.
+
+**And the enumeration deadlock has a general solution.** The previous pass concluded that
+`docs.trendmicro.com` article URLs are not enumerable because there is no sitemap and the
+TOC and search are JavaScript-rendered. That is half right: the article HTML carries
+relative sibling slugs in its "Related information" block, so the docs **are** crawlable as a
+link graph (15 real slugs harvested from one known-good page). The other half came from
+**Common Crawl's URL index** (`index.commoncrawl.org`, a public bulk API), which returned 617
+distinct `docs.trendmicro.com` URLs and is where the firewall-exceptions slug actually
+surfaced. Both techniques are reusable on any vendor whose docs hide behind a JS TOC — and
+neither requires bypassing anything.
 
 **The pattern is architectural, not editorial.** Four of these reject for the same reason:
 the vendor gives each customer *dedicated* egress IPs, so there is no shared pool to
@@ -686,6 +706,16 @@ actively wrong. Both cases were checked, so neither has to be rediscovered:
 - **No ASN override for Broadcom, Cloudflare, Akamai, Barracuda or Trend Micro.** Broadcom's
   egress is leased Google Cloud; Cloudflare shares AS13335 with the entire CDN; the rest run
   on AWS/Azure. An ASN claim on any of them would be wrong at scale.
+- **Trend Micro, checked explicitly 2026-09-12 — DO NOT USE.** ARIN RDAP entity `TREND-7`
+  ("TREND MICRO INCORPORATED") holds exactly AS16880 and AS36421 plus legacy
+  216.104.0.0/19, 216.99.128.0/20, 66.180.80.0/20, 2620:101:4000::/42 — and the gateway is
+  in none of it. Trend's own published gateway FQDNs resolve into AWS: `proxy.eu…` →
+  3.74.82.245 / 52.29.74.64 (eu-central-1), `proxy.jp…` → 13.115.78.2 / 18.178.1.238
+  (ap-northeast-1), `pac.jp…` → CloudFront. **This is the Check Point AS25046 precedent
+  repeating exactly** — a corporate ASN registered to the vendor while the SASE cloud runs
+  in AWS AS16509 — and the precedent now has two independent data points. (Those AWS
+  addresses are ingress VIPs, not measured egress; they are evidence of hosting only and
+  must not go into a recipe.)
 
 Also re-verified 2026-09-12: **Cloudflare One / WARP egress ranges are still not published**
 and are still distinct from the public Cloudflare IP Ranges page, so `cloudflare_ranges`
@@ -722,3 +752,83 @@ no `Content-Type` at all, PIA's v7 list is JSON on line 1 with a signature blob 
 whole-file `jq` fails), and `worldvpn.net/servers` is the only HTML source in the default
 set and therefore the likeliest to break silently — assert a minimum IP count there, not
 just a 200.
+
+## Adversarial audit 2026-09-12
+
+An unconditioned re-audit of the recipes this branch adds, run against live bytes rather
+than against the notes. **Population:** the 36 source ids on this branch and not on `main`
+(the headline "+34" is net — `ovpn_status_servers` was renamed `ovpn_servers`, and
+`vpnsecure_locations` was deleted). **Sample:** 12, drawn with a seeded reproducible draw,
+`population.sort.sample(12, random: Random.new(20260912))`, before looking at any of them.
+
+Per recipe: the terms URL and the list URL re-fetched once each with the research
+User-Agent; the list host's `robots.txt` re-fetched; the governing sentence re-quoted from
+what is retrievable **today** rather than re-asserted from the note; the live bytes
+re-parsed with this project's own parser; the ranges sanity-checked; and every parsed prefix
+classified against the shipped artifact.
+
+**Result: 12/12 fetched 200, 12/12 parsed, and the range checks were clean — no RFC1918, no
+`/0`, no over-wide prefixes, no unparseable tokens.** No recipe was wrong about what it
+fetches, and every `enabled_default` in the sample is justified. The five non-crawler
+additions the draw missed (`broadcom_cloud_swg`, `cato_pop_ranges`, `cisco_sse_geofeed`,
+`cryptostorm_configs`, `ovpn_servers`) were smoke-tested separately and matched their
+recorded counts exactly, so **all 81 recipes now carry a same-day measurement.**
+
+What the audit did find was a documentation problem: twelve notes were corrected. The four
+worth repeating here, because each is a class of mistake rather than a typo:
+
+1. **A recipe with no false-positive analysis, where there is a real one.**
+   `huawei_cloud_geofeed` is genuine Huawei Cloud space, but 82 of its 927 rows are
+   announced from ASNs the core artifact classifies `residential_isp` (AS23724 IDC China
+   Telecom ×32, China Telecom/Unicom ×37, others), plus 100 on `business` ASNs. Enabling it
+   moves those to `hosting` — the human→machine direction this project treats as dangerous.
+   The recipe is right and opt-in is *required*, not merely defensible.
+2. **A justification borrowed from a neighbour.** `openai_chatgpt_user` and `openai_adsbot`
+   were both justified by a sentence that lives in the **OAI-SearchBot** table cell and
+   covers OAI-SearchBot alone. Their real evidence is a `Published IP addresses:` label plus
+   first-party publication — still enough to ship on by default, but the grade is now stated
+   instead of inherited.
+3. **Claims nobody can check.** `zscaler_gov` asserted FedRAMP authorization and "employees
+   browsing from the office". Neither is retrievable: `config.zscaler.com` and
+   `help.zscaler.com` serve JavaScript shells, and `help.zscaler.com` returns 200 for
+   invented paths, so a 200 there proves nothing. The uncited claim is gone; the `maps_to`
+   reasoning is now the honest one (shared with server-to-SaaS traffic and the vendor's own
+   categorisation fetches — `enterprise_gateway` survives because the error direction is a
+   false negative, never a mislabelled human).
+4. **Fetching a host the documentation never names.** `perplexity_user` and `perplexitybot`
+   fetch `www.perplexity.ai` while `docs.perplexity.ai` names `www.perplexity.com` in every
+   occurrence. Measured: `.com` 302s to `.ai`, which is the serving origin. We keep the
+   origin so no client depends on following a redirect, and the discrepancy plus the
+   one-line fallback is now in the note instead of being invisible.
+
+### Re-verification traps found this pass
+
+- **APNIC RDAP does not expose the `geofeed:` attribute.** All five Huawei Cloud objects
+  return 200 from `rdap.apnic.net` with zero occurrences of `geofeed`; only
+  `whois -h whois.apnic.net` shows it. Anyone re-checking that source via RDAP will wrongly
+  conclude the registry evidence has vanished. (All five re-verified by whois 2026-09-12.)
+- **`docs.mistral.ai/robots` is client-rendered** (Next.js RSC): the quoted sentences are
+  not contiguous in the served HTML, so a grep-based re-check fails on a page that is fine.
+- **Apple's own "Applebot IP CIDRs" anchor is plain `http://`**, while the same page links
+  the same file over `https` further down. We pin `https` deliberately — do not "fix" it.
+  And `search.developer.apple.com` serves no `robots.txt` (it 307s to `developer.apple.com`
+  and returns HTML), so the accurate claim is "nothing disallows this fetch", never
+  "robots.txt allows it".
+- **`config.zscaler.com/robots.txt` is a soft-404** returning the SPA index (200,
+  `text/html`). A client parsing that as robots.txt would read it as allow-all.
+- **Google's `verify-google-requests` page is about Googlebot**, a *common* crawler that is
+  not in `special-crawlers.json`. The correct citation for the special-case feed is
+  `developers.google.com/crawling/docs/google-special-case-crawlers`: "The IP ranges are
+  published in the `special-crawlers.json` object."
+
+### A cross-check worth institutionalising
+
+Classifying every parsed prefix against the shipped artifact is not in any runbook, and it
+was the highest-yield step of the audit — it is the only check that catches a recipe quietly
+disagreeing with the core dataset. It found three, all now recorded rather than silently
+overridden: Scaleway's `78.232.0.0/16` (core says `residential_isp` AS12322 Free SAS; RIPE
+RDAP says netname SCALEWAY, ASSIGNED PA, org "Scaleway" — so the core is stale, not the
+recipe), the Huawei carrier overlap above, and four AhrefsBot prefixes inside AS140577
+(Ahrefs' own ASN, labelled `business`). It also cleared a scare: ChatGPT-User's widest
+prefix is `9.129.0.0/17`, inside IBM's legacy `9/8`, which resolves to **AS8075 Microsoft** —
+Azure space IBM released, not a bogon.

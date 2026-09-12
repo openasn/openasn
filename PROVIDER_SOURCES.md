@@ -491,3 +491,106 @@ substitute `https://ibm.biz/cidr-calculator`; IBM itself disclaims it as a commu
   no `geofeed:` attribute. OVH's RIPE data is also noisy because failover IPs are reassigned
   to end customers under their own org handles (`141.94.0.0/28` → netname `OVH_355850375`,
   org "Doskoil Toma"), which is why registry scraping is a poor substitute here.
+
+## Tier B health check 2026-09-12
+
+Every recipe in `fetch-manifest.json` fetched ONCE, live, with the identifying
+User-Agent `openasn-research/1.0 (+https://github.com/openasn/openasn)` and parsed with the gem's own parsers. "Tokens" is what
+the parser returned; "v4/v6 ranges" is after merging; "Hostnames" counts DNS-expanded
+sources, which report hostnames rather than ranges because the health check does no DNS.
+
+**77 of 77 healthy.** Reproduce with `ruby scripts/tier_b_healthcheck.rb` (all recipes),
+`ruby scripts/tier_b_healthcheck.rb <source_id> …` for one, or `ONLY=vpn …` for a subset.
+It writes `<OUT>.json` plus this table as `<OUT>.md`, and exits non-zero on any failure.
+
+| Source id | HTTP | Bytes | Tokens | v4 ranges | v6 ranges | Hostnames | Result |
+|---|---|---|---|---|---|---|---|
+| `apple_private_relay` | 200 | 12,167,779 | 287841 | 953 | 5920 | 0 | ok |
+| `tor_exits` | 200 | 19,020 | 1340 | 668 | 0 | 0 | ok |
+| `aws` | 200 | 2,696,504 | 17438 | 932 | 2180 | 0 | ok |
+| `gcp` | 200 | 112,790 | 1103 | 160 | 17 | 0 | ok |
+| `azure` | 200 | 4,316,414 | 95623 | 594 | 954 | 0 | ok |
+| `oracle` | 200 | 234,112 | 1107 | 478 | 0 | 0 | ok |
+| `digitalocean` | 200 | 52,920 | 1229 | 101 | 39 | 0 | ok |
+| `linode` | 200 | 192,744 | 5505 | 95 | 22 | 0 | ok |
+| `vultr` | 200 | 21,353 | 499 | 82 | 17 | 0 | ok |
+| `cloudflare_ranges` | 200 | 334 | 22 | 14 | 7 | 0 | ok |
+| `github_meta` | 200 | 152,856 | 7305 | 2017 | 638 | 0 | ok |
+| `atlassian` | 200 | 87,939 | 166 | 68 | 8 | 0 | ok |
+| `google_common_crawlers` | 200 | 21,768 | 317 | 28 | 8 | 0 | ok |
+| `google_special_crawlers` | 200 | 19,109 | 272 | 9 | 8 | 0 | ok |
+| `google_user_triggered_fetchers_google` | 200 | 34,754 | 496 | 17 | 20 | 0 | ok |
+| `google_user_triggered_agents` | 200 | 1,413 | 20 | 5 | 1 | 0 | ok |
+| `google_user_triggered_fetchers_gae` | 200 | 71,822 | 1058 | 50 | 58 | 0 | ok |
+| `google_infra` | 200 | 6,186 | 145 | 98 | 15 | 0 | ok |
+| `bingbot` | 200 | 1,580 | 28 | 27 | 0 | 0 | ok |
+| `openai_gptbot` | 200 | 1,133 | 21 | 14 | 0 | 0 | ok |
+| `openai_chatgpt_user` | 200 | 7,699 | 213 | 190 | 0 | 0 | ok |
+| `openai_searchbot` | 200 | 2,080 | 39 | 33 | 0 | 0 | ok |
+| `openai_adsbot` | 200 | 177 | 2 | 2 | 0 | 0 | ok |
+| `anthropic_bots` | 200 | 1,162 | 26 | 26 | 0 | 0 | ok |
+| `applebot` | 200 | 2,218 | 33 | 18 | 0 | 0 | ok |
+| `commoncrawl_ccbot` | 200 | 540 | 5 | 3 | 1 | 0 | ok |
+| `duckduckbot` | 200 | 32,101 | 486 | 479 | 0 | 0 | ok |
+| `perplexitybot` | 200 | 482 | 8 | 8 | 0 | 0 | ok |
+| `perplexity_user` | 200 | 276 | 4 | 4 | 0 | 0 | ok |
+| `amazonbot` | 200 | 529,818 | 1292 | 1292 | 0 | 0 | ok |
+| `amzn_searchbot` | 200 | 506,824 | 816 | 816 | 0 | 0 | ok |
+| `amzn_user` | 200 | 515,837 | 1023 | 1023 | 0 | 0 | ok |
+| `fastly_ranges` | 200 | 402 | 21 | 16 | 2 | 0 | ok |
+| `huawei_cloud_geofeed` | 200 | 33,235 | 927 | 135 | 26 | 0 | ok |
+| `scaleway_ranges` | 200 | 2,373 | 13 | 11 | 1 | 0 | ok |
+| `ibm_cloud_classic` | 200 | 37,832 | 90 | 60 | 0 | 0 | ok |
+| `ovh_web_hosting_clusters` | 200 | 37,840 | 479 | 259 | 66 | 0 | ok |
+| `mistralai_user` | 200 | 279 | 4 | 4 | 0 | 0 | ok |
+| `mistralai_index` | 200 | 176 | 2 | 2 | 0 | 0 | ok |
+| `ahrefsbot` | 200 | 3,350 | 81 | 74 | 0 | 0 | ok |
+| `protonvpn` | 200 | 13,405 | 907 | 525 | 0 | 0 | ok |
+| `mullvad_relays` | 200 | 291,324 | 1083 | 512 | 538 | 0 | ok |
+| `ivpn_servers` | 200 | 38,752 | 176 | 169 | 0 | 0 | ok |
+| `pia_servers` | 200 | 128,290 | 1117 | 1038 | 0 | 0 | ok |
+| `airvpn_status` | 200 | 220,593 | 2056 | 448 | 1012 | 0 | ok |
+| `windscribe_servers` | 200 | 305,203 | 1076 | 395 | 0 | 0 | ok |
+| `nordvpn_servers` | 200 | 9,062,425 | 8044 | 7772 | 1 | 0 | ok |
+| `privadovpn` | 200 | 44,719 | 167 | 166 | 0 | 0 | ok |
+| `riseup_vpn` | 200 | 9,956 | 21 | 20 | 0 | 0 | ok |
+| `wlvpn_server_list` | 200 | 1,137,010 | 3596 | 3596 | 0 | 0 | ok |
+| `worldvpn_servers` | 200 | 601,026 | 180 | 166 | 0 | 0 | ok |
+| `ovpn_status_servers` | 200 | 12,375 | 96 | 34 | 0 | 0 | ok |
+| `anonine_status` | 200 | 19,337 | 293 | 77 | 0 | 0 | ok |
+| `azirevpn_locations` | 200 | 9,693 | 62 | 0 | 0 | 62 | ok |
+| `vpnac_status` | 200 | 37,097 | 130 | 0 | 0 | 130 | ok |
+| `trustzone_servers` | 200 | 39,732 | 70 | 0 | 0 | 70 | ok |
+| `surfshark_generic` | 200 | 100,547 | 142 | 0 | 0 | 142 | ok |
+| `surfshark_static` | 200 | 25,837 | 36 | 0 | 0 | 36 | ok |
+| `surfshark_obfuscated` | 200 | 4,813 | 7 | 0 | 0 | 7 | ok |
+| `ipvanish_openvpn` | 200 | 5,184,342 | 3596 | 0 | 0 | 3596 | ok |
+| `privatevpn_openvpn` | 200 | 377,342 | 101 | 1 | 0 | 100 | ok |
+| `purevpn_openvpn` | 200 | 1,311,428 | 166 | 0 | 0 | 166 | ok |
+| `torguard_openvpn_tcp` | 200 | 169,004 | 104 | 52 | 0 | 52 | ok |
+| `torguard_openvpn_udp` | 200 | 169,006 | 104 | 52 | 0 | 52 | ok |
+| `fastestvpn_tcp` | 200 | 5,231 | 63 | 0 | 0 | 63 | ok |
+| `fastestvpn_udp` | 200 | 5,293 | 63 | 0 | 0 | 63 | ok |
+| `tunnelbear_openvpn` | 200 | 60,247 | 47 | 0 | 0 | 47 | ok |
+| `strongvpn_locations` | 200 | 181,994 | 145 | 0 | 0 | 145 | ok |
+| `vyprvpn_openvpn` | 200 | 149,595 | 73 | 0 | 0 | 73 | ok |
+| `giganews_vyprvpn_hosts` | 200 | 43,782 | 73 | 0 | 0 | 73 | ok |
+| `slickvpn_locations` | 200 | 60,820 | 11 | 0 | 0 | 11 | ok |
+| `vpnbook_openvpn` | 200 | 151,792 | 10 | 0 | 0 | 10 | ok |
+| `freevpn_us_servers` | 200 | 90,532 | 15 | 0 | 0 | 15 | ok |
+| `vpngate` | 200 | 1,320,837 | 98 | 96 | 0 | 0 | ok |
+| `zscaler` | 200 | 130,041 | 935 | 136 | 29 | 0 | ok |
+
+**Zero failures — and three of the five 2026-09-05 failures healed on their own.** That is
+the finding worth keeping, because it validates how the last pass triaged them:
+
+| Source id | 2026-09-05 | 2026-09-12 | What it means |
+|---|---|---|---|
+| `torguard_openvpn_tcp` / `_udp` | 403, Cloudflare `error code: 1005` | 200, 169 KB, 52 v4 + 52 hostnames each | 1005 is an ASN-level ban on the *fetching* network, a fact about our vantage point and not about the archive. Leaving the recipe untouched was right; it now fetches cleanly. |
+| `windscribe_servers` | 403, Cloudflare challenge interstitial on every path | 200, 305 KB, 395 v4 | The interstitial was transient too. See the note below on `enabled_default`. |
+| `slickvpn_locations` | 200, parser returned 0 | 200, 11 hostnames | The `data-host` rewrite landed in the last pass and holds. |
+| `vpnsecure_locations` | 404, source genuinely gone | removed from the manifest | Still gone. The parser stays registered for clients pinned to an older manifest. |
+
+The generalisation for future maintainers: **a fetch failure is a claim about the observer as
+often as about the endpoint.** Before changing a recipe, decide which one you are looking at.
+Nothing here needed a fix, so nothing was changed except the note above.

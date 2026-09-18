@@ -1,0 +1,23 @@
+{
+  "_comment": "Dataset-owned producer contract for the portable exports specified in EXPORT_FORMATS.md. The public source of truth for which exports a release must contain. Validated by scripts/lint_export_contract.rb on every PR.",
+  "_comment_required_mode": "required_mode is the stable export mode every SUCCESSFUL PUBLISHING build must satisfy. A publishing build selects a mode >= required_mode in the order none < portable < all, and every asset of the selected mode must validate or the build publishes nothing. Raising required_mode makes those assets MANDATORY in every release from that moment on, so it may only be raised once the producer's toolchain is installed in the workflow, the assets have validated in non-publishing candidate builds, and the change lands as a reviewed PR together with that workflow setup. Lowering it after activation is a breaking change for every consumer pinned to the format: do not lower it to make a red build green. A pre-feature checkout with no copy of this file defaults to none; a malformed file, an unknown mode, or an identity this producer does not support is a hard failure, never a silent none.",
+  "_comment_identities": "schema_version, schema_revision, classification_profile and lookup_policy_version are the identities every produced asset carries in its own metadata and in its manifest entry. They are checked for equality, not compatibility: a producer that would emit anything else must fail rather than publish a mislabelled asset.",
+  "config_version": 1,
+  "required_mode": "none",
+  "modes": ["none", "portable", "all"],
+  "mode_order": ["none", "portable", "all"],
+  "schema_version": 1,
+  "schema_revision": 0,
+  "classification_profile": "core-v1",
+  "lookup_policy_version": 1,
+  "assets": {
+    "none": [],
+    "portable": ["openasn.sqlite.gz", "openasn.csv.gz"],
+    "all": ["openasn.sqlite.gz", "openasn.csv.gz", "openasn.mmdb"]
+  },
+  "asset_formats": {
+    "openasn.sqlite.gz": {"format": "sqlite", "media_type": "application/vnd.sqlite3", "content_encoding": "gzip", "uncompressed_name": "openasn.sqlite"},
+    "openasn.csv.gz": {"format": "csv", "media_type": "text/csv; charset=utf-8", "content_encoding": "gzip", "uncompressed_name": "openasn.csv"},
+    "openasn.mmdb": {"format": "mmdb", "media_type": "application/octet-stream", "content_encoding": "identity", "uncompressed_name": null}
+  }
+}

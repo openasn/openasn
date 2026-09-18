@@ -15,7 +15,7 @@ worse than a failed update, which keeps last-good data).
 > [!NOTE]
 > You may not need this document. The same Tier A core is also specified as
 > SQLite, range CSV, and MMDB projections, where classification is already
-> materialised and no bit offsets are involved:
+> materialized and no bit offsets are involved:
 > [EXPORT_FORMATS.md](EXPORT_FORMATS.md). This file remains the byte contract
 > for the native artifacts, which the exports never change.
 

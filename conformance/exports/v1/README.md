@@ -13,7 +13,7 @@ files; that is what makes "conforming" mean something across implementations.
 |---|---|
 | `profile-fixtures.json` | Every core-v1 precedence row, the multi-source hosting ordering, AS0 presence, overlay-only records, and the inputs a canonical writer must reject (reserved category and role codes, reserved flag bits, a null ASN carrying ASN evidence) |
 | `projection-fixture.json` | A complete ten-row effective-interval stream: overlay splits inside a base row, an overlay crossing a base boundary, an overlay-only segment in a gap, gaps that are not bridged, and the expected coverage counts |
-| `lookup-policy-fixtures.json` | Lookup policy 1: input parsing, IPv4-mapped normalisation, every special range's first address, last address, and the addresses immediately before and after it, plus the full invalid-input list |
+| `lookup-policy-fixtures.json` | Lookup policy 1: input parsing, IPv4-mapped normalization, every special range's first address, last address, and the addresses immediately before and after it, plus the full invalid-input list |
 | `sqlite-v1.sql` | The SQLite v1 schema. `EXPORT_FORMATS.md` embeds this file, and CI fails if the two copies diverge, so there is one schema and not three hand-copied ones |
 
 ## Rules
@@ -42,7 +42,7 @@ data decides. A case with `data_dependent: true` leaves `lookup_status`,
 the installed generation and pinning a live address here would turn a data
 refresh into a test failure. The assertion in those cases is the one the
 policy owns: that the address was parsed, assigned to the right family,
-normalised correctly, and **not** intercepted by the special table.
+normalized correctly, and **not** intercepted by the special table.
 
 These fixtures cover the contract, not a release. They say nothing about
 whether any particular asset has been published.

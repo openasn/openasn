@@ -27,7 +27,7 @@ in any release, published or dated. Activation is a reviewed change to that
 file, coordinated with the producer's toolchain. Do not infer availability
 from this document; read the manifest of the release you are downloading.
 
-The rationale for materialising classification into data at all is recorded in
+The rationale for materializing classification into data at all is recorded in
 [DECISIONS.md](DECISIONS.md) as D-FMT-1.
 
 ## 1. Version identities
@@ -86,7 +86,7 @@ miss, and the reader turns it into `unknown`/`unrouted` (section 7).
 | `ip_version` | integer `4` or `6` | Address family. An integer, never the string `"4"`. |
 | `start`, `end` | unsigned integer address | Inclusive bounds, `start <= end`, within the family's bound. Internal integers, never JSON floating point; a 128-bit endpoint is never a JSON number. |
 | `asn` | null, or integer 0…4294967295 | The announcing AS. **Null means there is no base row here**: the interval is covered only by an overlay. Detect presence by null check, never by truthiness, because `0` is a legal value. An input AS0 is preserved as `0`; AS0 is never manufactured to stand for absence. |
-| `as_org` | null, or non-empty UTF-8 | The organisation name for `asn` from the same build, at most 96 bytes. Reproduced exactly: no trimming, case folding, or normalisation. |
+| `as_org` | null, or non-empty UTF-8 | The organization name for `asn` from the same build, at most 96 bytes. Reproduced exactly: no trimming, case folding, or normalization. |
 | `category` | null, or `isp`, `hosting`, `business`, `education_research`, `government_admin` | The upstream ASN category compiled into the build. Describes the ASN, not the address. |
 | `network_role` | null, or `tier1_transit`, `major_transit`, `midsize_transit`, `access_provider`, `content_network`, `stub` | The upstream routing role. |
 | `bad_asn` | boolean | Membership in the curated hosting/cloud/colo ASN list. |
@@ -129,12 +129,12 @@ misread before:
   independent evidence and outranks it, so a record can carry
   `core_verdict == "vpn"` with `vpn_provider` false. Neither field alone is
   the VPN answer; `core_verdict` is.
-- **`as_org` is the announcing ASN's organisation.** It is not necessarily
+- **`as_org` is the announcing ASN's organization.** It is not necessarily
   the retail brand a subscriber pays, the corporate parent, the physical
   location of the address, or the VPN brand reselling the capacity.
 
 v1 carries no country, provider, parent, reputation, connection-quality, or
-crawler attribute. The all-ASN catalogue, including ASNs with no observed
+crawler attribute. The all-ASN catalog, including ASNs with no observed
 routes, remains a separate asset (`asn-categories.csv`) with its own columns.
 
 ## 3. Classification profile core-v1
@@ -419,7 +419,7 @@ Rules:
   as canonical.
 - Standard double-quote CSV escaping. A field is quoted when it contains a
   comma, a double quote, CR, or LF; embedded quotes are doubled. There is no
-  formula escaping: a leading `=`, `+`, `-`, or `@` in an organisation name is
+  formula escaping: a leading `=`, `+`, `-`, or `@` in an organization name is
   left exactly as it is. This file is data-import input, not a
   spreadsheet-safe product; mutating data to protect a spreadsheet would
   corrupt the field OpenASN promises to reproduce byte for byte.
@@ -431,7 +431,7 @@ Rules:
 - `core_sources` is the ordered list joined with a literal `|`, for example
   `asn_bad_asn|asn_cdn`. The frozen tokens contain no `|`. Split that field,
   and only that field; other string fields are free text.
-- Organisation names are preserved exactly, including commas, quote
+- Organization names are preserved exactly, including commas, quote
   characters, and embedded newlines. **Count records with a CSV parser, never
   by counting physical newlines**, because one record can span several lines.
 - No `build_id` column. Repeating the build identity on every row would make
@@ -449,7 +449,7 @@ rejects anything else (section 9).
 
 CSV and SQLite carry the same logical row count and the same evidence for
 every row. `asn-categories.csv` is unrelated and unchanged: it is the full ASN
-catalogue including ASNs with no observed routes, while this file is an
+catalog including ASNs with no observed routes, while this file is an
 IP-range projection of routed and overlay-covered space.
 
 ## 6. MMDB v1
@@ -496,7 +496,7 @@ identity would defeat the deduplication that keeps the file small.
   UTF-8. `core_sources` is an ordered MMDB array of strings.
 - **MMDB has no null type.** A nullable field whose value is null is
   *omitted*. Every boolean is present, including when false. A helper
-  normalises an absent key back to null, so the result of an MMDB lookup and
+  normalizes an absent key back to null, so the result of an MMDB lookup and
   the result of a SQLite lookup are identical objects.
 - The prefix a reader returns is not the original interval. The tree may
   subdivide an interval across several prefixes, so a returned prefix is not a
@@ -537,12 +537,12 @@ The consequences are normative:
 
 - **Native IPv6 data overlapping `::/96` is rejected before MMDB generation.**
   So is native IPv6 data overlapping the mapped prefix `::ffff:0:0/96`, where
-  address normalisation in readers and writers could collapse two distinct
+  address normalization in readers and writers could collapse two distinct
   payloads into one. Both are hard build failures. Neither range is reachable
   as native IPv6 under lookup policy 1, but dropping records quietly would
   violate the guarantee that the export preserves the build exactly. If either
   ever appears, the representation is revisited; the data is not discarded.
-- A helper normalises **only** IPv4-mapped `::ffff:0:0/96` input to IPv4,
+- A helper normalizes **only** IPv4-mapped `::ffff:0:0/96` input to IPv4,
   before lookup.
 - For a genuine IPv6 input inside `::/96`, a helper applies the `::1` special
   rule and otherwise returns the defined no-data result. It does not search
@@ -553,7 +553,7 @@ The consequences are normative:
   `IncludeReservedNetworks` is true precisely so the input stays
   authoritative.
 
-A generic tool with no such normalisation can still use this file for
+A generic tool with no such normalization can still use this file for
 validated ordinary public addresses. It is not equivalent to the full OpenASN
 input policy for arbitrary raw input, and documentation that claims otherwise
 is wrong.
@@ -584,8 +584,8 @@ verdict hides it.
 - **IPv6**: reject `%`, `/`, surrounding brackets, whitespace, and port
   syntax first, then use the platform's binary parser. Uppercase and
   compressed forms are accepted.
-- An IPv4-mapped address is normalised to IPv4 before anything else. No other
-  IPv6 embedding scheme is normalised.
+- An IPv4-mapped address is normalized to IPv4 before anything else. No other
+  IPv6 embedding scheme is normalized.
 
 This is deliberately narrower than any accidental permissiveness in an older
 OpenASN SDK parser. Policy 1 defines the new helper contract; it does not
@@ -593,9 +593,9 @@ retroactively describe historical parser quirks.
 
 ### 7.2 Special ranges
 
-Applied to the normalised address **before** either family table is queried.
+Applied to the normalized address **before** either family table is queried.
 Ranges are inclusive. This table is frozen for policy 1: it is a mirror of
-existing client behaviour, not an invitation to substitute a platform
+existing client behavior, not an invitation to substitute a platform
 `is_private` or `is_global` predicate, which cover different sets and change
 between language versions.
 
@@ -619,7 +619,7 @@ between language versions.
 - Documentation and example addresses such as `192.0.2.1` and `2001:db8::1`
   are **not** special under policy 1. They are queried like any other address
   and usually miss.
-- `::ffff:10.0.0.1` normalises to IPv4 and returns `private` /
+- `::ffff:10.0.0.1` normalizes to IPv4 and returns `private` /
   `special_rfc1918`.
 - Adding further IANA special-purpose ranges requires a new
   `lookup_policy_version`. Implementations do not extend this table locally.
@@ -657,7 +657,7 @@ flags for any particular address are data and change between builds.
 - Every signal is a real language boolean. An absent MMDB key becomes null,
   not false, for nullable fields.
 - `start`/`end` are not returned by default. They are internal storage
-  columns, and serialising a 16-byte blob endpoint into JSON has no good
+  columns, and serializing a 16-byte blob endpoint into JSON has no good
   default answer.
 
 `lookup_status` is one of:

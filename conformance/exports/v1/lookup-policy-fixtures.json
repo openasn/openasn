@@ -1,16 +1,16 @@
 {
   "fixture_version":1,
   "lookup_policy_version":1,
-  "description":"Hand-specified conformance cases for OpenASN lookup policy 1: input parsing, IPv4-mapped normalisation, and the frozen special-range table. Contract: EXPORT_FORMATS.md section 7.",
+  "description":"Hand-specified conformance cases for OpenASN lookup policy 1: input parsing, IPv4-mapped normalization, and the frozen special-range table. Contract: EXPORT_FORMATS.md section 7.",
   "authoring":"Every expectation here is hand-specified from the policy table. No value in this file was produced by running an implementation, and no implementation may regenerate it from its own output.",
   "field_notes":{
-    "policy":"'special' means the special-range table answered and the database was never queried. 'query' means policy did not intercept and the normalised address goes to the v4 or v6 table.",
-    "normalized":"Canonical text of the address actually queried, after IPv4-mapped normalisation. IPv6 is written in the canonical form of EXPORT_FORMATS.md section 5, so an input carrying leading zeros or uppercase normalises here.",
+    "policy":"'special' means the special-range table answered and the database was never queried. 'query' means policy did not intercept and the normalized address goes to the v4 or v6 table.",
+    "normalized":"Canonical text of the address actually queried, after IPv4-mapped normalization. IPv6 is written in the canonical form of EXPORT_FORMATS.md section 5, so an input carrying leading zeros or uppercase normalizes here.",
     "data_dependent":"true when the result depends on the records in the installed generation, so lookup_status/verdict/sources are left null here. false when this contract fixes the answer regardless of data.",
     "miss_result":"What a 'query' case yields when no record covers the address."
   },
   "miss_result":{"lookup_status":"unrouted","verdict":"unknown","sources":["unrouted"]},
-  "invalid_input_contract":"Rejected before any normalisation or lookup, with InvalidArgumentException (PHP) or ArgumentException (C#). Never DNS-resolved, never trimmed into validity, never converted to zero, never reported as a verdict.",
+  "invalid_input_contract":"Rejected before any normalization or lookup, with InvalidArgumentException (PHP) or ArgumentException (C#). Never DNS-resolved, never trimmed into validity, never converted to zero, never reported as a verdict.",
   "special_ranges":[
     {"family":4,"cidr":"0.0.0.0/8","first":"0.0.0.0","last":"0.255.255.255","verdict":"private","source":"special_reserved","no_predecessor":true},
     {"family":4,"cidr":"10.0.0.0/8","first":"10.0.0.0","last":"10.255.255.255","verdict":"private","source":"special_rfc1918"},
@@ -83,12 +83,12 @@
     {"id":"v6-link-local-after","input":"fec0::","valid":true,"family":6,"normalized":"fec0::","policy":"query","lookup_status":null,"verdict":null,"sources":null,"data_dependent":true,"note":"one above fe80::/10; the deprecated site-local prefix is NOT special under policy 1"},
 
     {"id":"ordinary-v4","input":"8.8.8.8","valid":true,"family":4,"normalized":"8.8.8.8","policy":"query","lookup_status":null,"verdict":null,"sources":null,"data_dependent":true,"note":"ordinary public address; the verdict is whatever the installed generation says and is not pinned here"},
-    {"id":"mapped-ordinary-v4","input":"::ffff:8.8.8.8","valid":true,"family":4,"normalized":"8.8.8.8","policy":"query","lookup_status":null,"verdict":null,"sources":null,"data_dependent":true,"note":"IPv4-mapped input normalises to IPv4 before lookup and must return evidence identical to ordinary-v4"},
+    {"id":"mapped-ordinary-v4","input":"::ffff:8.8.8.8","valid":true,"family":4,"normalized":"8.8.8.8","policy":"query","lookup_status":null,"verdict":null,"sources":null,"data_dependent":true,"note":"IPv4-mapped input normalizes to IPv4 before lookup and must return evidence identical to ordinary-v4"},
     {"id":"low-prefix-v6-literal","input":"::808:808","valid":true,"family":6,"normalized":"::808:808","policy":"query","lookup_status":"unrouted","verdict":"unknown","sources":["unrouted"],"data_dependent":false,"note":"a genuine IPv6 literal inside ::/96. It must NOT return the IPv4 record for 8.8.8.8. An MMDB helper returns the miss result without searching the IPv4 subtree, because a raw generic reader over the shared tree would resolve it"},
-    {"id":"mapped-rfc1918","input":"::ffff:10.0.0.1","valid":true,"family":4,"normalized":"10.0.0.1","policy":"special","lookup_status":"special","verdict":"private","sources":["special_rfc1918"],"data_dependent":false,"note":"normalisation happens before the special table, so a mapped RFC1918 address is private"},
+    {"id":"mapped-rfc1918","input":"::ffff:10.0.0.1","valid":true,"family":4,"normalized":"10.0.0.1","policy":"special","lookup_status":"special","verdict":"private","sources":["special_rfc1918"],"data_dependent":false,"note":"normalization happens before the special table, so a mapped RFC1918 address is private"},
     {"id":"doc-range-v4","input":"192.0.2.1","valid":true,"family":4,"normalized":"192.0.2.1","policy":"query","lookup_status":null,"verdict":null,"sources":null,"data_dependent":true,"note":"TEST-NET-1 is documentation space but is NOT special under policy 1; it is queried like any other address and normally misses"},
     {"id":"doc-range-v6","input":"2001:db8::1","valid":true,"family":6,"normalized":"2001:db8::1","policy":"query","lookup_status":null,"verdict":null,"sources":null,"data_dependent":true,"note":"the IPv6 documentation prefix is NOT special under policy 1"},
-    {"id":"6to4-literal","input":"2002:0808:0808::1","valid":true,"family":6,"normalized":"2002:808:808::1","policy":"query","lookup_status":null,"verdict":null,"sources":null,"data_dependent":true,"note":"6to4 is never mapped to IPv4. This is an IPv6 lookup and may hit IPv6 evidence or miss; it must never implicitly return 8.8.8.8's record. The input also carries leading zeros in two hextets, which are valid input and normalise away"}
+    {"id":"6to4-literal","input":"2002:0808:0808::1","valid":true,"family":6,"normalized":"2002:808:808::1","policy":"query","lookup_status":null,"verdict":null,"sources":null,"data_dependent":true,"note":"6to4 is never mapped to IPv4. This is an IPv6 lookup and may hit IPv6 evidence or miss; it must never implicitly return 8.8.8.8's record. The input also carries leading zeros in two hextets, which are valid input and normalize away"}
   ],
   "invalid_inputs":[
     {"id":"empty-string","input":"","valid":false,"reason":"empty string"},

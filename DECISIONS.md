@@ -387,7 +387,7 @@ compares against previous output must also have a reference that is frozen,
 externally dated, and independent of whether the gate passed — and a
 documented, recorded way for a human to overrule it once.
 
-## D-FMT-1 — Convenience exports may materialise a frozen classification profile (2026-09-18)
+## D-FMT-1 — Convenience exports may materialize a frozen classification profile (2026-09-18)
 
 **The problem.** D-IMPL-6 guarantees that a nightly data refresh can never
 surface a verdict a deployed client does not know, and it earns that
@@ -407,14 +407,14 @@ Two options were honest:
    cross-language divergence D-IMPL-6 exists to prevent, in languages that
    have no OpenASN client at all, and it defeats the point of the exports:
    a correct answer from a small standard-library integration.
-2. Materialise the verdict into the data, and restore the safety property
+2. Materialize the verdict into the data, and restore the safety property
    through a different, enforced mechanism.
 
 We take 2.
 
 **The decision.** The free core gains SQLite, range CSV, and MMDB
 projections. Native OASN remains ranges and flags interpreted by versioned
-client code. Convenience exports may materialise ordinary-address Tier A
+client code. Convenience exports may materialize ordinary-address Tier A
 classification under a frozen named profile, initially `core-v1`. A data
 refresh may change the evidence and the classification of an IP, but may not
 introduce a new profile vocabulary or reinterpret an existing field. Schema
@@ -443,7 +443,7 @@ and this decision adds one narrow permission carrying its own enforcement.
 - change what a field means. `bad_asn` stays hosting/cloud/colo list
   membership and never becomes an abuse score; `hosting_extra` stays one
   corroborating signal and never becomes the hosting verdict; `as_org` stays
-  the announcing ASN's organisation and never becomes a retail brand or a
+  the announcing ASN's organization and never becomes a retail brand or a
   provider attribution.
 
 What a refresh **may** change is an individual IP's evidence and therefore its

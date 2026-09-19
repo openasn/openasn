@@ -470,7 +470,8 @@ eyeball estimates; 95,790 routed ASNs):
 | before (ipverse) | 124,849 | 99.99% | 100.00% | 100.00% |
 | Wikidata admissible only | 566 | 0.53% | 26.94% | 26.28% |
 | after (org_names.txt + Wikidata), first cut | 777 | 0.74% | 49.28% | 66.76% |
-| **after the pass 4 ON review and extension** | **1,393** | **1.39%** | **80.39%** | **80.71%** |
+| after the pass 4 ON review and extension | 1,393 | 1.39% | 80.39% | 80.71% |
+| **after the pass 4 ON2 extension** | **2,031** | **2.05%** | **83.60%** | **82.98%** |
 
 This is the power law at work (rule 7): 777 names reached two thirds of the
 world's eyeballs. The pass 4 ON workstream then reviewed the 251 drafted
@@ -480,6 +481,15 @@ carriers, US DoD, Microsoft's secondary ASNs, Meta, Akamai, Ford, Apple, ...).
 1,393 names now reach four fifths of eyeballs and of routed IPv4. The long
 tail is blank on purpose. Evidence per line:
 `docs/enrichment/research/parts/P4-ON-org-names-2026-09-19.jsonl`.
+
+The ON2 workstream re-ranked the gap on the de-duplicated 2026-09-19b quant
+(artifact-corrected APNIC eyeballs; longest-match routed IPv4) and added 638
+more sourced names, re-citing 21 existing lines (5 head lines now cite an
+operator page that names the ASN; 16 cited a disambiguation, surname,
+country-topic or wrong-entity page). On that basis 2,031 names cover 82.93%
+of APNIC-estimated eyeballs (85.22% excluding estimator artifacts) and
+84.90% of the 3.128B routed IPv4 union by longest match. Evidence per line:
+`docs/enrichment/research/parts/P4-ON2-org-names-2026-09-19.jsonl`.
 
 **Gates.** No existing drift gate measures org names, so nothing trips and
 **no `ack_drift` is required** for the first publish. G6 now drift-gates the

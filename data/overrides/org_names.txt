@@ -22,8 +22,8 @@
 #   * precedence: this file > Wikidata P3797 labels > no name (as_org nil).
 #
 # Order of work (AGENTS.md rule 7): the head first. Together with Wikidata,
-# the sections below cover 80.7% of APNIC-estimated eyeballs and 80.4% of
-# routed IPv4 space (measured 2026-09-19, after the pass 4 ON extension).
+# the sections below cover 83.0% of APNIC-estimated eyeballs and 83.6% of
+# routed IPv4 space (measured 2026-09-19, after the pass 4 ON2 extension).
 # The next pass continues down the same ranked gap list (eyeballs and IPv4
 # interleaved); see the D-SRC-2 evidence records.
 

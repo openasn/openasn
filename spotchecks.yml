@@ -70,6 +70,13 @@
 # 2.200.0.0/13 - same ASN, same verdict, same German-residential intent, but
 # announced whole by AS3209 (stable, 320+ RIS full-feed peers, zero AS31334
 # more-specifics even at min_peers_seeing=1).
+#
+# Panel history: the US DoD (AS749) probe was 28.5.134.10 until 2026-09-19.
+# AS27064 (also DoD, also government_admin) has originated 28.5.0.0/16 since
+# 2026-09-04 (RIPEstat), so the probe moved to 28.6.0.10 inside AS749's
+# 28.0.0.0/8, which has no more-specific there - same ASN, same verdict, same
+# intent. The same day the Apple Private Relay row 104.28.28.1 (D-SRC-3) made
+# the Tier A count 82.
 
 checks:
 
@@ -246,6 +253,7 @@ checks:
     expect: hosting
     rule: asn_category
     asn: 13335
+    gem_sources: [asn_cdn, asn_category]
     note: "Apple iCloud Private Relay egress inside Cloudflare (mask-api.icloud.com/egress-ip-ranges.csv lists 104.28.28.0-4 as AU Sydney, checked 2026-09-19). MUST NOT be :vpn via x4b_vpn: X4B merges Apple's feed, which is Tier B for us, and the pipeline strips it (DECISIONS.md D-SRC-3). The core says hosting; :relay comes only from the client-side Tier B recipe. Added 2026-09-19 after it shipped as vpn."
   - ip: "85.115.96.10"
     expect: vpn
@@ -469,12 +477,12 @@ checks:
     asn: 4538
     gem_sources: [asn_category]
     note: "CERNET v6"
-  - ip: "28.5.134.10"
+  - ip: "28.6.0.10"
     expect: government
     rule: asn_category
     asn: 749
     gem_sources: [asn_category]
-    note: "US Department of Defense (AS749) — the largest government_admin network"
+    note: "US Department of Defense (AS749) — the largest government_admin network. Probe moved 2026-09-19 from 28.5.134.10: AS27064 (also DoD, also government_admin) has originated 28.5.0.0/16 since 2026-09-04 (RIPEstat); 28.6.0.10 sits in AS749's 28.0.0.0/8 with no more-specific (RIPEstat network-info + routing-status, 2026-09-19)."
   - ip: "25.129.200.10"
     expect: government
     rule: asn_category

@@ -4,13 +4,13 @@ Every OpenASN client — the Ruby gem, the Python package, the JS package, the
 pipeline's own reference classifier — must return the **same verdict for the
 same IP on the same bytes**. This file is the contract that makes "same" a
 testable claim, and [`spotchecks.yml`](spotchecks.yml) is the kit that proves
-it: 97 rows covering every rule of the precedence ladder.
+it: 98 rows covering every rule of the precedence ladder.
 
 ## The panel
 
 `spotchecks.yml` has two kinds of row.
 
-**Tier A rows (81).** Canonical semantics: the compiled artifacts only, **no
+**Tier A rows (82).** Canonical semantics: the compiled artifacts only, **no
 Tier B overlays**. These are the rows the pipeline asserts on every build
 (gate G5) and the rows a client asserts with Tier B disabled.
 
@@ -56,7 +56,7 @@ names to the client ones; until then, assert the column that belongs to you.
 
 ### When `rule` is asserted, and when it deliberately is not
 
-`rule` is asserted on 65 of the 81 Tier A rows: everywhere the path is
+`rule` is asserted on 66 of the 82 Tier A rows: everywhere the path is
 structural, where a change of path means a real change of meaning. It is
 deliberately **not** asserted where the winner is one of the canonical X4B
 range overlays (`x4b_dc`, `x4b_vpn`) or flag-driven hosting: those lists are
@@ -70,14 +70,14 @@ losing to rule 9, by design).
 ## Running the panel
 
 ```bash
-# pipeline reference classifier (all 81 Tier A rows) — this is gate G5
+# pipeline reference classifier (all 82 Tier A rows) — this is gate G5
 OFFLINE=1 OPENASN_DATA_REPO=/path/to/this/repo ruby pipeline/run.rb
 
 # Ruby gem, Tier A rows: point data_dir at the artifacts, Tier B disabled
 # Ruby gem, context: gem rows: same artifacts + a fixture overlay per tier_b id
 
-# Python — all 97 rows:
-PYTHONPATH=src python -m unittest tests.test_spotchecks          # the 81 Tier A rows
+# Python — all 98 rows:
+PYTHONPATH=src python -m unittest tests.test_spotchecks          # the 82 Tier A rows
 PYTHONPATH=src python -m unittest tests.test_spotchecks_tier_b   # the 16 context: gem rows
 ```
 
@@ -88,7 +88,7 @@ Two rules for anyone wiring the panel into a new client:
 - **Assert `gem_sources`, not `rule`,** and assert it as an ordered list
   equal to `Result#sources` — not merely contained in it. Containment
   silently tolerates a spurious extra signal in a verdict's explanation.
-  Equality holds on all 97 rows today. The order for multi-signal rows is
+  Equality holds on all 98 rows today. The order for multi-signal rows is
   the classifier's emission order: `bad_asn`, `hosting_extra`, `cdn`, then
   `category`.
 

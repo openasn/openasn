@@ -386,3 +386,101 @@ reference is written *by the thing it guards* can deadlock. Any gate that
 compares against previous output must also have a reference that is frozen,
 externally dated, and independent of whether the gate passed — and a
 documented, recorded way for a human to overrule it once.
+
+## D-SRC-3 — X4B overlays carry only X4B's own data; its third-party feeds are stripped (2026-09-19, PROPOSED)
+
+**What was wrong.** X4BNet/lists_vpn is Tier A because its MIT grant covers
+"the list itself (source files and generated output)". But its build
+(`.github/workflows/build-list.yml`) concatenates every file in
+`input/<list>/ips/` into `output/<list>/ipv4.txt`, and X4B's own scheduled
+workflows fill `input/vpn/ips/` with lists X4B does not own:
+
+| file | written from | first seen |
+|---|---|---|
+| `apple.txt` | `https://mask-api.icloud.com/egress-ip-ranges.csv` (iCloud Private Relay egress) | 2025-06-29 |
+| `mullvadvpn.txt` | `https://api.mullvad.net/www/relays/all` | 2025-04-13 |
+| `pia.txt` | `https://raw.githubusercontent.com/Lars-/PIA-servers/refs/heads/master/export.csv` (repo has no licence) | 2025-06-28 |
+| `protonvpn.txt` | `https://api.protonmail.ch/vpn/logicals` (workflow disabled 2025-06-29; frozen file still merged) | 2023-02-07 |
+| `input/datacenter/ips/protonvpn.txt` | one 2023-02-09 snapshot of the same Proton API | 2023-02-09 |
+
+This project classes every one of those as Tier B ("never republished",
+ATTRIBUTION.md). Taking X4B's output whole therefore republished them, which
+breaks README "Legal design" rule 1: a builder repo's licence does not
+sanitize third-party data it aggregates. It also broke a product rule. Apple
+relay egress shipped as `vpn` (for example `104.28.28.0–104.28.28.76`, AS13335,
+`core_verdict=vpn`, `core_sources=["x4b_vpn"]`), although README says relay is
+never folded into `vpn`.
+
+**Verified, not assumed** (P4-X, against X4B commit `07f9013b`, the one whose
+output OpenASN had cached). X4B's build was reproduced offline, and the
+reproduction explains every address of the published vpn list. 100% of each
+feed's CIDRs are inside it. The four feeds account for 124,207 of its
+3,197,515 addresses (3.88%; Apple alone 3.33%). 114,507 of those (3.58%) are
+covered only by a feed, not by X4B's own ASN list. Evidence:
+`docs/enrichment/research/parts/P4-X-x4b-feeds-2026-09-19.jsonl`.
+
+**The ruling.**
+
+1. X4B's published `output/` files are an **upper bound**, never taken
+   whole. A range is kept only where X4B's **first-party** inputs justify it:
+   its hand-curated `input/<list>/ASN.txt`, expanded against OpenASN's own
+   backbone, and its hand-curated `input/<list>/ips/Manual.txt`. A feed entry
+   inside a listed ASN stays, because X4B's own ASN entry covers it (e.g.
+   Proton servers inside AS208172, which X4B lists).
+2. **vpn is a whitelist**: `kept = published ∩ justified`. This is the
+   directory X4B's feed bots write to, so the rule must also exclude a feed
+   X4B adds in the future, and a feed file updated between two X4B builds,
+   without anyone naming it first. The only cost beyond the feeds is 1,024
+   addresses (four /24s) where X4B's expansion database (iptoasn.com) and
+   our backbone disagree about the origin ASN.
+3. **datacenter subtracts the named feed file**:
+   `kept = published − (feeds − justified)`. A whitelist was built and
+   measured here, then rejected. X4B's datacenter expansion disagrees with
+   our backbone on ~222k addresses, and applying the whitelist would have
+   moved real cloud space from `hosting` to `business` (GCP 35.208.0.0/15:
+   iptoasn says AS15169, our backbone says AS43515). No X4B workflow writes
+   to `input/datacenter/ips/`, so naming its single third-party file is
+   precise. If X4B ever adds a file there, it must be named in the pipeline
+   (`Sources::X4B_DC_FEEDS`). The pipeline never calls api.github.com, so
+   it cannot list the directory for itself.
+4. Neither method can add a range X4B did not publish. Feed files are read
+   only in order to subtract them. That is D-CUR-1 consultation; their
+   contents are never republished.
+5. Apple relay, Mullvad, PIA and Proton keep reaching users the way they
+   always should have: as `fetch-manifest.json` Tier B recipes, which
+   clients fetch from the original authority.
+
+**Blast radius, measured** (offline build, identical inputs, before vs after;
+`openasn-ipv6.bin`, `openasn-orgs.bin` and `asn-categories.csv` are
+byte-identical apart from the build timestamp):
+
+| layer | ranges | addresses |
+|---|---|---|
+| vpn (IPv4) | 6,644 → 4,692 (−29.4%) | 3,197,515 → 3,081,984 (−3.61%) |
+| datacenter (IPv4) | 30,157 → 30,105 (−0.17%) | −300 |
+
+115,628 IPv4 addresses change verdict. All but 97 of them leave `vpn`:
+73,702 go to `hosting` (x4b_dc), 36,288 to `hosting` (category), 4,314 to
+`unknown` (feed entries in tier-1 transit space: Cogent AS174 3,165, GTT
+AS3257 696), 1,115 to `business`, and 112 to `residential_isp`. The largest ASNs are the Apple
+relay hosts: Akamai AS36183 (59,354), Cloudflare AS13335 (19,779), Fastly
+AS54113 (15,972) and Akamai AS20940 (11,516). In the core these become
+`hosting`, the same answer the rest of Apple's relay space already gets. They
+become `relay` wherever a client runs the Tier B recipe, which is the design.
+
+**Gates.** The spot panel is green before and after, and no row changed. The
+G4 layer drift gate FAILS once, on `vpn_ipv4`: 6,639 in `latest` → 4,692,
+which is −29.3% against a 20% drop line, with no weekly pin within 5%. The
+first publish therefore needs a dispatch with
+`ack_drift="D-SRC-3: X4B third-party feeds (Apple relay, Mullvad, PIA, Proton) removed from the vpn overlay"`.
+The other layers pass.
+
+**Open follow-up (owner): a deliberate step change never re-anchors the
+pins.** From the night after the acked publish, `vpn_ipv4` sits about 29%
+below the best weekly pin (v2026.09.13, 6,593). D-GATE-1 rule 6 turns that
+into a WARN(SLIDE) every night. A warned build is not clean, and an unclean
+build never cuts a dated pin. So no weekly pin is cut again, for any layer,
+until the gate learns that an acknowledged move is the new baseline. This
+decision does not change the gate. The choice is the owner's: for example,
+let a `drift_ack` re-anchor that metric's slide check, or cut one reviewed
+pin by hand from the first post-fix build.

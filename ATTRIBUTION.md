@@ -13,6 +13,14 @@ text changes (SHA-256 pinning).
 - License: MIT — per the project README, the license covers "the scripts,
   automation, and the list itself (source files and generated output)".
 - Copyright (c) 2024 X4B (Mathew Heard)
+- What OpenASN takes: only X4B's own work. That is its hand-curated ASN lists
+  (`input/*/ASN.txt`, expanded against the backbone below) and its manual
+  netblocks (`input/*/ips/Manual.txt`), used to keep the matching ranges of
+  X4B's published lists. X4B's generated lists also merge third-party feeds
+  (Apple iCloud Private Relay egress, Mullvad, Private Internet Access,
+  Proton VPN). Those feeds are not X4B's to license, so OpenASN strips them
+  and does not republish them. They are Tier B (see below). Decision:
+  DECISIONS.md D-SRC-3.
 
 ### brianhama / bad-asn-list — curated hosting/cloud/colo ASN list
 - https://github.com/brianhama/bad-asn-list

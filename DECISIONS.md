@@ -421,6 +421,17 @@ terms and the EU database right, and RIR stats are curation-only (D-SRC-1).
    route-views6. That is 186 distinct peer ASes and ~850 MB. RIPE RIS is not
    an input. Six more collectors (256 peer ASes, 1.33 GB) moved IPv4
    coverage by +0.02 pt, so they stay out.
+   **Missing RIBs (review RB-1).** A collector whose slot RIB cannot be
+   fetched may fall back only to its own cached RIB at most 36 h older (one
+   nightly back); the build WARNs and stamps the real slot in manifest stats
+   (`routeviews.fallback_rib_slots`). Older than that, the collector is
+   skipped, and fewer than 7 usable collectors FAILS the build. A stale RIB
+   is never reused indefinitely: a dead collector would keep withdrawn
+   prefixes alive (one big collector alone clears the 2-peer-AS floor) and
+   outvote new origins. Dropping 3 of the 10 collectors (three subsets tested,
+   incl. the three largest) moved covered IPv4 space by at most 0.09% and IPv6
+   by 0.10% (2026-09-18 slot), so skipping is the safe
+   direction.
 2. **What is published: only `(range, origin ASN)` facts our code
    recomputes.** Origin rule:
    - A path's origin is the last AS of its AS_PATH, ignoring confederation

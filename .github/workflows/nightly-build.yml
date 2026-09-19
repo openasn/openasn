@@ -27,9 +27,12 @@ name: Build & publish data
 #     visible one-line change here (plus re-pinning sapics in a reviewed PR,
 #     or the licence gate fails the build by design).
 #   * The upstream cache now also holds the ten RIBs (one file per
-#     collector, overwritten each night). That makes the cache ~1GB; it is
-#     what lets a collector that fails to download fall back to its
-#     previous RIB (keep-last-good) instead of thinning the backbone.
+#     collector and slot; the pipeline prunes all but the RIB it used, so
+#     ~1GB). It lets a collector that fails to download fall back to its
+#     previous night's RIB - at most 36h older, WARNed and stamped in
+#     manifest stats - instead of thinning the backbone. An older RIB is
+#     never reused: that collector is skipped (DECISIONS D-SRC-2 (backbone),
+#     review RB-1).
 #   * Action majors (checkout v7 / cache v6 / upload-artifact v7) run on
 #     Node 24; the previously pinned v4s targeted Node 20, deprecated:
 #     https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

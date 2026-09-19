@@ -163,3 +163,98 @@
   source_url: "https://en.wikipedia.org/wiki/Miranda_(telecommunications_company)"
   date: 2026-09-05
 
+
+29975:
+  category: isp
+  reason: "Vodacom South Africa's cellular subscriber AS (AFRINIC as-name VODACOM-ZA): its announced space is registered as mobile subscriber pools - 41.5.0.0/16 netname Vodacom_UMTS_Cape_Town_Western_Cape_INTERNET_APN 'Legal IP block for UMTS users in Cape Town', 41.13-41.22 'Legal IP Block for Internet APN' - and sampled PTRs are vc-*.umts.vodacom.co.za. APNIC measures 3,904,413 end users behind it. ipverse says business, which labels South African mobile subscribers as a corporate network; isp is right. (It is not in mobile_carrier.txt because 41.1.0.0/16 is still registered to the 'Vodacom Wimax BU'.)"
+  source_url: "https://rdap.afrinic.net/rdap/ip/41.5.0.0"
+  date: 2026-09-19
+
+37440:
+  category: isp
+  network_role: access_provider
+  reason: "Airtel Malawi is Malawi's largest mobile operator, not a hosting provider: its AFRINIC inetnums read 'Airtel Malawi GPRS subscribers' (105.234.0.0/17) and 'Mobile Internet' (129.140.0.0/17, 137.115.0.0/17, 137.196.0.0/17, 137.64.0.0/17), rDNS is *.r.airtel.mw, and APNIC measures 2,619,972 end users behind 16,896 IPv4 addresses. ipverse's category=hosting would also make its mobile_carrier.txt line a no-op (hosting is tested before the mobile flag)."
+  source_url: "https://stat.ripe.net/data/whois/data.json?resource=105.234.0.0"
+  date: 2026-09-19
+
+# --- Sweep 2026-09-19 (pass 4): verdict leads re-derived from the registry and live rDNS ---
+# Leads came from enrichment dossiers; each line below is proven from the RIR record, rDNS and the
+# operator's own PeeringDB entry, never from the dossier. Highest measured eyeball population first.
+2519:
+  category: isp
+  reason: "ARTERIA Networks' AS2519 (aut-num VECTANT) is the VECTANT consumer ISP, not a hosting network: its largest blocks are APNIC netname V-FLETS (NTT FLET'S fibre access) with PTRs like 222-230-64-9.fukuoka.fdn.vectant.ne.jp and 133-175-128-9.west.fdn.vectant.ne.jp, and APNIC measures 1,819,810 end users behind it. ipverse's hosting labels 1.8M Japanese broadband users as servers."
+  source_url: "https://rdap.apnic.net/ip/133.175.0.0"
+  date: 2026-09-19
+
+2119:
+  category: isp
+  reason: "Telenor Norge's AS2119 carries Norwegian retail access: RIPE netnames NO-TELENOR-DSL-3/-4 (85.164.0.0/14, 88.88.0.0/13; PTR *.bb.online.no) and NO-MOBIL-BROADBAND (77.16.0.0/14, 2.148.0.0/14; PTR *.tmi.telenormobil.no); PeeringDB self-classifies Cable/DSL/ISP; APNIC measures 1,458,319 end users. hosting is wrong."
+  source_url: "https://rdap.db.ripe.net/ip/88.88.0.0"
+  date: 2026-09-19
+
+4685:
+  category: isp
+  reason: "Asahi Net is a Japanese consumer ISP: every sampled block is APNIC netname ASAHI-NET with dynamic PPP PTRs (ac000009.dynamic.ppp.asahi-net.or.jp), PeeringDB self-classifies Cable/DSL/ISP, and APNIC measures 1,266,422 end users. ipverse's business labels them a corporate network."
+  source_url: "https://rdap.apnic.net/ip/183.76.0.0"
+  date: 2026-09-19
+
+4721:
+  category: isp
+  reason: "AS4721 (aut-num JCN, 'JCOM Co., Ltd.') is J:COM's cable-internet network: every sampled block is APNIC netname JCOM-NET with residential cable PTRs (*.j-cnet.jp, *.rev.zaq.ne.jp, *.koalanet.ne.jp, *.cnc.jp); APNIC measures 631,448 end users. business is wrong."
+  source_url: "https://rdap.apnic.net/ip/118.86.0.0"
+  date: 2026-09-19
+
+4007:
+  category: isp
+  reason: "Subisu Cablenet is a Nepali cable ISP: the APNIC aut-num remark reads 'Cable Internet', 182.93.64.0/19 is netname SUBISU_Retail_Pool6 with PTR subisu-client-*.subisu.net.np, PeeringDB self-classifies Cable/DSL/ISP, and APNIC measures 441,472 end users. hosting is wrong (it also runs server pools, which do not make it a host)."
+  source_url: "https://rdap.apnic.net/ip/182.93.64.0"
+  date: 2026-09-19
+
+3255:
+  category: isp
+  reason: "UARNet (LLC EKSINTECH, Lviv) is a Ukrainian regional access/transit ISP: RIPE netnames include UARNET-PPPoE-20120815 (194.44.204.0) and downstream ISP blocks (IDEAISP), and APNIC measures 428,456 end users. hosting is wrong. (Its history as EARN-Ukraine makes a dossier call it academic; the registry shows retail PPPoE access today.)"
+  source_url: "https://rdap.db.ripe.net/ip/194.44.204.0"
+  date: 2026-09-19
+
+2609:
+  category: isp
+  reason: "Tunisia BackBone AS (Agence Tunisienne d'Internet) is the national transit backbone for Tunisian ISPs, not a host: it originates AFRINIC blocks such as 197.26.128.0 netname Orange3G10 (ORANGE TUNISIE mobile), NETY, and CNTE (the national education technology centre), and APNIC measures 171,873 end users behind it. hosting labels those subscribers as servers."
+  source_url: "https://rdap.afrinic.net/rdap/ip/197.26.128.0"
+  date: 2026-09-19
+
+786:
+  category: education_research
+  reason: "AS786 is Janet, the UK national research and education network run by Jisc: PeeringDB net 'Janet' self-classifies Educational/Research, and the space it originates is universities' own allocations (University of Leeds 129.11.0.0/15, Oxford Brookes, Cranfield, Royal Holloway, York) plus Jisc's JANET-NOC. hosting is wrong."
+  source_url: "https://www.peeringdb.com/api/net?asn=786"
+  date: 2026-09-19
+
+2764:
+  category: isp
+  reason: "AAPT (Vocus) is a telecom carrier with DSL access space, not a host: sampled PTRs are cor8-ppp517.mel.dsl.connect.net.au and dsl-61-95-64-9.request.com.au (DSL) and *.static-ipl.aapt.com.au, and APNIC measures 25,071 end users. hosting is wrong; isp is the minimal fix (business would be a further claim this entry does not make)."
+  source_url: "https://rdap.apnic.net/ip/61.95.0.0"
+  date: 2026-09-19
+
+# --- Pass 4 (2026-09-19): eyeball networks ipverse calls hosting, found during the mobile research ---
+24432:
+  category: isp
+  reason: "AS24432 is Robi Axiata, Bangladesh's second mobile operator: APNIC aut-num AXIATA-ROBI-AS-AP, registrant Axiata (Bangladesh) Limited, remark 'Internet service Provider'; its inetnums are AXIATA-BD 'Robi Axitata Ltd- DATA'; APNIC measures 4,458,276 end users behind only 20,992 IPv4 addresses (212 per address, carrier NAT). hosting labels millions of subscribers as servers. (Not in mobile_carrier.txt: no inetnum says cellular.)"
+  source_url: "https://rdap.apnic.net/autnum/24432"
+  date: 2026-09-19
+
+131429:
+  category: isp
+  reason: "AS131429 (aut-num MOBIFONE-AS-VN) is MobiFone, a Vietnamese mobile operator: its blocks are assigned to MobiFone regional service companies, its NOC and its international telecom centre; APNIC measures 2,458,308 end users behind 84,736 IPv4 addresses (29 per address). A few /22s are assigned to cloud customers (CLOUDMEDIA-VN, CLOUDONE-VN), which does not make the AS a host."
+  source_url: "https://rdap.apnic.net/ip/59.153.220.0"
+  date: 2026-09-19
+
+24499:
+  category: isp
+  reason: "AS24499 (aut-num TPP-AS-PK) is Telenor Pakistan, a mobile operator: its own blocks are netname TPP-PK 'Telenor Pakistan (Pvt) Ltd' and it also routes small fixed ISPs (FIBERZONE, Hazara Communication Cable Net, Lahore Digital Network); APNIC measures 2,004,545 end users behind 20,480 IPv4 addresses (98 per address). hosting is wrong."
+  source_url: "https://rdap.apnic.net/ip/37.111.128.0"
+  date: 2026-09-19
+
+29614:
+  category: isp
+  reason: "AS29614 (AFRINIC as-name GHANATEL-AS) is Vodafone Ghana's (now Telecel Ghana) access network: sampled PTRs are 41-218-224-9-adsl-dyn.4u.com.gh, 41-210-32-9-adsl-static.4u.com.gh and 64-155-41-9-dedicatedinternet.vodafone.com.gh, and APNIC measures 2,151,222 end users. hosting labels Ghanaian broadband subscribers as servers."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/29614"
+  date: 2026-09-19

@@ -329,11 +329,11 @@ checks:
     gem_sources: [asn_mobile_carrier]
     note: "T-Mobile USA AS6614 — mobile-only carrier ASN"
   - ip: "166.212.0.10"
-    expect: mobile
-    rule: asn_mobile
+    expect: residential_isp
+    rule: asn_category
     asn: 20057
-    gem_sources: [asn_mobile_carrier]
-    note: "AT&T Wireless AS20057 — dedicated mobility AS, distinct from fixed-line AS7018"
+    gem_sources: [asn_category]
+    note: "AT&T Mobility AS20057. Expected mobile until 2026-09-19: curation pass 4 (C2, re-examined by C2b/C4 under CD-24) removed AS20057 from mobile_carrier.txt because it also carries non-cellular blocks (155.170.0.0/17 ATTMO3Z static reassignments to government/fleet customers with no registry or AT&T document tying them to the cellular network; 12.72.0.0/15 AT&T Worldnet dial/fixed naming) - CD-6 strict rule, prefer false negatives. The row now asserts the category verdict and guards against the flag returning without per-block evidence. Reasons in the mobile_carrier.txt comment block."
   - ip: "27.228.0.10"
     expect: mobile
     rule: asn_mobile
@@ -341,11 +341,11 @@ checks:
     gem_sources: [asn_mobile_carrier]
     note: "NTT DOCOMO (JP) — the largest non-US carrier currently pinned"
   - ip: "157.192.0.10"
-    expect: mobile
-    rule: asn_mobile
+    expect: residential_isp
+    rule: asn_category
     asn: 138384
-    gem_sources: [asn_mobile_carrier]
-    note: "Rakuten Mobile (JP)"
+    gem_sources: [asn_category]
+    note: "Rakuten Mobile (JP) AS138384. Expected mobile until 2026-09-19: curation pass 4 removed AS138384 from mobile_carrier.txt because it also carries *.isp.rakuten.jp fixed blocks (110.165.128.0/17 ...; Rakuten Mobile sells Rakuten Hikari fibre) - CD-6 strict rule. The row now asserts the category verdict and guards against the flag returning without new evidence. Reasons in the mobile_carrier.txt comment block."
   - ip: "83.229.128.10"
     expect: residential_isp
     rule: asn_category

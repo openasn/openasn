@@ -9,51 +9,52 @@
 # https://github.com/josephrocca/is-vpn — school gateways misread as VPNs).
 #
 # Curation bar: ASN registered to a recognized SWG/SSE vendor whose product
-# proxies customer web traffic through vendor-operated egress. Evidence:
-# ipverse as-metadata org description
-# (https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json),
-# checked 2026-07-04, plus the vendor's public product line.
+# proxies customer web traffic through vendor-operated egress. Evidence
+# (since 2026-09-19, P4-C2): the RIR aut-num record (RDAP registrant = the
+# vendor), the vendor's own PeeringDB record where it keeps one, and the
+# vendor's public product line (section headers). The ipverse description
+# string (a bulk WHOIS copy) is no longer a source.
 
 # --- Zscaler (zscaler.com; egress list at https://config.zscaler.com/) ---
-AS22616   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
-AS32921   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
-AS40384   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
-AS53444   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
-AS53813   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
-AS55242   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
-AS62044   # Zscaler Switzerland GmbH (CH). src: ipverse as-metadata description "Zscaler Switzerland GmbH" (2026-07-04)
-AS62907   # ZSCALER INC. (US). src: ipverse as-metadata description "ZSCALER INC." (2026-07-04)
+AS22616   # ZSCALER INC. (US). src: https://rdap.arin.net/registry/autnum/22616 (aut-num ZSCALER-SJC1, registrant ZSCALER, INC.) + https://www.peeringdb.com/asn/22616 (operator record "Zscaler AS22616", Network Services) (2026-09-19)
+AS32921   # ZSCALER INC. (US). src: https://rdap.arin.net/registry/autnum/32921 (aut-num ZSCALER-NEWYORK, registrant ZSCALER, INC.) (2026-09-19)
+AS40384   # ZSCALER INC. (US). src: https://rdap.arin.net/registry/autnum/40384 (aut-num ZSCALER-GRX, registrant ZSCALER, INC.) (2026-09-19)
+AS53444   # ZSCALER INC. (US). src: https://rdap.arin.net/registry/autnum/53444 (aut-num ZSCALER-SJC, registrant ZSCALER, INC.) (2026-09-19)
+AS53813   # ZSCALER INC. (US). src: https://rdap.arin.net/registry/autnum/53813 (aut-num ZSCALER-INC, registrant ZSCALER, INC.) + https://www.peeringdb.com/asn/53813 (operator record "Zscaler AS53813", Network Services) (2026-09-19)
+AS55242   # ZSCALER INC. (US). src: https://rdap.arin.net/registry/autnum/55242 (aut-num ZSCALER-ATLANTA, registrant ZSCALER, INC.) (2026-09-19)
+AS62044   # Zscaler Switzerland GmbH (CH). src: https://rdap.db.ripe.net/autnum/62044 (aut-num ZSCALER-EMEA, registrant Zscaler Switzerland GmbH) + https://www.peeringdb.com/asn/62044 (operator record "Zscaler AS62044", Network Services) (2026-09-19)
+AS62907   # ZSCALER INC. (US). src: https://rdap.arin.net/registry/autnum/62907 (aut-num ZSCALER-CORP, registrant ZSCALER, INC.) (2026-09-19)
 
 # --- Forcepoint (forcepoint.com — Web Security Cloud) ---
-AS7598    # Forcepoint UK Limited (GB). src: ipverse as-metadata description "Forcepoint UK Limited" (2026-07-04)
-AS30057   # Forcepoint LLC (US). src: ipverse as-metadata description "Forcepoint LLC" (2026-07-04)
-AS35788   # Forcepoint UK Limited (GB). src: ipverse as-metadata description "Forcepoint UK Limited" (2026-07-04)
-AS42465   # Forcepoint UK Limited (GB). src: ipverse as-metadata description "Forcepoint UK Limited" (2026-07-04)
-AS43251   # Forcepoint Overseas Limited (GB). src: ipverse as-metadata description "Forcepoint Overseas Limited" (2026-07-04)
-AS44444   # Forcepoint UK Limited (GB). src: ipverse as-metadata description "Forcepoint UK Limited" (2026-07-04)
+AS7598    # Forcepoint UK Limited (GB). src: https://rdap.apnic.net/autnum/7598 (aut-num FUL-APAC-AS, registrant Forcepoint UK Limited) + https://www.peeringdb.com/asn/7598 (operator record "Forcepoint - APAC", Enterprise) (2026-09-19)
+AS30057   # Forcepoint LLC (US). src: https://rdap.arin.net/registry/autnum/30057 (aut-num SURFCONTROLSV-ASN, registrant Forcepoint LLC) (2026-09-19)
+AS35788   # Forcepoint UK Limited (GB). src: https://rdap.db.ripe.net/autnum/35788 (aut-num Forcepoint-Cloud-AMER-AS, registrant Forcepoint UK Limited) + https://www.peeringdb.com/asn/35788 (operator record "Forcepoint - AMER", Enterprise) (2026-09-19)
+AS42465   # Forcepoint UK Limited (GB). src: https://rdap.db.ripe.net/autnum/42465 (aut-num FORCEPOINT-ANYCAST-AS, registrant Forcepoint UK Limited) (2026-09-19)
+AS43251   # Forcepoint Overseas Limited (GB). src: https://rdap.db.ripe.net/autnum/43251 (aut-num SURFCONTROL-READING, registrant Forcepoint Overseas Limited) (2026-09-19)
+AS44444   # Forcepoint UK Limited (GB). src: https://rdap.db.ripe.net/autnum/44444 (aut-num Forcepoint-Cloud-AS, registrant Forcepoint UK Limited) + https://www.peeringdb.com/asn/44444 (operator record "Forcepoint Cloud", NSP) (2026-09-19)
 
 # --- Netskope (netskope.com — SSE/SWG) ---
-AS55256   # Netskope Inc (US). src: ipverse as-metadata description "Netskope Inc" (2026-07-04)
-AS151293  # Netskope Network Technology (Shanghai) Co. Ltd (CN). src: ipverse as-metadata description (2026-07-04)
+AS55256   # Netskope Inc (US). src: https://rdap.arin.net/registry/autnum/55256 (aut-num NETSKOPE, registrant Netskope Inc) + https://www.peeringdb.com/asn/55256 (operator record "Netskope", Network Services) (2026-09-19)
+AS151293  # Netskope Network Technology (Shanghai) Co. Ltd (CN). src: https://rdap.apnic.net/autnum/151293 (aut-num NETSKOPE-CN) (2026-09-19)
 
 # --- Menlo Security (menlosecurity.com — browser isolation/SWG) ---
-AS62654   # MENLO SECURITY INC. (US). src: ipverse as-metadata description "MENLO SECURITY INC." (2026-07-04)
-AS152150  # Menlo Security Japan K.K. (JP). src: ipverse as-metadata description "Menlo Security Japan K.K." (2026-07-04)
+AS62654   # MENLO SECURITY INC. (US). src: https://rdap.arin.net/registry/autnum/62654 (aut-num MENLO-SECURITY, registrant MENLO SECURITY, INC.) + https://www.peeringdb.com/asn/62654 (operator record "MENLO-SECURITY") (2026-09-19)
+AS152150  # Menlo Security Japan K.K. (JP). src: https://rdap.apnic.net/autnum/152150 (aut-num MENLO-SEC-JP) (2026-09-19)
 
 # --- iboss (iboss.com — the documented school-gateway false-positive case) ---
-AS137922  # IBOSS Inc. (US). src: ipverse as-metadata description "IBOSS Inc." (2026-07-04)
-AS202276  # IBOSS INC (US). src: ipverse as-metadata description "IBOSS INC" (2026-07-04)
-AS396253  # iboss inc (US). src: ipverse as-metadata description "iboss inc" (2026-07-04)
+AS137922  # IBOSS Inc. (US). src: https://rdap.apnic.net/autnum/137922 (aut-num IBOSS-AS-AP, registrant IBOSS Inc.) + https://www.peeringdb.com/asn/137922 (operator record "iboss Asia") (2026-09-19)
+AS202276  # IBOSS INC (US). src: https://rdap.db.ripe.net/autnum/202276 (aut-num ibossripe, registrant IBOSS, INC) + https://www.peeringdb.com/asn/202276 (operator record "iboss Europe") (2026-09-19)
+AS396253  # iboss inc (US). src: https://rdap.arin.net/registry/autnum/396253 (aut-num IBOSS-8-ASN, registrant iboss,inc) + https://www.peeringdb.com/asn/396253 (operator record "iboss Americas") (2026-09-19)
 
 # --- Check Point (checkpoint.com — Harmony SASE / Perimeter 81 SSE) ---
-AS398391  # Check Point Software Technologies Inc. — Harmony SASE / Perimeter 81 SSE egress (US): enterprise employee web traffic, not a consumer VPN. src: ipverse as-metadata handle "CHECK-POINT-SASE" + https://www.checkpoint.com/harmony/sase/ (2026-07-07). Reclassified from vpn_provider.txt — X4BNet lists_vpn miscategorized it.
+AS398391  # Check Point Software Technologies Inc. — Harmony SASE / Perimeter 81 SSE egress (US): enterprise employee web traffic, not a consumer VPN. src: https://rdap.arin.net/registry/autnum/398391 (aut-num CHECK-POINT-SASE, registrant Check Point Software Technologies Inc.) + https://www.peeringdb.com/asn/398391 (operator record "Perimeter 81 (AS398391)", Network Services) + https://www.checkpoint.com/harmony/sase/ (2026-07-07). Reclassified from vpn_provider.txt — X4BNet lists_vpn miscategorized it. (2026-09-19)
 
 # --- Cato Networks (catonetworks.com — SASE cloud; customer web traffic transits Cato-operated PoPs) ---
-AS13150   # CATO NETWORKS LTD (IL) — SASE PoP egress. src: ipverse as-metadata description "CATO NETWORKS LTD" + https://www.catonetworks.com/sase/ (2026-07-08). Cross-checked live vs our Layer-A quant: CAIDA asn_name CATON, 242 announced v4 prefixes.
-AS138627  # Cato Networks Inc. — APAC PoPs (HK). src: ipverse as-metadata description "Cato Networks Inc." + https://www.catonetworks.com/ (2026-07-08).
+AS13150   # CATO NETWORKS LTD (IL) — SASE PoP egress. src: https://rdap.db.ripe.net/autnum/13150 (aut-num CATON, registrant CATO NETWORKS LTD) + https://www.peeringdb.com/asn/13150 (operator record "Cato Networks") + https://www.catonetworks.com/sase/ (2026-07-08). Cross-checked live vs our Layer-A quant: CAIDA asn_name CATON, 242 announced v4 prefixes. (2026-09-19)
+AS138627  # Cato Networks Inc. — APAC PoPs (HK). src: https://rdap.apnic.net/autnum/138627 (aut-num CATONETWORKSINC-AS-AP, registrant Cato Networks, Inc.) + https://www.peeringdb.com/asn/138627 (operator record "Cato Networks AS138627") + https://www.catonetworks.com/ (2026-07-08). (2026-09-19)
 
 # --- Skyhigh Security (skyhighsecurity.com — SSE/SWG, the ex-McAfee-Enterprise Skyhigh spinoff) ---
-AS14600   # SKYHIGH SECURITY LLC (US) — SSE (SWG/CASB/ZTNA) egress. src: ipverse as-metadata description "SKYHIGH SECURITY LLC" + https://www.skyhighsecurity.com/products/security-service-edge.html (2026-07-08).
+AS14600   # SKYHIGH SECURITY LLC (US) — SSE (SWG/CASB/ZTNA) egress. src: https://rdap.arin.net/registry/autnum/14600 (aut-num SKYHIGH-SECURITY, registrant SKYHIGH SECURITY LLC) + https://www.skyhighsecurity.com/products/security-service-edge.html (2026-07-08). (2026-09-19)
 AS203724  # Musarubra Germany GmbH (DE) — Skyhigh Security / McAfee-Enterprise SWG PoP egress; announces the BULK of Skyhigh's egress ranges (185.221.68.0/24, 185.221.70.0/24, 185.125.225.0/24) vs AS14600's two /24s — added 2026-07-08 after the adversarial audit flagged the primary egress ASN was missing. src: RDAP registrant "Musarubra Germany GmbH" (McAfee-Enterprise/Skyhigh legal entity) + our Layer-A prefix2as data (those /24s originate AS203724) + https://www.skyhighsecurity.com/.
 
 # --- Cisco Umbrella (umbrella.cisco.com — Secure Internet Gateway / SWG) ---
@@ -62,7 +63,7 @@ AS203724  # Musarubra Germany GmbH (DE) — Skyhigh Security / McAfee-Enterprise
 # as enterprise_gateway because at ASN granularity it IS Cisco Umbrella's network and the
 # load-bearing case is not blocking Umbrella-proxied employees; the resolver IPs are
 # harmless either way. Revisit only if IP-level splitting is ever needed.
-AS36692   # CISCO-UMBRELLA (US) — Cisco Umbrella SIG/SWG egress (+ public OpenDNS resolver, dual-use). src: ipverse as-metadata description "OpenDNS" (AS36692; the "Cisco OpenDNS LLC" string is AS30607's) + CAIDA asn_name "CISCO-UMBRELLA" + https://umbrella.cisco.com/products/secure-internet-gateway (2026-07-08).
+AS36692   # CISCO-UMBRELLA (US) — Cisco Umbrella SIG/SWG egress (+ public OpenDNS resolver, dual-use). src: https://rdap.arin.net/registry/autnum/36692 (aut-num CISCO-UMBRELLA, registrant Cisco OpenDNS, LLC) + https://www.peeringdb.com/asn/36692 (operator record "Cisco Umbrella", Content) + https://umbrella.cisco.com/products/secure-internet-gateway (2026-07-08). (2026-09-19)
 
 # --- Considered and EXCLUDED (2026-07-08 audit; keep out unless the picture changes) ---
 # - Cloudflare (AS13335 + siblings): primarily a CDN / content network (verdict :hosting,

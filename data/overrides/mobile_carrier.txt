@@ -14,58 +14,30 @@
 #     homes with stable IPs — that's :residential_isp, not carrier NAT.
 #   * Known incompleteness is fine; recall grows via PRs. Misclassified
 #     entries are the only real bug class for this file.
-# Evidence: ipverse as-metadata org descriptions
-# (https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json),
-# checked 2026-07-04, selected via
-# `rake overrides:candidates` keyword sweep + manual review.
+# Evidence: the 2026-07-04 seed was selected by `rake overrides:candidates`
+# keyword sweep and first cited ipverse as-metadata org descriptions. Since
+# 2026-09-19 (P4-C2) no line relies on that string: every line cites the RIR
+# record of its own announced space and/or the operator's own statement, and
+# every line has passed a census of ALL announced prefixes, IPv4 AND IPv6,
+# including registry sub-assignments (see the P4-C2 block at the end).
 
 # --- North America ---
 AS6614    # T-Mobile USA Inc. (US) — cellular; legacy aut-num name USCC-ASN (US Cellular, whose wireless business T-Mobile acquired in 2025), ARIN registrant is TMOBI "T-Mobile USA, Inc." today, so the name/description mismatch is expected and not a lookalike. src: https://rdap.arin.net/registry/autnum/6614 (2026-09-12)
-AS21928   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
-AS10728   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
-AS11461   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
-AS5079    # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
-AS20057   # AT&T Wireless Service (dedicated mobility AS, distinct from fixed AS7018). src: ipverse as-metadata description "AT&T Wireless Service" (2026-07-04)
-AS32307   # NE Colorado Cellular Inc (Viaero Wireless). src: ipverse as-metadata description "NE COLORADO CELLULAR INC" (2026-07-04)
+AS21928   # T-Mobile USA (US) — main cellular AS: ARIN registrant T-Mobile USA, Inc.; every block it announces is a T-Mobile/Nextel mobile object (TMO*/TMUS-*, CORE 162.160.0.0/11, NEXTEL-*-MOBILES) and its IPv6 is TMOV6-1 2607:fb90::/28; no fixed/enterprise object in 540 announced prefixes; PeeringDB (operator-maintained) T-Mobile USA. src: https://rdap.arin.net/registry/ip/2607:fb90:: + https://www.peeringdb.com/asn/21928 (2026-09-19)
 
 # --- Europe ---
-AS25106   # Mobile TeleSystems JLLC (MTS Belarus). src: ipverse as-metadata description "Mobile TeleSystems JLLC" (2026-07-04)
-AS12958   # T2 Mobile LLC (Tele2 Russia, mobile-only). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
-AS39374   # T2 Mobile LLC (Tele2 Russia). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
-AS42437   # T2 Mobile LLC (Tele2 Russia). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
-AS48092   # T2 Mobile LLC (Tele2 Russia). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
-AS12847   # Latvijas Mobilais Telefons SIA (LMT, LV mobile). src: ipverse as-metadata description "Latvijas Mobilais Telefons SIA" (2026-07-04)
-AS13280   # Three Ireland (Hutchison) Ltd (mobile). src: ipverse as-metadata description "Three Ireland (Hutchison) limited" (2026-07-04)
-AS47883   # KIBRIS Mobile Telekomunikasyon Ltd (Turkcell NC). src: ipverse as-metadata description "KIBRIS MOBILE TELEKOMUNIKASYON LTD." (2026-07-04)
+AS39374   # T2 Mobile LLC (Tele2 Russia, regional) — RIPE registrant T2 Mobile LLC, remark "T2 Russia Network"; all 13 announced blocks are T2RU-SUBSCRIBER-POOL-NET / CDMANET5, no IPv6. src: https://rdap.db.ripe.net/autnum/39374 + https://rdap.db.ripe.net/ip/94.77.36.0 (2026-09-19)
+AS42437   # T2 Mobile LLC (Tele2 Russia, Rostov) — RIPE registrant T2 Mobile LLC; all 26 announced blocks are T2RU-SUBSCRIBER-POOL-NET / MVNO-SUBSCRIBER-POOL-NET / RU-CELLULAR-*, no IPv6. src: https://rdap.db.ripe.net/autnum/42437 + https://rdap.db.ripe.net/ip/176.59.64.0 (2026-09-19)
+AS48092   # T2 Mobile LLC (Tele2 Russia, regional) — RIPE registrant T2 Mobile LLC; all 19 announced blocks are T2RU-SUBSCRIBER-POOL-NET / RU-CELLULAR-* (193.138.148.0/22 RST-NET is PI held by T2 Mobile itself), no IPv6. src: https://rdap.db.ripe.net/autnum/48092 + https://rdap.db.ripe.net/ip/94.240.64.0 (2026-09-19)
+AS12847   # Latvijas Mobilais Telefons (LMT, LV mobile) — RIPE aut-num LMT-NET; announced blocks are netnames LMT-3G / LMT-4G / LMT, IPv6 2a03:ec00::/32 carries no sub-assignment; PeeringDB (operator-maintained) Latvijas Mobilais Telefons. src: https://rdap.db.ripe.net/ip/212.93.112.0 + https://www.peeringdb.com/asn/12847 (2026-09-19)
 
 # --- Asia-Pacific ---
-AS9605    # NTT DOCOMO INC. (JP mobile). src: ipverse as-metadata description "NTT DOCOMO INC." (2026-07-04)
-AS9644    # SK Telecom (KR mobile). src: ipverse as-metadata description "SK Telecom" (2026-07-04)
-AS138384  # Rakuten Mobile Inc (JP). src: ipverse as-metadata description "Rakuten Mobile Inc" (2026-07-04)
-AS9231    # China Mobile Hong Kong Company Limited. src: ipverse as-metadata description "China Mobile Hong Kong Company Limited" (2026-07-04)
-AS24444   # China Mobile (Shandong). src: ipverse as-metadata description "China Mobile" (2026-07-04)
-AS24547   # China Mobile (Hebei). src: ipverse as-metadata description "China Mobile" (2026-07-04)
-AS38019   # China Mobile. src: ipverse as-metadata description "China Mobile" (2026-07-04)
-AS56041   # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
-AS56042   # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
-AS56047   # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
-AS132525  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
-AS140895  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
-AS141425  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
-AS209141  # China Mobile International (Russia) LLC. src: ipverse as-metadata description (2026-07-04)
-AS17924   # SmarTone Mobile Communications Limited (HK). src: ipverse as-metadata description "Smartone Mobile communications Limited" (2026-07-04)
-AS9587    # DTAC TriNet Co. Ltd. (TH mobile). src: ipverse as-metadata description "DTAC TriNet Co. Ltd." (2026-07-04)
-AS131445  # AIS (TH) — AWN's DEDICATED cellular AS: RDAP aut-num name "AIS3G-2100-AS-AP" (the 2100 MHz mobile licence), remark "Advance Wireless Network"; 9,492,714 APNIC end users behind only 144,896 IPv4 addresses (~65 per address, the carrier-NAT signature). REPLACES AS133481, which is AIS's FIXED fibre network — see the Sweep 2026-09-12 note. src: https://rdap.apnic.net/autnum/131445 (2026-09-12)
-AS10030   # Celcom Axiata Berhad (MY mobile). src: ipverse as-metadata description "Celcom Axiata Berhad" (2026-07-04)
-AS10081   # DiGi Telecommunications Sdn Bhd (MY mobile). src: ipverse as-metadata description "DiGi Telecommunications Sdn Bhd" (2026-07-04)
+AS9605    # NTT DOCOMO (JP mobile) — APNIC aut-num "docomo", remark NTT DOCOMO, INC.; every JPNIC object in its 1,195 announced prefixes (v4 + v6 240a:6b::) is an NTT DOCOMO mobile-platform block (MAPS, NVSGW, MAVC, MYDOCOMO, DCM-WAVE, DCM-GRX), no fixed/enterprise object; docomo's fixed ISP OCN is the separate AS4713. src: https://rdap.apnic.net/autnum/9605 + https://www.peeringdb.com/asn/9605 (2026-09-19)
+AS9231    # China Mobile Hong Kong — APNIC aut-num IPEOPLESNET-AS-AP (ex-Peoples Telephone, CMHK's cellular company); announced blocks IPEOPLES / PEOPLESPHONE-HK, PTRs *.peoples.com.hk, no IPv6 announced. src: https://rdap.apnic.net/autnum/9231 + https://rdap.apnic.net/ip/223.123.192.0 (2026-09-19)
+AS17924   # SmarTone Mobile Communications (HK) — APNIC aut-num SMARTONE-MB-AS-AP; every announced block is a SMARTMOBILE / SMARTONE-* object with PTRs m*.smartone.com, IPv6 2407:b400::/32 has no sub-assignment; PeeringDB (operator-maintained) SmarTone Mobile Communications. src: https://rdap.apnic.net/autnum/17924 + https://www.peeringdb.com/asn/17924 (2026-09-19)
 
 # --- Middle East / Africa / elsewhere ---
-AS197207  # Mobile Communication Company of Iran PLC (MCI/Hamrah-e Aval). src: ipverse as-metadata description (2026-07-04)
-AS211908  # Horizon Scope Mobile Telecom WLL (IQ). src: ipverse as-metadata description "Horizon Scope Mobile Telecom WLL" (2026-07-04)
-AS138322  # Afghan Wireless Communication Company. src: ipverse as-metadata description "Afghan Wireless Communication Company" (2026-07-04)
-AS37009   # Mobile Telecommunications Ltd (MTC Namibia). src: ipverse as-metadata description "Mobile Telecommunications Ltd." (2026-07-04)
-AS48503   # Mobile Telecom-Service LLP (Tele2/Altel KZ). src: ipverse as-metadata description "Mobile Telecom-Service LLP" (2026-07-04)
-AS50257   # JV A-Mobile Ltd (Abkhazia mobile). src: ipverse as-metadata description "JV A-Mobile Ltd." (2026-07-04)
+AS48503   # Mobile Telecom-Service LLP (Tele2 + ALTEL 4G, KZ) — operator's own PeeringDB record: "mobile operator in Kazakhstan with Tele2 Kazakhstan and ALTEL 4G brands ... 2G/3G/4G/5G"; all 635 announced prefixes (414 v4, 221 v6) are pool-net-<city> subscriber pools or KZ-TELE2/KZ-ALTEL allocations, no fixed/enterprise object (174.35.103.0/24 is a CDNetworks cache reassignment). src: https://www.peeringdb.com/asn/48503 + https://rdap.db.ripe.net/ip/2a03:32c0:: (2026-09-19)
 
 # ============================ Sweep 2026-09-12 (N1) ============================
 # Four corrections found by an adversarial audit of this file against the RIRs' own RDAP records
@@ -159,25 +131,176 @@ AS50257   # JV A-Mobile Ltd (Abkhazia mobile). src: ipverse as-metadata descript
 # fixes the category too, and it works fine on a `business`-categorized one. AS29465 MTN Nigeria
 # is the standing example: it is in brianhama/bad-asn-list, so it answers :hosting whatever we do.
 
+# ============ Independent verification 2026-09-19 (pass 4) of the 60 batch A-C records ============
+# A verifier that did not do the research re-fetched every aut-num direct from the RIR, re-ran the
+# INETNUM census (up to 15 announced ranges per ASN, RDAP/whois) with live PTRs, and re-checked
+# origins on RIPEstat. 13 of the 26 researcher ACCEPTs survived; all 32 REJECTs and 2 UNSUREs stand.
+# THREE LINES SHIPPED 2026-09-12 ARE REMOVED because the census found fixed space in the same AS:
+#   AS45609 Airtel Mobility - 223.233.112.0/20 netname ABTS-DSL-DEL, PTR abts-north-dynamic-*.
+#     airtelbroadband.in (pin restored in eyeball_confirm.txt);
+#   AS39891 STC Al Jawwal - 188.49.192.0/19 in inetnum Jeddah-Residential-Fixed-Broadband and
+#     185.2.232.0/22 Residential-Fixed-Wireless-Access (pin restored);
+#   AS29975 Vodacom ZA - 41.1.0.0/16 netname Vodacom_Wimax "Assign to the Vodacom Wimax BU". Very
+#     likely stale (the two resolving PTRs in it are *.umts), but MTN Uganda was rejected on the
+#     same marker; re-admit when the registry record changes.
+# NOT SHIPPED from the pending ACCEPTs, so nobody re-proposes them without new evidence:
+#   AS24203 XLSmart (XL_INFRASTRUKTUR_METRO-E / _CORPORATE), AS132199 Globe 5G (DSL-POOL-PH, GBB/INNOVE
+#   pools), AS24158 Taiwan Mobile (TFN-NET = Taiwan Fixed Network on its largest blocks), AS45669 Jazz
+#   ("IP TRANSIT", LINKdotNET BRAS DSL pool), AS28403 Telcel (Uninet static-customer /24s),
+#   AS26611 Comcel (legal holder of Claro Colombia fixed too), AS327712 Mobilis (213.140.59.0/24
+#   ADSL-Algerie-Telecom), AS37287 Airtel Zambia (102.144.0.0/14 + 45.212.0.0/15 "VPN clients"),
+#   AS36908 Vodacom TZ (41.217.200.0/24 WiMax customers), AS24432 Robi (no cellular netname at all).
+# Batch D (ranks 61-80), same method: shipped AS201767 Uzmobile, AS38466 U Mobile, AS51207 Free
+#   Mobile, AS37440 Airtel Malawi. Rejected on census evidence: AS327931 Djezzy (OTA-VSAT-NET
+#   enterprise VSAT), AS17853 LG Uplus (KRNIC BORANET_customer blocks), AS12091 MTN SA
+#   (*.access.supersonic.co.za and flte-wholesale PTRs), AS37453 Vodacom Congo ("PPPOE CUSTOMERS
+#   AT LUBUMBASHI"), AS18004 WIN/Smartfren (aut-num names an ISP; third-party CDN /24s); and the
+#   researcher rejects AS39603 Play (PLAY_FBB), AS12912, AS1257, AS3301, AS8386, AS48832, AS37693,
+#   AS27651, AS27882, AS30992, AS20011 all stand.
+# Batch E (ranks 81-100): shipped AS64466 Mobiuz (GPRS_NAT / ROAMING netnames, 741 users/IPv4).
+#   Rejected: AS21497 VF Ukraine (VEGA-GPON fixed blocks; its eyeball pin stays), AS36974 MTN CI
+#   (afnet.net PTRs), AS327885 Halotel TZ ("Fix cable to using internet"), AS36962 MTN Zambia
+#   ("ENTERPRISE BUSINESS CLIENTS"), AS36972 MTN Sudan (one "Enterprise Business Unit users" /24),
+#   AS29355 Kcell (KZ-AKSORANLLP-servers /23), AS8412 Magenta AT, AS29614 Vodafone GH, AS139994
+#   XL FTTH, AS12353 Vodafone PT, AS8781 Ooredoo QA, AS21575 Entel PE (Americatel space), AS24499
+#   Telenor PK, AS131429 MobiFone, AS59588 Zain IQ, AS37577 Orange BF. Unsure (no evidence either
+#   way, not shipped): AS42961 Zain KW (aut-num GPRS-AS but 1.57 users/IPv4), AS262210 Bitel,
+#   AS37223 Vodacom MZ.
+# Batch F (ranks 101-120): shipped AS45245 Banglalink (132 users/IPv4, every block BANGLALINK-BD).
+#   AS29357 Wataniya/Ooredoo Kuwait was shipped on its all-mobile IPv4 netnames (HS-WT, WTC-MIP) and
+#   REMOVED 2026-09-19 by the independent verifier: its only IPv6 customer block, 2a00:1851::/32, is
+#   netname B2C_B2B_Customers, Ooredoo Kuwait sells business and home fibre, its sibling AS219131 is
+#   unrouted, and PeeringDB self-classifies AS29357 Cable/DSL/ISP - an enterprise block under CD-6.
+#   src: https://rdap.db.ripe.net/ip/2a00:1851:: + https://www.peeringdb.com/api/net?asn=29357 (2026-09-19). Rejected:
+#   AS8953 Orange RO (RO-ORANGE-B2B static space), AS36890 MTN Rwanda (pppoe-users), AS3329 HOL-GR,
+#   AS4760 PCCW Netvigator, AS1680 Cellcom Fixed Line, AS36994 Vodacom Business, AS215540 (a proxy6
+#   proxy network, not a carrier), and the converged Orange BE/TN, T-Mobile CZ, Vodafone RO/CZ/HU,
+#   Telenor NO/SE. Unsure: AS38266 Vodafone Idea, AS45498 Smart Axiata, AS37461 Orange Guinee.
+# Re-check any of these with RDAP on the first address of the named block. src: https://rdap.apnic.net/ip/223.233.112.0 +
+# https://rdap.db.ripe.net/ip/188.49.192.0 + https://rdap.afrinic.net/rdap/ip/41.1.0.0 (2026-09-19)
+
 # --- North America ---
-AS6167    # Cellco Partnership d/b/a Verizon Wireless (US) — dedicated cellular: ARIN aut-num name "CELLCO-PART" (Cellco Partnership is Verizon Wireless's legal entity) and its largest allocation 97.128.0.0/9 is NetName "WIRELESSDATANETWORK"; rDNS 9.sub-97-237-48.myvzw.com (myvzw.com = My Verizon Wireless). 18,230,078 APNIC-estimated end users. Verizon's fixed/Fios consumer broadband is the separate AS701. src: https://rdap.arin.net/registry/autnum/6167 (2026-09-12)
 
 # --- Europe ---
-AS15897   # Vodafone Turkey (TR) — cellular; RIPE inetnums 46.155.0.0/16 and 176.55.0.0/16 netname Vodafone-Turkey-Customer-IP-Pools descr "Vodafone Turkey 3G IP Pool", registrant ORG-RIHv1-RIPE holds only this AS (the fixed arm Vodafone Net is a separate org/AS). src: https://rdap.db.ripe.net/ip/46.155.0.9 (2026-09-12)
-AS16135   # Turkcell (TR) — cellular; RIPE aut-num TURKCELL-AS, org ORG-TA62-RIPE (the GSM licensee) holds only this AS, inetnum 176.90.0.0/15 netname TR-TURKCELL-INTERNET descr "Ankara GPRS (2G-3G)"; the group's fixed fibre arm Turkcell Superonline is the separate AS34984. src: https://rdap.db.ripe.net/ip/176.90.224.9 (2026-09-12)
 AS20978   # TT Mobil / Avea (TR) — cellular; RIPE aut-num TT_Mobil, org ORG-ITHA1-RIPE (mnt AVEA-MNT) holds only this AS, inetnums 5.47.0.0/16, 37.155.0.0/16, 46.104.128.0/17 all netname AVEA "AVEA Iletisim Hizmetleri A.S."; Turk Telekom's fixed subscribers are on AS9121. src: https://rdap.db.ripe.net/ip/5.47.0.9 (2026-09-12)
+AS51207  # Free Mobile SAS (FR) — RIPE aut-num FREEM; 78.240.0.0/13 is netname FR-FREEMOBILE-20230404 remarks "SUBSCRIBERS-BLOCK", 37.164.0.0/16 and 37.8.160.0/20 are netname MOBILE-USERS-BLOCK descr "Customers IP" (Iliad Italia, Free Caraibe), 37.1.232.0/22 is FREEMOBILE-BACKBONE; rDNS is *.coucou-networks.fr, Free Mobile's cellular PTR domain. Free's Freebox FIXED subscribers are on the separate AS12322 (PROXAD). src: https://rdap.db.ripe.net/autnum/51207 (2026-09-12; independently re-verified 2026-09-19)
 
 # --- Asia-Pacific ---
 AS17421   # Chunghwa Telecom Mobile Business Group (TW) — APNIC aut-num EMOME-NET, remark "Mobile Business Group | Chunghwa Telecom Co., Ltd."; 4/4 sampled prefixes PTR *.emome-ip.hinet.net (emome = CHT cellular brand); CHT fixed broadband is the separate AS3462 HINET. src: https://rdap.apnic.net/autnum/17421 (2026-09-12)
-AS23693   # Telkomsel (ID) — dedicated cellular: APNIC aut-num name "TELKOMSEL-ASN-ID", description "Cellular Network Provider", and 12 of 12 sampled prefixes are netname TELKOMSEL-ID with the same "Cellular Network Provider" descr; rDNS dynamic-pool-telkomsel-114-124-0-9.telkomsel.net.id. 27,094,979 APNIC users over 2,416,384 IPv4. Telkom Indonesia's IndiHome fixed broadband stays on the separate AS7713 TELKOMNET-AS-AP. src: https://rdap.apnic.net/autnum/23693 (2026-09-12)
 AS24389   # Grameenphone (BD) — cellular; APNIC aut-num GRAMEENPHONE-AS-AP descr "Cell Phone Operator", inetnums 37.111.192.0/18 and 119.30.32.0/20 descr "Internet service provider via GPRS/EDGE"; 4,480,082 APNIC users on 20,480 IPv4 = 219 users/IPv4. src: https://rdap.apnic.net/autnum/24389 (2026-09-12)
-AS45609   # Bharti Airtel Mobility (IN) — dedicated cellular: APNIC aut-num name "BHARTI-MOBILITY-AS-AP", remark "Bharti Airtel Ltd. AS for GPRS Service"; 28 of 30 sampled prefixes are descr BHARTI-AIRTEL-LTD-MOBILITY-SERVICES-IN / GPRS-Subscribers-in-North / BCL (Bharti Cellular Ltd), and no sampled subscriber IP has a PTR. 142,258,928 APNIC users over 3,700,992 IPv4 = 38.4 users/IP (carrier NAT). Airtel's fixed arm is the separate AS24560 AIRTELBROADBAND-AS-AP "Telemedia Services". src: https://rdap.apnic.net/autnum/45609 (2026-09-12)
+AS38466  # U Mobile Sdn Bhd (MY) — APNIC aut-num UMOBILE-AS-AP remarks "Mobile Network Operator"; allocation 123.136.96.0/19 is netname UMOBILE-MY descr "3G Mobile Operator" and every routed /24 is netname SUBS-UMOBILE. Licensed MNO with no fixed access network. 3,225,954 APNIC users / 46,592 IPv4 = 69.2 per address. src: https://rdap.apnic.net/autnum/38466 (2026-09-12; independently re-verified 2026-09-19)
+AS45245  # Banglalink Digital Communications (BD) — mobile-only operator (Bangladesh licenses fixed access separately); APNIC aut-num banglalink-AS remark www.banglalinkgsm.com, all 13 announced blocks netname BANGLALINK-BD, the one purpose-labelled block is 203.223.92.0/22 "Used for service-hosting" (its own VAS platforms; PTR names gprs.banglalinkgsm.com); 1,920,515 APNIC users over 14,592 IPv4 = 132 per address (carrier NAT). src: https://rdap.apnic.net/ip/203.223.92.0 (2026-09-19)
+AS64466  # Universal Mobile Systems LLC / Mobiuz (UZ) — state-founded mobile-only operator (GSM/UMTS/LTE; no fixed licence); RIPE aut-num UMS-AS, registrant UNIVERSAL MOBILE SYSTEMS LLC; its announced blocks are inetnums GRPS_NAT-1 (185.163.26.0/24) and GPRS-NAT-2 (185.213.230.0/24) plus a /27 IT_PLATFORMS_SRV-1 for its own platforms; 2,275,781 APNIC users behind 3,072 IPv4 = 741 users/IP (carrier NAT). Uzbektelekom fixed is AS8193. src: https://rdap.db.ripe.net/ip/185.163.26.0 (2026-09-19)
+AS201767  # Uzmobile — the CELLULAR branch of Uzbektelekom JSC (UZ). RIPE aut-num name UZMOBILE-AS; all 9 announced prefixes are inetnum netname UZMOBILE / UZMOBILE-UZ-NET descr "'UZMOBILE' branch of 'Uzbektelecom' JSC", no fixed netname in the AS. 3,561,842 APNIC users behind 2,816 IPv4 addresses = 1,265 users/address. Uzbektelekom's FIXED subscribers are on AS8193 (BRM-AS) and AS28910 (INTAL-ASN). src: https://rdap.db.ripe.net/autnum/201767 (2026-09-12; independently re-verified 2026-09-19)
 
 # --- Middle East / Africa / Latin America ---
 AS22085   # Claro S/A mobile (BR) — 4/4 sampled prefixes PTR *.3g.claro.net.br; registro.br responsible "BCP SA", Claro's legacy cellular company; Claro fixed cable is the separate AS28573 Claro NXT (*.virtua.com.br). src: https://rdap.lacnic.net/rdap/autnum/22085 (2026-09-12)
-AS29975   # Vodacom South Africa (ZA) — AFRINIC as-name VODACOM-ZA; 4/4 sampled prefixes PTR *.umts.vodacom.co.za; inetnums Vodacom_UMTS_Cape_Town_Western_Cape_INTERNET_APN "Legal IP block for UMTS users", VODA-GPRS and VODACOM-UMTS; 3,904,413 APNIC end users. src: https://rdap.afrinic.net/rdap/autnum/29975 (2026-09-12)
 AS36998   # Zain Sudan / Mobitel (SD) — AFRINIC as-name SDN-MOBITEL descr "MOBITEL"; sampled prefixes are inetnums ZAIN_SD_2G_3G_LTE_APN_Internet_HW_Pool-1, ZAIN-SD-APNs and ZAINSD-2G-3G-LTE-Customer-NTK; 4,132,912 APNIC end users behind 86,528 IPv4 = 48 users/IPv4. src: https://rdap.afrinic.net/rdap/autnum/36998 (2026-09-12)
-AS37020   # Airtel DRC (CD) — cellular; AFRINIC netname DRC-3G descr "Reserved for Goma GGSN PDP allocation" (41.243.128.0/18) and "GPRS - GPRS GTP & Internet access" (41.222.196.0/24), rDNS *.r.airtel.cd; 4.73M APNIC users on 19,200 IPv4 = 246 users/IPv4. src: https://rdap.afrinic.net/rdap/ip/41.243.128.9 (2026-09-12)
-AS37075   # Airtel Uganda (UG) — cellular; AFRINIC netnames Mobile_data / Mobile_Data_Service descr "Assigned for Mobile Data Service for 2G , 3G & 4G" remarks "Airtel_Uganda_Mobile subs" on 102.80.0.0/14 and 154.228.0.0/14, rDNS 4/4 *.r.airtel.ug. src: https://rdap.afrinic.net/rdap/ip/154.230.128.9 (2026-09-12)
-AS37133   # Airtel Tanzania (TZ) — AFRINIC as-name airtel-tz-as, registrant "Airtel Tanzania" (ipverse's "Zain Tanzania" is stale); 156.156.0.0/14 and 197.152.0.0/16 are inetnums named Airtel-Tanzania-3G; PTR *.r.airtel.co.tz; 3,858,396 APNIC end users behind 70,144 IPv4 = 55 users/IPv4. src: https://rdap.afrinic.net/rdap/autnum/37133 (2026-09-12)
-AS39891   # STC Al Jawwal (SA) — dedicated cellular: RIPE aut-num name "ALJAWWALSTC-AS", remark "3G AlJawwal, Saudi Telecom Company Saudi Arabia"; 36 of 40 sampled prefixes are netname Riyadh/Jeddah/Dammam/Madinah-Residential-Mobile-Broadband or STC_MBB (one stray /24, 188.54.145.0/24, is Residential-Fixed-Broadband). 12,625,712 APNIC users over 2,365,952 IPv4; no PTR on any sampled subscriber IP. STC's fixed arm is the separate AS25019 SaudiNet. src: https://rdap.db.ripe.net/autnum/39891 (2026-09-12)
+AS37440  # Airtel Malawi (MW) — AFRINIC inetnums 105.234.0.0/17 descr "Airtel Malawi GPRS subscribers" and 129.140.0.0/17 + 137.115.0.0/17 + 137.196.0.0/17 all descr "Mobile Internet"; rDNS *.r.airtel.mw is Airtel's group cellular template. 2,619,972 APNIC users / 16,896 IPv4 = 155 per address. ipverse says category=hosting; corrections.yml sets isp so this flag takes effect. src: https://stat.ripe.net/data/whois/data.json?resource=105.234.0.0 (2026-09-12; independently re-verified 2026-09-19)
+AS328988  # Safaricom Telecommunications Ethiopia (ET) — mobile-licence entrant with no fixed plant (the incumbent fixed network is Ethio Telecom AS24757); AFRINIC registrant ORG-STEP1-AFRINIC, inetnums STEP-NE* "Safaricom Ethiopia-NET13", no fixed/enterprise netname in its 5 announced ranges; 5,231,302 APNIC users over 9,216 IPv4 = 567 users/IP (carrier NAT). Verified independently 2026-09-19. src: https://rdap.afrinic.net/rdap/autnum/328988 (2026-09-19)
+
+# ============== IPv6 + full-census audit 2026-09-19 (P4-C2): 59 -> 22 lines ==============
+# WHY. The independent verifier (CV) removed AS29357 on an IPv6 customer block that every earlier
+# check had missed: they looked at IPv4 only, and sampled at most 15 ranges. This pass re-checked
+# EVERY line against EVERY prefix it announces (RIPEstat announced-prefixes, v4 and v6), pulling for
+# each the covering registry object AND all more-specific objects (whois -M / ARIN "r >"), keeping
+# only objects inside the ASN's own announced space, then confirming each disqualifying block's
+# origin on RIPEstat prefix-overview. Rule: CD-6 as written - one fixed / WiMAX / enterprise /
+# third-party block anywhere disqualifies (prefer false negatives). All removed ASNs are category
+# isp upstream, so they now answer :residential_isp, which is equally likely_human.
+# Records (one per line, with every URL): docs/enrichment/research/P4-C2-curation-2026-09-19.jsonl.
+# REMOVED, with the block that decided it (re-check with RDAP on the first address):
+#   AS32307 Viaero        137.83.96.0/22 VIAERO-FIXED-WIRELESS; 66.148.0.0/20 Viaero Fiber Networks
+#   AS25106 MTS BY        95.130.84.0/24 U-TEAM "LLC Raccoon technology" (third-party)
+#   AS37009 MTC Namibia   105.232.0.0/16 etc. "Dynamic IP pool for MTC Netman customers"; Netman Home
+#                          is a home-router product (fixed-wireless, as STC's rejected block)
+#   AS12958 T2 Russia     217.15.137.0/24, 217.15.156.0/24 Rostelecom Yaroslavl "ex-netname: INNET"
+#   AS9644 SK Telecom     211.110.247.0/24 KRNIC CUSTOMER Hanbitsoft (SK Broadband broadNnet space)
+#   AS37020 Airtel DRC    41.243.8.0/24 DRC-Enterprise
+#   AS37075 Airtel UG     197.221.128.0/19 Enterprise_Customers; 41.221.80.0/20 Corporate_*
+#   AS37133 Airtel TZ     41.75.208.0/21 AIRTEL_TZ_ENTERPRISE; 41.75.222.0/23 AIRTEL_TZ_CORPORATE
+#   AS13280 Three IE      95.83.228.128/25 THREE-MNS-UK-DIA + named business customers (Mazars, Aramex)
+#   AS47883 KKTCELL       5.104.0.0/20 KKTCELL-ISP, maintained by the fixed ISP Lifecell Digital
+#   AS10030 Celcom        203.82.84.0/24 CELCOM_ENT "Celcom Enterprise Services"
+#   AS10081 DiGi          aut-num remark "Wired and Wireless Internet Service Provider"
+#   AS138384 Rakuten Mob. *.isp.rakuten.jp blocks (110.165.128.0/17 ...); Rakuten Mobile sells Rakuten Hikari
+#   AS50257 A-Mobile      sells A-home fibre on its only AS; 185.99.7.0/24 "JV A-Mobile - ABAZA Ltd."
+#   AS20057 AT&T Mobility 155.170.0.0/17 ATTMO3Z static reassignments to STATE OF COLORADO et al.
+#   AS15897 Vodafone TR   212.65.146.0/24 third-party VAS/enterprise assignments (ANAHTAR, BIREBIR ...)
+#   AS16135 Turkcell      212.252.168.0/24, 176.88.56.0/24 out of Superonline (fixed arm) allocations
+#   AS9587 DTAC           119.46.15.0/24 TrueCorporate, PTR *.static.asianet.co.th
+#   AS197207 MCI          188.122.96.0/20 MOBINNET "Mobinnet WiMAX Users" (+ 2 more WiMAX /20s)
+#   AS23693 Telkomsel     202.158.135.0/24 AITI_NET enterprise block (INOVAnet space) - pin restored
+#   AS131445 AIS mobile   182.232.208.0/22 "Assign for AIS_Internet Enterprise Customers" - pin restored
+#   AS141425 AS132525 AS38019 AS56042 AS24444 AS24547 AS56047 AS56041 AS140895 - provincial China
+#     Mobile CMNET cores, the pattern P3-C already rejected for seven other provinces: every block is
+#     the shared CMNET object that declares both a mobile operator and an "Internet Service Provider",
+#     China Mobile sells household broadband (284M customers) on the same cores, and Guangdong,
+#     Shandong and Zhejiang also originate third-party business assignments.
+#   AS209141 CMI Russia   China Mobile International's enterprise/wholesale office, not a carrier
+#   AS211908 Horizon Scope  its own PeeringDB: ISP/ICT for businesses and enterprises (Zain Iraq ICT arm)
+#   AS138322 AWCC         its own PeeringDB calls it the "Afghan Wireless Backbone ASN"; 9,286 users
+#   AS10728 AS11461 AS5079  T-Mobile-held but announce nothing: no census possible, unverifiable
+#   AS6167 Verizon Wireless  155.146.160.0/20 + 155.146.176.0/20 AMAZON-IAD, 155.146.192.0/20 AMAZON-PDX
+#                          (Amazon-registered edge-compute space) - pinned in eyeball_confirm.txt
+# KEPT (22): every block of each is a cellular/subscriber/own-platform object, IPv6 included.
+#   Judgement calls recorded as KEEP: AS36998 "ZAIN SD DATA CENTER" /23 and AS37440 "Airtel Malawi
+#   Corporate Network" /24 read as the operator's own platforms (as Banglalink, Mobiuz, Free Mobile
+#   SRV); AS48503's 174.35.103.0/24 is a CDNetworks cache reassignment; AS21928's T-Mobile Home
+#   Internet shares the cellular pools with no block of its own.
+# src: https://stat.ripe.net/data/prefix-overview/data.json?resource=95.130.84.0/24 +
+# https://rdap.db.ripe.net/ip/188.122.96.0 + https://rdap.afrinic.net/rdap/ip/41.243.8.0 (2026-09-19)
+
+# ======================== P4-C2b CD-24 recheck (2026-09-19) ========================
+# CD-24 lets enterprise/static/M2M blocks through when the registry or operator shows they are served
+# over the CELLULAR network, and trivial own-platform infra. Re-examined AS20057 and AS131445 only;
+# BOTH STAY OUT (pinned likely-human elsewhere or already :residential_isp; a miss costs little):
+#   AS20057 AT&T Mobility - the ATTMO3Z-* reassignments (govt/police/fleet customers inside
+#     ATT-MOBILITY-LLC-155-170-0-0) plausibly are static-IP wireless, but no registry remark or AT&T
+#     document ties them to the cellular network; and the other cited block fails outright:
+#     12.72.0.0/15 (incl. 12.73.0.0/17) is ATTSVC-12-72-0-0 assigned to "AT&T Worldnet Services" with
+#     PTRs *.dial-access.att.net (sister-company dial/fixed naming, use unknown => exclude). The census
+#     also shows 199.176.124.0/23 NEWAY-4, a Newaygo County (MI) reassignment inside AADSNET-CIDR (AT&T
+#     Services) with the county's own PTRs ncats-*.newaygo.mi.us.
+#   AS131445 AIS mobile - 182.232.208.0/22 sits among TH_AIS_Mobile_Internet NAT-engine pools, but
+#     "AIS_Internet Enterprise Customers" is not shown to be cellular-served; and the mobile AS also
+#     announces 49.231.59.0/24 + 49.231.61.0/24, which carry route objects for AS45458 SBN-AWN-AS-02
+#     ("SBN-ISP/AWN-ISP", AIS's enterprise fixed ISP) inside 49.231.0.0/16, whose sub-assignments are
+#     SBN/AWN business DIA customers (factories, hotels, a "5G FWA MPLS" backup).
+# src: https://rdap.arin.net/registry/ip/12.73.0.0 + https://rdap.arin.net/registry/ip/199.176.124.0 +
+# https://rdap.apnic.net/ip/182.232.208.0 + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS45458
+# (2026-09-19)
+
+# ============ Batches G/H/I 2026-09-19 (P4-C3 research, P4-C4 second pass): 69 candidates, 7 added ============
+# Candidates: 69 routed ASNs from APNIC ranks ~300-1080 with a cellular-looking name. Method (same as the P4-C2
+# audit): EVERY announced prefix (RIPEstat announced-prefixes, IPv4 AND IPv6), the covering registry object plus all
+# more-specific objects (whois -M / ARIN "r >"; LACNIC per prefix via RDAP or the RIPEstat whois proxy), PTR samples,
+# PeeringDB and the operator's own site. Rule: CD-6 as refined by CD-24. Every ACCEPT was re-derived in a fresh
+# second pass (new announced-prefixes pull; per-prefix RIR RDAP + port-43 covering object + -M inside every prefix).
+# Records (one per ASN, every prefix with its evidence URL): docs/enrichment/research/P4-C3-mobile-GHI-2026-09-19.jsonl
+# Mostly rejections, as designed. Named so nobody re-proposes them without new evidence:
+#   converged/fixed: AS855 Bell Aliant, AS7122 Bell MTS, AS6389 AT&T Enterprises, AS12400 Partner, AS1759 Telia FI,
+#   AS8764 Telia LT, AS25400 Telia NO, AS15502 Vodafone IE, AS12392 Orange BE, AS15962 Orange SK, AS15796 Salt,
+#   AS4773 M1, AS9790 2degrees, AS24086 Viettel, AS8359/AS34351/AS43720 MTS RU, AS20661 Turkmentelecom, AS37037
+#   Orange MG, AS37168 Cell C, AS16637 MTN SA, AS37057 Vodacom LS, AS37594 MTN SS, AS43197 TT Mobile TJ, AS45356
+#   Mobitel LK, AS48065 Syriatel, AS44034 Tre SE/DK (separate *.bredband.tre.se pools);
+#   enterprise: AS37119 Unitel AO, AS327707 Airtel RW, AS37531 Airtel NE, AS37649 Yas SN, AS37014 Mascom, AS328943
+#   Africell AO, AS25135 Vodafone UK;
+#   third-party / other operators' space: AS327708 Airtel RW, AS131267 Unitel LA, AS25255 Drei AT, AS52341 WOM,
+#   AS28036 Tigo NI, AS52262 Tigo HN, AS23201 Tigo PY, AS11556 C&W Panama, AS28469 AT&T MX, AS27889 Movilnet,
+#   AS398378 Boost (Amazon-registered), AS24921 LMT second AS (Lattelecom/Tet), AS63199 CDS;
+#   not carriers: AS209193/AS201749 SuperCell, AS51020 Al-Jazeera, AS138089 GMDP, AS7522 STNet;
+#   other: AS44491 Aquafon (IXP LAN /24), AS204106 Babilon-M (HCDN /48), AS214707 RCell (datacenter /40).
+# HELD (not shipped; registry clean but mobile-only not provable): AS133612 Vodafone AU (sells NBN fixed), AS41202
+#   Beeline UZ (FTTB/ADSL), AS36988 Africell SL (fibre/microwave DIA + FTTH), AS59625 Korek (being wound down: assets
+#   seized 2026-08-09), AS41329 Sky Mobile KG (no purpose labels), AS57218 Rightel (site unreachable, product check
+#   impossible), AS264731 Digitel (5G FWA, one aggregate LACNIC object).
+# Judgement call, for an owner/CD-24 revisit: AS206067 Three UK also sells 5G-hub Home Broadband (FWA) out of the same
+#   "Mobile Broadband Service" pools (no dedicated block) - kept on the AS21928 precedent.
+AS206067  # Hutchison 3G UK / Three UK (GB), VodafoneThree — census of ALL 369 announced prefixes (288 v4, 81 v6): 336 are covered by RIPE inetnum H3GUK "Mobile Broadband Service", the rest by Three's own UK-H3G-* allocations (IPv6 2a04:4a40::/29, no sub-assignment); the only more-specifics are H3GUK "NAT Pool for Mobiles", H3GUK-GRX and "3UK Infrastructure" (own core); 221 of 222 PTRs *.threembb.co.uk. No fixed/enterprise/third-party object. src: https://rdap.db.ripe.net/ip/92.40.0.0 + https://rdap.db.ripe.net/ip/217.171.128.0 + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS206067 (2026-09-19; second pass 2026-09-19)
+AS34058   # lifecell LLC (UA) — census of ALL 171 announced prefixes (167 v4, 4 v6): every one is lifecell's own LIFECELL-NET-* / UA-ASTELIT-* object, the 37.73.0.0/16 and 88.154.0.0/15 pools "Mobile Clients Internet Access", ERX 159.146/16 + 159.160/16 only LIFECELL-NET-* assignments, IPv6 2a00:1e98::/29 no sub-assignment; PTRs *.lifecell.com.ua. lifecell's home internet (lifecell Vdoma) is GPON/DOCSIS/Ethernet on the Datagroup-Volia plant (AS25229 VOLIA-AS), not lifecell space. src: https://rdap.db.ripe.net/ip/37.73.0.0 + https://rdap.db.ripe.net/ip/159.146.128.0 + https://www.lifecell.ua/uk/lifecell-vdoma/taryfy/ (2026-09-19; second pass 2026-09-19)
+AS29555   # Mobile Telecom-Service LLP, ALTEL-AS (Tele2 + ALTEL 4G, KZ) — sister of AS48503; census of ALL 153 announced prefixes (106 v4, 47 v6): every covering object is a Tele2 Kazakhstan subscriber pool (pool-net-alm / -ast / -shy, v4 and v6) or ALTEL-NETWORK "Dynamic & static IP" (static IPs of ALTEL 4G subscribers, cellular per CD-24), zero more-specifics; PTRs *.altel.kz; operator PeeringDB: "mobile operator ... Tele2 Kazakhstan and ALTEL 4G ... 2G/3G/4G voice and packet data". src: https://rdap.db.ripe.net/ip/85.117.107.0 + https://rdap.db.ripe.net/ip/217.76.73.0 + https://www.peeringdb.com/asn/29555 (2026-09-19; second pass 2026-09-19)
+AS45143   # Singapore Telecom Mobile Pte Ltd (SG) — APNIC aut-num SINGTELMOBILE-AS-AP "SINGTEL MOBILE INTERNET SERVICE PROVIDER"; census of ALL 147 announced prefixes (93 v4, 54 v6): every covering object is SINGTELMOBILE "SingTel Mobile" / SINGTELMOBILE-SG (v6 2400:1c00::/32), zero more-specifics. Singtel fixed broadband is the separate AS9506 SINGTEL-FIBRE and AS3758 SINGNET. src: https://rdap.apnic.net/autnum/45143 + https://rdap.apnic.net/ip/2400:1c00:: + https://rdap.apnic.net/autnum/9506 (2026-09-19; second pass 2026-09-19)
+AS327738  # Africell RDC / STE Africell RDC SPRL (CD) — mobile-only operator (africell.cd lists mobile bundles, routers/MiFi, eSIM, Afrimoney; no fixed/fibre/DIA product). Census of ALL 8 announced prefixes (v4 only, no IPv6): 154.73.20-23.0/24 AFRINIC inetnums Africell-NET1..4 "Africell-Subnet-N", 45.221.4-7.0/24 Africell-RDC; no fixed/enterprise/third-party object. 1,142,895 APNIC users behind 2,048 IPv4 = 558 per address (carrier NAT). src: https://rdap.afrinic.net/rdap/ip/154.73.20.0 + https://www.africell.cd/ + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS327738 (2026-09-19; second pass 2026-09-19)
+AS328088  # NetOne Cellular (Private) Limited (ZW) — state mobile operator (the fixed incumbent is TelOne, a separate company); its home router (4G CPE / One-Fi) runs on a NetOne SIM over the cellular network, no separate pool. Census of ALL 6 announced prefixes incl. IPv6: every object is NetOne-Cellular-v4 (102.128.76.0/22, 196.41.88.0/24) or NetOne-Cellular-v6 (2c0f:ec78::/32). 623,052 APNIC users / 1,280 IPv4 = 487 per address. src: https://rdap.afrinic.net/rdap/ip/102.128.76.0 + https://www.netone.co.zw/ (2026-09-19; second pass 2026-09-19)
+AS328286  # Libyana Mobile Phone Company JSC (LY) — mobile operator (fixed ADSL/FTTH in Libya is LTT, a separate company). Census of ALL 10 announced prefixes incl. IPv6: v4 all inside 102.164.96.0/21 Libyana-Mobile-v4 with sub-objects InternetService "Used for network address translation for internet service" (+ East/South area pools); v6 inside 2c0f:ea0::/32 LIBYANA-IPV6, no sub-objects. 595,024 APNIC users / 2,048 IPv4 = 291 per address (carrier NAT). src: https://rdap.afrinic.net/rdap/ip/102.164.96.0 + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS328286 (2026-09-19; second pass 2026-09-19)

@@ -48,19 +48,19 @@ AS62049   # not in as-metadata; dc per both curated lists. src: https://raw.gith
 AS196678  # not in as-metadata; dc per both curated lists. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://github.com/brianhama/bad-asn-list (2026-07-04)
 
 # --- (b) X4B dc input + name-evident/verifiable hosting brand, miscategorized by as-metadata ---
-AS21501   # Host Europe GmbH (DE) — hosting brand. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description "Host Europe GmbH" (2026-07-04)
-AS60253   # Host Europe GmbH (DE). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description "Host Europe GmbH" (2026-07-04)
-AS44144   # HostRoyale Technologies Pvt Ltd (IN) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS142036  # Hosteons Pte. Ltd. (SG) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS44803   # Webdock.io ApS (DK) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS214036  # Ultahost Inc. (US) — web hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS329184  # Host Africa (Pty) Ltd (ZA). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS399804  # Hostodo (US) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS64286   # LogicWeb Inc. (US) — hosting/proxies. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS33696   # NextArray LLC (US) — dedicated servers. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS204601  # NovoServe B.V. (NL) — dedicated servers. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS203758  # EUGAMEHOST LTD (GB) — game server hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS213887  # WAIcore Ltd (GB) — hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS21501   # Host Europe GmbH (DE) — hosting brand. src: https://rdap.db.ripe.net/autnum/21501 (aut-num GODADDY-AMS, registrant Host Europe GmbH) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS60253   # Host Europe GmbH (DE). src: https://rdap.db.ripe.net/autnum/60253 (aut-num GODADDY-CGN, registrant Host Europe GmbH) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS44144   # HostRoyale Technologies Pvt Ltd (IN) — VPS. src: https://rdap.db.ripe.net/autnum/44144 (aut-num OMEGASOFT, registrant HostRoyale Technologies Pvt Ltd) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS142036  # Hosteons Pte. Ltd. (SG) — VPS. src: https://rdap.apnic.net/autnum/142036 (aut-num HOSTEONS-AS-AP, registrant Hosteons Pte. Ltd.) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS44803   # Webdock.io ApS (DK) — VPS. src: https://rdap.db.ripe.net/autnum/44803 (aut-num WEBDOCK-AS, registrant Webdock.io ApS) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS214036  # Ultahost Inc. (US) — web hosting. src: https://rdap.db.ripe.net/autnum/214036 (aut-num ULTAHOST-AS, registrant Ultahost, Inc.) + https://www.peeringdb.com/asn/214036 (operator record "Ultahost, Inc.") + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS329184  # Host Africa (Pty) Ltd (ZA). src: https://rdap.afrinic.net/rdap/autnum/329184 (aut-num ORG-CTML1-AFRINIC, registrant Host Africa (Pty) Ltd) + https://www.peeringdb.com/asn/329184 (operator record "Host Africa DPA", Content) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS399804  # Hostodo (US) — VPS. src: https://rdap.arin.net/registry/autnum/399804 (aut-num HOSTODO, registrant Hostodo) + https://www.peeringdb.com/asn/399804 (operator record "HOSTODO") + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS64286   # LogicWeb Inc. (US) — hosting/proxies. src: https://rdap.arin.net/registry/autnum/64286 (aut-num LOGICWEB, registrant LogicWeb Inc.) + https://www.peeringdb.com/asn/64286 (operator record "LogicWeb", Enterprise) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS33696   # NextArray LLC (US) — dedicated servers. src: https://rdap.arin.net/registry/autnum/33696 (aut-num NEXTARRAY-ASN-01, registrant NextArray LLC.) + https://www.peeringdb.com/asn/33696 (operator record "NextArray") + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS204601  # NovoServe B.V. (NL) — dedicated servers. src: https://rdap.db.ripe.net/autnum/204601 (aut-num PODAON, registrant NovoServe B.V.) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS203758  # EUGAMEHOST LTD (GB) — game server hosting. src: https://rdap.db.ripe.net/autnum/203758 (aut-num EUGameHost-LTD, registrant EUGAMEHOST LTD) + https://www.peeringdb.com/asn/203758 (operator record "EUGameHost", Enterprise) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS213887  # WAIcore Ltd (GB) — hosting. src: https://rdap.db.ripe.net/autnum/213887 (aut-num WAICORE-LTD, registrant WAIcore Ltd) + https://www.peeringdb.com/asn/213887 (operator record "WAICORE", Enterprise) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
 AS15694   # Atman Sp. z o.o. (PL) — Warsaw datacenter operator (atman.pl). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://www.atman.pl (2026-07-04)
 AS41406   # Atman Sp. z o.o. (PL) — atman.pl. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://www.atman.pl (2026-07-04)
 AS24806   # INTERNET CZ a.s. (CZ) — FORPSI hosting (forpsi.com). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://www.forpsi.com (2026-07-04)
@@ -70,13 +70,13 @@ AS60713   # EXEA Sp. z o.o. (PL) — EXEA Data Center (exea.pl). src: https://ra
 AS43962   # INTEN Sp. z o.o. (PL) — hosting (inten.pl). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://inten.pl (2026-07-04)
 AS60362   # alwaysdata SARL (FR) — hosting (alwaysdata.com). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://www.alwaysdata.com (2026-07-04)
 AS6698    # Virtual Systems LLC (UA) — vsys.host. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://vsys.host (2026-07-04)
-AS137409  # GSL Networks Pty Ltd (AU) — VPS/dedicated. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS149020  # WebHorizon Internet Services (IN) — VPS. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS59787   # WebSP Lda (PT) — web hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS137409  # GSL Networks Pty Ltd (AU) — VPS/dedicated. src: https://rdap.apnic.net/autnum/137409 (aut-num GSLNETWORKS-AS-AP, registrant GSL Networks Pty LTD) + https://www.peeringdb.com/asn/137409 (operator record "Global Secure Layer", NSP) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS149020  # WebHorizon Internet Services (IN) — VPS. src: https://rdap.apnic.net/autnum/149020 (aut-num WEBHORIZON-AS-AP, registrant WebHorizon Internet Services) + https://www.peeringdb.com/asn/149020 (operator record "WebHorizon Internet Services", NSP) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS59787   # WebSP Lda (PT) — web hosting. src: https://rdap.db.ripe.net/autnum/59787 (aut-num WEBHS, registrant WebSP - Comercio e Prestacao de Servicos Informaticos, Lda) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
 AS210558  # 1337 Services GmbH (DE) — njal.la VPS/hosting. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + https://njal.la (2026-07-04)
-AS35048   # Biterika Group LLC (RU) — proxy/hosting infrastructure. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS208969  # Biterika Group LLC (RU). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
-AS214574  # Biterika Group LLC (RU). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+AS35048   # Biterika Group LLC (RU) — proxy/hosting infrastructure. src: https://rdap.db.ripe.net/autnum/35048 (aut-num BITERIKA-AS, registrant Biterika Group LLC) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS208969  # Biterika Group LLC (RU). src: https://rdap.db.ripe.net/autnum/208969 (aut-num BITERIKA-BY-AS, registrant Biterika Group LLC) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS214574  # Biterika Group LLC (RU). src: https://rdap.db.ripe.net/autnum/214574 (aut-num BITERIKA-ZEL-AS, registrant Biterika Group LLC) + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
 
 # ============================ Sweep 2026-09-12 (N1) ============================
 # BAR EXTENDED with a third evidence class, used by exactly the two lines below:
@@ -108,3 +108,52 @@ AS139080  # China Mobile Sichuan IDC (CN) — APNIC aut-num CMNET-SCIDC-CN, rema
 #     egress rather than hosting; check vpn_provider's bar first.
 #   AS64249 Charles River Operation (US), AS197450 Sunucun (TR) — category=isp with datacenter-ish
 #     address ratios; need the retail-vs-hosting question answered before either file takes them.
+
+# ============================ Sweep 2026-09-19 (pass 4) ============================
+# The 44 candidates prepared 2026-09-12 (the crosscheck-gap residue + 20 class-(c) candidates chosen
+# for large address space and ~0 eyeball users) researched per record: aut-num and INETNUM census
+# direct from the RIR with PTRs, PeeringDB, the operator's own site. 10 shipped, 9 remain below; bar (b) lines
+# are in X4BNet's datacenter input AND a verifiable hosting brand, bar (c) lines carry the registry's
+# own datacenter/colocation wording (Hostway "Hostway IDC", colo4jax "Expert colocation consultants").
+# REMOVED 2026-09-19 by the independent verifier: AS16557 Colo Solutions - its ARIN aut-num carries
+# no remark (only the holder name), which is the same silent record the class-(c) rejects below were
+# refused on; it also announces enterprise-held space (NL-528 Nutrien 66.103.152.0/22, ARCOS-14
+# Arcosa 66.103.158.0/24) and a dedicated-internet-access customer (SPG-DIA-SOUTH), i.e. possible
+# office egress, and ipverse calls it isp/access_provider. src: https://rdap.arin.net/registry/autnum/16557 (2026-09-19)
+# NOT shipped, so nobody re-proposes them without new
+# evidence: AS197549 GHOSTnet (announces 94.249.222.0/23 "Funknetz HG Wireless / Customer IP Pool" -
+# a WISP's subscribers), AS17789 "CNCGROUP ShangHai IDC" (announces CNNIC and LFCOM space, not its
+# own), AS64249 EndOffice (mostly leased third-party blocks, 4,153 users), AS137697/AS134761 China
+# Telecom IDC ASNs (remarks also name a MAN / the provincial network), and every class-(c) candidate
+# whose registry record is silent (SonderCloud, Uscloud, CyberCloud, cognetcloud, Team Blue UK,
+# LUCIDACLOUD, Hostopia, firstcolo, Telehouse Europe, CloudFerro, Clouding, Scloud, T1Cloud) - real
+# hosts, most of them, but the bar asks for the registry's statement and the X4B range overlay still
+# covers their published ranges. The standing exclusions (P4/Play, Posta Slovenije, Opera, Applied
+# Privacy) still hold; AS206092 went to vpn_provider.txt instead. src: https://rdap.apnic.net/autnum/9952 (2026-09-19)
+AS43128   # Webtasy d.o.o. (SI) — bar (b): netnames DOMENCA-NET "Webtasy hosting platform" and HR-DHH-PLUS-VPS-AT "Plus VPS Servers"; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/43128 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS197450  # Sunucun Bilgi Iletisim Teknolojileri ve Ticaret Ltd. Sti. (TR) — bar (b): RIPE aut-num SUNUCUN remark "Our company provides web hosting, domain name hosting, server, and data center services"; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/197450 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS29593   # WOJCIECH LOREK ENDOR COMPUTERS (PL) — bar (b): endor.pl sells web hosting and VPS; netnames ENDOR "Endor.PL network"; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/29593 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS60973   # ZUPO D.O.O. (SI) — bar (b): zupo.si is a server-infrastructure host, PTR hostar.zupo.si; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/60973 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS197226  # SPRINT S.A. (PL) — bar (b): RIPE aut-num SPRINT-SDC remark "Sprint Data Center", netnames SPRINT-SDC-FIRE "Sprint Data Center Customer"; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/197226 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS205053  # Asimia Damaskou (GR) — bar (b): aweb.gr sells VPS hosting, cloud and dedicated servers; netnames GR-AWEB-*; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/205053 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS63567   # Suqian Pugongying Network Service Co. Ltd (CN) — bar (b): APNIC aut-num PGYIDC, netnames PGYIDC; X4B datacenter input. src: https://rdap.apnic.net/autnum/63567 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS9952    # Hostway IDC (KR) — bar (c): APNIC aut-num HOSTWAY-AS-KR-KR remark verbatim "Hostway IDC"; hostway.co.kr sells server hosting and colocation. src: https://rdap.apnic.net/autnum/9952 (2026-09-19)
+AS40430   # colo4jax LLC (US) — bar (c): ARIN aut-num COLO4JAX-AS remark verbatim "Expert colocation consultants". src: https://rdap.arin.net/registry/autnum/40430 (2026-09-19)
+
+# ============== P4-C2 (2026-09-19): 19 lines re-sourced ==============
+# The 19 lines that cited "ipverse description" next to the X4B datacenter list now cite the RIR
+# aut-num record (RDAP registrant = the hosting brand) instead; the X4B citation stays. All 19
+# registrants match their line (GoDaddy-owned Host Europe GmbH for AS21501/AS60253, HostRoyale for
+# AS44144 OMEGASOFT, NovoServe B.V. for AS204601 PODAON). Records: P4-C2-curation-2026-09-19.jsonl.
+
+# ============== P4-C2b (2026-09-19): bulletproof-hosting leads ==============
+# Three leads from the pass-4 researchers (Spamhaus ASN-DROP / Recorded Future / GreyNoise). None is in
+# X4B's datacenter input or bad-asn-list, so only bar (c), the registry's own wording, can admit one:
+#   AS216246 RU-AEZA-AS (Aeza Group LLC) - NOT ADDED, not needed: ipverse already categorizes it hosting.
+#   AS203273 NetCrafters OU (EE) - NOT ADDED: aut-num and all 120 announced blocks are silent netnames
+#     (NetCrafters, NetCrafters-System-Moscow/-Frankfurt), no PeeringDB record, no brand site; the only tie
+#     to hosting is Spamhaus ASN-DROP listing it under aeza.net, a third-party reputation list, not a bar.
+#     Leave to the X4B range overlay; re-propose only with registry or operator evidence.
+# The AEZA main AS210644 (OFAC SDN) reads ipverse "business" and is not in either curated list either;
+# its aut-num has no datacenter wording, so it stays out on the same ground (lead for the next pass).
+AS209847  # WorkTitans B.V. / THE.Hosting (NL) — bar (c): the RIPE aut-num's admin/tech role is THE-HOSTING (mnt THE-HOSTING-MNT) and 30 of its 35 announced IPv4 prefixes sit in holder-registered netnames THE-HOSTING / MD-HOSTING-* (the IPv6 is leased LVNET/"DISTRIBUTED SAAS" space, no access-network object); its operator PeeringDB record "THE Hosting" points to the.hosting, which sells VPS and dedicated servers. Stark Industries/PQ Hosting successor per Recorded Future; Spamhaus ASN-DROP. APNIC "users" are proxy-egress artifacts. src: https://rdap.db.ripe.net/autnum/209847 + https://rdap.db.ripe.net/ip/185.153.182.0 + https://www.peeringdb.com/asn/209847 + https://the.hosting/ + https://www.recordedfuture.com/research/one-step-ahead-stark-industries-solutions-preempts-eu-sanctions (2026-09-19)

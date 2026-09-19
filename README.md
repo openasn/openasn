@@ -50,7 +50,7 @@ Design notes that keep verdicts honest:
 ```
 Tier A (this repo, in the artifact)      Tier B (your server fetches directly)
 ─────────────────────────────────       ─────────────────────────────────────
-sapics origin-asn   (PDDL)  backbone     Apple Private Relay egress → :relay
+RouteViews RIBs  (CC BY)¹   backbone     Apple Private Relay egress → :relay
 ipverse as-metadata (CC0)   categories   Tor Project exits          → :tor_exit
 ipverse as-ip-blocks(CC0)   prefixes     AWS/GCP/Azure/OCI/DO/…     → :hosting+provider
 X4BNet lists_vpn    (MIT)   vpn/dc       Proton/Mullvad/IVPN/PIA…   → :vpn+provider
@@ -59,7 +59,7 @@ data/overrides/     (CC0)   our layer    Zscaler egress             → :enterpr
                                          Nord/VPN Gate              → opt-in :vpn+provider
 ```
 
-**Tier A** sources carry explicit redistribution rights and are compiled into the published artifacts. **Tier B** sources are either license-restricted from republishing or too fast-moving for a nightly file (Tor exits change hourly) — so we publish the *recipe* (`fetch-manifest.json`: URL, parser id, cadence, failure policy) and clients pull from the original authorities at runtime. **Tier C** (bring-your-own MaxMind/IP2Location, planned) never touches this pipeline. The catalog of rejected sources and why (PeeringDB's AUP, GPL lists, ShareAlike databases, aggregator repackaging…) lives in the project history — the short version is the next section.
+**Tier A** sources carry explicit redistribution rights and are compiled into the published artifacts. ¹The one exception to "we compile their data" is the backbone: we compile no RouteViews file, only the prefix → origin-ASN facts our own code recomputes from their BGP RIB dumps, with the attribution their terms ask for ([ATTRIBUTION.md](ATTRIBUTION.md); rule 1 below). **Tier B** sources are either license-restricted from republishing or too fast-moving for a nightly file (Tor exits change hourly) — so we publish the *recipe* (`fetch-manifest.json`: URL, parser id, cadence, failure policy) and clients pull from the original authorities at runtime. **Tier C** (bring-your-own MaxMind/IP2Location, planned) never touches this pipeline. The catalog of rejected sources and why (PeeringDB's AUP, GPL lists, ShareAlike databases, aggregator repackaging…) lives in the project history — the short version is the next section.
 
 ## Reading OpenASN labels correctly
 
@@ -90,7 +90,7 @@ The enrichment pass added exact-IP Tier B recipes for Mullvad (also Mozilla/Fire
 
 ## Legal design (load-bearing, do not weaken)
 
-1. **The published artifact contains only data whose exact redistributed form carries explicit rights** — PDDL, CC0, or MIT-explicitly-covering-output. A builder repo's license does not sanitize the third-party data it aggregates; aggregators are excluded no matter how convenient.
+1. **The published artifact contains only data whose exact redistributed form carries explicit rights** — PDDL, CC0, or MIT-explicitly-covering-output — **or uncopyrightable facts that our own code recomputes from a primary source whose terms require nothing beyond attribution.** The second arm exists for one input today: prefix → origin-ASN facts derived by `tools/rib2origin` from RouteViews BGP RIB dumps, credited in [ATTRIBUTION.md](ATTRIBUTION.md) in RouteViews' own words ([D-SRC-2 (backbone)](DECISIONS.md)). It admits facts, never a copy of anyone's files or tables, and never a source whose terms add anything beyond attribution (non-commercial, ShareAlike, no-derivatives, usage caps) or that is protected by a database right we would need permission for: **RIPE RIS stays excluded** (EU sui generis database right plus RIPE NCC's own terms). A builder repo's license does not sanitize the third-party data it aggregates; aggregators are excluded no matter how convenient.
 2. **Fetching ≠ redistributing.** Anything we may fetch but not republish moves to Tier B: the end user's server fetches it from the original authority, and the data never transits our infrastructure.
 3. **ShareAlike never enters the composite** (it would virally relicense everything).
 4. **Every upstream license file is SHA-256-pinned** (`data/licenses/`); the nightly build fails loudly if any license text changes. Licenses have changed under projects before (MaxMind, Dec 2019).
@@ -118,7 +118,7 @@ Our owned, CC0 curation: the classes upstream metadata lacks (`vpn_provider`, `m
 
 **Can:** recognize known infrastructure (datacenters, VPN providers, Tor exits, cloud egress) with high confidence; identify the network type behind an IP (residential ISP, mobile carrier, business, education, government); tell you *why* (every verdict is auditable to a source).
 
-**Cannot:** detect residential proxies (real home IPs relaying malicious traffic — that requires behavioral data nobody can ship offline); prove any IP is "safe"; keep up with VPN infrastructure churn faster than its nightly cadence + your Tier B refresh; guarantee IPv6 overlay parity (the VPN/dc range overlays are IPv4-only upstream; v6 leans on ASN-level flags — documented lower confidence).
+**Cannot:** classify address space nobody announces in BGP (the backbone is origin ASN *as RouteViews' peers see it*; an allocated-but-unannounced block returns `unknown`; unannounced space carries essentially no public traffic, and a prefix seen by only one RouteViews peer AS is treated the same way); detect residential proxies (real home IPs relaying malicious traffic — that requires behavioral data nobody can ship offline); prove any IP is "safe"; keep up with VPN infrastructure churn faster than its nightly cadence + your Tier B refresh; guarantee IPv6 overlay parity (the VPN/dc range overlays are IPv4-only upstream; v6 leans on ASN-level flags — documented lower confidence).
 
 **Wrong users:** banks, crypto exchanges, KYC flows, high-chargeback marketplaces. You need paid behavioral intelligence (MaxMind Anonymous IP/Residential Proxy, IPQS, …); OpenASN is at most your prefilter.
 
@@ -130,7 +130,7 @@ The compiler lives in [`openasn/openasn-pipeline`](https://github.com/openasn/op
 git clone https://github.com/openasn/openasn
 git clone https://github.com/openasn/openasn-pipeline
 cd openasn-pipeline
-ruby pipeline/run.rb           # full build into build/dist/ (~100MB downloads, ~2 min)
+ruby pipeline/run.rb           # full build into build/dist/ (~950MB downloads incl. RouteViews RIBs; needs Ruby + Go)
 rake 'lookup[8.8.8.8]'         # classify an IP against your build
 ```
 
@@ -138,8 +138,10 @@ The nightly build runs from [this repo's workflow](.github/workflows/nightly-bui
 
 ## Related projects
 
-OpenASN stands on excellent shoulders: [sapics/ip-location-db](https://github.com/sapics/ip-location-db) (PDDL IP→ASN), [ipverse/as-metadata](https://github.com/ipverse/as-metadata) (CC0 ASN categories), [X4BNet/lists_vpn](https://github.com/X4BNet/lists_vpn) (MIT VPN/dc ranges), [brianhama/bad-asn-list](https://github.com/brianhama/bad-asn-list) (MIT hosting ASNs). If OpenASN is useful to you, star them too — and send corrections upstream.
+OpenASN stands on excellent shoulders: [RouteViews](https://www.routeviews.org/) (BGP RIB archives, CC BY 4.0, University of Oregon — our IP→ASN backbone is recomputed from them), [ipverse/as-metadata](https://github.com/ipverse/as-metadata) (CC0 ASN categories), [X4BNet/lists_vpn](https://github.com/X4BNet/lists_vpn) (MIT VPN/dc ranges), [brianhama/bad-asn-list](https://github.com/brianhama/bad-asn-list) (MIT hosting ASNs). If OpenASN is useful to you, star them too — and send corrections upstream. Earlier releases used [sapics/ip-location-db](https://github.com/sapics/ip-location-db) (PDDL) as the backbone; thank you, sapics.
+
+[![Powered by RouteViews](https://assets.routeviews.org/logos/png/transparent-background/routeviews-powered-by-black_transparent_SMALL.png)](https://www.routeviews.org/)
 
 ## License
 
-Code: [MIT](LICENSE-CODE). Data (artifacts + `data/overrides/`): [CC0 1.0](LICENSE-DATA). Attribution for MIT-licensed inputs ships in every release ([ATTRIBUTION.md](ATTRIBUTION.md)).
+Code: [MIT](LICENSE-CODE). Data (artifacts + `data/overrides/`): [CC0 1.0](LICENSE-DATA). Attribution for MIT- and CC BY-licensed inputs ships in every release ([ATTRIBUTION.md](ATTRIBUTION.md)).

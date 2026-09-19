@@ -388,16 +388,27 @@ format and one unblock procedure:
    next night the value sits past the drop line below the best pin, which
    is a WARN(SLIDE) every night. A warned build is not clean, so no weekly
    pin is ever cut again, for any metric, and the pins only age. The fix:
-   - An acked evaluation stamps a **reviewed baseline** for exactly the
-     acked metric(s) into `manifest.json` (`stats.reviewed_baselines.<metric>`
-     = value, ack reason, `reviewed_at`). Each build carries it forward.
+   - An acked evaluation of a metric the operator **names** in
+     `OPENASN_ACK_DRIFT_REANCHOR` (the `ack_drift_reanchor` dispatch input)
+     stamps a **reviewed baseline** for that metric into `manifest.json`
+     (`stats.reviewed_baselines.<metric>` = value, ack reason,
+     `reviewed_at`). Each build carries it forward. A bare ack keeps rule 4's
+     meaning, one run only, and leaves the pins alone. The name is required
+     because the ack covers every metric that fails in the run, while a run
+     stops at the first failure, so the operator acks having seen only one.
+     Re-anchoring on the ack alone silently re-anchored an unseen second
+     failure. It also made a transient move acked as real deadlock when
+     upstream snapped back, because the pre-ack pins that rule 2 needs to
+     recognise the recovery were gone (adversarial review RX, 2026-09-19;
+     `docs/swarm-2026-09-19/RX-REVIEW.md`).
    - For that metric only, pins cut before `reviewed_at` are ignored. The
      reviewed value stands in for them as the recovery reference and as the
      slow-slide anchor. Once clean pins cut after it exist, they are used,
      and the reviewed baseline retires when no consulted pin predates it.
    - Every other metric is gated against the pins exactly as before.
    - **A reviewed baseline is not a pin.** It is never a release, and only
-     an ack writes it: a human, with a sentence on the public record. The
+     an ack that names the metric writes it: a human, with a sentence on
+     the public record. The
      acked build itself stays unclean and is never pinned. "Pins come from
      clean builds only" is unchanged. What changes is that the next clean
      build is clean, so pinning resumes on schedule.
@@ -405,7 +416,8 @@ format and one unblock procedure:
      normally. The review sanctions one move, not a direction.
    Tests: `ReviewedBaselineTest` in the pipeline repo (ack → next night
    clean, no perpetual warn, pins resume, un-acked metric gated normally,
-   the old pin cannot return as anchor).
+   the old pin cannot return as anchor, an unnamed co-failing metric is not
+   re-anchored, a bare ack still lets a recovery self-heal).
 
 **The general lesson, binding on every future gate.** A tripwire whose
 reference is written *by the thing it guards* can deadlock. Any gate that
@@ -500,15 +512,15 @@ become `relay` wherever a client runs the Tier B recipe, which is the design.
 G4 layer drift gate FAILS once, on `vpn_ipv4`: 6,639 in `latest` → 4,692,
 which is −29.3% against a 20% drop line, with no weekly pin within 5%. The
 first publish therefore needs a dispatch with
-`ack_drift="D-SRC-3: X4B third-party feeds (Apple relay, Mullvad, PIA, Proton) removed from the vpn overlay"`.
-The other layers pass.
+`ack_drift="D-SRC-3: X4B third-party feeds (Apple relay, Mullvad, PIA, Proton) removed from the vpn overlay"`
+and `ack_drift_reanchor=vpn_ipv4`. The other layers pass.
 
 **Resolved before first publish: a deliberate step change now re-anchors
 its own metric** (D-GATE-1 rule 8). Before this, from the night after the
 acked publish, `vpn_ipv4` would have sat about 29% below the best weekly pin
 (v2026.09.13, 6,593). Rule 6 would have turned that into a WARN(SLIDE) every
 night. A warned build is never clean, so no weekly pin would ever have been
-cut again, for any layer. Now the ack records a reviewed baseline for
+cut again, for any layer. Now the ack, naming `vpn_ipv4`, records a reviewed baseline for
 `vpn_ipv4` (4,692, with the ack reason and date). The next clean build is
 clean, and weekly pinning resumes. The coordinator ruled this a precondition
 for publishing (2026-09-19).

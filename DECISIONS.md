@@ -381,13 +381,41 @@ format and one unblock procedure:
    start with its age in hours, and the failure issue quotes the gate lines
    from the run rather than listing possible causes.
 
+8. **An acknowledged step change re-anchors its own metric** (added
+   2026-09-19 under D-SRC-3, decided by the coordinator under owner
+   delegation). Rules 4 and 6 together had a gap. An ack publishes a
+   deliberate step change (D-SRC-3: `vpn_ipv4` 6,639 → 4,692). From the
+   next night the value sits past the drop line below the best pin, which
+   is a WARN(SLIDE) every night. A warned build is not clean, so no weekly
+   pin is ever cut again, for any metric, and the pins only age. The fix:
+   - An acked evaluation stamps a **reviewed baseline** for exactly the
+     acked metric(s) into `manifest.json` (`stats.reviewed_baselines.<metric>`
+     = value, ack reason, `reviewed_at`). Each build carries it forward.
+   - For that metric only, pins cut before `reviewed_at` are ignored. The
+     reviewed value stands in for them as the recovery reference and as the
+     slow-slide anchor. Once clean pins cut after it exist, they are used,
+     and the reviewed baseline retires when no consulted pin predates it.
+   - Every other metric is gated against the pins exactly as before.
+   - **A reviewed baseline is not a pin.** It is never a release, and only
+     an ack writes it: a human, with a sentence on the public record. The
+     acked build itself stays unclean and is never pinned. "Pins come from
+     clean builds only" is unchanged. What changes is that the next clean
+     build is clean, so pinning resumes on schedule.
+   - A new drop measured against the reviewed value still fails or warns
+     normally. The review sanctions one move, not a direction.
+   Tests: `ReviewedBaselineTest` in the pipeline repo (ack → next night
+   clean, no perpetual warn, pins resume, un-acked metric gated normally,
+   the old pin cannot return as anchor).
+
 **The general lesson, binding on every future gate.** A tripwire whose
 reference is written *by the thing it guards* can deadlock. Any gate that
 compares against previous output must also have a reference that is frozen,
 externally dated, and independent of whether the gate passed — and a
 documented, recorded way for a human to overrule it once.
 
-## D-SRC-3 — X4B overlays carry only X4B's own data; its third-party feeds are stripped (2026-09-19, PROPOSED)
+## D-SRC-3 — X4B overlays carry only X4B's own data; its third-party feeds are stripped (2026-09-19)
+
+**Status: accepted. Decided by the coordinator on 2026-09-19 under owner delegation.**
 
 **What was wrong.** X4BNet/lists_vpn is Tier A because its MIT grant covers
 "the list itself (source files and generated output)". But its build
@@ -475,12 +503,32 @@ first publish therefore needs a dispatch with
 `ack_drift="D-SRC-3: X4B third-party feeds (Apple relay, Mullvad, PIA, Proton) removed from the vpn overlay"`.
 The other layers pass.
 
-**Open follow-up (owner): a deliberate step change never re-anchors the
-pins.** From the night after the acked publish, `vpn_ipv4` sits about 29%
-below the best weekly pin (v2026.09.13, 6,593). D-GATE-1 rule 6 turns that
-into a WARN(SLIDE) every night. A warned build is not clean, and an unclean
-build never cuts a dated pin. So no weekly pin is cut again, for any layer,
-until the gate learns that an acknowledged move is the new baseline. This
-decision does not change the gate. The choice is the owner's: for example,
-let a `drift_ack` re-anchor that metric's slide check, or cut one reviewed
-pin by hand from the first post-fix build.
+**Resolved before first publish: a deliberate step change now re-anchors
+its own metric** (D-GATE-1 rule 8). Before this, from the night after the
+acked publish, `vpn_ipv4` would have sat about 29% below the best weekly pin
+(v2026.09.13, 6,593). Rule 6 would have turned that into a WARN(SLIDE) every
+night. A warned build is never clean, so no weekly pin would ever have been
+cut again, for any layer. Now the ack records a reviewed baseline for
+`vpn_ipv4` (4,692, with the ack reason and date). The next clean build is
+clean, and weekly pinning resumes. The coordinator ruled this a precondition
+for publishing (2026-09-19).
+
+**Policy: anonymity egress that X4B lists by ASN is treated as `vpn` in the
+core.** X4B's first-party `input/vpn/ASN.txt` lists AS60729
+(`AS60729 # Tor Servers (Tor exit nodes)`), so that ASN's space is kept and
+classifies `vpn` (spot panel row 185.220.101.5 already says so). `tor_exit`
+is the more precise verdict, but the core cannot carry it honestly:
+
+- FORMAT.md has no Tor flag bit, and bits 14–15 are reserved; using them
+  needs a `format_version` bump.
+- Its only range layer for this is `relay`, which is Tier B and always 0 in
+  the canonical artifact.
+- D-FMT-1's frozen export profile rules out `tor_exit` and `relay` as
+  `core_verdict` by design.
+- An ASN is not an exit list. Exits churn hourly, which is why the Tor
+  Project bulk exit list is Tier B.
+
+So no remapping is proposed. Clients that run the Tier B tor recipe already
+answer `tor_exit` for actual exits, because it outranks the X4B vpn overlay
+in the client ladder. Everything else in that ASN stays `vpn`, the honest
+Tier A answer for anonymity-network egress.

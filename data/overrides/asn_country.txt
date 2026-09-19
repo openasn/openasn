@@ -588,10 +588,11 @@ AS202279  UA  # territory: donetsk; src: https://eur-lex.europa.eu/legal-content
 AS1547    MD  # territory: transnistria; src: https://en.wikipedia.org/wiki/Interdnestrcom ("Headquarters Tiraspol (Transnistria)") (2026-09-19)
 AS47883   CY  # territory: northern_cyprus; src: https://en.wikipedia.org/wiki/Kuzey_K%C4%B1br%C4%B1s_Turkcell (Kıbrıs Mobile Telekomünikasyon Ltd., "Headquarters North Nicosia, Northern Cyprus") (2026-09-19)
 AS62211   CY  # territory: northern_cyprus; src: https://en.wikipedia.org/wiki/KKTC_Telsim (Vodafone Mobile Operations Ltd., "Headquarters North Nicosia, Northern Cyprus") (2026-09-19)
-# Serves Crimea and the other occupied oblasts but is seated in Krasnodar,
-# Russia (Wikipedia infobox), so neither "RU" (CD-19a) nor "UA" (not its seat)
-# fits cleanly: no country, and no Wikidata fallback. Owner call.
-AS203451  --  # none: K-Telecom (Win Mobile) network in occupied Crimea, seat Krasnodar; src: https://en.wikipedia.org/wiki/K-Telecom (2026-09-19)
+# Seated outside the territories: CD-25. The column means where the operator
+# is based, so an operator seated in Russia that runs a network in occupied
+# Crimea publishes RU (no territory tag; CD-19a covers operators seated in the
+# territory). The research record notes where it operates.
+AS203451  RU  # src: https://en.wikipedia.org/wiki/K-Telecom (ООО «К-Телеком», "Headquarters Chekistov Avenue, 33, bldg. 2, Krasnodar, Russia"; network (Win Mobile) in occupied Crimea and Sevastopol) (2026-09-19)
 
 # --- Hong Kong and Macau (CD-19b), 2026-09-19 ---------------------------------
 # ISO 3166-1 gives HK and MO their own codes; Wikidata's P17 for companies
@@ -669,5 +670,8 @@ AS200478  --  # none: Taboola group item on a subsidiary's ASN; src: https://www
 AS51205   --  # none: Omnifone was defunct in 2016 (Wikipedia), so it cannot be the entity running the ASN; src: https://en.wikipedia.org/wiki/Omnifone (2026-09-19)
 AS43323   --  # none: Vision247's item has no article or HQ we could check; src: https://www.wikidata.org/wiki/Q66658710 (2026-09-19)
 AS39915   --  # none: PGi's item gave no checkable HQ (its article did not resolve); src: https://www.wikidata.org/wiki/Q1576191 (2026-09-19)
-# ISO 3166-1 gives Réunion its own code, as it does Hong Kong (Wikidata's P17 says France):
+# ISO 3166-1 gives Réunion its own code, as it does Hong Kong (Wikidata's P17 says France); confirmed by CD-25:
 AS34306   RE  # src: https://fr.wikipedia.org/wiki/Soci%C3%A9t%C3%A9_r%C3%A9unionnaise_du_radiot%C3%A9l%C3%A9phone (siège: Saint-Denis, La Réunion) (2026-09-19)
+# CD-25 / CD-23b: AS29447's operator is Iliad Italia (runs the network; the
+# registry holder Scaleway SAS is an Iliad-group vehicle). The seat is Milan.
+AS29447   IT  # src: https://www.iliad.it/ (footer: "Iliad Italia S.p.A. Sede legale: Viale Francesco Restelli 1/A - 20124, Milano") (2026-09-19)

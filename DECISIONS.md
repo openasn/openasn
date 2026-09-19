@@ -660,7 +660,9 @@ Evidence, one record per curated line and per decision:
   Aquafon, Interdnestrcom, Kuzey Kıbrıs Turkcell, KKTC Telsim), sourced
   from EU Official Journal acts, Wikipedia and the operators' own pages.
   K-Telecom (Win Mobile, AS203451) serves Crimea but is seated in
-  Krasnodar, so it gets no country (owner call). Nine smaller territory
+  Krasnodar, Russia: RU on an untagged line (CD-25; the territory tag is
+  for operators seated in the territory, and a pipeline test pins that the
+  guard never touches an untagged line). Nine smaller territory
   operators had no reachable non-registry source and publish nothing.
 - **Hong Kong and Macau (CD-19b).** ISO 3166-1 codes them HK and MO, and
   Wikidata's P17 for their companies is CN. The Wikidata fallback now
@@ -679,8 +681,9 @@ Evidence, one record per curated line and per decision:
   not VEON), AS9002 RETN GB, AS8302 Zattoo CH, AS24796 NaMeX IT. 42
   group-on-subsidiary or unplaceable Wikidata values got `--`. Akamai,
   Alibaba Cloud, Oracle, Orange Business, Allstream and GTHost stay blank.
-  AS29447 stays blank: org_names.txt names Iliad Italia but the holder is
-  Scaleway SAS, an identity conflict for the owner.
+  AS29447 is IT (CD-25): the operator is Iliad Italia (Milan, per
+  iliad.it's legal footer); Scaleway SAS is an Iliad-group registry
+  holder (CD-23b).
 - **Independent verification (CD-19e).** Every curated line was checked
   again on 2026-09-19: its source resolved to a Wikidata item (directly or
   through the Wikipedia article) and checked for P17/P159 and identity, or
@@ -689,7 +692,8 @@ Evidence, one record per curated line and per decision:
   first-party, GLEIF, Companies House or EU Official Journal pages). 16
   were removed for want of a checkable source, 2 turned into `--`, and
   about 20 got a better source. Société réunionnaise du radiotéléphone
-  (AS34306) gets RE, the ISO 3166-1 code, not Wikidata's FR.
+  (AS34306) gets RE, the ISO 3166-1 code, not Wikidata's FR (confirmed
+  by CD-25).
   These lines are LLM-verified; a human spot check before merge is still
   wanted.
 - **Row set of `asn-categories.csv` (CD-19d).** A row is now written only
@@ -713,10 +717,22 @@ CSV; routed ASNs with a country 911 (0.95%); routed IPv4 72.5% (was
 the 2026-07-04 feed. Coverage moved little because the removals were
 small and the territory lines are large eyeball ASNs.
 
-**Open for the owner.** (i) K-Telecom (Crimea network, Krasnodar seat):
-none, UA or RU? (ii) Should French overseas departments (Réunion) use their
-ISO code, as AS34306 now does, or FR? (iii) AS29447: Iliad Italia or
-Scaleway? (iv) Whether a consultation-only registry comparison is
-acceptable in a curation tool (CD-19c says yes for routing drafts into
-review; it is written nowhere). (v) Whether the 23,745 unrouted rows that
+**Countries for the names added since K (K3, 2026-09-19).** K's two
+drafters were re-run over the 522 ASNs that ON/ON2 named (or the dossiers
+covered) after K ran. 450 lines landed: 324 on the operator's Wikidata item
+(identity checked against our org name; country agreeing with the dossier
+draft; the registry country used only to route disagreements to review,
+CD-19c) and 126 on a fetched page quoted in the line (Wikipedia infobox or
+the operator's legal notice/contact page). Group items on subsidiaries'
+ASNs were left blank, as before; 72 candidates were held back with reasons
+in the research record (P4-K3-country-2026-09-19.jsonl). Only `country`
+cells changed (450 filled, 0 altered). Measured the same way as above:
+1,408 countries in the CSV; routed IPv4 72.5% → 79.8%; eyeballs 77.2% →
+82.2% on the 2026-09-19 feed. LLM-verified like the rest; a human spot
+check before merge is still wanted.
+
+**Open for the owner.** (i)–(iii) were settled by CD-25 (K-Telecom RU,
+Réunion RE, AS29447 Iliad Italia IT). (iv) Whether a consultation-only
+registry comparison is acceptable in a curation tool (CD-19c says yes for
+routing drafts into review; it is written nowhere). (v) Whether the 23,745 unrouted rows that
 carry only ipverse's category/role should stay (CD-19d keeps them).

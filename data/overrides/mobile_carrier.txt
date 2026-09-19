@@ -270,3 +270,37 @@ AS328988  # Safaricom Telecommunications Ethiopia (ET) — mobile-licence entran
 # src: https://rdap.arin.net/registry/ip/12.73.0.0 + https://rdap.arin.net/registry/ip/199.176.124.0 +
 # https://rdap.apnic.net/ip/182.232.208.0 + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS45458
 # (2026-09-19)
+
+# ============ Batches G/H/I 2026-09-19 (P4-C3 research, P4-C4 second pass): 69 candidates, 7 added ============
+# Candidates: 69 routed ASNs from APNIC ranks ~300-1080 with a cellular-looking name. Method (same as the P4-C2
+# audit): EVERY announced prefix (RIPEstat announced-prefixes, IPv4 AND IPv6), the covering registry object plus all
+# more-specific objects (whois -M / ARIN "r >"; LACNIC per prefix via RDAP or the RIPEstat whois proxy), PTR samples,
+# PeeringDB and the operator's own site. Rule: CD-6 as refined by CD-24. Every ACCEPT was re-derived in a fresh
+# second pass (new announced-prefixes pull; per-prefix RIR RDAP + port-43 covering object + -M inside every prefix).
+# Records (one per ASN, every prefix with its evidence URL): docs/enrichment/research/P4-C3-mobile-GHI-2026-09-19.jsonl
+# Mostly rejections, as designed. Named so nobody re-proposes them without new evidence:
+#   converged/fixed: AS855 Bell Aliant, AS7122 Bell MTS, AS6389 AT&T Enterprises, AS12400 Partner, AS1759 Telia FI,
+#   AS8764 Telia LT, AS25400 Telia NO, AS15502 Vodafone IE, AS12392 Orange BE, AS15962 Orange SK, AS15796 Salt,
+#   AS4773 M1, AS9790 2degrees, AS24086 Viettel, AS8359/AS34351/AS43720 MTS RU, AS20661 Turkmentelecom, AS37037
+#   Orange MG, AS37168 Cell C, AS16637 MTN SA, AS37057 Vodacom LS, AS37594 MTN SS, AS43197 TT Mobile TJ, AS45356
+#   Mobitel LK, AS48065 Syriatel, AS44034 Tre SE/DK (separate *.bredband.tre.se pools);
+#   enterprise: AS37119 Unitel AO, AS327707 Airtel RW, AS37531 Airtel NE, AS37649 Yas SN, AS37014 Mascom, AS328943
+#   Africell AO, AS25135 Vodafone UK;
+#   third-party / other operators' space: AS327708 Airtel RW, AS131267 Unitel LA, AS25255 Drei AT, AS52341 WOM,
+#   AS28036 Tigo NI, AS52262 Tigo HN, AS23201 Tigo PY, AS11556 C&W Panama, AS28469 AT&T MX, AS27889 Movilnet,
+#   AS398378 Boost (Amazon-registered), AS24921 LMT second AS (Lattelecom/Tet), AS63199 CDS;
+#   not carriers: AS209193/AS201749 SuperCell, AS51020 Al-Jazeera, AS138089 GMDP, AS7522 STNet;
+#   other: AS44491 Aquafon (IXP LAN /24), AS204106 Babilon-M (HCDN /48), AS214707 RCell (datacenter /40).
+# HELD (not shipped; registry clean but mobile-only not provable): AS133612 Vodafone AU (sells NBN fixed), AS41202
+#   Beeline UZ (FTTB/ADSL), AS36988 Africell SL (fibre/microwave DIA + FTTH), AS59625 Korek (being wound down: assets
+#   seized 2026-08-09), AS41329 Sky Mobile KG (no purpose labels), AS57218 Rightel (site unreachable, product check
+#   impossible), AS264731 Digitel (5G FWA, one aggregate LACNIC object).
+# Judgement call, for an owner/CD-24 revisit: AS206067 Three UK also sells 5G-hub Home Broadband (FWA) out of the same
+#   "Mobile Broadband Service" pools (no dedicated block) - kept on the AS21928 precedent.
+AS206067  # Hutchison 3G UK / Three UK (GB), VodafoneThree — census of ALL 369 announced prefixes (288 v4, 81 v6): 336 are covered by RIPE inetnum H3GUK "Mobile Broadband Service", the rest by Three's own UK-H3G-* allocations (IPv6 2a04:4a40::/29, no sub-assignment); the only more-specifics are H3GUK "NAT Pool for Mobiles", H3GUK-GRX and "3UK Infrastructure" (own core); 221 of 222 PTRs *.threembb.co.uk. No fixed/enterprise/third-party object. src: https://rdap.db.ripe.net/ip/92.40.0.0 + https://rdap.db.ripe.net/ip/217.171.128.0 + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS206067 (2026-09-19; second pass 2026-09-19)
+AS34058   # lifecell LLC (UA) — census of ALL 171 announced prefixes (167 v4, 4 v6): every one is lifecell's own LIFECELL-NET-* / UA-ASTELIT-* object, the 37.73.0.0/16 and 88.154.0.0/15 pools "Mobile Clients Internet Access", ERX 159.146/16 + 159.160/16 only LIFECELL-NET-* assignments, IPv6 2a00:1e98::/29 no sub-assignment; PTRs *.lifecell.com.ua. lifecell's home internet (lifecell Vdoma) is GPON/DOCSIS/Ethernet on the Datagroup-Volia plant (AS25229 VOLIA-AS), not lifecell space. src: https://rdap.db.ripe.net/ip/37.73.0.0 + https://rdap.db.ripe.net/ip/159.146.128.0 + https://www.lifecell.ua/uk/lifecell-vdoma/taryfy/ (2026-09-19; second pass 2026-09-19)
+AS29555   # Mobile Telecom-Service LLP, ALTEL-AS (Tele2 + ALTEL 4G, KZ) — sister of AS48503; census of ALL 153 announced prefixes (106 v4, 47 v6): every covering object is a Tele2 Kazakhstan subscriber pool (pool-net-alm / -ast / -shy, v4 and v6) or ALTEL-NETWORK "Dynamic & static IP" (static IPs of ALTEL 4G subscribers, cellular per CD-24), zero more-specifics; PTRs *.altel.kz; operator PeeringDB: "mobile operator ... Tele2 Kazakhstan and ALTEL 4G ... 2G/3G/4G voice and packet data". src: https://rdap.db.ripe.net/ip/85.117.107.0 + https://rdap.db.ripe.net/ip/217.76.73.0 + https://www.peeringdb.com/asn/29555 (2026-09-19; second pass 2026-09-19)
+AS45143   # Singapore Telecom Mobile Pte Ltd (SG) — APNIC aut-num SINGTELMOBILE-AS-AP "SINGTEL MOBILE INTERNET SERVICE PROVIDER"; census of ALL 147 announced prefixes (93 v4, 54 v6): every covering object is SINGTELMOBILE "SingTel Mobile" / SINGTELMOBILE-SG (v6 2400:1c00::/32), zero more-specifics. Singtel fixed broadband is the separate AS9506 SINGTEL-FIBRE and AS3758 SINGNET. src: https://rdap.apnic.net/autnum/45143 + https://rdap.apnic.net/ip/2400:1c00:: + https://rdap.apnic.net/autnum/9506 (2026-09-19; second pass 2026-09-19)
+AS327738  # Africell RDC / STE Africell RDC SPRL (CD) — mobile-only operator (africell.cd lists mobile bundles, routers/MiFi, eSIM, Afrimoney; no fixed/fibre/DIA product). Census of ALL 8 announced prefixes (v4 only, no IPv6): 154.73.20-23.0/24 AFRINIC inetnums Africell-NET1..4 "Africell-Subnet-N", 45.221.4-7.0/24 Africell-RDC; no fixed/enterprise/third-party object. 1,142,895 APNIC users behind 2,048 IPv4 = 558 per address (carrier NAT). src: https://rdap.afrinic.net/rdap/ip/154.73.20.0 + https://www.africell.cd/ + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS327738 (2026-09-19; second pass 2026-09-19)
+AS328088  # NetOne Cellular (Private) Limited (ZW) — state mobile operator (the fixed incumbent is TelOne, a separate company); its home router (4G CPE / One-Fi) runs on a NetOne SIM over the cellular network, no separate pool. Census of ALL 6 announced prefixes incl. IPv6: every object is NetOne-Cellular-v4 (102.128.76.0/22, 196.41.88.0/24) or NetOne-Cellular-v6 (2c0f:ec78::/32). 623,052 APNIC users / 1,280 IPv4 = 487 per address. src: https://rdap.afrinic.net/rdap/ip/102.128.76.0 + https://www.netone.co.zw/ (2026-09-19; second pass 2026-09-19)
+AS328286  # Libyana Mobile Phone Company JSC (LY) — mobile operator (fixed ADSL/FTTH in Libya is LTT, a separate company). Census of ALL 10 announced prefixes incl. IPv6: v4 all inside 102.164.96.0/21 Libyana-Mobile-v4 with sub-objects InternetService "Used for network address translation for internet service" (+ East/South area pools); v6 inside 2c0f:ea0::/32 LIBYANA-IPV6, no sub-objects. 595,024 APNIC users / 2,048 IPv4 = 291 per address (carrier NAT). src: https://rdap.afrinic.net/rdap/ip/102.164.96.0 + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS328286 (2026-09-19; second pass 2026-09-19)

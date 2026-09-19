@@ -185,6 +185,15 @@ AS50257   # JV A-Mobile Ltd (Abkhazia mobile). src: ipverse as-metadata descript
 #   AT LUBUMBASHI"), AS18004 WIN/Smartfren (aut-num names an ISP; third-party CDN /24s); and the
 #   researcher rejects AS39603 Play (PLAY_FBB), AS12912, AS1257, AS3301, AS8386, AS48832, AS37693,
 #   AS27651, AS27882, AS30992, AS20011 all stand.
+# Batch E (ranks 81-100): shipped AS64466 Mobiuz (GPRS_NAT / ROAMING netnames, 741 users/IPv4).
+#   Rejected: AS21497 VF Ukraine (VEGA-GPON fixed blocks; its eyeball pin stays), AS36974 MTN CI
+#   (afnet.net PTRs), AS327885 Halotel TZ ("Fix cable to using internet"), AS36962 MTN Zambia
+#   ("ENTERPRISE BUSINESS CLIENTS"), AS36972 MTN Sudan (one "Enterprise Business Unit users" /24),
+#   AS29355 Kcell (KZ-AKSORANLLP-servers /23), AS8412 Magenta AT, AS29614 Vodafone GH, AS139994
+#   XL FTTH, AS12353 Vodafone PT, AS8781 Ooredoo QA, AS21575 Entel PE (Americatel space), AS24499
+#   Telenor PK, AS131429 MobiFone, AS59588 Zain IQ, AS37577 Orange BF. Unsure (no evidence either
+#   way, not shipped): AS42961 Zain KW (aut-num GPRS-AS but 1.57 users/IPv4), AS262210 Bitel,
+#   AS37223 Vodacom MZ.
 # Re-check any of these with RDAP on the first address of the named block. src: https://rdap.apnic.net/ip/223.233.112.0 +
 # https://rdap.db.ripe.net/ip/188.49.192.0 + https://rdap.afrinic.net/rdap/ip/41.1.0.0 (2026-09-19)
 
@@ -202,6 +211,7 @@ AS17421   # Chunghwa Telecom Mobile Business Group (TW) — APNIC aut-num EMOME-
 AS23693   # Telkomsel (ID) — dedicated cellular: APNIC aut-num name "TELKOMSEL-ASN-ID", description "Cellular Network Provider", and 12 of 12 sampled prefixes are netname TELKOMSEL-ID with the same "Cellular Network Provider" descr; rDNS dynamic-pool-telkomsel-114-124-0-9.telkomsel.net.id. 27,094,979 APNIC users over 2,416,384 IPv4. Telkom Indonesia's IndiHome fixed broadband stays on the separate AS7713 TELKOMNET-AS-AP. src: https://rdap.apnic.net/autnum/23693 (2026-09-12)
 AS24389   # Grameenphone (BD) — cellular; APNIC aut-num GRAMEENPHONE-AS-AP descr "Cell Phone Operator", inetnums 37.111.192.0/18 and 119.30.32.0/20 descr "Internet service provider via GPRS/EDGE"; 4,480,082 APNIC users on 20,480 IPv4 = 219 users/IPv4. src: https://rdap.apnic.net/autnum/24389 (2026-09-12)
 AS38466  # U Mobile Sdn Bhd (MY) — APNIC aut-num UMOBILE-AS-AP remarks "Mobile Network Operator"; allocation 123.136.96.0/19 is netname UMOBILE-MY descr "3G Mobile Operator" and every routed /24 is netname SUBS-UMOBILE. Licensed MNO with no fixed access network. 3,225,954 APNIC users / 46,592 IPv4 = 69.2 per address. src: https://rdap.apnic.net/autnum/38466 (2026-09-12; independently re-verified 2026-09-19)
+AS64466  # Universal Mobile Systems LLC / Mobiuz (UZ) — state-founded mobile-only operator (GSM/UMTS/LTE; no fixed licence); RIPE aut-num UMS-AS, registrant UNIVERSAL MOBILE SYSTEMS LLC; its announced blocks are inetnums GRPS_NAT-1 (185.163.26.0/24) and GPRS-NAT-2 (185.213.230.0/24) plus a /27 IT_PLATFORMS_SRV-1 for its own platforms; 2,275,781 APNIC users behind 3,072 IPv4 = 741 users/IP (carrier NAT). Uzbektelekom fixed is AS8193. src: https://rdap.db.ripe.net/ip/185.163.26.0 (2026-09-19)
 AS201767  # Uzmobile — the CELLULAR branch of Uzbektelekom JSC (UZ). RIPE aut-num name UZMOBILE-AS; all 9 announced prefixes are inetnum netname UZMOBILE / UZMOBILE-UZ-NET descr "'UZMOBILE' branch of 'Uzbektelecom' JSC", no fixed netname in the AS. 3,561,842 APNIC users behind 2,816 IPv4 addresses = 1,265 users/address. Uzbektelekom's FIXED subscribers are on AS8193 (BRM-AS) and AS28910 (INTAL-ASN). src: https://rdap.db.ripe.net/autnum/201767 (2026-09-12; independently re-verified 2026-09-19)
 
 # --- Middle East / Africa / Latin America ---

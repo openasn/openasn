@@ -142,7 +142,8 @@ AS3269    # Telecom Italia S.p.A. (IT). src: ipverse as-metadata description "Te
 #       213.140.59.0/24 ADSL-Algerie-Telecom "permanent customers").
 #     KEPT here after verification 2026-09-19: AS39603 Play (PLAY_FBB 109.243.0.0/16 in the AS),
 #       AS17853 LG Uplus (BORANET_customer blocks), AS327931 Djezzy (OTA-VSAT-NET enterprise VSAT).
-#     MOVED 2026-09-19: AS201767 Uzmobile. STILL PENDING research, pin stays for now: AS21497.
+#     MOVED 2026-09-19: AS201767 Uzmobile. KEPT 2026-09-19: AS21497 VF Ukraine (it announces
+#       VEGA-GPON fixed blocks). No seed pin is pending any more.
 #   src: https://rdap.apnic.net/autnum/4818 + https://rdap.lacnic.net/rdap/autnum/12252 +
 #   https://rdap.db.ripe.net/autnum/44244 (2026-09-12)
 #

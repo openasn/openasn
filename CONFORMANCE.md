@@ -70,13 +70,37 @@ losing to rule 9, by design).
 ## Running the panel
 
 ```bash
-# pipeline reference classifier (all Tier A rows) — this is gate G5
+# pipeline reference classifier (all 81 Tier A rows) — this is gate G5
 OFFLINE=1 OPENASN_DATA_REPO=/path/to/this/repo ruby pipeline/run.rb
 
 # Ruby gem, Tier A rows: point data_dir at the artifacts, Tier B disabled
 # Ruby gem, context: gem rows: same artifacts + a fixture overlay per tier_b id
-# Python: PYTHONPATH=src python -m unittest tests.test_spotchecks
+
+# Python — all 97 rows:
+PYTHONPATH=src python -m unittest tests.test_spotchecks          # the 81 Tier A rows
+PYTHONPATH=src python -m unittest tests.test_spotchecks_tier_b   # the 16 context: gem rows
 ```
+
+Two rules for anyone wiring the panel into a new client:
+
+- **Vendor `spotchecks.yml` byte-identically** and parse it as-is. A locally
+  "cleaned up" copy is not the panel.
+- **Assert `gem_sources`, not `rule`,** and assert it as an ordered list
+  equal to `Result#sources` — not merely contained in it. Containment
+  silently tolerates a spurious extra signal in a verdict's explanation.
+  Equality holds on all 97 rows today. The order for multi-signal rows is
+  the classifier's emission order: `bad_asn`, `hosting_extra`, `cdn`, then
+  `category`.
+
+**The panel is robust to data vintage, and that is a deliberate property.**
+Measured 2026-09-12: all 81 Tier A rows pass unchanged against release
+artifacts from `2026-07-24T06:04:09Z` **and** against a fresh
+`2026-09-12` build. Panel v2's probes are each ASN's largest announced
+range +10 addresses, and the head of the routing distribution does not churn
+week to week. So a client's vendored fixture artifacts do not have to track
+the panel's generation build — which means every client can share one set of
+fixture bytes, and any difference between two clients is then provably logic
+rather than data vintage.
 
 A client that cannot yet implement a rule must **skip** the affected rows
 loudly, never redefine them.
@@ -97,7 +121,18 @@ a bug in the client that differs from the gem.
 3. **Result key casing (JS).** `toJSON()` emits the gem's exact snake_case key
    names, because conformance depends on them; the object also exposes
    camelCase accessors for idiomatic JS.
-4. **CIDR input to `lookup()` (Python, JS) — NEEDS A RULING, not yet settled.**
+4. **IPv4-mapped IPv6 is read two ways, the same two ways, in every client.**
+   `::ffff:1.2.3.4` parses as **IPv4** on the lookup path (`IP.parse` /
+   `_ip.parse` / `parseIp`) and as **IPv6** when it arrives as a Tier B token
+   (`CidrUtils.parse` / `cidr_utils.parse` / `parseToken`, all of which follow
+   Ruby's `IPAddr#ipv4?`, which is false for it). Verified in all three
+   clients on 2026-09-12. This is *not* a divergence — they agree — but it
+   means a Tier B source publishing `::ffff:1.2.3.4` would file that range in
+   the v6 overlay while a lookup of the same address searches the v4 layers,
+   so the entry could never match. It is unreachable today only because
+   `::ffff:0:0/96` is in the bogon table above and gets clipped first. Do not
+   narrow that table without settling this.
+5. **CIDR input to `lookup()` (Python, JS) — NEEDS A RULING, not yet settled.**
    The gem accepts `lookup("1.2.3.0/24")`: Ruby's `IPAddr` silently masks the
    host bits and it classifies `1.2.3.0`. The Python and JS clients reject it
    as invalid input. Silently classifying a whole prefix by its network

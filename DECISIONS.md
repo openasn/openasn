@@ -925,7 +925,7 @@ dataset `sources/routeviews-backbone`, live fetch, cold cache, RIB slot
 generated on the sapics backbone and landed on main first. On the RouteViews
 backbone 11 of its probes were unrouted: each sat in space no ASN announces
 (RIPEstat network-info: no origin). They were changed row by row with the
-reason in each note and in the spotchecks.yml panel history: 5 probes moved
+reason in each note and in the spotchecks.yml panel history: 4 probes moved
 to the same ASN's largest announced range, 4 rows whose ASN announces nothing
 (AS133877, AS521 v4+v6, AS203665) now expect `unknown` via `unrouted` and
 guard against RIR fill returning, and 3 rows whose path could no longer be

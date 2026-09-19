@@ -607,3 +607,20 @@ AS62211   CY  # territory: northern_cyprus; src: https://en.wikipedia.org/wiki/K
 # Russia (Wikipedia infobox), so neither "RU" (CD-19a) nor "UA" (not its seat)
 # fits cleanly: no country, and no Wikidata fallback. Owner call.
 AS203451  --  # none: K-Telecom (Win Mobile) network in occupied Crimea, seat Krasnodar; src: https://en.wikipedia.org/wiki/K-Telecom (2026-09-19)
+
+# --- Hong Kong and Macau (CD-19b), 2026-09-19 ---------------------------------
+# ISO 3166-1 gives HK and MO their own codes; Wikidata's P17 for companies
+# there is CN. The pipeline refines Wikidata CN to HK/MO for items located in
+# HK/MO (China Mobile Hong Kong AS9231/AS137872 -> HK, China Telecom (Macau)
+# AS136167 -> MO). These lines cover HK operators Wikidata cannot place.
+AS9304    HK  # src: https://en.wikipedia.org/wiki/HGC_Global_Communications ("Internet service provider in Hong Kong", "Headquarters Hong Kong") (2026-09-19)
+# China Mobile International ASNs linked to the China Mobile group item
+# (Q741618, Beijing): the Wikidata fallback would publish CN for a Hong Kong
+# operator. No first-party or reference page placing China Mobile
+# International Ltd was reachable (cmi.chinamobile.com does not resolve,
+# 2026-09-19; the rest are aggregators), so: no country.
+AS58453   --  # none: China Mobile International (HK), group item says CN; src: https://www.wikidata.org/wiki/Q741618 (2026-09-19)
+AS58807   --  # none: China Mobile International (HK), group item says CN; src: https://www.wikidata.org/wiki/Q741618 (2026-09-19)
+AS132389  --  # none: China Mobile International (HK), group item says CN; src: https://www.wikidata.org/wiki/Q741618 (2026-09-19)
+AS136750  --  # none: China Mobile International (HK), group item says CN; src: https://www.wikidata.org/wiki/Q741618 (2026-09-19)
+AS139619  --  # none: China Mobile International (HK), group item says CN; src: https://www.wikidata.org/wiki/Q741618 (2026-09-19)

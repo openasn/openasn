@@ -17,6 +17,19 @@ name: Build & publish data
 #   * Cron minute is deliberately off-hour (03:17 UTC): GitHub delays
 #     on-the-hour crons under load, and upstreams appreciate the jitter.
 #   * jq is preinstalled on ubuntu runners; the as.json parser uses it.
+#   * Go is a BUILD-ONLY toolchain here: the pipeline compiles
+#     tools/rib2origin, which derives the IP->ASN backbone from ten
+#     RouteViews RIB dumps (~850MB download, ~1 min CPU; DECISIONS.md
+#     D-SRC-2 (backbone)). The version comes from that module's go.mod, never from a
+#     number typed here. Nothing we ship needs Go at runtime.
+#   * OPENASN_BACKBONE=routeviews is set explicitly below although it is the
+#     pipeline default: rolling back to the legacy sapics backbone must be a
+#     visible one-line change here (plus re-pinning sapics in a reviewed PR,
+#     or the licence gate fails the build by design).
+#   * The upstream cache now also holds the ten RIBs (one file per
+#     collector, overwritten each night). That makes the cache ~1GB; it is
+#     what lets a collector that fails to download fall back to its
+#     previous RIB (keep-last-good) instead of thinning the backbone.
 #   * Action majors (checkout v7 / cache v6 / upload-artifact v7) run on
 #     Node 24; the previously pinned v4s targeted Node 20, deprecated:
 #     https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
@@ -92,6 +105,14 @@ jobs:
         with:
           ruby-version: "3.4"
 
+      # Build-only: compiles pipeline-repo/tools/rib2origin (stdlib only, no
+      # modules, so there is nothing to cache). See header.
+      - name: Set up Go (build-only, derives the RouteViews backbone)
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: pipeline-repo/tools/rib2origin/go.mod
+          cache: false
+
       # GitHub auto-disables cron workflows in public repos after 60 days
       # WITHOUT COMMITS — and a healthy data repo is exactly one that can
       # go quiet between curation PRs while the nightly hums along. The
@@ -116,6 +137,8 @@ jobs:
       - name: Run pipeline (fetch → gates → compile → validate → publish)
         env:
           OPENASN_DATA_REPO: ${{ github.workspace }}/data-repo
+          # The IP->ASN backbone (D-SRC-2 (backbone)). See header before changing it.
+          OPENASN_BACKBONE: routeviews
           # Publish only on scheduled runs and manual dispatch — never from
           # PRs or ordinary pushes (those validate only).
           PUBLISH: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '1' || '0' }}
@@ -205,6 +228,7 @@ jobs:
           - Delta gate (G4): a layer's record count moved more than ±20% overnight
           - Crosscheck drift: the ipverse hosting-ASN count moved more than 10% down / 20% up
           - An upstream URL scheme changed (sapics did this 2026-06-18)
+          - RouteViews: fewer than 7 of the 10 collector RIBs usable, or tools/rib2origin failed to build/run (Go setup)
 
           ### If a drift gate tripped
 

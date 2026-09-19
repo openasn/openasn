@@ -1,0 +1,153 @@
+name: Data correction
+description: An IP or ASN classifies wrong, or is missing from the dataset
+title: "[data] AS or IP — wrong verdict"
+labels: ["data-correction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for correcting the data — this is the most valuable thing you can send us.
+
+        Two things before you file:
+
+        * **A claim without a source URL is not data.** Every field marked required
+          below is required because a curator cannot act without it.
+        * **If the error is upstream's**, fixing it at the source helps everyone.
+          Most category/role data comes from
+          [ipverse/as-metadata](https://github.com/ipverse/as-metadata) (CC0) and most
+          prefix data from [sapics/ip-location-db](https://github.com/sapics/ip-location-db)
+          (PDDL). Open it there too, and tell us below.
+
+        If you already know the fix, a PR with one sourced override line is even
+        better — see [CONTRIBUTING.md](https://github.com/openasn/openasn/blob/main/CONTRIBUTING.md).
+
+  - type: input
+    id: target
+    attributes:
+      label: IP address or ASN
+      description: The thing that classifies wrong. One per issue. An ASN if you know it, otherwise the IP.
+      placeholder: "AS9009  —  or  —  185.244.30.10"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: current
+    attributes:
+      label: Current verdict
+      description: What OpenASN says today. Check with your client, or `rake 'lookup[IP]'` in the pipeline repo.
+      options:
+        - residential_isp
+        - mobile
+        - business
+        - hosting
+        - vpn
+        - tor_exit
+        - relay
+        - enterprise_gateway
+        - education
+        - government
+        - cgnat
+        - private
+        - unknown
+        - (not in the dataset at all)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: expected
+    attributes:
+      label: Expected verdict
+      description: >-
+        What it should be. The enum is closed and append-only — if none of these fits,
+        say so in the notes rather than picking the nearest one.
+      options:
+        - residential_isp
+        - mobile
+        - business
+        - hosting
+        - vpn
+        - tor_exit
+        - relay
+        - enterprise_gateway
+        - education
+        - government
+        - cgnat
+        - private
+        - unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence URL(s)
+      description: >-
+        A page anyone can open and check: the operator's own site, RDAP/whois for the
+        ASN, the vendor's published egress list, a regulator's register, the upstream
+        record that is wrong. "I run this network" and "everybody knows" are not
+        sources — if you do run it, link something public that shows it.
+      placeholder: |
+        https://www.example-isp.com/about — "we serve 2.1 million residential subscribers"
+        https://rdap.db.ripe.net/autnum/9009
+    validations:
+      required: true
+
+  - type: input
+    id: date_checked
+    attributes:
+      label: Date checked
+      description: When you opened those URLs (YYYY-MM-DD). Sources move; a curator needs to know how fresh this is.
+      placeholder: "2026-09-12"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: upstream
+    attributes:
+      label: Was upstream notified?
+      description: >-
+        If the wrong fact lives in ipverse/as-metadata or sapics/ip-location-db, it
+        should be fixed there as well as here. Link the upstream issue in the notes.
+      options:
+        - "Yes — upstream issue/PR opened (link it in the notes below)"
+        - "No — the error is not upstream's (upstream is right; OpenASN's own layer is wrong)"
+        - "No — not yet / I'd like a maintainer to do it"
+        - "Not sure which upstream owns this"
+    validations:
+      required: true
+
+  - type: input
+    id: build
+    attributes:
+      label: Dataset build and client
+      description: >-
+        Optional but useful — the `build_id` from `manifest.json` (or your release tag)
+        and which client you used. Rules out "already fixed, you have stale bytes".
+      placeholder: "v2026.07.05, openasn Ruby gem 0.3.1"
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: >-
+        Upstream issue links, why this is a hard case, whether the ASN is mixed-use,
+        how many users are behind it. Mixed-use networks legitimately stay `unknown` —
+        if you are arguing against that, this is the place.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: acks
+    attributes:
+      label: Before you submit
+      options:
+        - label: >-
+            This is a data issue, not a security report. (Security problems go through
+            [SECURITY.md](https://github.com/openasn/openasn/blob/main/SECURITY.md); a wrong verdict is never a vulnerability.)
+          required: true
+        - label: >-
+            My evidence is a public page, not a paid or restricted database dump, and I
+            am not asking OpenASN to redistribute someone else's licensed data.
+          required: true

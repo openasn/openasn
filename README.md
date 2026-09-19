@@ -10,9 +10,24 @@ This repository is the **dataset**: the curated override layer, the pinned upstr
 |---|---|
 | [`openasn/openasn`](https://github.com/openasn/openasn) | **this repo** — the open data: curation, specs, provenance receipts, releases |
 | [`openasn/openasn-pipeline`](https://github.com/openasn/openasn-pipeline) | the compiler: fetch → legal/quality gates → pack → validate → publish (runs nightly via [this repo's workflow](.github/workflows/nightly-build.yml)) |
-| [`openasn/openasn-ruby`](https://github.com/openasn/openasn-ruby) | the first client: the `openasn` Ruby gem (future: `openasn-js`, `openasn-python`, …) |
+| [`openasn/openasn-ruby`](https://github.com/openasn/openasn-ruby) | the first client: the `openasn` Ruby gem (see [Clients](#clients)) |
 
 The artifact format is public and language-neutral ([FORMAT.md](FORMAT.md)) — clients in any language are welcome.
+
+**Where this is going.** OpenASN aims to be the biggest and most complete open database of ASNs and everything related to them — not just "is this IP infrastructure?", but who operates the network: the organization and its ownership chain, brands, services, jurisdiction, infrastructure footprint, and how it relates to other ASNs. Two tiers keep that ambition compatible with the legal spine ([DECISIONS.md](DECISIONS.md) D-DATA-1). The **core** — the artifacts and `data/overrides/` — stays **CC0 forever**, with the strict provenance rules below: only data whose exact redistributed form carries explicit rights, aggregators never, ShareAlike never. The **extended tier** — the rich per-ASN record, compiled in our own words from every source we may legally consult, with an exact source URL and date on every fact — is licensed per its inputs (CC BY-SA 4.0 by default), will be published separately with its own LICENSE and ATTRIBUTION, and is **never mixed into the core** or used to relicense it. That work is in progress; the network-origin verdict is and remains the product.
+
+## Clients
+
+<!-- Maintainer: flip the Python and JS rows to `pip install openasn` / `npm install openasn` + "live on PyPI / npm" the day those packages publish. -->
+
+| Language | Install | Status |
+|---|---|---|
+| Ruby — [`openasn/openasn-ruby`](https://github.com/openasn/openasn-ruby) | `gem install openasn` | **Live on RubyGems.** The reference client. |
+| Python | — | Release candidate in preparation |
+| JavaScript / TypeScript | — | Release candidate in preparation |
+| Any other language | — | The format is public ([FORMAT.md](FORMAT.md)); new clients are welcome |
+
+Every client must return the **same verdict for the same IP on the same bytes** — that contract, the shared spot-check panel that proves it, and the handful of deliberate, documented differences between clients live in [CONFORMANCE.md](CONFORMANCE.md).
 
 > [!IMPORTANT]
 > **What OpenASN is NOT.** It is not a fraud engine. It cannot prove an IP is safe or that a user is human. **A clean or `residential_isp` verdict is absence of evidence, not proof of innocence.** Residential proxies — malicious traffic exiting through real home IP addresses — are structurally hard to detect offline, and OpenASN does not claim to detect them. `vpn`, `hosting`, and `tor_exit` verdicts are high-confidence; treat everything else as a signal, not a sentence. Never hard-block `relay`, `cgnat`, or `mobile` — those are real people. OpenASN is a first line of defense, not a fraud engine.
@@ -113,6 +128,8 @@ Our owned, CC0 curation: the classes upstream metadata lacks (`vpn_provider`, `m
 - Candidates are generated from data (`rake overrides:candidates` in the [pipeline repo](https://github.com/openasn/openasn-pipeline) sweeps X4B seeds, org-name patterns, and the crosscheck gap); humans graduate lines into the files. LLM-assisted drafting is welcome; unreviewed bulk imports are not. Every PR here gets instant format feedback from [`scripts/lint_overrides.rb`](scripts/lint_overrides.rb).
 - Prefer false negatives: a missed VPN ASN costs a little recall; a mislabeled eyeball ISP hurts real users. When unsure, leave it out or write a `corrections.yml` entry that yields `unknown`.
 - Genuine upstream errors should also be PR'd to [ipverse/as-metadata](https://github.com/ipverse/as-metadata) — fix data at the source.
+
+The whole contributor flow — evidence URL → one sourced line → lint → PR, the curation bar for each file, and what we don't accept — is in [CONTRIBUTING.md](CONTRIBUTING.md). Wrong verdict for an IP? [Open a data correction](.github/ISSUE_TEMPLATE/data-correction.yml). Security reports have their own private channel ([SECURITY.md](SECURITY.md)); a wrong verdict is a data error, not a vulnerability.
 
 ## What this can and cannot tell you
 

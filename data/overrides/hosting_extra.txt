@@ -108,3 +108,30 @@ AS139080  # China Mobile Sichuan IDC (CN) — APNIC aut-num CMNET-SCIDC-CN, rema
 #     egress rather than hosting; check vpn_provider's bar first.
 #   AS64249 Charles River Operation (US), AS197450 Sunucun (TR) — category=isp with datacenter-ish
 #     address ratios; need the retail-vs-hosting question answered before either file takes them.
+
+# ============================ Sweep 2026-09-19 (pass 4) ============================
+# The 44 candidates prepared 2026-09-12 (the crosscheck-gap residue + 20 class-(c) candidates chosen
+# for large address space and ~0 eyeball users) researched per record: aut-num and INETNUM census
+# direct from the RIR with PTRs, PeeringDB, the operator's own site. 10 shipped below; bar (b) lines
+# are in X4BNet's datacenter input AND a verifiable hosting brand, bar (c) lines carry the registry's
+# own datacenter/colocation wording (Hostway "Hostway IDC", colo4jax "Expert colocation consultants",
+# Colo Solutions' aut-num COLOSOLUTIONS). NOT shipped, so nobody re-proposes them without new
+# evidence: AS197549 GHOSTnet (announces 94.249.222.0/23 "Funknetz HG Wireless / Customer IP Pool" -
+# a WISP's subscribers), AS17789 "CNCGROUP ShangHai IDC" (announces CNNIC and LFCOM space, not its
+# own), AS64249 EndOffice (mostly leased third-party blocks, 4,153 users), AS137697/AS134761 China
+# Telecom IDC ASNs (remarks also name a MAN / the provincial network), and every class-(c) candidate
+# whose registry record is silent (SonderCloud, Uscloud, CyberCloud, cognetcloud, Team Blue UK,
+# LUCIDACLOUD, Hostopia, firstcolo, Telehouse Europe, CloudFerro, Clouding, Scloud, T1Cloud) - real
+# hosts, most of them, but the bar asks for the registry's statement and the X4B range overlay still
+# covers their published ranges. The standing exclusions (P4/Play, Posta Slovenije, Opera, Applied
+# Privacy) still hold; AS206092 went to vpn_provider.txt instead. src: https://rdap.apnic.net/autnum/9952 (2026-09-19)
+AS43128   # Webtasy d.o.o. (SI) — bar (b): netnames DOMENCA-NET "Webtasy hosting platform" and HR-DHH-PLUS-VPS-AT "Plus VPS Servers"; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/43128 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS197450  # Sunucun Bilgi Iletisim Teknolojileri ve Ticaret Ltd. Sti. (TR) — bar (b): RIPE aut-num SUNUCUN remark "Our company provides web hosting, domain name hosting, server, and data center services"; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/197450 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS29593   # WOJCIECH LOREK ENDOR COMPUTERS (PL) — bar (b): endor.pl sells web hosting and VPS; netnames ENDOR "Endor.PL network"; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/29593 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS60973   # ZUPO D.O.O. (SI) — bar (b): zupo.si is a server-infrastructure host, PTR hostar.zupo.si; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/60973 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS197226  # SPRINT S.A. (PL) — bar (b): RIPE aut-num SPRINT-SDC remark "Sprint Data Center", netnames SPRINT-SDC-FIRE "Sprint Data Center Customer"; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/197226 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS205053  # Asimia Damaskou (GR) — bar (b): aweb.gr sells VPS hosting, cloud and dedicated servers; netnames GR-AWEB-*; X4B datacenter input. src: https://rdap.db.ripe.net/autnum/205053 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS63567   # Suqian Pugongying Network Service Co. Ltd (CN) — bar (b): APNIC aut-num PGYIDC, netnames PGYIDC; X4B datacenter input. src: https://rdap.apnic.net/autnum/63567 + https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt (2026-09-19)
+AS9952    # Hostway IDC (KR) — bar (c): APNIC aut-num HOSTWAY-AS-KR-KR remark verbatim "Hostway IDC"; hostway.co.kr sells server hosting and colocation. src: https://rdap.apnic.net/autnum/9952 (2026-09-19)
+AS40430   # colo4jax LLC (US) — bar (c): ARIN aut-num COLO4JAX-AS remark verbatim "Expert colocation consultants". src: https://rdap.arin.net/registry/autnum/40430 (2026-09-19)
+AS16557   # Colo Solutions (US) — bar (c): ARIN aut-num COLOSOLUTIONS; colosolutions.com sells colocation and cloud servers; sampled PTRs are shared-hosting servers (ecehosting.com, peopleshostshared.com). src: https://rdap.arin.net/registry/autnum/16557 (2026-09-19)

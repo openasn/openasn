@@ -15,82 +15,81 @@
 # brand itself (beware same-name lookalikes: AS149097 "FASTLY NETWORK
 # SOLUTION COMPANY LIMITED (VN)" is NOT Fastly Inc; AS13188 "CONTENT
 # DELIVERY NETWORK LTD (UA)" is a Ukrainian access ISP - both excluded).
-# Evidence for every line: ipverse as-metadata org description
-# (https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json),
-# checked 2026-07-04.
+# Evidence: since 2026-09-19 (P4-C2) every line cites the RIR aut-num record
+# (RDAP registrant = the brand) and, where the operator keeps one, its own
+# PeeringDB record. The ipverse description string (a bulk WHOIS copy) is no
+# longer a source.
 
 # --- Cloudflare, Inc. ---
-AS13335   # Cloudflare Inc. (US) — main. src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
-AS14789   # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
-AS132892  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
-AS133877  # Cloudflare Hong Kong LLC. src: ipverse as-metadata description "Cloudflare Hong Kong LLC" (2026-07-04)
-AS139242  # Cloudflare Sydney LLC. src: ipverse as-metadata description "Cloudflare Sydney LLC" (2026-07-04)
-AS202623  # Cloudflare Inc. src: ipverse as-metadata description "Cloudflare Inc" (2026-07-04)
-AS203898  # Cloudflare Inc. src: ipverse as-metadata description "Cloudflare Inc" (2026-07-04)
-AS209242  # Cloudflare London LLC. src: ipverse as-metadata description "Cloudflare London LLC" (2026-07-04)
-AS394536  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
-AS395747  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
-AS400095  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
-AS402542  # Cloudflare Inc. (US). src: ipverse as-metadata description "Cloudflare Inc." (2026-07-04)
+AS13335   # Cloudflare Inc. (US) — main. src: https://rdap.arin.net/registry/autnum/13335 (aut-num CLOUDFLARENET, registrant Cloudflare, Inc.) + https://www.peeringdb.com/asn/13335 (operator record "Cloudflare", Content) (2026-09-19)
+AS14789   # Cloudflare Inc. (US). src: https://rdap.arin.net/registry/autnum/14789 (aut-num CLOUDFLARENET, registrant Cloudflare, Inc.) (2026-09-19)
+AS132892  # Cloudflare Inc. (US). src: https://rdap.apnic.net/autnum/132892 (aut-num CLOUDFLARE, registrant Cloudflare, Inc.) (2026-09-19)
+AS133877  # Cloudflare Hong Kong LLC. src: https://rdap.apnic.net/autnum/133877 (aut-num CLOUDFLARE, registrant Cloudflare Hong Kong, LLC) (2026-09-19)
+AS139242  # Cloudflare Sydney LLC. src: https://rdap.apnic.net/autnum/139242 (aut-num CSL-AS-AP, registrant Cloudflare Sydney, LLC) (2026-09-19)
+AS202623  # Cloudflare Inc. src: https://rdap.db.ripe.net/autnum/202623 (aut-num CLOUDFLARENET-CORE, registrant Cloudflare Inc) (2026-09-19)
+AS203898  # Cloudflare Inc. src: https://rdap.db.ripe.net/autnum/203898 (aut-num CLOUDFLARENET-UK, registrant Cloudflare Inc) (2026-09-19)
+AS209242  # Cloudflare London LLC. src: https://rdap.db.ripe.net/autnum/209242 (aut-num CLOUDFLARESPECTRUM, registrant Cloudflare London, LLC) + https://www.peeringdb.com/asn/209242 (operator record "Cloudflare London") (2026-09-19)
+AS394536  # Cloudflare Inc. (US). src: https://rdap.arin.net/registry/autnum/394536 (aut-num CLOUDFLARENET-SFO, registrant Cloudflare, Inc.) (2026-09-19)
+AS395747  # Cloudflare Inc. (US). src: https://rdap.arin.net/registry/autnum/395747 (aut-num CLOUDFLARENET-SFO05, registrant Cloudflare, Inc.) (2026-09-19)
+AS400095  # Cloudflare Inc. (US). src: https://rdap.arin.net/registry/autnum/400095 (aut-num CLOUDFLARENET, registrant Cloudflare, Inc.) (2026-09-19)
+AS402542  # Cloudflare Inc. (US). src: https://rdap.arin.net/registry/autnum/402542 (aut-num CLOUDFLARENET, registrant Cloudflare, Inc.) (2026-09-19)
 
 # --- Akamai Technologies / Akamai International ---
-AS12222   # Akamai Technologies (US). src: ipverse as-metadata description "Akamai Technologies" (2026-07-04)
-AS16625   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS16702   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS17334   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS18680   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS18717   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS20189   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS20940   # Akamai International B.V. (NL) — main global CDN AS. src: ipverse as-metadata description (2026-07-04)
-AS21342   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS21357   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS21399   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS22207   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS23454   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS23455   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS23903   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS24319   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS26008   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS30675   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS31107   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS31108   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS31109   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS31110   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS31377   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS31984   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS32787   # Akamai Technologies Inc. (US) — Prolexic. src: ipverse as-metadata description (2026-07-04)
-AS33905   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS34164   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS34850   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS35204   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS35993   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS35994   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS36029   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS36183   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS39836   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS43639   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS45757   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS48163   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS49249   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS49846   # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS55409   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS55770   # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS63949   # Akamai Technologies Inc. (US) — Linode (Akamai cloud). src: ipverse as-metadata description (2026-07-04)
-AS133103  # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS200005  # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS213120  # Akamai International B.V. (NL). src: ipverse as-metadata description (2026-07-04)
-AS393234  # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
-AS393560  # Akamai Technologies Inc. (US). src: ipverse as-metadata description (2026-07-04)
+AS12222   # Akamai Technologies (US). src: https://rdap.arin.net/registry/autnum/12222 (aut-num AKAMAI, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS16625   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/16625 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS16702   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/16702 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS17334   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/17334 (aut-num AKAM-SOS-AS17334, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS18680   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/18680 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS18717   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/18717 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS20189   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/20189 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) + https://www.peeringdb.com/asn/20189 (operator record "Akamai Direct Connect", Enterprise) (2026-09-19)
+AS20940   # Akamai International B.V. (NL) — main global CDN AS. src: https://rdap.db.ripe.net/autnum/20940 (aut-num AKAMAI-ASN1, registrant Akamai International B.V.) + https://www.peeringdb.com/asn/20940 (operator record "Akamai Technologies", Content) (2026-09-19)
+AS21342   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/21342 (aut-num AKAMAI-ASN2, registrant Akamai International B.V.) (2026-09-19)
+AS21357   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/21357 (aut-num AKAMAI-MAPPING, registrant Akamai International B.V.) (2026-09-19)
+AS21399   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/21399 (aut-num AKAMAI3, registrant Akamai International B.V.) (2026-09-19)
+AS22207   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/22207 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS23454   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/23454 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) + https://www.peeringdb.com/asn/23454 (operator record "Akamai AS23454") (2026-09-19)
+AS23455   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/23455 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS23903   # Akamai Technologies Inc. (US). src: https://rdap.apnic.net/autnum/23903 (aut-num AKAMAI-AS-BANGLORE, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS24319   # Akamai Technologies Inc. (US). src: https://rdap.apnic.net/autnum/24319 (aut-num AKAMAI-TYO-AP, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS26008   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/26008 (aut-num AKAMAI-NOMINUM-ASN, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS30675   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/30675 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS31107   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/31107 (aut-num AKAMAI-NY, registrant Akamai International B.V.) (2026-09-19)
+AS31108   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/31108 (aut-num AKAMAI-VA, registrant Akamai International B.V.) (2026-09-19)
+AS31109   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/31109 (aut-num AKAMAI-LA, registrant Akamai International B.V.) (2026-09-19)
+AS31110   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/31110 (aut-num AKAMAI-SJC, registrant Akamai International B.V.) (2026-09-19)
+AS31377   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/31377 (aut-num AKAMAI-BOS, registrant Akamai International B.V.) (2026-09-19)
+AS32787   # Akamai Technologies Inc. (US) — Prolexic. src: https://rdap.arin.net/registry/autnum/32787 (aut-num PROLEXIC-TECHNOLOGIES-DDOS-MITIGATION-NETWORK, registrant Akamai Technologies, Inc.) + https://www.peeringdb.com/asn/32787 (operator record "Akamai Prolexic DDoS Mitigation", NSP) (2026-09-19)
+AS33905   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/33905 (aut-num AKAMAI-AMS, registrant Akamai International B.V.) (2026-09-19)
+AS34164   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/34164 (aut-num AKAMAI-LON, registrant Akamai International B.V.) (2026-09-19)
+AS34850   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/34850 (aut-num AKAMAI-MUC, registrant Akamai International B.V.) (2026-09-19)
+AS35204   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/35204 (aut-num AKAMAI-DUB, registrant Akamai International B.V.) (2026-09-19)
+AS35993   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/35993 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS35994   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/35994 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS36029   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/36029 (aut-num AS-AKAMAI, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS36183   # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/36183 (aut-num AKAMAI-AS, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS39836   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/39836 (aut-num AKAMAI-FRA, registrant Akamai International B.V.) (2026-09-19)
+AS43639   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/43639 (aut-num AKAMAI-AMS2, registrant Akamai International B.V.) (2026-09-19)
+AS45757   # Akamai Technologies Inc. (US). src: https://rdap.apnic.net/autnum/45757 (aut-num PLX-AS-AP, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS48163   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/48163 (aut-num COTENDO-AS, registrant Akamai International B.V.) (2026-09-19)
+AS49249   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/49249 (aut-num NOMINUM-SKYE-RIPE-1, registrant Akamai International B.V.) + https://www.peeringdb.com/asn/49249 (operator record "Nominum, Inc. Europe", NSP) (2026-09-19)
+AS49846   # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/49846 (aut-num PROLEXIC_EU, registrant Akamai International B.V.) (2026-09-19)
+AS55409   # Akamai Technologies Inc. (US). src: https://rdap.apnic.net/autnum/55409 (aut-num AKAMAI-AS-AP, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS55770   # Akamai Technologies Inc. (US). src: https://rdap.apnic.net/autnum/55770 (aut-num AKAMAI-AP, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS63949   # Akamai Technologies Inc. (US) — Linode (Akamai cloud). src: https://rdap.apnic.net/autnum/63949 (aut-num AKAMAI-LINODE-AP, registrant Akamai Technologies, Inc.) + https://www.peeringdb.com/asn/63949 (operator record "Linode AS63949", Content) (2026-09-19)
+AS133103  # Akamai Technologies Inc. (US). src: https://rdap.apnic.net/autnum/133103 (aut-num AKAMAI-AP, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS213120  # Akamai International B.V. (NL). src: https://rdap.db.ripe.net/autnum/213120 (aut-num PROLEXIC-IP-PROTECT, registrant Akamai International B.V.) (2026-09-19)
+AS393234  # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/393234 (aut-num PROLEXIC-MGMT, registrant Akamai Technologies, Inc.) (2026-09-19)
+AS393560  # Akamai Technologies Inc. (US). src: https://rdap.arin.net/registry/autnum/393560 (aut-num AKAMAI-TEST, registrant Akamai Technologies, Inc.) (2026-09-19)
 
 # --- Fastly, Edgecast, CacheFly, bunny.net ---
-AS895     # Fastly Inc. (US). src: ipverse as-metadata description "Fastly Inc." (2026-07-04)
-AS54113   # Fastly Inc. (US) — main. src: ipverse as-metadata description "Fastly Inc." (2026-07-04)
-AS394192  # Fastly Inc. (US). src: ipverse as-metadata description "Fastly Inc." (2026-07-04)
-AS14153   # Edgecast Inc. (US). src: ipverse as-metadata description "Edgecast Inc." (2026-07-04)
-AS14210   # Edgecast Inc. (US). src: ipverse as-metadata description "Edgecast Inc." (2026-07-04)
-AS15133   # Edgecast Inc. (US) — main (Edgio). src: ipverse as-metadata description "Edgecast Inc." (2026-07-04)
-AS30081   # CacheFly (US). src: ipverse as-metadata description "CacheFly" (2026-07-04)
-AS200325  # BUNNYWAY informacijske storitve d.o.o. (SI) — bunny.net CDN. src: ipverse as-metadata description "BUNNYWAY" (2026-07-04)
+AS895     # Fastly Inc. (US). src: https://rdap.arin.net/registry/autnum/895 (aut-num FASTLY-NET, registrant Fastly, Inc.) (2026-09-19)
+AS54113   # Fastly Inc. (US) — main. src: https://rdap.arin.net/registry/autnum/54113 (aut-num FASTLY, registrant Fastly, Inc.) + https://www.peeringdb.com/asn/54113 (operator record "Fastly, Inc.", Content) (2026-09-19)
+AS394192  # Fastly Inc. (US). src: https://rdap.arin.net/registry/autnum/394192 (aut-num FASTLY-IT, registrant Fastly, Inc.) (2026-09-19)
+AS14153   # Edgecast Inc. (US). src: https://rdap.arin.net/registry/autnum/14153 (aut-num EDGECAST, registrant Edgecast Inc.) (2026-09-19)
+AS14210   # Edgecast Inc. (US). src: https://rdap.arin.net/registry/autnum/14210 (aut-num EDGECAST, registrant Edgecast Inc.) (2026-09-19)
+AS15133   # Edgecast Inc. (US) — main (Edgio). src: https://rdap.arin.net/registry/autnum/15133 (aut-num EDGECAST, registrant Edgecast Inc.) + https://www.peeringdb.com/asn/15133 (operator record "Edgecast - AS15133", Content) (2026-09-19)
+AS30081   # CacheFly (US). src: https://rdap.arin.net/registry/autnum/30081 (aut-num CACHENETWORKS, registrant CacheFly) + https://www.peeringdb.com/asn/30081 (operator record "CacheFly", Content) (2026-09-19)
+AS200325  # BUNNYWAY informacijske storitve d.o.o. (SI) — bunny.net CDN. src: https://rdap.db.ripe.net/autnum/200325 (aut-num BunnyCDN, registrant BUNNYCDN) + https://www.peeringdb.com/asn/200325 (operator record "BunnyCDN", Content) (2026-09-19)
 
 # ============================ Sweep 2026-09-05 ============================
 # Second curation pass (M1). The 67 lines above were re-verified line-by-line
@@ -114,7 +113,7 @@ AS200325  # BUNNYWAY informacijske storitve d.o.o. (SI) — bunny.net CDN. src: 
 # The rest were already :hosting; for them this batch adds the brand signal only.
 
 # --- Gcore (G-Core Labs S.A., LU) — global CDN / edge cloud ---
-AS199524  # G-Core Labs S.A. (LU) — Gcore CDN backbone; RDAP aut-num name "GCORE", registrant "G-Core Labs S.A."; 455 announced v4 prefixes. Upstream ipverse says category=isp (wrong: this is edge/CDN infrastructure, not an access network). src: https://rdap.db.ripe.net/autnum/199524 + https://gcore.com (2026-09-05)
+AS199524  # G-Core Labs S.A. (LU) — Gcore CDN backbone; RDAP aut-num name "GCORE", registrant "G-Core Labs S.A."; 455 announced v4 prefixes. Upstream ipverse says category=isp (wrong: this is edge/CDN infrastructure, not an access network). src: https://rdap.db.ripe.net/autnum/199524 (aut-num GCORE, registrant G-Core Labs S.A.) + https://www.peeringdb.com/asn/199524 (operator record "Gcore", Content) + https://gcore.com (2026-09-05) (2026-09-19)
 AS59245   # G-Core Labs S.A. (SG/APNIC) - RDAP aut-num name "GCORELABSSA-AS-AP", registrant ORG-GLS1-AP "G-Core Labs S.A"; tiny (2 prefixes / 768 addrs); 78.111.101.0/24 is inetnum LU-GCORELABS-ZA (mnt GCL1-MNT) with rDNS ct2-hw-edge-gc5.fe.gc.onl, but 195.13.54.0/23 is inetnum DC-NET registered to a third party (DomainContext). src: https://rdap.apnic.net/autnum/59245 + https://rdap.db.ripe.net/ip/195.13.54.0 (2026-09-12)
 
 # --- CDNetworks (KR/US) — global CDN ---
@@ -128,7 +127,7 @@ AS19551   # Imperva Cloud (Incapsula, now a Thales company) (US) - RDAP aut-num 
 AS30148   # Sucuri (US) — RDAP aut-num name "SUCURI-SEC", registrant "Sucuri" / "Security Operations Center". src: https://rdap.arin.net/registry/autnum/30148 + https://sucuri.net (2026-09-05)
 
 # --- Regional CDN brands (see "BAR EXTENDED" above) ---
-AS57568   # ArvanCloud (ARVANCLOUD GLOBAL TECHNOLOGIES L.L.C, AE) — RDAP aut-num name "TR_Arvancloud" (their Turkey edge PoP), registrant ARVANCLOUD. Upstream ipverse says category=isp (wrong: CDN PoP). src: https://rdap.db.ripe.net/autnum/57568 + https://www.arvancloud.ir (2026-09-05)
+AS57568   # ArvanCloud (ARVANCLOUD GLOBAL TECHNOLOGIES L.L.C, AE) — RDAP aut-num name "TR_Arvancloud" (their Turkey edge PoP), registrant ARVANCLOUD. Upstream ipverse says category=isp (wrong: CDN PoP). src: https://rdap.db.ripe.net/autnum/57568 (aut-num TR_Arvancloud, registrant ARVANCLOUD GLOBAL TECHNOLOGIES L.L.C) + https://www.arvancloud.ir (2026-09-05) (2026-09-19)
 AS208006  # ArvanCloud (AE) - RDAP aut-num name "ARVANCLOUD-CDN", registrant ORG-AGTL2-RIPE "ARVANCLOUD GLOBAL TECHNOLOGIES L.L.C"; 185.215.232.0/22 is ALLOCATED PA "AE-ARVANCLOUD-20170802" to that org. PeeringDB net 26232 lists it as "Softqloud" (arvancloud.com), info_type=Content. Caveat: 37.32.3.0/24 is inetnum IR-ABRARVAN remark "AbrArvan IaaS" - part IaaS, not pure edge. src: https://rdap.db.ripe.net/autnum/208006 + https://rdap.db.ripe.net/ip/185.215.232.0 (2026-09-12)
 AS21245   # Medianova (TR) — RDAP aut-num name "Medianova", registrant "MEDIANOVA INTERNET HIZMETLERI VE TICARET ANONIM SIRKETI"; mnt MNCDN-MNT. src: https://rdap.db.ripe.net/autnum/21245 + https://www.medianova.com (2026-09-05)
 AS52580   # Azion Technologies Ltda. (BR) — edge/CDN platform; RDAP registrant "Azion Technologies Ltda."; 40 announced v4 prefixes. src: https://rdap.registro.br/autnum/52580 + https://www.azion.com (2026-09-05)
@@ -214,3 +213,12 @@ AS149981  # EdgeNext (SG) - same registrant ORG-LDPL1-AP "Edgenext Legend Dynast
 #   ASN; most space is leased from IP brokers). All three are already :hosting or move :business ->
 #   :hosting, which is the right verdict for leased server space either way, so the downside of
 #   being wrong is nil. They are kept and labelled rather than dropped or silently trusted.
+
+# ============== P4-C2 (2026-09-19): re-sourced 69 lines, removed 2 ==============
+# REMOVED AS31984 (ASAVIE-TECHNOLOGIES-INC, unrouted) and AS200005 (ASAVIE-TECHNOLOGIES-AS): both are
+# Akamai-registered, which is all the 07-04 description string showed, but Asavie is the mobile/IoT
+# device security and access platform Akamai bought in 2020 (sold to carrier partners), not CDN
+# edge. The cdn flag turned AS200005's egress (96.7.204.0/22, upstream category business) into
+# :hosting; that is traffic from enterprise mobile devices, so prefer the false negative.
+# src: https://www.ir.akamai.com/news-releases/news-release-details/akamai-technologies-advances-5g-security-strategy-acquisition +
+# https://rdap.db.ripe.net/autnum/200005 (2026-09-19)

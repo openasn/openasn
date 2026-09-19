@@ -1,9 +1,12 @@
 name: Lint data
 
 # Fast PR feedback for data contributions (override lines, corrections,
-# spot-panel rows, fetch-manifest edits). Stdlib-only, no secrets, no
-# pipeline checkout — the authoritative validation still happens inside
-# every nightly build (nightly-build.yml).
+# spot-panel rows, fetch-manifest edits) and for the published export
+# contract (EXPORT_FORMATS.md, export-contract.json, conformance fixtures).
+# Stdlib-only, no secrets, no pipeline checkout — the authoritative
+# validation still happens inside every nightly build (nightly-build.yml).
+# The export step deliberately installs no Python, Go, or SQLite tooling:
+# a spec/fixture PR must not wait on an exporter toolchain.
 
 on:
   pull_request:
@@ -22,3 +25,6 @@ jobs:
 
       - name: Lint curated data files
         run: ruby scripts/lint_overrides.rb
+
+      - name: Validate the export contract and conformance fixtures
+        run: ruby scripts/lint_export_contract.rb

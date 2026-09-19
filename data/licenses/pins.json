@@ -28,5 +28,11 @@
     "extract": "whole_file",
     "sha256": "67690d0688b2b17b2fb74446e0bf58132a389b2e543d9ba0c4c44a60fedd4e67",
     "pinned_at": "2026-07-04T20:25:50Z"
+  },
+  "wikidata-p3797": {
+    "url": "https://www.wikidata.org/w/index.php?title=Wikidata:Copyright&action=raw",
+    "extract": "wikidata_cc0",
+    "sha256": "a6c536658d81a4e11e73451e4ff309169a09a319a6a54993bc1cd306d8c2002f",
+    "pinned_at": "2026-09-19T05:00:50Z"
   }
 }

@@ -102,8 +102,25 @@ ASN → organization name, optional richness (clients work fully without it;
 
 Then: index of `entry_count × (asn u32 · blob_offset u32)` sorted by asn,
 then the UTF-8 name blob. An entry's name length = next entry's offset −
-its own (last entry runs to `blob_size`). Names are ipverse as-metadata
-descriptions truncated to 96 bytes on valid UTF-8 boundaries.
+its own (last entry runs to `blob_size`). Names are truncated to 96 bytes
+on valid UTF-8 boundaries.
+
+**Where the names come from.** CC0 sources only, first hit wins:
+`data/overrides/org_names.txt` (our curated names, one source URL per
+line), then Wikidata P3797 item labels (CC0; statements that rest only on
+registry or aggregator references are excluded). An ASN with neither has
+**no entry**, and readers MUST treat that as "no name" (`as_org` nil),
+exactly as before.
+
+Before 2026-09 the names were ipverse as-metadata descriptions (~125k),
+which are bulk RIR WHOIS `descr` strings. Those left the CC0 core under
+DECISIONS.md D-SRC-2 (org names). The byte layout, the version byte
+(`0x01`) and the meaning of an entry ("this ASN's organization name") are
+unchanged, so there is **no format_version bump**. What changed is
+coverage: a few hundred to a few thousand entries instead of ~125k.
+Clients that want the WHOIS names can fetch them locally with the
+`ipverse_org_names` recipe (`maps_to: "as_org"`) in `fetch-manifest.json`.
+The canonical sidecar name always wins over a recipe name.
 
 ## Integrity
 

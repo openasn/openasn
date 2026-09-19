@@ -386,3 +386,102 @@ reference is written *by the thing it guards* can deadlock. Any gate that
 compares against previous output must also have a reference that is frozen,
 externally dated, and independent of whether the gate passed — and a
 documented, recorded way for a human to overrule it once.
+
+## D-SRC-2 (org names) — Organization names leave the CC0 core; ours and Wikidata's replace them (2026-09-19, PROPOSED)
+
+This is the org-names part of the proposed D-SRC-2 ("Tier A sources are judged
+by their inputs, not their label"; audit P4-L, evidence
+`docs/enrichment/research/parts/P4-L-provenance-2026-09-19.jsonl`). The
+backbone and X4B parts are decided separately.
+
+**The finding.** `openasn-orgs.bin` and the `org` column of
+`asn-categories.csv` carried ipverse as-metadata `description` strings:
+124,849 names, one per ASN ipverse knows. ipverse's README says the names are
+"sourced from regional internet registries (RIR)". Its maintainer confirms
+they are the automatically processed WHOIS `descr`
+(https://github.com/ipverse/feedback/discussions/11, 2024-03-24). APNIC
+("may not be passed on in bulk"), ARIN ("does not republish … or make
+publicly available") and RIPE (DB T&C 4.5, "insubstantial part") all
+restrict bulk republication. ipverse's CC0 covers what ipverse authored (the
+categories) and cannot license a registry's records. Rule 1 of the legal
+design and AGENTS.md rule 1 ("aggregators never qualify; when in doubt,
+exclude") decide it. Coordinator decision CD-4 (2026-09-19) applied them.
+
+**The ruling.**
+
+1. **No ipverse description is published**, in any artifact or column. The
+   pipeline still reads ipverse for `category`/`networkRole`/country, which
+   are unaffected. Tripwire: `test/org_names_test.rb` in the pipeline fails
+   if a `description` reaches the CSV.
+2. **Published names come from CC0 sources only**, first hit wins:
+   1. `data/overrides/org_names.txt`: our curated lines,
+      `AS<n>  <name>  # src: <url> (<date>)`. The src must be a
+      first-party page (the operator's own site or docs) or a CC0/reference
+      page. A registry or aggregator host fails the build and the PR lint
+      (RIR WHOIS/RDAP/bulk files, NIRs, PeeringDB, bgp.he.net, bgp.tools,
+      CAIDA AS Rank, ipinfo, db-ip, ipverse, …). A name resting on WHOIS is
+      exactly what this decision removes.
+   2. **Wikidata P3797** ("autonomous system number") item labels, CC0,
+      licence sentence pinned (`wikidata-p3797`).
+   ASNs with neither have no name. That is an honest nil, never a guess.
+3. **Wikidata is judged by its inputs too.** Measured 2026-09-19: **1,138 of
+   the 1,817 P3797 statements cite a single reference, ARIN's bulk
+   `https://ftp.arin.net/pub/resource_registry_service/asns.csv`**, which
+   ARIN serves "subject to terms of use" (its Whois ToU). Another ~100 cite
+   RIR WHOIS/RDAP, PeeringDB or bgp.he.net. A statement is used only if it
+   has no reference (a contributor's own assertion, which is what Wikidata's
+   CC0 covers), or at least one reference that cites no restricted host.
+   Result: **566 of ~1,810 Wikidata ASNs are admissible.** Google's AS15169
+   is among the dropped. We name Google from Google's own interconnect
+   documentation instead. RIR-sibling propagation of Wikidata names (the S
+   prototype) is **not** used, because the RIR stats are curation-only
+   (D-SRC-1).
+4. **Dossier names may enter, as curated lines, never in bulk from the
+   file.** An enrichment dossier identifies one operator per record, with
+   cited evidence. Writing its operator name down with a first-party source
+   is ordinary D-CUR-1 curation (per record, sourced conclusion only, no
+   dossier prose). The drafting tool
+   (`rake 'org_names:draft[...]'` in the pipeline) never cites RDAP,
+   PeeringDB or CAIDA. It prefers an operator page that names the ASN, then
+   the operator's site, then its Wikidata item. The first 251 drafted lines
+   **need a human review pass before merge**: they come from LLM-researched,
+   LLM-verified dossiers.
+5. **The WHOIS names move to Tier B.** Recipe `ipverse_org_names`
+   (`maps_to: "as_org"`, parser `ipverse_as_csv_names`, ipverse's ~6MB
+   `as.csv`, weekly, keep-stale, **opt-in**). The user's server fetches the
+   table for its own use. A recipe name only fills an ASN the canonical
+   sidecar leaves blank, and never overrides it. Opt-in because the table is
+   registry data under registry terms, and the operator should choose it
+   knowingly. Clients that do not know the parser skip it (the forward-
+   compatibility rule), so older gems are unaffected.
+6. **Format.** OORG v1 bytes, the version byte and the CSV header are
+   unchanged, and an entry still means "this ASN's organization name". So
+   there is **no format_version bump** (FORMAT.md). Only the population
+   changes.
+
+**Measured impact** (offline build from the 2026-09-19 cache; APNIC AS-Pop
+eyeball estimates; 95,790 routed ASNs):
+
+| | names | routed ASNs named | routed IPv4 addresses | eyeballs |
+|---|---|---|---|---|
+| before (ipverse) | 124,849 | 99.99% | 100.00% | 100.00% |
+| Wikidata admissible only | 566 | 0.53% | 26.94% | 26.28% |
+| **after** (org_names.txt + Wikidata) | **777** | **0.74%** | **49.28%** | **66.76%** |
+
+This is the power law at work (rule 7): 777 names reach two thirds of the
+world's eyeballs. The long tail is blank on purpose. The next curation pass
+works down the ranked gap list (evidence record below), eyeballs first and
+then address space. Its top entries are national mobile carriers
+(Videotron, Movitel, Telcel, Shaw, China Mobile, Comcel, Safaricom, …) and
+large address holders (US DoD, Microsoft's secondary ASNs, Ford, Apple).
+
+**Gates.** No existing drift gate measures org names, so nothing trips and
+**no `ack_drift` is required** for the first publish. G6 now drift-gates the
+entry count (`org_names`, LAYER_POLICY). A metric absent from the previous
+manifest SKIPs, so the first night after this change is clean and pinnable.
+From the second night, a >20% move fails like any layer. The visible change
+still belongs in the release notes and launch copy, because `as_org` goes
+nil for most ASNs for every client that does not opt in to the recipe.
+
+Evidence: `docs/enrichment/research/parts/P4-O-org-names-2026-09-19.jsonl`
+(the Wikidata reference census, ARIN terms, coverage, gap list).

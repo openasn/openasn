@@ -28,9 +28,23 @@ text changes (SHA-256 pinning).
   RIS BGP archives. Thank you for maintaining the cleanest-licensed
   IP→ASN dataset on the internet.
 
-### ipverse / as-metadata — ASN descriptions, countries, categories, roles
+### ipverse / as-metadata — ASN countries, categories, roles
 - https://github.com/ipverse/as-metadata
 - License: CC0 1.0
+- Its `description` field (organization names) is NOT in these artifacts.
+  Those strings are bulk RIR WHOIS records, which the registries do not
+  allow to be republished in bulk (DECISIONS.md D-SRC-2, org names). Clients
+  may fetch them locally through the `ipverse_org_names` recipe in
+  `fetch-manifest.json`.
+
+### Wikidata — organization names for `openasn-orgs.bin` / the `org` column
+- https://www.wikidata.org/wiki/Property:P3797 ("autonomous system number")
+- License: CC0 1.0 ("All structured data from the main, Property, Lexeme,
+  and EntitySchema namespaces is available under the Creative Commons CC0
+  License", https://www.wikidata.org/wiki/Wikidata:Copyright)
+- Only statements that do not rest solely on registry or aggregator
+  references are used. Item labels are taken as published. Thank you to
+  the Wikidata community.
 
 ### ipverse / as-ip-blocks — per-ASN announced prefixes
 - https://github.com/ipverse/as-ip-blocks
@@ -38,16 +52,17 @@ text changes (SHA-256 pinning).
 
 ## OpenASN's own layer
 
-- `data/overrides/` (curated ASN classifications and corrections):
-  released under CC0 1.0 — public domain, forever.
+- `data/overrides/` (curated ASN classifications, corrections and
+  organization names): released under CC0 1.0 — public domain, forever.
 - Compiled artifacts (`openasn-ipv4.bin`, `openasn-ipv6.bin`,
-  `asn-categories.csv`): CC0 1.0.
+  `openasn-orgs.bin`, `asn-categories.csv`): CC0 1.0.
 - Pipeline code: MIT (see LICENSE-CODE).
 
 ## Not in these artifacts, by design
 
 Tier B sources (Apple iCloud Private Relay egress, the Tor Project bulk
-exit list, cloud provider ranges, first-party VPN provider lists, ...) are
+exit list, cloud provider ranges, first-party VPN provider lists, the
+WHOIS-derived organization names in ipverse as-metadata, ...) are
 fetched by OpenASN *clients* directly from the original authorities at
 runtime, per `fetch-manifest.json`. They are never republished in these
 releases — either because their terms don't grant third-party

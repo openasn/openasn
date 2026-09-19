@@ -22,7 +22,8 @@ The artifact format is public and language-neutral ([FORMAT.md](FORMAT.md)) — 
 | File | What it is |
 |---|---|
 | `openasn-ipv4.bin` / `openasn-ipv6.bin` | Packed classification artifacts: IP→ASN backbone with category/role/flag bits + VPN/datacenter range overlays. Byte spec: [FORMAT.md](FORMAT.md) |
-| `asn-categories.csv` | Human-friendly table: every ASN → org, country, category, network role, OpenASN flags (CC0) |
+| `asn-categories.csv` | Human-friendly table: every ASN → org, country, category, network role, OpenASN flags (CC0). `org` is filled where we hold a CC0 name (our sourced overrides + Wikidata) and empty otherwise; see [D-SRC-2](DECISIONS.md) |
+| `openasn-orgs.bin` | ASN → organization name sidecar (CC0 names only; optional for clients). Byte spec: [FORMAT.md](FORMAT.md) |
 | `manifest.json` | Build id, per-file SHA-256, and full source provenance (upstream URL, license, license-file hash, fetch time) |
 | `fetch-manifest.json` | The Tier B recipe (see "Legal design") that clients execute themselves |
 | `ATTRIBUTION.md` / `SHA256SUMS` | Credits and checksums |
@@ -55,8 +56,9 @@ ipverse as-metadata (CC0)   categories   Tor Project exits          → :tor_exi
 ipverse as-ip-blocks(CC0)   prefixes     AWS/GCP/Azure/OCI/DO/…     → :hosting+provider
 X4BNet lists_vpn    (MIT)   vpn/dc       Proton/Mullvad/IVPN/PIA…   → :vpn+provider
 bad-asn-list        (MIT)   hosting      Cloudflare ranges          → context flag
-data/overrides/     (CC0)   our layer    Zscaler egress             → :enterprise_gateway
-                                         Nord/VPN Gate              → opt-in :vpn+provider
+Wikidata P3797      (CC0)   org names    Zscaler egress             → :enterprise_gateway
+data/overrides/     (CC0)   our layer    Nord/VPN Gate              → opt-in :vpn+provider
+                                         ipverse WHOIS org names    → opt-in as_org
 ```
 
 **Tier A** sources carry explicit redistribution rights and are compiled into the published artifacts. **Tier B** sources are either license-restricted from republishing or too fast-moving for a nightly file (Tor exits change hourly) — so we publish the *recipe* (`fetch-manifest.json`: URL, parser id, cadence, failure policy) and clients pull from the original authorities at runtime. **Tier C** (bring-your-own MaxMind/IP2Location, planned) never touches this pipeline. The catalog of rejected sources and why (PeeringDB's AUP, GPL lists, ShareAlike databases, aggregator repackaging…) lives in the project history — the short version is the next section.
@@ -90,7 +92,7 @@ The enrichment pass added exact-IP Tier B recipes for Mullvad (also Mozilla/Fire
 
 ## Legal design (load-bearing, do not weaken)
 
-1. **The published artifact contains only data whose exact redistributed form carries explicit rights** — PDDL, CC0, or MIT-explicitly-covering-output. A builder repo's license does not sanitize the third-party data it aggregates; aggregators are excluded no matter how convenient.
+1. **The published artifact contains only data whose exact redistributed form carries explicit rights** — PDDL, CC0, or MIT-explicitly-covering-output. A builder repo's license does not sanitize the third-party data it aggregates; aggregators are excluded no matter how convenient. That holds for a single field too: ipverse's CC0 covers its categories, but its organization names are bulk RIR WHOIS, so they are a Tier B recipe and never ship ([D-SRC-2](DECISIONS.md)).
 2. **Fetching ≠ redistributing.** Anything we may fetch but not republish moves to Tier B: the end user's server fetches it from the original authority, and the data never transits our infrastructure.
 3. **ShareAlike never enters the composite** (it would virally relicense everything).
 4. **Every upstream license file is SHA-256-pinned** (`data/licenses/`); the nightly build fails loudly if any license text changes. Licenses have changed under projects before (MaxMind, Dec 2019).
@@ -107,7 +109,7 @@ The enrichment pass added exact-IP Tier B recipes for Mullvad (also Mozilla/Fire
 
 ## The overrides layer (`data/overrides/`)
 
-Our owned, CC0 curation: the classes upstream metadata lacks (`vpn_provider`, `mobile_carrier`, `enterprise_gateway`, `cdn`), extra hosting coverage, eyeball confirmations, and per-ASN corrections. Ground rules:
+Our owned, CC0 curation: the classes upstream metadata lacks (`vpn_provider`, `mobile_carrier`, `enterprise_gateway`, `cdn`), extra hosting coverage, eyeball confirmations, per-ASN corrections, and the published organization names (`org_names.txt`, each sourced to a first-party or CC0 page, never to WHOIS). Ground rules:
 
 - **Every line carries a source comment** (`AS9009  # M247 … src: <url> (date)`) — the build *fails* on unsourced lines.
 - Candidates are generated from data (`rake overrides:candidates` in the [pipeline repo](https://github.com/openasn/openasn-pipeline) sweeps X4B seeds, org-name patterns, and the crosscheck gap); humans graduate lines into the files. LLM-assisted drafting is welcome; unreviewed bulk imports are not. Every PR here gets instant format feedback from [`scripts/lint_overrides.rb`](scripts/lint_overrides.rb).

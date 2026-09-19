@@ -22,6 +22,15 @@
 #     PeeringDB, bgp.he.net, CAIDA, ipinfo, db-ip, ipverse, ...) FAILS the
 #     build: a country resting on registry data is exactly what D-SRC-2
 #     (country) took out of the core.
+#   * `--` instead of a code publishes NO country for the ASN and stops the
+#     Wikidata fallback: `AS9002  --  # none: <why>; src: <url> (<date>)`.
+#     Used for a Wikidata value we checked and found wrong, or a group item
+#     linked to a subsidiary's ASN we cannot place.
+#   * `territory: <key>` before src marks an operator in an occupied or
+#     breakaway territory (CD-19a); the build requires the recognised
+#     state's code (crimea/sevastopol/donetsk/luhansk/zaporizhzhia/kherson
+#     -> UA, abkhazia/south_ossetia -> GE, transnistria -> MD,
+#     northern_cyprus -> CY).
 #   * precedence: this file > Wikidata (P17, else P159 -> P17, of the ASN's
 #     admitted P3797 item) > no country (empty cell).
 #
@@ -69,7 +78,6 @@ AS1241  GR  # src: https://en.wikipedia.org/wiki/Nova_(Greece) (2026-09-19)
 AS1257  SE  # src: https://www.wikidata.org/wiki/Q309865 (2026-09-19)
 AS1267  IT  # src: https://en.wikipedia.org/wiki/Wind_Tre (2026-09-19)
 AS1403  CA  # src: https://en.wikipedia.org/wiki/EBOX (2026-09-19)
-AS1547  MD  # src: https://www.wikidata.org/wiki/Q4202030 (2026-09-19)
 AS1659  TW  # src: https://en.wikipedia.org/wiki/TANet (2026-09-19)
 AS1680  IL  # src: https://www.cellcom.co.il/ (2026-09-19)
 AS1759  FI  # src: https://www.telia.fi (2026-09-19)
@@ -455,7 +463,6 @@ AS198584  DE  # src: https://www.pio.hosting/ (2026-09-19)
 AS199739  AE  # src: https://earthlink.iq/ (2026-09-19)
 AS201767  UZ  # src: https://www.wikidata.org/wiki/Q13538756 (2026-09-19)
 AS203214  IQ  # src: https://hulum.iq/ (2026-09-19)
-AS204108  UA  # src: https://phoenix-dnr.ru/ (2026-09-19)
 AS206026  KZ  # src: https://en.wikipedia.org/wiki/Beeline_(brand) (2026-09-19)
 AS206206  IQ  # src: http://knet-telecom.com/ (2026-09-19)
 AS209847  NL  # src: https://the.hosting/ (2026-09-19)
@@ -573,3 +580,30 @@ AS47331  TR  # src: https://www.wikidata.org/wiki/Q263700 (P17; operator per org
 AS50266  NL  # src: https://www.wikidata.org/wiki/Q28406140 (P17; operator per org_names.txt) (2026-09-19)
 AS132203  CN  # src: https://www.wikidata.org/wiki/Q17500218 (P17; operator per org_names.txt) (2026-09-19)
 AS209502  FR  # src: https://www.wikidata.org/wiki/Q274591 (P17; operator per org_names.txt) (2026-09-19)
+
+# --- Occupied and breakaway territories (CD-19a), 2026-09-19 ------------------
+# An operator based in an occupied or breakaway territory gets the
+# internationally recognised (UN) state: UA for Crimea, Sevastopol and the
+# Donetsk/Luhansk/Zaporizhzhia/Kherson oblasts, GE for Abkhazia and South
+# Ossetia, MD for Transnistria, CY for Northern Cyprus. The `territory:` tag
+# makes the build refuse any other code (Countries::TERRITORY_STATES). The
+# de facto controller is recorded in the research record, not here. Each src
+# was fetched on the date given and places the operator in the territory.
+AS201776  UA  # territory: crimea; src: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202302875 (LLC Miranda Media, "Address: Ukraine, Crimea, Simferopol", "Principal place of business: Crimea, Ukraine") (2026-09-19)
+AS6789    UA  # territory: crimea; src: https://crelcom.ru/ ("КРЭЛКОМ - Крымский магистральный оператор связи", "Симферополь") (2026-09-19)
+AS57354   GE  # territory: abkhazia; src: https://www.cyxym.net/ ("Самое лучшее предложение в Абхазии", tel. +7 (840) ...) (2026-09-19)
+AS50257   GE  # territory: abkhazia; src: https://en.wikipedia.org/wiki/A-Mobile ("Headquarters Sukhum, Abkhazia") (2026-09-19)
+AS44491   GE  # territory: abkhazia; src: https://www.aquafon.com/ ("Aquafon Первый мобильный оператор Абхазии") (2026-09-19)
+AS47204   UA  # territory: luhansk; src: https://t.me/s/operator_mcs (ООО «Мобильные коммуникационные системы», service centres in the "ЛНР", Luhansk) (2026-09-19)
+AS208890  UA  # territory: luhansk; src: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202502035 (SUE LPR "Lugansk Communications" a.k.a. "Lugakom", address Luhansk city) (2026-09-19)
+AS39728   UA  # territory: luhansk; src: https://t.me/s/luganet_lg ("Луганет — интернет-провайдер в ЛНР", "Интернет-провайдер в Луганске и ЛНР") (2026-09-19)
+AS204108  UA  # territory: donetsk; src: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202500933 (SUE DPR "Republican Telecommunications Operator" / ГУП ДНР "РОС", brand Phoenix, "Address: 283004, Artema Str. 169K, Donetsk, Ukraine") (2026-09-19)
+AS214721  UA  # territory: donetsk; src: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202500933 (same SUE DPR "RTO", brand Phoenix, Donetsk) (2026-09-19)
+AS202279  UA  # territory: donetsk; src: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202500933 (same SUE DPR "RTO", Donetsk) (2026-09-19)
+AS1547    MD  # territory: transnistria; src: https://en.wikipedia.org/wiki/Interdnestrcom ("Headquarters Tiraspol (Transnistria)") (2026-09-19)
+AS47883   CY  # territory: northern_cyprus; src: https://en.wikipedia.org/wiki/Kuzey_K%C4%B1br%C4%B1s_Turkcell (Kıbrıs Mobile Telekomünikasyon Ltd., "Headquarters North Nicosia, Northern Cyprus") (2026-09-19)
+AS62211   CY  # territory: northern_cyprus; src: https://en.wikipedia.org/wiki/KKTC_Telsim (Vodafone Mobile Operations Ltd., "Headquarters North Nicosia, Northern Cyprus") (2026-09-19)
+# Serves Crimea and the other occupied oblasts but is seated in Krasnodar,
+# Russia (Wikipedia infobox), so neither "RU" (CD-19a) nor "UA" (not its seat)
+# fits cleanly: no country, and no Wikidata fallback. Owner call.
+AS203451  --  # none: K-Telecom (Win Mobile) network in occupied Crimea, seat Krasnodar; src: https://en.wikipedia.org/wiki/K-Telecom (2026-09-19)

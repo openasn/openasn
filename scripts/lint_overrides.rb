@@ -18,8 +18,9 @@
 #   * org_names.txt: `AS<number>  <name>  # src: <url>`, the src never a
 #     registry/aggregator host (D-SRC-2).
 #   * asn_country.txt: `AS<number>  <CC>  # src: <url>`, CC an ISO 3166-1
-#     alpha-2 country code, the src never a registry/aggregator host
-#     (D-SRC-2, country).
+#     alpha-2 country code or `--` (publish none), the src never a
+#     registry/aggregator host (D-SRC-2, country); a `territory: <key>` tag
+#     requires that territory's recognised state (CD-19a).
 #   * corrections.yml: integer keys; required fields; valid vocabulary.
 #   * fetch-manifest.json: parses; every source has id/parser/maps_to and
 #     a url or resolver.
@@ -114,6 +115,13 @@ end
 # org_names.txt above; same non-country codes as Overrides::NOT_COUNTRIES).
 
 NOT_COUNTRY_CODES = %w[XX ZZ EU AP AA QM QN QO QP QQ QR QS QT QU QV QW QX QY QZ].freeze
+# Mirrors Countries::TERRITORY_STATES (CD-19a): occupied / breakaway
+# territory -> internationally recognised state.
+TERRITORY_STATES = {
+  "crimea" => "UA", "sevastopol" => "UA", "donetsk" => "UA", "luhansk" => "UA",
+  "zaporizhzhia" => "UA", "kherson" => "UA", "abkhazia" => "GE", "south_ossetia" => "GE",
+  "transnistria" => "MD", "northern_cyprus" => "CY"
+}.freeze
 countries_path = File.join(ROOT, "data", "overrides", "asn_country.txt")
 countries = Set.new
 if File.exist?(countries_path)
@@ -126,8 +134,17 @@ if File.exist?(countries_path)
       next
     end
     asn, cc, comment = m[1].to_i, m[2], m[3]
-    unless cc.match?(/\A[A-Z]{2}\z/) && !NOT_COUNTRY_CODES.include?(cc)
-      fail_check("asn_country.txt:#{lineno}: AS#{asn} #{cc.inspect} is not an ISO 3166-1 alpha-2 country code")
+    unless cc == "--" || (cc.match?(/\A[A-Z]{2}\z/) && !NOT_COUNTRY_CODES.include?(cc))
+      fail_check("asn_country.txt:#{lineno}: AS#{asn} #{cc.inspect} is not an ISO 3166-1 alpha-2 country code (or `--`)")
+    end
+    if comment.match?(/\bterritory:/)
+      territory = comment[/\bterritory:\s*([a-z_]+)/, 1]
+      state = TERRITORY_STATES[territory]
+      if state.nil?
+        fail_check("asn_country.txt:#{lineno}: AS#{asn} territory #{territory.inspect} is not one of #{TERRITORY_STATES.keys.join(', ')}")
+      elsif cc != state
+        fail_check("asn_country.txt:#{lineno}: AS#{asn} is in #{territory}; its country is the recognised state #{state}, not #{cc} (CD-19a)")
+      end
     end
     url = comment[%r{https?://\S+}]
     if url.nil?

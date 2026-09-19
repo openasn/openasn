@@ -17,11 +17,47 @@ name: Build & publish data
 #   * Cron minute is deliberately off-hour (03:17 UTC): GitHub delays
 #     on-the-hour crons under load, and upstreams appreciate the jitter.
 #   * jq is preinstalled on ubuntu runners; the as.json parser uses it.
-#   * Action majors (checkout v7 / cache v6 / upload-artifact v7) run on
-#     Node 24; the previously pinned v4s targeted Node 20, deprecated:
+#   * Go is a BUILD-ONLY toolchain here: the pipeline compiles
+#     tools/rib2origin, which derives the IP->ASN backbone from ten
+#     RouteViews RIB dumps (~850MB download, ~1 min CPU; DECISIONS.md
+#     D-SRC-2 (backbone)). One setup-go serves it and the MMDB writer (see
+#     BUILD-ONLY TOOLCHAINS below); the version comes from go.mod, never from
+#     a number typed here. Nothing we ship needs Go at runtime.
+#   * OPENASN_BACKBONE=routeviews is set explicitly below although it is the
+#     pipeline default: rolling back to the legacy sapics backbone must be a
+#     visible one-line change here (plus re-pinning sapics in a reviewed PR,
+#     or the licence gate fails the build by design).
+#   * The upstream cache now also holds the ten RIBs (one file per
+#     collector and slot; the pipeline prunes all but the RIB it used, so
+#     ~1GB). It lets a collector that fails to download fall back to its
+#     previous night's RIB - at most 36h older, WARNed and stamped in
+#     manifest stats - instead of thinning the backbone. An older RIB is
+#     never reused: that collector is skipped (DECISIONS D-SRC-2 (backbone),
+#     review RB-1).
+#   * Action majors (checkout v7 / cache v6 / upload-artifact v7 /
+#     setup-python v7 / setup-go v7) run on Node 24; the previously pinned
+#     v4s targeted Node 20, deprecated:
 #     https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
 #     They need runner >= 2.327.1 - GitHub-hosted ubuntu-latest is always
 #     newer; only a concern if this ever moves to self-hosted runners.
+#   * BUILD-ONLY TOOLCHAINS (Python, Go). The portable exports need an
+#     interpreter that owns a SQLite engine and a Go compiler for the MMDB
+#     writer. Neither is a runtime dependency of anything we ship: no
+#     consumer installs either one, and the native artifacts are byte-
+#     identical with or without them. They are installed on EVERY run,
+#     including PRs that build in export mode `none`, because which mode a
+#     run uses is decided at run time by export-contract.json and the
+#     `export_mode` input below - a toolchain installed conditionally on
+#     that decision would be missing exactly when someone raises
+#     required_mode (PRD 17.2, "Pipeline PR CI must exercise tools even
+#     when the dataset nightly has not yet enabled exports").
+#   * WHICH Python matters to the bytes: sqlite3.sqlite_version decides the
+#     physical database file, so the interpreter is pinned here and passed
+#     to the pipeline explicitly as OPENASN_PYTHON rather than being left
+#     to PATH order. The exact patch release and its SQLite library are
+#     recorded in every build's manifest `export_producer.tools`; when they
+#     change, that is a producer-environment change and byte-for-byte
+#     reproduction is scoped to the recorded environment (PRD 17.1).
 #   * On gate failure a `pipeline-failure` issue is opened/updated here so
 #     a broken nightly is impossible to miss (license drift, delta trips,
 #     upstream URL scheme changes — sapics changed theirs 2026-06-18).
@@ -33,6 +69,11 @@ name: Build & publish data
 #     stamps the reason into manifest.json (`stats.drift_ack`), so the
 #     override is on the public record forever. It does NOT disable the
 #     absolute floors (MIN_HOSTING_ASNS, size bounds, spot panel).
+#     If the move is a PERMANENT step (not a transient), also set
+#     `ack_drift_reanchor` to the failing metric name(s) (e.g. vpn_ipv4):
+#     the acked value becomes that metric's reviewed baseline, so later
+#     nights do not warn as a slide and weekly pins resume (D-GATE-1 rule 8).
+#     Only the metrics you name are re-anchored.
 
 on:
   schedule:
@@ -48,18 +89,41 @@ on:
         type: string
         required: false
         default: ""
+      ack_drift_reanchor:
+        description: "Only with ack_drift, only for a PERMANENT step: metric name(s) whose acked value becomes the reviewed baseline (e.g. vpn_ipv4). Leave empty for a transient move."
+        type: string
+        required: false
+        default: ""
+      export_mode:
+        description: "Build and validate a portable-export mode WITHOUT publishing anything (candidate only). 'contract' is the normal run: it uses export-contract.json's required_mode and publishes as usual."
+        type: choice
+        required: false
+        default: contract
+        options: [contract, none, portable, all]
   push:
     branches: [main]
     paths:
       - "data/**"
       - "spotchecks.yml"
       - "fetch-manifest.json"
+      # export-contract.json decides which assets a release MUST carry, so a
+      # change to it changes what a successful build is; the conformance
+      # fixtures are what the exporters are checked against. Both have to
+      # run the real build, not only the stdlib lint in lint.yml.
+      - "export-contract.json"
+      - "conformance/**"
       - ".github/workflows/nightly-build.yml"
   pull_request:
     paths:
       - "data/**"
       - "spotchecks.yml"
       - "fetch-manifest.json"
+      - "export-contract.json"
+      - "conformance/**"
+      # A workflow change is a change to a build dependency (the toolchains
+      # below are installed here, not by the pipeline), so it validates on
+      # the PR rather than first on main.
+      - ".github/workflows/nightly-build.yml"
 
 concurrency:
   group: data-build
@@ -74,6 +138,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # THE one place that decides whether this run may upload. A scheduled
+      # run publishes; a manual run publishes only when it is a normal run
+      # ('contract'). Choosing an explicit export_mode makes the run a
+      # candidate VALIDATION and cannot publish, which is what PRD 17.4
+      # step 2 asks for: validate a mode in non-publishing runs first, then
+      # activate it by raising required_mode in a reviewed PR. Publishing an
+      # ad-hoc mode from a dispatch box would skip that review entirely.
+      PUBLISHING: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.export_mode == 'contract')) && '1' || '0' }}
+      MMDB_TOOL: ${{ github.workspace }}/build-tools/openasn-mmdb
     steps:
       - name: Checkout data repo (this repo)
         uses: actions/checkout@v7
@@ -91,6 +165,62 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4"
+
+      # SQLite/CSV phase. Stdlib only - there is nothing to pip install and
+      # nothing to cache - but the interpreter is pinned and handed to the
+      # pipeline by absolute path (see the header note on WHICH Python).
+      - name: Set up Python (build-only, writes the SQLite export)
+        id: python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      # Go, build-only, serves two modules: tools/rib2origin (derives the
+      # RouteViews IP->ASN backbone, stdlib only; compiled by the pipeline at
+      # run time, see header) and tools/mmdbwriter (the MMDB export). Both
+      # go.mod files pin the same `go 1.24.0` directive; if they ever differ,
+      # GOTOOLCHAIN=auto fetches the newer one for rib2origin.
+      # MMDB phase. go.mod carries the `go` directive that pins the
+      # toolchain and go.sum is the lockfile, so both the version and the
+      # module cache key come from the pipeline repo rather than from a
+      # number typed here that could drift away from it.
+      - name: Set up Go (build-only, RouteViews backbone + MMDB export)
+        id: go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: pipeline-repo/tools/mmdbwriter/go.mod
+          cache-dependency-path: pipeline-repo/tools/mmdbwriter/go.sum
+
+      # The compiled writer, cached on an EXACT key: OS, arch, the Go
+      # toolchain that compiled it, and a hash of every file in the module.
+      # No restore-keys on purpose - a prefix match would happily hand back
+      # a binary built from different source, which is precisely the "stale
+      # build output substituting for a current compile" that PRD 17.2
+      # forbids. Any change to any input misses the cache and rebuilds.
+      - name: Restore the compiled MMDB writer
+        id: mmdb-tool
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.MMDB_TOOL }}
+          key: mmdb-tool-${{ runner.os }}-${{ runner.arch }}-go${{ steps.go.outputs.go-version }}-${{ hashFiles('pipeline-repo/tools/mmdbwriter/**') }}
+
+      - name: Build the MMDB writer
+        if: steps.mmdb-tool.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$(dirname "$MMDB_TOOL")"
+          go -C pipeline-repo/tools/mmdbwriter build -o "$MMDB_TOOL" .
+
+      # The producer environment, in the log, before anything is built: when
+      # a nightly's bytes stop reproducing, this is the first thing to diff.
+      - name: Record the build toolchain
+        env:
+          PY: ${{ steps.python.outputs.python-path }}
+        run: |
+          ruby -v
+          "$PY" -c 'import sys, sqlite3; print("python", sys.version.split()[0], "at", sys.executable); print("sqlite", sqlite3.sqlite_version)'
+          go version
+          "$MMDB_TOOL" --help >/dev/null 2>&1 || true
+          ls -l "$MMDB_TOOL"
 
       # GitHub auto-disables cron workflows in public repos after 60 days
       # WITHOUT COMMITS — and a healthy data repo is exactly one that can
@@ -116,15 +246,31 @@ jobs:
       - name: Run pipeline (fetch → gates → compile → validate → publish)
         env:
           OPENASN_DATA_REPO: ${{ github.workspace }}/data-repo
-          # Publish only on scheduled runs and manual dispatch — never from
-          # PRs or ordinary pushes (those validate only).
-          PUBLISH: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '1' || '0' }}
+          # The IP->ASN backbone (D-SRC-2 (backbone)). See header before changing it.
+          OPENASN_BACKBONE: routeviews
+          # Publish only on scheduled runs and normal manual dispatch —
+          # never from PRs or ordinary pushes (those validate only), and
+          # never from an export_mode validation run (see PUBLISHING above).
+          PUBLISH: ${{ env.PUBLISHING }}
+          # Empty on every normal run, which means "use the mode the data
+          # repo's export-contract.json requires". A dispatch can override
+          # it to build and validate a mode that is not required yet; the
+          # same choice forces PUBLISH=0, so an override can never ship.
+          OPENASN_EXPORTS: ${{ inputs.export_mode != 'contract' && inputs.export_mode || '' }}
+          # Which interpreter writes the SQLite export, and which binary
+          # writes the MMDB one. Both are explicit so PATH order never
+          # decides what produced a released file.
+          OPENASN_PYTHON: ${{ steps.python.outputs.python-path }}
+          OPENASN_MMDB_TOOL: ${{ env.MMDB_TOOL }}
           OPENASN_DATED_TAG: ${{ inputs.dated_tag == true && '1' || '' }}
           # Empty on every scheduled run. Set only from the workflow_dispatch
           # `ack_drift` input, and only for that one run: it downgrades a
           # drift-gate FAIL to a loud WARN and stamps the reason into
           # manifest.json stats.drift_ack (DECISIONS.md D-GATE-1).
           OPENASN_ACK_DRIFT: ${{ inputs.ack_drift }}
+          # Metric names only; ignored without ack_drift. An acked FAIL on a
+          # named metric becomes its reviewed baseline (D-GATE-1 rule 8).
+          OPENASN_ACK_DRIFT_REANCHOR: ${{ inputs.ack_drift_reanchor }}
           GH_TOKEN: ${{ github.token }}
         working-directory: pipeline-repo
         run: |
@@ -146,8 +292,14 @@ jobs:
       # that can expire — a dead token must never block the nightly release.
       # To restore: create a WRITE token at huggingface.co/settings/tokens
       # (scope: openasn datasets) and `gh secret set HF_TOKEN`.
+      # Mirrors only after a run that actually published: a candidate
+      # validation run built a release that does not exist anywhere, and
+      # pushing it to the mirror would put bytes on HuggingFace that no
+      # GitHub release serves. push.sh stages exactly the payloads
+      # manifest.json lists plus the two envelope files, so a mode that
+      # produced no exports mirrors no exports.
       - name: Mirror release to HuggingFace
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: env.PUBLISHING == '1'
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -155,12 +307,24 @@ jobs:
           pip install -q "huggingface_hub[cli]" 2>/dev/null || pipx install huggingface_hub 2>/dev/null || true
           bash pipeline-repo/huggingface/push.sh || echo "::warning::HF mirror failed (release itself is fine) — check/replace HF_TOKEN"
 
-      - name: Upload artifacts for inspection (PR/push builds)
+      # The full assembled candidate, for inspection on a PR, a push, or a
+      # manual export_mode validation run. Two paths because the build owns
+      # a fresh candidate directory and only PROMOTES it to dist once every
+      # gate passed: after a green run the candidate IS dist, and after a
+      # red one it is still under work/candidate, where it is the only
+      # evidence of what the failing build actually produced (dist would be
+      # the previous good build, which is not what anyone came to read).
+      # Nothing here is a secret: these are release payloads plus the
+      # manifest, and the export staging area with its ~350MB spool is
+      # deliberately not included.
+      - name: Upload the candidate for inspection (PR/push/manual builds)
         if: always() && github.event_name != 'schedule'
         uses: actions/upload-artifact@v7
         with:
           name: openasn-dist
-          path: pipeline-repo/build/dist/
+          path: |
+            pipeline-repo/build/dist/
+            pipeline-repo/build/work/candidate/
           retention-days: 7
           if-no-files-found: ignore
 
@@ -205,6 +369,7 @@ jobs:
           - Delta gate (G4): a layer's record count moved more than ±20% overnight
           - Crosscheck drift: the ipverse hosting-ASN count moved more than 10% down / 20% up
           - An upstream URL scheme changed (sapics did this 2026-06-18)
+          - RouteViews: fewer than 7 of the 10 collector RIBs usable, or tools/rib2origin failed to build/run (Go setup)
 
           ### If a drift gate tripped
 
@@ -221,7 +386,10 @@ jobs:
           **`ack_drift`** input set to the reason, including evidence (e.g. the
           upstream commit URL). The drift FAIL becomes a loud WARN for that one
           run and the reason is stamped into `manifest.json` (`stats.drift_ack`)
-          permanently. It does not disable the absolute floors, the size bounds,
+          permanently. If the move is a permanent step rather than a transient,
+          also set **`ack_drift_reanchor`** to the failing metric name so later
+          nights re-anchor on it (D-GATE-1 rule 8); name only the metric you
+          checked. It does not disable the absolute floors, the size bounds,
           or the spot panel — those still have to be green.
 
           Background: DECISIONS.md → D-GATE-1.

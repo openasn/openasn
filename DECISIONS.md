@@ -381,8 +381,960 @@ format and one unblock procedure:
    start with its age in hours, and the failure issue quotes the gate lines
    from the run rather than listing possible causes.
 
+8. **An acknowledged step change re-anchors its own metric** (added
+   2026-09-19 under D-SRC-3, decided by the coordinator under owner
+   delegation). Rules 4 and 6 together had a gap. An ack publishes a
+   deliberate step change (D-SRC-3: `vpn_ipv4` 6,639 → 4,692). From the
+   next night the value sits past the drop line below the best pin, which
+   is a WARN(SLIDE) every night. A warned build is not clean, so no weekly
+   pin is ever cut again, for any metric, and the pins only age. The fix:
+   - An acked evaluation of a metric the operator **names** in
+     `OPENASN_ACK_DRIFT_REANCHOR` (the `ack_drift_reanchor` dispatch input)
+     stamps a **reviewed baseline** for that metric into `manifest.json`
+     (`stats.reviewed_baselines.<metric>` = value, ack reason,
+     `reviewed_at`). Each build carries it forward. A bare ack keeps rule 4's
+     meaning, one run only, and leaves the pins alone. The name is required
+     because the ack covers every metric that fails in the run, while a run
+     stops at the first failure, so the operator acks having seen only one.
+     Re-anchoring on the ack alone silently re-anchored an unseen second
+     failure. It also made a transient move acked as real deadlock when
+     upstream snapped back, because the pre-ack pins that rule 2 needs to
+     recognise the recovery were gone (adversarial review RX, 2026-09-19;
+     `docs/swarm-2026-09-19/RX-REVIEW.md`).
+   - For that metric only, pins cut before `reviewed_at` are ignored. The
+     reviewed value stands in for them as the recovery reference and as the
+     slow-slide anchor. Once clean pins cut after it exist, they are used,
+     and the reviewed baseline retires when no consulted pin predates it.
+   - Every other metric is gated against the pins exactly as before.
+   - **A reviewed baseline is not a pin.** It is never a release, and only
+     an ack that names the metric writes it: a human, with a sentence on
+     the public record. The
+     acked build itself stays unclean and is never pinned. "Pins come from
+     clean builds only" is unchanged. What changes is that the next clean
+     build is clean, so pinning resumes on schedule.
+   - A new drop measured against the reviewed value still fails or warns
+     normally. The review sanctions one move, not a direction.
+   Tests: `ReviewedBaselineTest` in the pipeline repo (ack → next night
+   clean, no perpetual warn, pins resume, un-acked metric gated normally,
+   the old pin cannot return as anchor, an unnamed co-failing metric is not
+   re-anchored, a bare ack still lets a recovery self-heal).
+
 **The general lesson, binding on every future gate.** A tripwire whose
 reference is written *by the thing it guards* can deadlock. Any gate that
 compares against previous output must also have a reference that is frozen,
 externally dated, and independent of whether the gate passed — and a
 documented, recorded way for a human to overrule it once.
+
+## D-FMT-1 — Convenience exports may materialize a frozen classification profile (2026-09-18)
+
+**The problem.** D-IMPL-6 guarantees that a nightly data refresh can never
+surface a verdict a deployed client does not know, and it earns that
+guarantee mechanically: the artifact carries ranges and 16 flag bits, the
+bit-to-verdict mapping is compiled into versioned client code, and there is
+physically no field in which a refresh could deliver a verdict string. That
+is why auto-applying data updates is always safe.
+
+The portable exports (`openasn.sqlite.gz`, `openasn.csv.gz`, `openasn.mmdb`,
+specified in [EXPORT_FORMATS.md](EXPORT_FORMATS.md)) remove the mechanism the
+guarantee rests on. Their consumers are a PHP `SELECT`, a CSV import, and a
+generic MMDB reader; there is no OpenASN client code anywhere in the path.
+Two options were honest:
+
+1. Ship raw evidence only (flags, category, role) and let every consumer
+   reimplement the precedence ladder. That reintroduces exactly the
+   cross-language divergence D-IMPL-6 exists to prevent, in languages that
+   have no OpenASN client at all, and it defeats the point of the exports:
+   a correct answer from a small standard-library integration.
+2. Materialize the verdict into the data, and restore the safety property
+   through a different, enforced mechanism.
+
+We take 2.
+
+**The decision.** The free core gains SQLite, range CSV, and MMDB
+projections. Native OASN remains ranges and flags interpreted by versioned
+client code. Convenience exports may materialize ordinary-address Tier A
+classification under a frozen named profile, initially `core-v1`. A data
+refresh may change the evidence and the classification of an IP, but may not
+introduce a new profile vocabulary or reinterpret an existing field. Schema
+and profile changes are separately versioned; an incompatible successor ships
+alongside v1 rather than silently replacing its filenames. Legal scope and
+native-client stability are unchanged.
+
+**This is a scoped addition to D-IMPL-6, not a reinterpretation of it.**
+D-IMPL-6 did not already permit data-delivered verdicts and must never be
+quoted as if it had. Its promise is a statement about a byte layout that
+cannot express a verdict; the exports can. Stretching "verdicts are code, not
+data" to cover a file with a `core_verdict` column would convert an enforced
+property into an unenforced slogan, and the first refresh that shipped a new
+string would break consumers that had been told they were safe. So D-IMPL-6
+stands unchanged for the native artifacts and for every client built on them,
+and this decision adds one narrow permission carrying its own enforcement.
+
+**What "frozen" forbids.** Under `core-v1`, a data refresh may not:
+
+- emit a verdict outside the nine values (`residential_isp`, `mobile`,
+  `business`, `hosting`, `vpn`, `enterprise_gateway`, `education`,
+  `government`, `unknown`), or a source token outside the twelve defined
+  ones;
+- change the precedence order, including the order in which the four hosting
+  reasons are listed inside one record;
+- change what a field means. `bad_asn` stays hosting/cloud/colo list
+  membership and never becomes an abuse score; `hosting_extra` stays one
+  corroborating signal and never becomes the hosting verdict; `as_org` stays
+  the announcing ASN's organization and never becomes a retail brand or a
+  provider attribution.
+
+What a refresh **may** change is an individual IP's evidence and therefore its
+verdict: an ASN gains a category, an overlay gains a range, and an address
+that was `residential_isp` yesterday is `hosting` today. That is a value
+moving inside a fixed vocabulary, which is what every consumer's `switch`
+already handles, and it is the entire job of a data refresh. Adding a verdict,
+a source token, or a precedence change is a **new profile name**, shipped
+under new filenames alongside v1. An implementation bug that emits something
+outside `core-v1` is fixed to restore `core-v1`, with the fix documented; the
+profile is never moved to match the bug.
+
+Note the nine export verdicts are a strict subset of the client enum's
+thirteen. `private` and `cgnat` are lookup-policy results, produced before the
+data is consulted, so no stored record can carry them. `tor_exit` and `relay`
+require Tier B sources that are fetched by clients at runtime and are not in
+these assets. An export verdict therefore carries no Tier B attribution, and
+saying so is part of the contract rather than a caveat in a footnote.
+
+**How the guarantee is enforced**, since it can no longer come from the byte
+layout:
+
+- Every asset carries `classification_profile` in its own metadata *and* in
+  its release manifest entry. A consumer that reads an unknown profile
+  refuses the installation and keeps its last-good generation, the same
+  failure mode as an unknown `format_version`.
+- The SQLite DDL constrains `core_verdict` with a `CHECK ... IN (...)` over
+  the nine values, so a rogue verdict cannot be written into the asset at all.
+  The vocabulary is enforced by the file, not only by the producer.
+- The precedence ladder is pinned by hand-authored fixtures in
+  [`conformance/exports/v1/`](conformance/exports/v1/), tracked and public so
+  third-party implementations test against the same expectations. Those
+  expectations are never regenerated from the code under test.
+- [`export-contract.json`](export-contract.json) is the dataset's declaration
+  of the identities and of `required_mode`, the export mode a publishing build
+  must satisfy. It ships at `none`: the contract is public before the assets
+  are, and activation is a separate reviewed change coordinated with the
+  producer's toolchain.
+
+`core-v1` deliberately uses the public client's explanation names
+(`asn_mobile_carrier`, `asn_no_category`, `isp_transit_ambiguous`) rather than
+the pipeline classifier's internal labels (`asn_mobile`, `no_category`). The
+pipeline classifier keeps its own labels and its spot-panel contract and is
+**not** refactored to share a function with the export profile: it is the
+independent reference the export is validated against, and two implementations
+that agree are evidence, while one implementation used twice is not.
+
+**The general lesson, binding on future decisions in this log.** When a
+guarantee is produced by a mechanism, and a new artifact removes that
+mechanism, the guarantee does not carry over by analogy. Either restore it
+with new enforcement and record that, or state plainly that it no longer
+holds. Silently restating the old decision in broader words is the failure
+this log exists to prevent.
+
+## D-SRC-3 — X4B overlays carry only X4B's own data; its third-party feeds are stripped (2026-09-19)
+
+**Status: accepted. Decided by the coordinator on 2026-09-19 under owner delegation.**
+
+**What was wrong.** X4BNet/lists_vpn is Tier A because its MIT grant covers
+"the list itself (source files and generated output)". But its build
+(`.github/workflows/build-list.yml`) concatenates every file in
+`input/<list>/ips/` into `output/<list>/ipv4.txt`, and X4B's own scheduled
+workflows fill `input/vpn/ips/` with lists X4B does not own:
+
+| file | written from | first seen |
+|---|---|---|
+| `apple.txt` | `https://mask-api.icloud.com/egress-ip-ranges.csv` (iCloud Private Relay egress) | 2025-06-29 |
+| `mullvadvpn.txt` | `https://api.mullvad.net/www/relays/all` | 2025-04-13 |
+| `pia.txt` | `https://raw.githubusercontent.com/Lars-/PIA-servers/refs/heads/master/export.csv` (repo has no licence) | 2025-06-28 |
+| `protonvpn.txt` | `https://api.protonmail.ch/vpn/logicals` (workflow disabled 2025-06-29; frozen file still merged) | 2023-02-07 |
+| `input/datacenter/ips/protonvpn.txt` | one 2023-02-09 snapshot of the same Proton API | 2023-02-09 |
+
+This project classes every one of those as Tier B ("never republished",
+ATTRIBUTION.md). Taking X4B's output whole therefore republished them, which
+breaks README "Legal design" rule 1: a builder repo's licence does not
+sanitize third-party data it aggregates. It also broke a product rule. Apple
+relay egress shipped as `vpn` (for example `104.28.28.0–104.28.28.76`, AS13335,
+`core_verdict=vpn`, `core_sources=["x4b_vpn"]`), although README says relay is
+never folded into `vpn`.
+
+**Verified, not assumed** (P4-X, against X4B commit `07f9013b`, the one whose
+output OpenASN had cached). X4B's build was reproduced offline, and the
+reproduction explains every address of the published vpn list. 100% of each
+feed's CIDRs are inside it. The four feeds account for 124,207 of its
+3,197,515 addresses (3.88%; Apple alone 3.33%). 114,507 of those (3.58%) are
+covered only by a feed, not by X4B's own ASN list. Evidence:
+`docs/enrichment/research/parts/P4-X-x4b-feeds-2026-09-19.jsonl`.
+
+**The ruling.**
+
+1. X4B's published `output/` files are an **upper bound**, never taken
+   whole. A range is kept only where X4B's **first-party** inputs justify it:
+   its hand-curated `input/<list>/ASN.txt`, expanded against OpenASN's own
+   backbone, and its hand-curated `input/<list>/ips/Manual.txt`. A feed entry
+   inside a listed ASN stays, because X4B's own ASN entry covers it (e.g.
+   Proton servers inside AS208172, which X4B lists).
+2. **vpn is a whitelist**: `kept = published ∩ justified`. This is the
+   directory X4B's feed bots write to, so the rule must also exclude a feed
+   X4B adds in the future, and a feed file updated between two X4B builds,
+   without anyone naming it first. The only cost beyond the feeds is 1,024
+   addresses (four /24s) where X4B's expansion database (iptoasn.com) and
+   our backbone disagree about the origin ASN.
+3. **datacenter subtracts the named feed file**:
+   `kept = published − (feeds − justified)`. A whitelist was built and
+   measured here, then rejected. X4B's datacenter expansion disagrees with
+   our backbone on ~222k addresses, and applying the whitelist would have
+   moved real cloud space from `hosting` to `business` (GCP 35.208.0.0/15:
+   iptoasn says AS15169, our backbone says AS43515). No X4B workflow writes
+   to `input/datacenter/ips/`, so naming its single third-party file is
+   precise. If X4B ever adds a file there, it must be named in the pipeline
+   (`Sources::X4B_DC_FEEDS`). The pipeline never calls api.github.com, so
+   it cannot list the directory for itself.
+4. Neither method can add a range X4B did not publish. Feed files are read
+   only in order to subtract them. That is D-CUR-1 consultation; their
+   contents are never republished.
+5. Apple relay, Mullvad, PIA and Proton keep reaching users the way they
+   always should have: as `fetch-manifest.json` Tier B recipes, which
+   clients fetch from the original authority.
+
+**Blast radius, measured** (offline build, identical inputs, before vs after;
+`openasn-ipv6.bin`, `openasn-orgs.bin` and `asn-categories.csv` are
+byte-identical apart from the build timestamp):
+
+| layer | ranges | addresses |
+|---|---|---|
+| vpn (IPv4) | 6,644 → 4,692 (−29.4%) | 3,197,515 → 3,081,984 (−3.61%) |
+| datacenter (IPv4) | 30,157 → 30,105 (−0.17%) | −300 |
+
+115,628 IPv4 addresses change verdict. All but 97 of them leave `vpn`:
+73,702 go to `hosting` (x4b_dc), 36,288 to `hosting` (category), 4,314 to
+`unknown` (feed entries in tier-1 transit space: Cogent AS174 3,165, GTT
+AS3257 696), 1,115 to `business`, and 112 to `residential_isp`. The largest ASNs are the Apple
+relay hosts: Akamai AS36183 (59,354), Cloudflare AS13335 (19,779), Fastly
+AS54113 (15,972) and Akamai AS20940 (11,516). In the core these become
+`hosting`, the same answer the rest of Apple's relay space already gets. They
+become `relay` wherever a client runs the Tier B recipe, which is the design.
+
+**Gates.** The spot panel is green before and after, and no row changed. The
+G4 layer drift gate FAILS once, on `vpn_ipv4`: 6,639 in `latest` → 4,692,
+which is −29.3% against a 20% drop line, with no weekly pin within 5%. The
+first publish therefore needs a dispatch with
+`ack_drift="D-SRC-3: X4B third-party feeds (Apple relay, Mullvad, PIA, Proton) removed from the vpn overlay"`
+and `ack_drift_reanchor=vpn_ipv4`. The other layers pass.
+
+**Resolved before first publish: a deliberate step change now re-anchors
+its own metric** (D-GATE-1 rule 8). Before this, from the night after the
+acked publish, `vpn_ipv4` would have sat about 29% below the best weekly pin
+(v2026.09.13, 6,593). Rule 6 would have turned that into a WARN(SLIDE) every
+night. A warned build is never clean, so no weekly pin would ever have been
+cut again, for any layer. Now the ack, naming `vpn_ipv4`, records a reviewed baseline for
+`vpn_ipv4` (4,692, with the ack reason and date). The next clean build is
+clean, and weekly pinning resumes. The coordinator ruled this a precondition
+for publishing (2026-09-19).
+
+**Policy: anonymity egress that X4B lists by ASN is treated as `vpn` in the
+core.** X4B's first-party `input/vpn/ASN.txt` lists AS60729
+(`AS60729 # Tor Servers (Tor exit nodes)`), so that ASN's space is kept and
+classifies `vpn` (spot panel row 185.220.101.5 already says so). `tor_exit`
+is the more precise verdict, but the core cannot carry it honestly:
+
+- FORMAT.md has no Tor flag bit, and bits 14–15 are reserved; using them
+  needs a `format_version` bump.
+- Its only range layer for this is `relay`, which is Tier B and always 0 in
+  the canonical artifact.
+- D-FMT-1's frozen export profile rules out `tor_exit` and `relay` as
+  `core_verdict` by design.
+- An ASN is not an exit list. Exits churn hourly, which is why the Tor
+  Project bulk exit list is Tier B.
+
+So no remapping is proposed. Clients that run the Tier B tor recipe already
+answer `tor_exit` for actual exits, because it outranks the X4B vpn overlay
+in the client ladder. Everything else in that ASN stays `vpn`, the honest
+Tier A answer for anonymity-network egress.
+
+## D-SRC-1 — RIR delegated-extended stats are a curation input, not Tier A (2026-09-19)
+
+**Status: ACCEPTED 2026-09-19** by the pass-4 coordinator under the owner's
+delegation of all decisions (COORDINATOR-DECISIONS CD-3: curation-only,
+never compiled into published artifacts, RIPE excluded; written-permission
+requests to the RIRs are drafted, not sent). Rulings 1-4 below are in force.
+The "Owner decisions" at the end stay open for the owner; none is needed for
+this change. The pipeline change
+(`openasn-pipeline` branch `sources/rir-delegated-stats`) implements the safe
+half and changes no artifact byte.
+
+**The question.** The Pass 3 source memo (2026-09-12) recommended adopting
+the NRO/RIR delegated-extended statistics as a Tier A source, for the
+per-ASN RIR, registration country and date, and for sibling clustering
+through the per-RIR opaque-id. Before implementing it, the terms were
+re-read on 2026-09-19 from each authority's own pages. The research record,
+with exact URLs and verbatim quotes, is
+`docs/enrichment/research/parts/P4-S-rir-terms-2026-09-19.jsonl`.
+
+| RIR | What governs the stats files | Class |
+|---|---|---|
+| APNIC | `README-EXTENDED.TXT` §2 and the in-file header: "The files are freely available for download and use on the condition that APNIC will not be held responsible for any loss or damage arising from the use of the information contained in these reports." | use grant |
+| AFRINIC | `README-EXTENDED.txt` §2, the same sentence word for word | use grant |
+| LACNIC | `disclaimer.txt`, the same sentence in English; the PT/ES versions say free "para copia" (for copying) | use grant |
+| ARIN | Nothing. The stats page says only that the files "are available for use via HTTPS". The Whois TOU is scoped to the Whois Service and does not govern them | silent |
+| RIPE NCC | Site-wide copyright statement: "All rights restricted … may not be used, reproduced and made available to third parties without prior written authorisation". ToS Art. 1 defines the Website as every ripe.net sub-domain, which includes ftp.ripe.net, and Art. 6.2 names databases. The carve-out covers only non-commercial or research use of unmodified, RIPE-identified material | restricted |
+| NRO (merged file) | No licence anywhere on nro.net. The file is served from `ftp.ripe.net` and carries RIPE rows | silent + RIPE hazard |
+
+**The ruling.**
+
+1. **Not Tier A.** The legal invariant (README "Legal design" 1) requires
+   *explicit* redistribution rights. "Download and use", silence, and "all
+   rights restricted" are not explicit redistribution rights. The memo's
+   "no licence asserted" and "registry facts" arguments may well be right in
+   law, but they are arguments. The invariant asks for a grant, and when in
+   doubt we exclude. No RIR-derived value enters `openasn-ipv4.bin`,
+   `openasn-ipv6.bin`, `openasn-orgs.bin`, `asn-categories.csv`, the
+   manifest or any export.
+2. **Curation input under D-CUR-1.** The pipeline reads the four non-RIPE
+   per-RIR files at build time into `build/work/rir/`, which is not
+   published. It uses them to propose sibling candidates for
+   `data/overrides/`. Each candidate is reviewed like any other line, and a
+   line that graduates is the curator's own sourced conclusion. A shared
+   registrant is not, alone, evidence of a class: AS20057 (AT&T Mobility)
+   has 122 siblings, and most of them are not mobile networks.
+3. **RIPE excluded.** RIPE is off by default even for local working files.
+   `OPENASN_RIR_INCLUDE_RIPE=1` enables it for private research, which the
+   RIPE carve-out permits, and no RIPE-derived value is ever cited into a
+   published line. The merged NRO file is never used, and a foreign-registry
+   line fails the parse.
+4. **Terms pinned, outside the nightly.** APNIC, AFRINIC and LACNIC terms
+   are pinned in `data/licenses/pins.json` with `"scope": "curation"`.
+   ARIN's README is pinned as a receipt that it states no terms. The tools
+   that read the files check those pins, and the nightly does not, because
+   an input that is not in the release must not block the release.
+
+**Measured 2026-09-19 (without RIPE).** 91,605 ASN rows, 82,591 of them
+delegated. There are 49,360 holders, and 4,556 sibling clusters (2 to 237
+ASNs) cover 17,416 ASNs, which is 21.1% of delegated ASNs. **Correction to
+the memo:** its 28.0% counted APNIC's NIR pools as organisations. APNIC
+gives a whole National Internet Registry pool one opaque-id (IRINN alone is
+5,385 ASNs, all IN), so propagating a name across such a "cluster" would
+label thousands of unrelated operators. Holders above 250 ASNs are treated
+as pools and never propagate. There are 12 pools covering 20,383 ASNs: nine
+APNIC NIR pools and three large ARIN holders, excluded conservatively.
+
+**Other corrections to the Pass 3 record.** LACNIC (`disclaimer.txt`) and
+AFRINIC (`README-EXTENDED.txt`) do publish terms; the Pass 3 check read only
+the data files. Also, sapics' `origin-asn/SOURCES.md`, our own pinned
+licence file, cites an "NRO License" at `https://www.nro.net/about/nro-policies/`,
+which returns 404 today.
+
+**Owner decisions (open).**
+
+1. Is a "download and use" grant (APNIC, AFRINIC, LACNIC) enough for a CC0
+   artifact? If so, a *separate, opt-in* sidecar holding RIR, country,
+   registration date and holder cluster could ship for those three registries
+   under a new file with its own spec, leaving the existing artifact bytes
+   unchanged. That would need legal sign-off, or a written confirmation from
+   each RIR, first.
+2. ARIN has no written terms. Accept "silent" (US registry facts, *Feist*),
+   or ask ARIN in writing?
+3. RIPE is excluded unless the RIPE NCC gives prior written authorisation.
+   Should we ask? The RIPE region is ~40k delegated ASNs, the largest single
+   gap.
+4. Should the existing owner-private quant importer
+   (`pipeline/enrich/quant/rir_stats.rb`), which still reads all five RIRs
+   including RIPE, drop RIPE too, or keep it under the research carve-out as
+   long as the extended tier stays unpublished?
+5. sapics (PDDL, Tier A backbone) states it compiles from RIR delegated
+   stats "Subject to the NRO License and respective RIR copyright
+   statements". The same doubt reaches our backbone at one remove. Its
+   `origin-asn` output is BGP-derived IP→ASN, not a copy of the stats files,
+   so this is probably fine, but it should be read once with this entry in
+   mind.
+
+## D-SRC-2 (backbone) — The IP→ASN backbone is recomputed by OpenASN from RouteViews RIBs; sapics is retired (2026-09-19)
+
+**Status: ACCEPTED (2026-09-19).** Decided by the coordinator under the
+owner's delegation (pass-4 ruling CD-12, building on CD-5); the owner then
+explicitly authorized the merge, including item 4's amendment of README
+"Legal design" rule 1, the project's founding legal policy. Merged by the
+pass-4 integrator (INT-B).
+
+This is the backbone part of D-SRC-2 ("Tier A sources are judged by their
+inputs, not their label"; audit P4-L). The org-names part is decided
+separately. Evidence, with exact URLs and dates on every record:
+`docs/enrichment/research/parts/P4-B-routeviews-terms-2026-09-19.jsonl`
+(terms, 9 records), `P4-B-backbone-measurements-2026-09-19.jsonl` (prototype
+numbers, 9 records), and the switchover run logs and samples in
+`docs/swarm-2026-09-19/BS-work/`.
+
+**Problem.** sapics `origin-asn` is labelled PDDL, but it is an aggregator.
+Its routed part is compiled from RouteViews and RIPE RIS BGP archives. Its
+unrouted part fills unannounced RIR allocations with the holder's ASN, taken
+from RIR delegated stats: 10.8% of its IPv4 space and 59.8% of its IPv6
+space, 99.7% holder-matched (measured 2026-09-18/19). An aggregator's relabel
+is not a grant from the authority (rule 1), RIPE RIS carries restrictive
+terms and the EU database right, and RIR stats are curation-only (D-SRC-1).
+
+**Ruling.**
+
+1. **Input.** The backbone is compiled by `tools/rib2origin` (openasn-pipeline,
+   Go, stdlib only, MIT) from RouteViews TABLE_DUMP_V2 RIB dumps: one
+   2-hourly slot per night (the newest slot at least 3 h old; 00:00 UTC for
+   the 03:17 cron) from 10 collectors chosen for geography: route-views2,
+   route-views.eqix, route-views.linx, decix.fra, route-views.napafrica,
+   route-views.sg, route-views.sydney, ix-br.gru, route-views.wide,
+   route-views6. That is 186 distinct peer ASes and ~850 MB. RIPE RIS is not
+   an input. Six more collectors (256 peer ASes, 1.33 GB) moved IPv4
+   coverage by +0.02 pt, so they stay out.
+   **Missing RIBs (review RB-1).** A collector whose slot RIB cannot be
+   fetched may fall back only to its own cached RIB at most 36 h older (one
+   nightly back); the build WARNs and stamps the real slot in manifest stats
+   (`routeviews.fallback_rib_slots`). Older than that, the collector is
+   skipped, and fewer than 7 usable collectors FAILS the build. A stale RIB
+   is never reused indefinitely: a dead collector would keep withdrawn
+   prefixes alive (one big collector alone clears the 2-peer-AS floor) and
+   outvote new origins. Dropping 3 of the 10 collectors (three subsets tested,
+   incl. the three largest) moved covered IPv4 space by at most 0.09% and IPv6
+   by 0.10% (2026-09-18 slot), so skipping is the safe
+   direction.
+2. **What is published: only `(range, origin ASN)` facts our code
+   recomputes.** Origin rule:
+   - A path's origin is the last AS of its AS_PATH, ignoring confederation
+     segments. A path ending in a multi-member AS_SET has no origin.
+   - Bogon origins are dropped (AS0, AS_TRANS, documentation, private and
+     reserved ASNs). Dropped prefixes: martians, IPv6 outside 2000::/3, IPv4
+     outside /8–/24, IPv6 outside /16–/48.
+   - An origin must be seen by **at least 2 distinct peer ASes** (not
+     sessions). The origin seen by the most peer ASes wins; ties go to the
+     lowest ASN.
+   - Nested prefixes are flattened by longest-prefix match; adjacent ranges
+     with the same origin are merged.
+   No RouteViews file, AS path, peer or timestamp is redistributed.
+3. **Unannounced space is `unknown`.** Nothing is filled from RIR stats. A
+   range nobody announces is not an origin fact, and the data that would
+   fill it is curation-only. Override ASNs with no announced space still go
+   through compile.rb's ipverse as-ip-blocks gap-fill; measured, it adds
+   nothing today (see Measurements).
+4. **Legal design rule 1 is amended** (README), exact text:
+   > The published artifact contains only data whose exact redistributed form
+   > carries explicit rights — PDDL, CC0, or MIT-explicitly-covering-output —
+   > **or uncopyrightable facts that our own code recomputes from a primary
+   > source whose terms require nothing beyond attribution.** […] It admits
+   > facts, never a copy of anyone's files or tables, and never a source whose
+   > terms add anything beyond attribution (non-commercial, ShareAlike,
+   > no-derivatives, usage caps) or that is protected by a database right we
+   > would need permission for: **RIPE RIS stays excluded** (EU sui generis
+   > database right plus RIPE NCC's own terms).
+
+   Why this is safe for RouteViews specifically: "RouteViews Data" is CC BY
+   4.0 (no NC, SA or ND; selling derivative works is expressly contemplated).
+   Every extra request is attribution-type (link, prescribed sentence, logo,
+   boilerplate). Revocation is conditional, "if you do not provide the
+   attribution called for above, or if you abuse this permission in any way",
+   not at will. A table of which prefix is originated by which ASN is facts:
+   CC BY 4.0 §8(a) does not restrict uses that need no licence, US law has no
+   database right (Feist), and RouteViews is a US (University of Oregon)
+   service. We attribute in full anyway, so we comply if CC BY does reach the
+   table. The P3 memo line "attribution is fatal for the core" is superseded
+   for recomputed facts only; wholesale CC BY data (e.g. DB-IP) stays in the
+   extended tier. Residual risks for the owner: "abuse" is undefined, and
+   `archive.routeviews.org/robots.txt` is `Disallow: /` (a crawler signal,
+   not a licence term; we fetch 10 named files a night with an identifying
+   User-Agent and never list directories). A courtesy note to
+   help@routeviews.org is drafted, not sent
+   (`docs/swarm-2026-09-19/BS-routeviews-email.md`); sending it was listed
+   as a merge prerequisite and is left to the owner (an outward
+   communication the integrator does not send).
+5. **Attribution.** ATTRIBUTION.md (shipped in every release, and embedded
+   verbatim in the portable exports once EXPORT_FORMATS lands) carries
+   RouteViews' prescribed sentence with "[Product/Report]" filled as
+   "product", their boilerplate, link, logo, licence link, DOI
+   10.7264/1y7v-2d90, a statement of our changes (CC BY §3(a)(1)(B)) and a
+   non-endorsement line. README carries the logo and credit.
+6. **Licence gate.** The RouteViews terms are pinned from the WordPress JSON
+   rendering of `/routeviews/licenses/` (page 45927, `extract:
+   wp_json_rendered_text`, tag-stripped so theme churn cannot trip it;
+   sha256 `0887cbd21eab…`, page modified 2026-03-04). The sapics pin is
+   removed. Both via `rake licenses:pin` in this PR. The receipt
+   `data/licenses/sapics-origin-asn.txt` stays for releases built before the
+   switchover.
+7. **Rollback.** `OPENASN_BACKBONE=sapics` still selects the old path in the
+   pipeline, but the sapics pin is gone, so such a build fails the licence
+   gate until someone re-pins it in a reviewed PR. Rolling back is therefore
+   deliberate and visible (nightly-build.yml sets
+   `OPENASN_BACKBONE: routeviews` explicitly). The sapics code is to be
+   deleted in a follow-up once a few weekly pins have been cut from the new
+   backbone.
+
+**Measurements.**
+
+| | IPv4 | IPv6 |
+|---|---|---|
+| origin agreement with sapics where both cover (slot 2026-09-18 20:00) | 98.94% | 97.45% |
+| RouteViews covers … of sapics space | 89.17% | 40.16% |
+| sapics covers … of RouteViews space | 99.99% | 99.94% |
+| compiled verdicts identical where both cover | 99.81% | |
+| day-over-day origin agreement (09-17 vs 09-18) | 99.987% | |
+
+Almost all disagreement is one ISP's aggregate vs its regional ASNs (Comcast
+AS7922 vs 33491/33651/…), which does not change the verdict. sapics also
+published 58 ranges with private or documentation origin ASNs.
+
+**Online switchover build, 2026-09-19** (pipeline `sources/routeviews-backbone`,
+dataset `sources/routeviews-backbone`, live fetch, cold cache, RIB slot
+20260919.0200, not published):
+- Licence gate green on the new pin set (routeviews + four unchanged).
+- RIB download 10 files / 853 MB in 2 min 46 s (4 streams, from Europe);
+  rib2origin 49 s wall, 1.07 GB max RSS; 1,402,993 prefixes → 399,372 v4 +
+  93,894 v6 ranges; whole cold build 4 min 52 s. Warm re-run (RIBs 304) 76 s.
+- Drift gates against the published `latest` (2026-09-18) and the pins
+  v2026.09.13 / v2026.08.23: `hosting_asns` PASS; `base_ipv4` 443,267 →
+  399,372 (−9.9%) **WARN**; `vpn_ipv4`, `dc_ipv4` PASS; `base_ipv6` 125,825 →
+  93,894 (−25.4%, −25.5% below the best pin) **FAIL**. With an ack the build
+  completes: G5 spot panel **green, 20/20**, round-trip and size gates green.
+- The eight override ASNs that lose all space (cdn AS133877, AS23903, AS895,
+  AS14153; enterprise_gw AS35788, AS43251; mobile AS5079; vpn AS154050) are
+  unannounced: RIPEstat routing-status shows 0 announced prefixes for each
+  (last seen between 2018-11 and 2026-01, or never), and ipverse as-ip-blocks
+  has an empty or missing list for each, so the online gap-fill added 0
+  ranges. Every range sapics assigned them is uncovered by RouteViews; the
+  announced more-specifics inside those blocks belong to other origins
+  (e.g. Edgio AS14210, Cloudflare AS13335, Fastly AS54113), which the
+  backbone already carries.
+- Lookup impact of unannounced space turning `unknown`: only unannounced
+  space changes, and no public traffic can come from space nobody announces.
+  Checked three ways: (a) RouteViews' own view: 98.4% of the sapics-only
+  IPv4 space is announced by none of 256 peer ASes (16 collectors); (b) an
+  address-weighted random sample of 400 addresses from the 380.9 M
+  sapics-only IPv4 addresses, checked against RIPE RIS (RIPEstat
+  network-info, consulted per record, never an input): **0 of 400 routed**
+  (95% upper bound 0.75%); an earlier 400-address sample found 1 (a /20
+  seen by 19 of 325 RIS peers, below our floor in RouteViews); (c) APNIC's per-AS user estimates (window to 2026-09-15): the
+  ASNs that have users and disappear entirely versus sapics are 68 ASNs with
+  0.017% of estimated users, and the RIPEstat spot-checks of the largest of
+  them show their sapics ranges unannounced (0 or 1 of 325 RIS peers). The
+  residual real risk is prefixes with partial visibility that fall below the
+  2-peer floor: RouteViews saw 6.5 M of the sapics-only IPv4 addresses from
+  exactly one peer AS (1.7% of that space; one sampled example,
+  113.31.240.0/20, is visible to 19 of 325 RIS peers). Those lookups now say
+  `unknown` rather than naming the origin; that is the conservative
+  direction (AGENTS rule 2).
+
+**Spot panel v2 at merge (INT-B, 2026-09-19).** Panel v2 (98 rows) was
+generated on the sapics backbone and landed on main first. On the RouteViews
+backbone 11 of its probes were unrouted: each sat in space no ASN announces
+(RIPEstat network-info: no origin). They were changed row by row with the
+reason in each note and in the spotchecks.yml panel history: 4 probes moved
+to the same ASN's largest announced range, 4 rows whose ASN announces nothing
+(AS133877, AS521 v4+v6, AS203665) now expect `unknown` via `unrouted` and
+guard against RIR fill returning, and 3 rows whose path could no longer be
+isolated moved to another ASN with the same path (hosting_extra: Hostodo
+AS399804; no_category: AS23448, AS22282). Offline build on the 2026-09-19
+02:00 RIB slot: G5 green (82 Tier A rows); the gem returns the expected
+verdict, ordered sources and ASN on all 98 rows.
+
+**First publish (exact dispatch).** Order: merge openasn-pipeline first (the
+nightly checks out its `main`, and the Go module lives there), then this
+branch, both before the next 03:17 UTC cron. D-SRC-3 (X4B) is expected to
+merge and publish first; it brings the `ack_drift_reanchor` input. Then run
+`Build & publish data` from the Actions tab with:
+
+- `ack_drift` = `D-SRC-2 (backbone): the IP->ASN backbone is now recomputed from RouteViews RIBs; sapics' RIR-stats fill of unannounced space is gone (IPv4 ranges -9.9%, IPv6 ranges -25.4%). Evidence: DECISIONS.md D-SRC-2 (backbone).`
+- `ack_drift_reanchor` = `base_ipv6`
+
+`base_ipv6` is the only metric that FAILs, and it must be named: it sits
+25.5% below the best weekly pin, past the 20% drop line, so a bare ack would
+leave every later night WARNing as a slow slide and no weekly pin would be
+cut (D-GATE-1 rule 8). `base_ipv4` only WARNs (−9.9%, inside the 20% line
+and inside the slide line), so it needs no ack and cannot be re-anchored;
+the next night passes against the new `latest` (simulated with the rule-8
+gate code). If D-SRC-3 has *not* published first and both land in one run,
+use `ack_drift_reanchor` = `vpn_ipv4,base_ipv6` and name both changes in the
+reason (combined run measured: vpn_ipv4 6,639 → 4,693, base_ipv6 as above,
+panel 21/21 green).
+
+**Merge prerequisites.** Owner legal read of item 4; D-SRC-3 merged (for
+`ack_drift_reanchor`), and on rebase the X4B integration test's
+`sapics_v4`/`sapics_v6` path keys renamed to `backbone_v4`/`backbone_v6`
+(the only semantic conflict between the two branches); the RouteViews
+courtesy note sent (still a draft at merge time: an owner action, not a
+licence condition); launch copy saying "origin ASN as seen in BGP
+(RouteViews)". The exports branch rebases after both, and must install Go
+from both modules.
+
+## D-SRC-2 (org names) — Organization names leave the CC0 core; ours and Wikidata's replace them (2026-09-19)
+
+**Status: ACCEPTED (2026-09-19).** Decided by the coordinator under the
+owner's delegation (CD-4, CD-11); the owner then explicitly authorized the
+merge. The drafted lines were reviewed by the ON workstream (248 of 251
+kept) before merge; a human spot check of the LLM-verified lines remains a
+recommended follow-up. Merged by the pass-4 integrator (INT-B).
+
+This is the org-names part of D-SRC-2 ("Tier A sources are judged
+by their inputs, not their label"; audit P4-L, evidence
+`docs/enrichment/research/parts/P4-L-provenance-2026-09-19.jsonl`). The
+backbone and X4B parts are decided separately.
+
+**The finding.** `openasn-orgs.bin` and the `org` column of
+`asn-categories.csv` carried ipverse as-metadata `description` strings:
+124,849 names, one per ASN ipverse knows. ipverse's README says the names are
+"sourced from regional internet registries (RIR)". Its maintainer confirms
+they are the automatically processed WHOIS `descr`
+(https://github.com/ipverse/feedback/discussions/11, 2024-03-24). APNIC
+("may not be passed on in bulk"), ARIN ("does not republish … or make
+publicly available") and RIPE (DB T&C 4.5, "insubstantial part") all
+restrict bulk republication. ipverse's CC0 covers what ipverse authored (the
+categories) and cannot license a registry's records. Rule 1 of the legal
+design and AGENTS.md rule 1 ("aggregators never qualify; when in doubt,
+exclude") decide it. Coordinator decision CD-4 (2026-09-19) applied them.
+
+**The ruling.**
+
+1. **No ipverse description is published**, in any artifact or column. The
+   pipeline still reads ipverse for `category`/`networkRole`, which are
+   unaffected. (Its country code left too; see D-SRC-2 (country) below.) Tripwire: `test/org_names_test.rb` in the pipeline fails
+   if a `description` reaches the CSV.
+2. **Published names come from CC0 sources only**, first hit wins:
+   1. `data/overrides/org_names.txt`: our curated lines,
+      `AS<n>  <name>  # src: <url> (<date>)`. The src must be a
+      first-party page (the operator's own site or docs) or a CC0/reference
+      page. A registry or aggregator host fails the build and the PR lint
+      (RIR WHOIS/RDAP/bulk files, NIRs, PeeringDB, bgp.he.net, bgp.tools,
+      CAIDA AS Rank, ipinfo, db-ip, ipverse, …). A name resting on WHOIS is
+      exactly what this decision removes.
+   2. **Wikidata P3797** ("autonomous system number") item labels, CC0,
+      licence sentence pinned (`wikidata-p3797`).
+   ASNs with neither have no name. That is an honest nil, never a guess.
+3. **Wikidata is judged by its inputs too.** Measured 2026-09-19: **1,138 of
+   the 1,817 P3797 statements cite a single reference, ARIN's bulk
+   `https://ftp.arin.net/pub/resource_registry_service/asns.csv`**, which
+   ARIN serves "subject to terms of use" (its Whois ToU). Another ~100 cite
+   RIR WHOIS/RDAP, PeeringDB or bgp.he.net. A statement is used only if it
+   has no reference (a contributor's own assertion, which is what Wikidata's
+   CC0 covers), or at least one reference that cites no restricted host.
+   Result: **566 of ~1,810 Wikidata ASNs are admissible.** Google's AS15169
+   is among the dropped. We name Google from Google's own interconnect
+   documentation instead. RIR-sibling propagation of Wikidata names (the S
+   prototype) is **not** used, because the RIR stats are curation-only
+   (D-SRC-1).
+4. **Dossier names may enter, as curated lines, never in bulk from the
+   file.** An enrichment dossier identifies one operator per record, with
+   cited evidence. Writing its operator name down with a first-party source
+   is ordinary D-CUR-1 curation (per record, sourced conclusion only, no
+   dossier prose). The drafting tool
+   (`rake 'org_names:draft[...]'` in the pipeline) never cites RDAP,
+   PeeringDB or CAIDA. It prefers an operator page that names the ASN, then
+   the operator's site, then its Wikidata item. The first 251 drafted lines
+   **need a human review pass before merge**: they come from LLM-researched,
+   LLM-verified dossiers.
+5. **The WHOIS names move to Tier B.** Recipe `ipverse_org_names`
+   (`maps_to: "as_org"`, parser `ipverse_as_csv_names`, ipverse's ~6MB
+   `as.csv`, weekly, keep-stale, **enabled by default**). The user's server
+   fetches the table for its own use. A recipe name only fills an ASN the
+   canonical sidecar leaves blank, and never overrides it. On by default
+   like the other light recipes (`enabled_default: true`; only heavy
+   recipes are opt-in), so clients keep names for the long tail without
+   configuration (coordinator ruling CD-11a, 2026-09-19). The table is
+   registry data under registry terms, so the recipe notes say so, and an
+   operator who does not want it disables the recipe. Clients that do not know the parser skip it (the forward-
+   compatibility rule), so older gems are unaffected.
+6. **Format.** OORG v1 bytes, the version byte and the CSV header are
+   unchanged, and an entry still means "this ASN's organization name". So
+   there is **no format_version bump** (FORMAT.md). Only the population
+   changes.
+
+**Measured impact** (offline build from the 2026-09-19 cache; APNIC AS-Pop
+eyeball estimates; 95,790 routed ASNs):
+
+| | names | routed ASNs named | routed IPv4 addresses | eyeballs |
+|---|---|---|---|---|
+| before (ipverse) | 124,849 | 99.99% | 100.00% | 100.00% |
+| Wikidata admissible only | 566 | 0.53% | 26.94% | 26.28% |
+| after (org_names.txt + Wikidata), first cut | 777 | 0.74% | 49.28% | 66.76% |
+| after the pass 4 ON review and extension | 1,393 | 1.39% | 80.39% | 80.71% |
+| **after the pass 4 ON2 extension** | **2,031** | **2.05%** | **83.60%** | **82.98%** |
+
+This is the power law at work (rule 7): 777 names reached two thirds of the
+world's eyeballs. The pass 4 ON workstream then reviewed the 251 drafted
+lines (248 kept, 3 removed) and worked about 770 ranks down the gap list,
+eyeballs and address space interleaved, adding 619 sourced names (national
+carriers, US DoD, Microsoft's secondary ASNs, Meta, Akamai, Ford, Apple, ...).
+1,393 names now reach four fifths of eyeballs and of routed IPv4. The long
+tail is blank on purpose. Evidence per line:
+`docs/enrichment/research/parts/P4-ON-org-names-2026-09-19.jsonl`.
+
+The ON2 workstream re-ranked the gap on the de-duplicated 2026-09-19b quant
+(artifact-corrected APNIC eyeballs; longest-match routed IPv4) and added 638
+more sourced names, re-citing 21 existing lines (5 head lines now cite an
+operator page that names the ASN; 16 cited a disambiguation, surname,
+country-topic or wrong-entity page). On that basis 2,031 names cover 82.93%
+of APNIC-estimated eyeballs (85.22% excluding estimator artifacts) and
+84.90% of the 3.128B routed IPv4 union by longest match. Evidence per line:
+`docs/enrichment/research/parts/P4-ON2-org-names-2026-09-19.jsonl`.
+
+**Gates.** No existing drift gate measures org names, so nothing trips and
+**no `ack_drift` is required** for the first publish. G6 now drift-gates the
+entry count (`org_names`, LAYER_POLICY). A metric absent from the previous
+manifest SKIPs, so the first night after this change is clean and pinnable.
+From the second night, a >20% move fails like any layer. The visible change
+still belongs in the release notes and launch copy, because `as_org` goes
+nil for most ASNs for every client that does not run the recipe (older
+clients, and anyone who disables it).
+
+Evidence: `docs/enrichment/research/parts/P4-O-org-names-2026-09-19.jsonl`
+(the Wikidata reference census, ARIN terms, coverage, gap list).
+
+## D-SRC-2 (country) — Registry countries leave the CC0 core; ours and Wikidata's replace them (2026-09-19)
+
+**Status: ACCEPTED (2026-09-19).** Decided by the coordinator under the
+owner's delegation (CD-11d, CD-19, CD-25); the owner then explicitly
+authorized the merge. The curated lines were verified line by line by K2/K3
+(LLM-verified with fetched evidence); a human spot check remains a
+recommended follow-up. Merged by the pass-4 integrator (INT-B). The gate
+below is numbered **G8** in the merged pipeline, because G7 already names
+the exports' candidate gate.
+
+The per-ASN country is the same problem as the org names, and it gets the
+same treatment (coordinator decision CD-11d, 2026-09-19). Evidence:
+`docs/enrichment/research/parts/P4-K-country-2026-09-19.jsonl`.
+
+**Where the published country came from.** One place only: the `country`
+column of `asn-categories.csv` (also mirrored to Hugging Face). It was
+ipverse as-metadata `metadata.countryCode`, copied through verbatim
+(pipeline `lib/asjson.rb` → `publish.rb`). No binary artifact, no OORG
+entry, no gem field and no D-FMT-1 export carries a country (EXPORT_FORMATS.md:
+"v1 carries no country"). ipverse's README says its "handle, organization
+name, and country code [are] sourced from regional internet registries
+(RIR)"
+(https://raw.githubusercontent.com/ipverse/as-metadata/master/README.md,
+fetched 2026-09-19). In the 2026-09-19 cache, 119,874 of 124,849 values come
+from `authoritative` (registry) records, 4,505 from `inferred` records and
+96 from the community `as-overlay`. The registry terms that ruled out the
+names apply to these codes too: APNIC's bulk-WHOIS clause, ARIN's
+no-republication clause, RIPE's T&C 4.5 and the EU database right. So do
+the delegated-stats terms, which grant no redistribution (D-SRC-1). A
+country code is a fact, but 124k of them extracted from the registries is a
+substantial part of each registry's database. Rule 1 ("when in doubt,
+exclude") decides it.
+
+**The other per-ASN fields, checked.** `category` and `network_role` are
+ipverse's own derivations ("based on multiple signals", "based on BGP
+connectivity metrics"), not registry records. L rated them sound but
+fragile, and they stay. The org name left under D-SRC-2 (org names). No
+other RIR- or WHOIS-derived per-ASN field is published. Two row-level
+facts remain, and the owner should know about them:
+(a) the CSV's row set is "every ASN ipverse knows", which is the list of
+assigned ASNs, a registry fact. After both D-SRC-2 changes, 122,985 of
+124,849 rows carry no org, no country and no flag, only ipverse's
+category/role, and 10,912 carry nothing but the ASN number (open question
+below).
+(b) sapics' extra IP space is RIR-stats fill. That is handled by the
+backbone switchover (CD-12), not here.
+
+**The ruling.**
+
+1. **No ipverse country code is published**, in any artifact or column.
+   Tripwire: `test/country_test.rb` in the pipeline fails if an
+   `asn_meta` country reaches the CSV.
+2. **Published countries come from CC0 sources only**, first hit wins:
+   1. `data/overrides/asn_country.txt`: our curated lines,
+      `AS<n>  <CC>  # src: <url> (<date>)`, ISO 3166-1 alpha-2. The source
+      rule is the one org_names.txt uses: a first-party page (imprint,
+      legal notice, contact page) or a CC0/reference page. A registry or
+      aggregator host, or a non-country code (XX, ZZ, EU, AP, …), fails
+      the build and the PR lint.
+   2. **Wikidata**: P17 "country" of the item whose P3797 statement D-SRC-2
+      (org names) already admits, else P159 "headquarters location" → P17.
+      The ASN → item link is exactly as strict as for the names. P17/P159
+      statements that rest only on registry or aggregator references, by
+      URL or by "stated in" RIR/PeeringDB item, are dropped (measured
+      2026-09-19: 2 of 1,324; the references are GRID, GLEIF, Crunchbase,
+      company registers and Wikipedia imports). An item with two or more
+      countries left is ambiguous and yields nothing.
+   An ASN with neither has an empty country. That is an honest blank, never
+   a guess.
+3. **The meaning changes, slightly, and is now documented.** The column
+   used to mean "the country on the registry record". It now means **"the
+   country the ASN's operator is based in (seat or headquarters)"**. For
+   98% of the dossier-drafted lines the two agree. They part where a group's
+   item or dossier is attached to a subsidiary's ASN. Wikidata alone does
+   this for China Mobile's RU/HK/ZA/BR ASNs (→ CN), NTT AS2914 (→ JP) and
+   Telstra AS4637 (→ AU). Curated lines win over Wikidata for that reason.
+   (K first curated US for AS2914 and HK for AS4637; K2's verification
+   found no non-registry source placing the running entity, so both are now
+   `--`: no country. See "Follow-ups" below.)
+4. **Where the curated lines come from** (526 on 2026-09-19, all to be
+   reviewed by a human before merge, as for org_names.txt):
+   - 10 hand-curated head lines, each from a first-party page fetched that
+     day (Google, Microsoft, Cloudflare, Hetzner, Fastly, Telefónica, Apple,
+     IBM). They include the G8 sentinels.
+   - 421 drafted from enrichment dossiers (`org.hq_country`) by
+     `rake asn_country:draft` in the pipeline. The citation is an
+     operator, Wikipedia or Wikidata page, never a registry.
+   - 95 for ASNs whose org_names.txt line cites a Wikipedia article: that
+     article's Wikidata item, under the same P17/P159 rules as the build.
+     The ASN → operator link is our own curated line.
+   **Registry consultation, stated plainly.** Both drafting paths compared
+   each draft with the ipverse registry country and held back every
+   disagreement for a human (8 dossier drafts, 9 Wikidata derivations; list
+   in the evidence record). One more was pulled by hand: AS201776
+   (Miranda-Media, Crimea), whose Wikidata item says RU and agrees with
+   the registry, while its dossier says UA. Agreement with the registry is
+   not agreement between our own sources. The registry value decided only which list a
+   draft went to. It is written nowhere and read by nothing in the build
+   (D-CUR-1). The held-back cases are the ones that need judgement:
+   operators in occupied Crimea and Luhansk (dossier says UA, registry
+   says RU), group vs subsidiary (Akamai, Alibaba Cloud, Oracle, VEON), and
+   one bad Wikidata value (AS1 → DE).
+5. **The registry countries move to Tier B.** Recipe `ipverse_as_country`
+   (`maps_to: "as_country"`, parser `ipverse_as_csv_country`, the same ~6MB
+   `as.csv` as `ipverse_org_names`, weekly, keep-stale, `min_records`
+   50,000, **enabled by default** like the other light recipes, matching
+   CD-11a). A recipe value only fills an ASN the canonical data leaves
+   blank, and it never overrides it. The notes say the codes are registry
+   data under registry terms, and that a registry country is not quite the
+   same thing as the canonical one.
+   **The Ruby gem gains no country field.** It never exposed one (no binary
+   artifact carries a country), so nothing is lost. Adding a default-on
+   `Result#as_country` fed only by registry data would widen the gem's use
+   of the data this decision removes, with a meaning that differs from the
+   CSV column. The gem only enables the source ids its own feature switches
+   map, so it never fetches this recipe (verified: 123 tests green, the new
+   id is not enabled). The recipe serves CSV consumers such as
+   openasn-observatory, and any SDK that later adds a country field on
+   purpose.
+6. **Format.** The CSV header and column order are unchanged, and no binary
+   artifact is touched, so there is **no format_version bump** (FORMAT.md
+   governs the native artifacts, and none of them carried a country). The
+   column's meaning is sharpened as in (3), and the README says so.
+
+**Measured impact** (offline build from the 2026-09-19 cache; APNIC AS-Pop
+feed of 2026-09-19 from the Layer-A refresh; 95,790 routed ASNs):
+
+| | countries | routed ASNs | routed IPv4 | eyeballs |
+|---|---|---|---|---|
+| before (ipverse) | 124,475 | 99.95% | 99.91% | 100.00% |
+| Wikidata only | 537 | 0.50% | 26.38% | 26.34% |
+| asn_country.txt only | 526 | 0.55% | 68.92% | 76.58% |
+| **after** (both) | **1,005** in the CSV (1,013 incl. ASNs outside ipverse's list) | **0.99%** (953) | **72.80%** | **76.99%** |
+
+Eyeballs on the older 2026-07-04 feed that O measured with: 76.96%. Routed
+IPv4 rose from 53.7% to 72.8% on the named-operator lines (DoD alone is
+6.3%). The ranked gap list for the next pass is in the
+evidence record. Its eyeball head is the held-back occupied-territory
+cases (0.2% each), and its IPv4 head is now flat (the top 100 gaps are 4.2%
+of routed IPv4): the held-back group-vs-subsidiary cases (Alibaba Cloud,
+Akamai, Oracle, Orange Business, HGC, VEON) and unnamed ASNs.
+
+**Gates.** G8 (new) checks three sentinels from the hand-curated head
+(AS15169 US, AS13335 US, AS3352 ES) and drift-gates the `countries` count
+under LAYER_POLICY. A metric absent from the previous manifest SKIPs, so the
+first night is clean and pinnable, and **no `ack_drift` is required**. No
+existing gate (G4 layer counts, crosscheck hosting count, G5 panel, G6
+names) measures country, and the spot panel does not assert countries.
+From the second night on, a >20% move in `countries` fails like any layer.
+The change still belongs in the release notes and launch copy together
+with the org names (CD-11f): `country` goes blank for ~99% of ASNs for
+every CSV consumer that does not run the recipe. The known internal
+consumer is openasn-observatory, whose "registry country" distributions
+would collapse.
+
+**Follow-ups (coordinator decision CD-19, workstream K2, 2026-09-19).**
+Evidence, one record per curated line and per decision:
+`docs/enrichment/research/parts/P4-K2-country-verify-2026-09-19.jsonl`.
+
+- **Occupied and breakaway territories (CD-19a).** An operator based in
+  Crimea, Sevastopol, the Donetsk/Luhansk/Zaporizhzhia/Kherson oblasts,
+  Abkhazia, South Ossetia, Transnistria or Northern Cyprus gets the
+  internationally recognised (UN) state: UA, GE, MD or CY. The de facto
+  controller is recorded in the evidence record. Two guards, one per path:
+  an asn_country.txt line tagged `territory: <key>` must carry that state
+  (build and lint fail otherwise, and the merge re-checks the published
+  value), and the Wikidata fallback, for an item whose HQ or location lies
+  (through P131*) in one of 23 territory items, publishes the recognised
+  state when its own P17/P159 says that state, the de facto controller or
+  nothing, and nothing otherwise. Wikidata can therefore never publish RU
+  for a Crimean operator. 14 operators are tagged (Miranda-Media, CRELCOM,
+  MCS, Lugakom, Luganet, the DPR's "RTO"/Phoenix ×3, Systema, A-Mobile,
+  Aquafon, Interdnestrcom, Kuzey Kıbrıs Turkcell, KKTC Telsim), sourced
+  from EU Official Journal acts, Wikipedia and the operators' own pages.
+  K-Telecom (Win Mobile, AS203451) serves Crimea but is seated in
+  Krasnodar, Russia: RU on an untagged line (CD-25; the territory tag is
+  for operators seated in the territory, and a pipeline test pins that the
+  guard never touches an untagged line). Nine smaller territory
+  operators had no reachable non-registry source and publish nothing.
+- **Hong Kong and Macau (CD-19b).** ISO 3166-1 codes them HK and MO, and
+  Wikidata's P17 for their companies is CN. The Wikidata fallback now
+  refines CN to HK/MO for an item located in Hong Kong or Macau (China
+  Mobile Hong Kong AS9231/AS137872 → HK, China Telecom (Macau) AS136167 →
+  MO). It never rewrites a non-CN result. HGC AS9304 is curated HK.
+  China Mobile International's Hong Kong ASNs sit on the group item (CN)
+  and no non-registry page placing CMI was reachable, so they get `--`.
+- **`--` (publish none).** An asn_country.txt code of `--` publishes no
+  country and stops the Wikidata fallback. It is used where the Wikidata
+  value is a group item on a subsidiary's ASN, or wrong (CD-19c: the
+  operator is the entity that runs the ASN). 53 lines use it.
+- **Held-back drafts and the 65 Wikidata divergences (CD-19c).** Curated
+  where a non-registry source was clear: AS1 US (Level 3 "owner of AS1";
+  Wikidata's DE was an error), AS8402 RU (Beeline in Russia is VimpelCom,
+  not VEON), AS9002 RETN GB, AS8302 Zattoo CH, AS24796 NaMeX IT. 42
+  group-on-subsidiary or unplaceable Wikidata values got `--`. Akamai,
+  Alibaba Cloud, Oracle, Orange Business, Allstream and GTHost stay blank.
+  AS29447 is IT (CD-25): the operator is Iliad Italia (Milan, per
+  iliad.it's legal footer); Scaleway SAS is an Iliad-group registry
+  holder (CD-23b).
+- **Independent verification (CD-19e).** Every curated line was checked
+  again on 2026-09-19: its source resolved to a Wikidata item (directly or
+  through the Wikipedia article) and checked for P17/P159 and identity, or
+  its first-party page fetched and read. 527 lines stand (413 pass the
+  Wikidata check outright, 61 after a manual identity review, 53 on
+  first-party, GLEIF, Companies House or EU Official Journal pages). 16
+  were removed for want of a checkable source, 2 turned into `--`, and
+  about 20 got a better source. Société réunionnaise du radiotéléphone
+  (AS34306) gets RE, the ISO 3166-1 code, not Wikidata's FR (confirmed
+  by CD-25).
+  These lines are LLM-verified; a human spot check before merge is still
+  wanted.
+- **Row set of `asn-categories.csv` (CD-19d).** A row is now written only
+  for an ASN that originates a base range in our artifacts (the BGP
+  backbone, plus ranges gap-filled for curated ASNs) or that carries at
+  least one field (org, country, category or role, flag). The unrouted,
+  field-less rows restated nothing but a registry assignment. 124,849 rows
+  → 119,687 (−5,162) on the 2026-09-19 cache. 23,745 unrouted rows that
+  carry only ipverse's category/role stay, as CD-19d counts category/role
+  as a field. Under sapics "routed" still includes RIR-stats fill; with the
+  RouteViews backbone (CD-12) it becomes exact. **No format_version bump**:
+  FORMAT.md's format_version is a field of the OASN header and governs
+  the native artifacts' bytes, which are identical (timestamp-normalized),
+  as is OORG. The CSV carries no version and its header and columns are
+  unchanged. FORMAT.md now documents the CSV's columns and row set.
+
+**Measured impact after the follow-ups** (same cache and feeds):
+960 countries in the manifest (527 curated + 433 Wikidata), 956 in the
+CSV; routed ASNs with a country 911 (0.95%); routed IPv4 72.5% (was
+72.80%); eyeballs 77.14% on the 2026-09-19 feed (was 76.99%) and 77.27% on
+the 2026-07-04 feed. Coverage moved little because the removals were
+small and the territory lines are large eyeball ASNs.
+
+**Countries for the names added since K (K3, 2026-09-19).** K's two
+drafters were re-run over the 662 ASNs that ON/ON2 named (or the dossiers
+covered) after K ran, up to org_names at 981cd6d. 570 lines landed: 417 on
+the operator's Wikidata item (identity checked against our org name;
+country agreeing with the dossier draft; the registry country used only to
+route disagreements to review, CD-19c) and 153 on a fetched page quoted in
+the line (Wikipedia infobox or the operator's legal notice/contact page).
+Group items on subsidiaries' ASNs were left blank, as before; 92
+candidates were held back with reasons in the research record
+(P4-K3-country-2026-09-19.jsonl). Only `country` cells changed (570
+filled, 0 altered). Measured the same way as above: 1,528 countries in the
+CSV; routed IPv4 72.5% → 80.5%; eyeballs 77.2% → 82.8% on the 2026-09-19
+feed. LLM-verified like the rest; a human spot check before merge is still
+wanted.
+
+**Open for the owner.** (i)–(iii) were settled by CD-25 (K-Telecom RU,
+Réunion RE, AS29447 Iliad Italia IT). (iv) Whether a consultation-only
+registry comparison is acceptable in a curation tool (CD-19c says yes for
+routing drafts into review; it is written nowhere). (v) Whether the
+23,745 unrouted rows that carry only ipverse's category/role should stay
+(CD-19d keeps them).

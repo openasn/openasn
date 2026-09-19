@@ -12,6 +12,13 @@ gem release that understands both versions. Do not "extend compatibly" —
 readers reject unknown versions on purpose (a half-understood artifact is
 worse than a failed update, which keeps last-good data).
 
+> [!NOTE]
+> You may not need this document. The same Tier A core is also specified as
+> SQLite, range CSV, and MMDB projections, where classification is already
+> materialized and no bit offsets are involved:
+> [EXPORT_FORMATS.md](EXPORT_FORMATS.md). This file remains the byte contract
+> for the native artifacts, which the exports never change.
+
 All integers are **big-endian** (network order). All ranges are inclusive
 `[start, end]`. Within every layer, records are sorted ascending by `start`
 and are non-overlapping.
@@ -102,8 +109,55 @@ ASN → organization name, optional richness (clients work fully without it;
 
 Then: index of `entry_count × (asn u32 · blob_offset u32)` sorted by asn,
 then the UTF-8 name blob. An entry's name length = next entry's offset −
-its own (last entry runs to `blob_size`). Names are ipverse as-metadata
-descriptions truncated to 96 bytes on valid UTF-8 boundaries.
+its own (last entry runs to `blob_size`). Names are truncated to 96 bytes
+on valid UTF-8 boundaries.
+
+**Where the names come from.** CC0 sources only, first hit wins:
+`data/overrides/org_names.txt` (our curated names, one source URL per
+line), then Wikidata P3797 item labels (CC0; statements that rest only on
+registry or aggregator references are excluded). An ASN with neither has
+**no entry**, and readers MUST treat that as "no name" (`as_org` nil),
+exactly as before.
+
+Before 2026-09 the names were ipverse as-metadata descriptions (~125k),
+which are bulk RIR WHOIS `descr` strings. Those left the CC0 core under
+DECISIONS.md D-SRC-2 (org names). The byte layout, the version byte
+(`0x01`) and the meaning of an entry ("this ASN's organization name") are
+unchanged, so there is **no format_version bump**. What changed is
+coverage: a few hundred to a few thousand entries instead of ~125k.
+Clients that want the WHOIS names can fetch them locally with the
+`ipverse_org_names` recipe (`maps_to: "as_org"`) in `fetch-manifest.json`.
+The canonical sidecar name always wins over a recipe name.
+
+## Companion table: `asn-categories.csv`
+
+A plain CSV for people and spreadsheets, CC0 like the rest. It has no
+magic, no version field and no byte layout, so `format_version` does not
+apply to it: that field lives in the OASN header and versions the bytes
+above. The CSV's contract is its header and column order, which do not
+change:
+
+    asn,org,country,category,network_role,openasn_flags
+
+- `org`: the CC0 name (`data/overrides/org_names.txt`, then Wikidata), or
+  empty. Never a WHOIS description (DECISIONS.md D-SRC-2).
+- `country`: ISO 3166-1 alpha-2 of where the ASN's operator is based
+  (`data/overrides/asn_country.txt`, then Wikidata), or empty. Never a
+  registry country (D-SRC-2, country). Occupied and breakaway territories
+  carry the recognised state (UA, GE, MD, CY); Hong Kong and Macau carry HK
+  and MO.
+- `category`, `network_role`, `openasn_flags`: the same values the flags
+  word carries (layer 1 above); flags are `|`-separated names.
+
+**Row set** (since 2026-09, coordinator decision CD-19d): one row per ASN
+that is routed in our backbone (it originates a base range in
+`openasn-ipv4.bin` or `openasn-ipv6.bin`) or that carries at least one
+field (org, country, category or role, flag), in ascending ASN order.
+Before, every ASN on ipverse's assigned-ASN list got a row; the unrouted
+rows with no field (about 5,000) are no longer written. That changes which
+rows exist, not what a row means, and no binary byte changes, so it needed
+no `format_version` bump. A reader that looks up an ASN and finds no row
+should treat it as "nothing known", exactly as it treats an empty cell.
 
 ## Integrity
 

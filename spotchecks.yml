@@ -14,10 +14,46 @@
 #            answer, wrong path" regressions, e.g. Cloudflare must classify
 #            via as-metadata category, NOT via the X4B dc overlay, because
 #            X4B deliberately excludes Cloudflare ranges)
+#   gem_sources: optional - the SAME winning rule as it appears in a client's
+#            `Result#sources` LIST. Three rules are named differently by the
+#            pipeline validator and the gem (pipeline `asn_mobile`,
+#            `no_category`, and `asn_category` for flag-driven hosting, versus
+#            the gem's `asn_mobile_carrier`, `asn_no_category`,
+#            `asn_bad_asn`/`asn_hosting_extra`/`asn_cdn`), and the gem returns
+#            a LIST where the pipeline returns one symbol. `rule:` is the
+#            pipeline's name and is what gate G5 asserts; `gem_sources:` is
+#            what the gem, Python and JS clients must return. See CONFORMANCE.md.
+#   tier_b / provider / context_flags: optional, `context: gem` rows only -
+#            the Tier B source id expected to win, the provider attribution it
+#            must carry, and any context flags. Asserted by the clients with a
+#            fixture overlay for that source id; the pipeline skips these rows.
 #   asn:     optional - assert the announcing ASN
 #   context: "gem" rows are skipped by the pipeline (they need Tier B
 #            overlays that only exist client-side)
 #   note:    for humans
+#
+# `rule:` is asserted only where the PATH is structural - a change there means
+# a real semantic change (specials, category-driven verdicts, override flags,
+# transit ambiguity, no-category, unrouted). It is deliberately NOT asserted on
+# rows that win through the canonical X4B range overlays (x4b_dc / x4b_vpn) or
+# through flag-driven hosting, because those lists are re-published upstream
+# nightly: the verdict is the contract, the path through two interchangeable
+# hosting signals is not, and asserting it would fail builds on non-events.
+# Three rows opt back in because the path IS the point (Cloudflare must not
+# come from the dc overlay; the hosting_extra override must be what makes
+# Hostodo hosting; Host Europe shows the same override losing to rule 9 -
+# by design).
+#
+# Panel v2 (2026-09-12): 20 -> 81 Tier A rows. Every row's expect/rule/asn/
+# gem_sources was GENERATED from a real classification of the build
+# 2026-09-12T01:20:54Z (OFFLINE pipeline run over a cache fetched the same
+# hour), never hand-written, so no row can claim a verdict the artifacts do
+# not produce. Probes are chosen deterministically: the ASN's largest
+# announced range, +10 addresses, so a probe never sits on a range edge where
+# a more-specific could silently swallow it. Coverage: every reachable rule of
+# the Tier A ladder, at least one real IP per data/overrides/ file, both
+# address families for every verdict class that has v6 space, and the CGNAT /
+# RFC1918 / class-E boundaries in adjacent pairs.
 #
 # Panel history: 81.9.5.10 expected :unknown in the founding spec (from the Feb-2026
 # prototype, whose logic had no :business verdict); ipverse now categorizes
@@ -34,95 +70,625 @@
 # 2.200.0.0/13 - same ASN, same verdict, same German-residential intent, but
 # announced whole by AS3209 (stable, 320+ RIS full-feed peers, zero AS31334
 # more-specifics even at min_peers_seeing=1).
+#
+# Panel history: the US DoD (AS749) probe was 28.5.134.10 until 2026-09-19.
+# AS27064 (also DoD, also government_admin) has originated 28.5.0.0/16 since
+# 2026-09-04 (RIPEstat), so the probe moved to 28.6.0.10 inside AS749's
+# 28.0.0.0/8, which has no more-specific there - same ASN, same verdict, same
+# intent. The same day the Apple Private Relay row 104.28.28.1 (D-SRC-3) made
+# the Tier A count 82.
+#
+# Panel history: the RouteViews backbone (D-SRC-2 backbone, 2026-09-19) leaves
+# space that no ASN announces unrouted instead of filling it with the RIR
+# holder's ASN, as sapics did. Eleven panel-v2 probes sat in such space
+# (each confirmed with RIPEstat network-info: no origin). Where the ASN
+# announces other space the probe moved there (largest announced range, as
+# before); where the ASN announces nothing at all (AS133877, AS521, AS203665)
+# the row now expects unknown/unrouted and guards against RIR fill returning;
+# where the path the row exists for can no longer be isolated (AS6698, AS145,
+# AS2019) another ASN with the same path took its place. Each row's note says
+# which case applies.
 
 checks:
-  # --- infrastructure: hosting via category and via curated flags ---
+
+  # --- special ranges — IANA facts, no data needed (rule 2, beats everything) ---
+  - ip: "0.1.2.3"
+    expect: private
+    rule: special_reserved
+    gem_sources: [special_reserved]
+    note: "0.0.0.0/8 'this network' — reserved, must never reach a data layer"
+  - ip: "10.1.2.3"
+    expect: private
+    rule: special_rfc1918
+    gem_sources: [special_rfc1918]
+    note: "RFC 1918"
+  - ip: "172.16.0.1"
+    expect: private
+    rule: special_rfc1918
+    gem_sources: [special_rfc1918]
+    note: "RFC 1918 172.16/12 lower edge"
+  - ip: "172.31.255.255"
+    expect: private
+    rule: special_rfc1918
+    gem_sources: [special_rfc1918]
+    note: "RFC 1918 172.16/12 upper edge (172.32.0.0 is public space — the boundary must not bleed)"
+  - ip: "192.168.1.1"
+    expect: private
+    rule: special_rfc1918
+    gem_sources: [special_rfc1918]
+    note: "RFC 1918 home LAN"
+  - ip: "169.254.10.10"
+    expect: private
+    rule: special_link_local
+    gem_sources: [special_link_local]
+    note: "RFC 3927 link-local (APIPA)"
+  - ip: "224.0.0.1"
+    expect: private
+    rule: special_multicast
+    gem_sources: [special_multicast]
+    note: "multicast — all-hosts group"
+  - ip: "240.0.0.1"
+    expect: private
+    rule: special_reserved
+    gem_sources: [special_reserved]
+    note: "RFC 1112 class E reserved"
+  - ip: "255.255.255.255"
+    expect: private
+    rule: special_reserved
+    gem_sources: [special_reserved]
+    note: "broadcast — inside 240/4, still :private"
+  - ip: "100.64.0.1"
+    expect: cgnat
+    rule: special_cgnat
+    gem_sources: [special_cgnat]
+    note: "RFC 6598 shared address space, lower edge"
+  - ip: "100.127.255.255"
+    expect: cgnat
+    rule: special_cgnat
+    gem_sources: [special_cgnat]
+    note: "RFC 6598 upper edge (100.128.0.0 is T-Mobile public — boundary must not bleed)"
+  - ip: "100.128.0.10"
+    expect: mobile
+    rule: asn_mobile
+    asn: 21928
+    gem_sources: [asn_mobile_carrier]
+    note: "first public address above CGNAT space: T-Mobile USA. The pair with the row above is the CGNAT boundary tripwire"
+  - ip: "::1"
+    expect: private
+    rule: special_loopback
+    gem_sources: [special_loopback]
+    note: "v6 loopback"
+  - ip: "fd00::1"
+    expect: private
+    rule: special_ula
+    gem_sources: [special_ula]
+    note: "RFC 4193 unique local address"
+  - ip: "fe80::1"
+    expect: private
+    rule: special_link_local
+    gem_sources: [special_link_local]
+    note: "v6 link-local"
+
+  # --- hosting — the four different roads to :hosting ---
   - ip: "8.8.8.8"
     expect: hosting
     asn: 15169
-    note: "Google LLC - hosting category (as-metadata)"
+    gem_sources: [x4b_dc]
+    note: "Google Public DNS — via the canonical X4B datacenter overlay (rule 9), not via category"
+  - ip: "3.96.0.10"
+    expect: hosting
+    asn: 16509
+    gem_sources: [x4b_dc]
+    note: "AWS ca-central — X4B dc overlay. With Tier B enabled the gem answers the same verdict through the aws source instead (rule 8 above rule 9), gaining provider attribution: that is by design, which is why gem_sources on Tier A rows is asserted with Tier B OFF"
   - ip: "16.16.10.10"
     expect: hosting
     asn: 16509
-    note: "AWS - hosting category"
-  - ip: "89.187.175.140"
+    gem_sources: [x4b_dc]
+    note: "AWS eu-north — X4B dc overlay"
+  - ip: "48.160.0.10"
     expect: hosting
-    asn: 60068
-    note: "Datacamp/CDN77 - hosting category (NOT vpn: only sibling AS212238 is the VPN egress arm)"
+    asn: 8075
+    gem_sources: [x4b_dc]
+    note: "Microsoft Azure — X4B dc overlay on the ex-AT&T 48/8 block Microsoft bought in 2026"
+  - ip: "34.116.16.10"
+    expect: hosting
+    asn: 396982
+    gem_sources: [x4b_dc]
+    note: "Google Cloud (AS396982, the GCP-only ASN, distinct from AS15169)"
   - ip: "104.16.0.1"
     expect: hosting
     rule: asn_category
     asn: 13335
-    note: "Cloudflare - MUST classify via base-layer category, not X4B dc (X4B deliberately excludes CF ranges; relay/WARP egress lives here - see DECISIONS.md context and README verdict notes)"
+    gem_sources: [asn_cdn, asn_category]
+    note: "Cloudflare — MUST classify via base-layer category, not X4B dc (X4B deliberately excludes CF ranges; relay/WARP egress lives here — see DECISIONS.md context and README verdict notes)"
+  - ip: "103.21.245.10"
+    expect: unknown
+    rule: unrouted
+    gem_sources: [unrouted]
+    note: "Cloudflare Hong Kong (AS133877, cdn.txt): registered to that holder but announced by NO ASN (RIPEstat routing-status: 0 announced prefixes for the ASN, network-info: no origin, 2026-09-19; absent from the 10 RouteViews collectors). Until 2026-09-19 this row expected the holder's verdict, which only existed because sapics filled unannounced RIR allocations with the holder ASN. Since D-SRC-2 (backbone) unannounced space is honestly unknown; this row is now the tripwire that RIR-stats fill never creeps back into the backbone."
+  - ip: "17.77.0.10"
+    expect: hosting
+    asn: 714
+    gem_sources: [asn_category]
+    note: "Apple Inc. — hosting category, no override flags: the plain rule-10 category path"
+  - ip: "89.187.175.140"
+    expect: hosting
+    asn: 60068
+    gem_sources: [x4b_dc]
+    note: "Datacamp/CDN77 — hosting category (NOT vpn: only sibling AS212238 is the VPN egress arm)"
+  - ip: "2606:65c0:40::10"
+    expect: hosting
+    rule: asn_category
+    asn: 399804
+    gem_sources: [asn_hosting_extra]
+    note: "Hostodo (AS399804, US VPS) — hosting ONLY because of hosting_extra.txt: upstream calls it isp. This row is the hosting_extra override's tripwire. Until 2026-09-19 it probed Virtual Systems (AS6698) at 82.158.194.10, which no one announces (RIPEstat network-info: no origin; unrouted on the RouteViews backbone, D-SRC-2 backbone); every range AS6698 announces is in the X4B dc overlay, so the override could no longer be isolated there. 2606:65c0:40::/48 is announced by AS399804 (RIPEstat + the RouteViews build agree) and X4B has no v6 dc list."
+  - ip: "92.205.192.10"
+    expect: hosting
+    rule: x4b_dc
+    asn: 60253
+    gem_sources: [x4b_dc]
+    note: "Host Europe (DE) — hosting_extra ASN whose space is ALSO in the X4B dc overlay, so rule 9 fires first. Contrast with the row above"
+  - ip: "2620:fe::fe"
+    expect: hosting
+    asn: 19281
+    gem_sources: [asn_category]
+    note: "Quad9 (AS19281) v6 resolver — hosting by category"
+  - ip: "2606:4700:4700::1111"
+    expect: hosting
+    asn: 13335
+    gem_sources: [asn_cdn, asn_category]
+    note: "Cloudflare v6 resolver — cdn override + hosting category"
+  - ip: "2001:4860:4860::8888"
+    expect: hosting
+    asn: 15169
+    gem_sources: [asn_bad_asn, asn_category]
+    note: "Google Public DNS v6"
+  - ip: "2406:da00:ff01::10"
+    expect: hosting
+    asn: 16509
+    gem_sources: [asn_bad_asn, asn_category]
+    note: "AWS Asia-Pacific v6"
 
-  # --- vpn: range overlay + ASN flag paths ---
+  # --- vpn — canonical ranges and the ASN flag ---
   - ip: "185.220.101.5"
     expect: vpn
-    note: "Tor-heavy range (AS60729) - :vpn from canonical data; becomes :tor_exit in the gem once the Tier B tor overlay is active"
+    asn: 60729
+    gem_sources: [x4b_vpn]
+    note: "Tor-heavy range (AS60729) — :vpn from canonical data; becomes :tor_exit in the gem once the Tier B tor overlay is active"
   - ip: "146.70.107.100"
     expect: vpn
     asn: 9009
-    note: "M247 Europe - VPN infra (X4B ranges + vpn_provider override)"
+    gem_sources: [x4b_vpn]
+    note: "M247 Europe — VPN infra (X4B ranges + vpn_provider override)"
+  - ip: "104.28.28.1"
+    expect: hosting
+    rule: asn_category
+    asn: 13335
+    gem_sources: [asn_cdn, asn_category]
+    note: "Apple iCloud Private Relay egress inside Cloudflare (mask-api.icloud.com/egress-ip-ranges.csv lists 104.28.28.0-4 as AU Sydney, checked 2026-09-19). MUST NOT be :vpn via x4b_vpn: X4B merges Apple's feed, which is Tier B for us, and the pipeline strips it (DECISIONS.md D-SRC-3). The core says hosting; :relay comes only from the client-side Tier B recipe. Added 2026-09-19 after it shipped as vpn."
+  - ip: "85.115.96.10"
+    expect: vpn
+    asn: 136787
+    gem_sources: [x4b_vpn]
+    note: "NordVPN (TEFINCOM S.A., AS136787) — canonical X4B vpn range"
+  - ip: "159.26.96.10"
+    expect: vpn
+    asn: 208172
+    gem_sources: [x4b_vpn]
+    note: "ProtonVPN (AS208172) — canonical X4B vpn range"
+  - ip: "2a13:240:4700::10"
+    expect: vpn
+    rule: asn_vpn_provider
+    asn: 207137
+    gem_sources: [asn_vpn_provider]
+    note: "Packethub S.A. (AS207137, NordVPN infrastructure) — vpn_provider ASN flag path. Moved 2026-09-19 from 141.171.102.10, which no one announces (RIPEstat network-info: no origin; unrouted on the RouteViews backbone, D-SRC-2 backbone). Every v4 range AS207137 does announce sits in the X4B vpn overlay (rule 9 fires first), so the flag path is only observable on v6: 2a13:240:4700::/40 is its largest announced range (RIPEstat + the RouteViews build agree)."
+  - ip: "2a01:300::10"
+    expect: vpn
+    rule: asn_vpn_provider
+    asn: 9009
+    gem_sources: [asn_vpn_provider]
+    note: "M247 v6 — vpn via the ASN flag (the v6 tripwire for vpn_provider.txt)"
 
-  # --- residential: plain, and the tier1-consumer fix ---
+  # --- enterprise gateway — SWG/SASE egress, humans at work (D-ENRICH-1) ---
+  - ip: "164.137.224.100"
+    expect: enterprise_gateway
+    rule: asn_enterprise_gw
+    asn: 62044
+    gem_sources: [asn_enterprise_gw]
+    note: "Zscaler Switzerland — corporate SWG egress, humans at work"
+  - ip: "8.25.203.10"
+    expect: enterprise_gateway
+    rule: asn_enterprise_gw
+    asn: 53444
+    gem_sources: [asn_enterprise_gw]
+    note: "Zscaler Inc. (AS53444, US) — the enterprise_gw flag beats the hosting rules on purpose"
+  - ip: "220.42.0.10"
+    expect: enterprise_gateway
+    rule: asn_enterprise_gw
+    asn: 22616
+    gem_sources: [asn_enterprise_gw]
+    note: "Zscaler Inc. (AS22616, JP region)"
+  - ip: "2a03:eec0:1200::10"
+    expect: enterprise_gateway
+    rule: asn_enterprise_gw
+    asn: 62044
+    gem_sources: [asn_enterprise_gw]
+    note: "Zscaler Switzerland v6 — enterprise_gateway parity across families. Probe moved 2026-09-19 from 2a03:eec0:360c::10, which no one announces (RIPEstat network-info 2026-09-19: no origin; the RouteViews backbone leaves it unrouted, D-SRC-2 backbone): 2a03:eec0:1200::10 is in 2a03:eec0:1200::/40, announced by the same ASN (RIPEstat + the RouteViews build agree)."
+
+  # --- mobile — DEDICATED cellular ASNs only (D-IMPL-4) ---
+  - ip: "100.191.100.50"
+    expect: mobile
+    rule: asn_mobile
+    asn: 21928
+    gem_sources: [asn_mobile_carrier]
+    note: "T-Mobile USA public block (starts at 100.128.0.0, right above CGNAT space — also a boundary test)"
+  - ip: "166.225.0.10"
+    expect: mobile
+    rule: asn_mobile
+    asn: 6614
+    gem_sources: [asn_mobile_carrier]
+    note: "T-Mobile USA AS6614 — mobile-only carrier ASN"
+  - ip: "166.212.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 20057
+    gem_sources: [asn_category]
+    note: "AT&T Mobility AS20057. Expected mobile until 2026-09-19: curation pass 4 (C2, re-examined by C2b/C4 under CD-24) removed AS20057 from mobile_carrier.txt because it also carries non-cellular blocks (155.170.0.0/17 ATTMO3Z static reassignments to government/fleet customers with no registry or AT&T document tying them to the cellular network; 12.72.0.0/15 AT&T Worldnet dial/fixed naming) - CD-6 strict rule, prefer false negatives. The row now asserts the category verdict and guards against the flag returning without per-block evidence. Reasons in the mobile_carrier.txt comment block."
+  - ip: "27.228.0.10"
+    expect: mobile
+    rule: asn_mobile
+    asn: 9605
+    gem_sources: [asn_mobile_carrier]
+    note: "NTT DOCOMO (JP) — the largest non-US carrier currently pinned"
+  - ip: "157.192.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 138384
+    gem_sources: [asn_category]
+    note: "Rakuten Mobile (JP) AS138384. Expected mobile until 2026-09-19: curation pass 4 removed AS138384 from mobile_carrier.txt because it also carries *.isp.rakuten.jp fixed blocks (110.165.128.0/17 ...; Rakuten Mobile sells Rakuten Hikari fibre) - CD-6 strict rule. The row now asserts the category verdict and guards against the flag returning without new evidence. Reasons in the mobile_carrier.txt comment block."
+  - ip: "83.229.128.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 6854
+    gem_sources: [asn_category]
+    note: "MegaFon's ex-Synterra backbone (AS6854, RU). Expected mobile until 2026-09-19: the curation sweep (PR #5, RDAP audit 2026-09-12) removed AS6854 from mobile_carrier.txt because its aut-num is SYNTERRA-AS, the RIPE record is a transit map, rDNS is backbone router naming and APNIC measures 0 end users behind it (src: https://rdap.db.ripe.net/autnum/6854). The row now asserts the category verdict and guards against the mobile flag coming back without new evidence (CD-6: prefer false negatives)."
+  - ip: "2607:fb91:a600::10"
+    expect: mobile
+    rule: asn_mobile
+    asn: 21928
+    gem_sources: [asn_mobile_carrier]
+    note: "T-Mobile USA v6 — mobile parity across families"
+
+  # --- residential ISP — the eyeball networks, where real people live ---
   - ip: "95.121.10.10"
     expect: residential_isp
+    rule: asn_category
     asn: 3352
-    note: "Telefonica de Espana - isp + major_transit role (regression: transit-role eyeballs stay residential)"
+    gem_sources: [asn_category]
+    note: "Telefonica de Espana — isp + major_transit role (regression: transit-role eyeballs stay residential)"
   - ip: "2.201.10.10"
     expect: residential_isp
+    rule: asn_category
     asn: 3209
-    note: "Vodafone DE residential DSL (ex-Arcor pool 2.200.0.0/13, netname DE-ARCOR). Probe was 95.90.200.10 until 2026-08-08 - that ex-Kabel-Deutschland cable range is mid-migration to AS31334 and flapped (panel history note above)"
+    gem_sources: [asn_category]
+    note: "Vodafone DE residential DSL (ex-Arcor pool 2.200.0.0/13, netname DE-ARCOR). Probe was 95.90.200.10 until 2026-08-08 — that ex-Kabel-Deutschland cable range is mid-migration to AS31334 and flapped (panel history note above)"
   - ip: "99.49.80.100"
     expect: residential_isp
+    rule: asn_category
     asn: 7018
-    note: "AT&T - isp + tier1_transit; :residential_isp ONLY because of eyeball_confirm.txt (regression test for the tier1 consumer fix)"
+    gem_sources: [asn_category]
+    note: "AT&T — isp + tier1_transit; :residential_isp ONLY because of eyeball_confirm.txt (regression test for the tier1 consumer fix)"
+  - ip: "71.97.212.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 701
+    gem_sources: [asn_category]
+    note: "Verizon (AS701) — also tier1 backbone, also pinned by eyeball_confirm.txt"
+  - ip: "73.0.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 7922
+    gem_sources: [asn_category]
+    note: "Comcast (AS7922) — the largest US cable eyeball network"
+  - ip: "75.131.186.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 20115
+    gem_sources: [asn_category]
+    note: "Charter/Spectrum (AS20115)"
+  - ip: "68.0.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 22773
+    gem_sources: [asn_category]
+    note: "Cox Communications (AS22773)"
+  - ip: "79.192.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 3320
+    gem_sources: [asn_category]
+    note: "Deutsche Telekom (AS3320) — Germany's incumbent, tier1 backbone + eyeball_confirm pin"
+  - ip: "94.169.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 6830
+    gem_sources: [asn_category]
+    note: "Liberty Global (AS6830) — pan-EU consumer cable, role=tier1_transit in upstream data. Probe moved 2026-09-19 from 94.168.128.10, which no one announces (RIPEstat network-info 2026-09-19: no origin; the RouteViews backbone leaves it unrouted, D-SRC-2 backbone): 94.169.0.10 is in 94.169.0.0/16, announced by the same ASN (RIPEstat + the RouteViews build agree)."
+  - ip: "84.120.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 6739
+    gem_sources: [asn_category]
+    note: "Vodafone ONO (AS6739, ES)"
+  - ip: "2601:a80::10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 7922
+    gem_sources: [asn_category]
+    note: "Comcast v6 — residential parity across families"
+  - ip: "2003::10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 3320
+    gem_sources: [asn_category]
+    note: "Deutsche Telekom v6 — the 2003::/19 consumer pool"
+  - ip: "2a02:9010:46::10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 3352
+    gem_sources: [asn_category]
+    note: "Telefonica de Espana v6"
 
-  # --- the honest :unknown for pure tier1 backbone ---
+  # --- business / education / government — category verdicts ---
+  - ip: "81.9.5.10"
+    expect: business
+    rule: asn_category
+    asn: 20597
+    gem_sources: [asn_category]
+    note: "Vimpelcom — business/stub per as-metadata (panel history note above)"
+  - ip: "19.12.144.10"
+    expect: unknown
+    rule: unrouted
+    gem_sources: [unrouted]
+    note: "Ford Motor Company (AS521) legacy 19/8: registered to that holder but announced by NO ASN (RIPEstat routing-status: 0 announced prefixes for the ASN, network-info: no origin, 2026-09-19; absent from the 10 RouteViews collectors). Until 2026-09-19 this row expected the holder's verdict, which only existed because sapics filled unannounced RIR allocations with the holder ASN. Since D-SRC-2 (backbone) unannounced space is honestly unknown; this row is now the tripwire that RIR-stats fill never creeps back into the backbone."
+  - ip: "161.151.70.10"
+    expect: business
+    rule: asn_category
+    asn: 6253
+    gem_sources: [asn_category]
+    note: "Prudential Insurance (AS6253). Probe moved 2026-09-19 from 48.0.0.10, which no one announces (RIPEstat network-info 2026-09-19: no origin; the RouteViews backbone leaves it unrouted, D-SRC-2 backbone): 161.151.70.10 is in 161.151.70.0/24, announced by the same ASN (RIPEstat + the RouteViews build agree)."
+  - ip: "2620:0:481::10"
+    expect: unknown
+    rule: unrouted
+    gem_sources: [unrouted]
+    note: "Ford Motor Company (AS521) v6: registered to that holder but announced by NO ASN (RIPEstat routing-status: 0 announced prefixes for the ASN, network-info: no origin, 2026-09-19; absent from the 10 RouteViews collectors). Until 2026-09-19 this row expected the holder's verdict, which only existed because sapics filled unannounced RIR allocations with the holder ASN. Since D-SRC-2 (backbone) unannounced space is honestly unknown; this row is now the tripwire that RIR-stats fill never creeps back into the backbone."
+  - ip: "210.25.190.10"
+    expect: education
+    rule: asn_category
+    asn: 4538
+    gem_sources: [asn_category]
+    note: "CERNET (AS4538) — China Education and Research Network, the largest education network in the dataset"
+  - ip: "44.156.0.10"
+    expect: education
+    rule: asn_category
+    asn: 7377
+    gem_sources: [asn_category]
+    note: "UC San Diego (AS7377)"
+  - ip: "141.41.0.10"
+    expect: education
+    rule: asn_category
+    asn: 680
+    gem_sources: [asn_category]
+    note: "DFN (AS680) — the German national research network"
+  - ip: "240c:ca0d::10"
+    expect: education
+    rule: asn_category
+    asn: 4538
+    gem_sources: [asn_category]
+    note: "CERNET v6"
+  - ip: "28.6.0.10"
+    expect: government
+    rule: asn_category
+    asn: 749
+    gem_sources: [asn_category]
+    note: "US Department of Defense (AS749) — the largest government_admin network. Probe moved 2026-09-19 from 28.5.134.10: AS27064 (also DoD, also government_admin) has originated 28.5.0.0/16 since 2026-09-04 (RIPEstat); 28.6.0.10 sits in AS749's 28.0.0.0/8 with no more-specific (RIPEstat network-info + routing-status, 2026-09-19)."
+  - ip: "25.129.200.10"
+    expect: unknown
+    rule: unrouted
+    gem_sources: [unrouted]
+    note: "UK Ministry of Defence (AS203665) 25/8: registered to that holder but announced by NO ASN (RIPEstat routing-status: 0 announced prefixes for the ASN, network-info: no origin, 2026-09-19; absent from the 10 RouteViews collectors). Until 2026-09-19 this row expected the holder's verdict, which only existed because sapics filled unannounced RIR allocations with the holder ASN. Since D-SRC-2 (backbone) unannounced space is honestly unknown; this row is now the tripwire that RIR-stats fill never creeps back into the backbone."
+
+  # --- honest :unknown — ambiguity we refuse to guess at (D-IMPL-1) ---
   - ip: "38.217.219.100"
     expect: unknown
     rule: isp_transit_ambiguous
     asn: 174
-    note: "Cogent - isp + tier1_transit, genuinely ambiguous backbone space, stays :unknown on purpose"
+    gem_sources: [isp_transit_ambiguous]
+    note: "Cogent — isp + tier1_transit, genuinely ambiguous backbone space, stays :unknown on purpose"
+  - ip: "4.39.100.10"
+    expect: unknown
+    rule: isp_transit_ambiguous
+    asn: 3356
+    gem_sources: [isp_transit_ambiguous]
+    note: "Level 3 (AS3356) — the same tier1 ambiguity on the biggest backbone"
+  - ip: "198.106.0.10"
+    expect: unknown
+    rule: isp_transit_ambiguous
+    asn: 2914
+    gem_sources: [isp_transit_ambiguous]
+    note: "NTT America (AS2914)"
+  - ip: "217.206.64.10"
+    expect: unknown
+    rule: isp_transit_ambiguous
+    asn: 3257
+    gem_sources: [isp_transit_ambiguous]
+    note: "GTT (AS3257)"
+  - ip: "2600:4:403::10"
+    expect: unknown
+    rule: isp_transit_ambiguous
+    asn: 174
+    gem_sources: [isp_transit_ambiguous]
+    note: "Cogent v6 — the tier1 ambiguity is family-independent"
+  - ip: "146.131.0.10"
+    expect: unknown
+    rule: no_category
+    asn: 23448
+    gem_sources: [asn_no_category]
+    note: "Edmonton Power (AS23448) — routed, announced, but upstream has no category for it: :unknown WITHOUT guessing. Until 2026-09-19 this row probed Verizon Business AS145 at 174.8.0.10; AS145 announces nothing (RIPEstat routing-status: 0 prefixes, 2026-09-19), so on the RouteViews backbone (D-SRC-2 backbone) that IP is unrouted, not no-category. 146.131.0.0/16 is AS23448's largest announced range (RIPEstat + the RouteViews build agree)."
+  - ip: "108.164.128.10"
+    expect: unknown
+    rule: no_category
+    asn: 22282
+    gem_sources: [asn_no_category]
+    note: "The Cosmopolitan of Las Vegas (AS22282) — same no-category path on a corporate network. Until 2026-09-19 this row probed JPMorgan Chase AS2019 at 169.64.0.10; AS2019 announces nothing (RIPEstat routing-status: 0 prefixes, 2026-09-19), so on the RouteViews backbone it is unrouted. 108.164.128.0/17 is AS22282's largest announced range (RIPEstat + the RouteViews build agree)."
+  - ip: "192.0.2.1"
+    expect: unknown
+    rule: unrouted
+    gem_sources: [unrouted]
+    note: "TEST-NET-1 (RFC 5737) — not announced anywhere: the unrouted path. WITH Tier B enabled this currently returns :hosting/vultr, because Vultr geofeed (https://geofeed.constant.com/) publishes 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:2::/48, 2001:10::/28, 2001:db8::/32 and 2002::/16 as its own space (verified 2026-09-12). That is an upstream defect, not an expectation"
+  - ip: "198.51.100.1"
+    expect: unknown
+    rule: unrouted
+    gem_sources: [unrouted]
+    note: "TEST-NET-2 — unrouted (same Vultr geofeed caveat as TEST-NET-1)"
+  - ip: "203.0.113.1"
+    expect: unknown
+    rule: unrouted
+    gem_sources: [unrouted]
+    note: "TEST-NET-3 — unrouted (same Vultr geofeed caveat as TEST-NET-1)"
+  - ip: "2001:db8::1"
+    expect: unknown
+    rule: unrouted
+    gem_sources: [unrouted]
+    note: "RFC 3849 documentation prefix — unrouted, v6 side (same Vultr geofeed caveat; 2001:db8::/32 is in their published list)"
 
-  # --- mobile / enterprise gateway overrides ---
-  - ip: "100.191.100.50"
-    expect: mobile
-    asn: 21928
-    note: "T-Mobile USA public block (starts at 100.128.0.0, right above CGNAT space - also a boundary test)"
-  - ip: "164.137.224.100"
-    expect: enterprise_gateway
-    asn: 62044
-    note: "Zscaler Switzerland - corporate SWG egress, humans at work"
 
-  # --- category verdicts ---
-  - ip: "81.9.5.10"
-    expect: business
-    asn: 20597
-    note: "Vimpelcom - business/stub per as-metadata (panel history note above)"
-
-  # --- special ranges ---
-  - ip: "10.1.2.3"
-    expect: private
-    note: "RFC 1918"
-  - ip: "100.64.0.1"
-    expect: cgnat
-    note: "RFC 6598 shared address space, lower edge"
-  - ip: "100.127.255.255"
-    expect: cgnat
-    note: "RFC 6598 upper edge (100.128.0.0 is T-Mobile public - boundary must not bleed)"
-  - ip: "127.0.0.1"
-    expect: private
-    note: "loopback"
-
-  # --- IPv6 ---
-  - ip: "2001:4860:4860::8888"
+  # --- Tier B (context: gem) — rules 3, 4, 5 and 8, which only exist client-side ---
+  - ip: "172.225.24.4"
+    expect: relay
+    context: gem
+    asn: 36183
+    tier_b: apple_private_relay
+    provider: "iCloud Private Relay"
+    gem_sources: [apple_private_relay]
+    note: "iCloud Private Relay egress living inside AKAMAI space (AS36183). Rule 3 outranks every data-driven rule for exactly this reason: without it, paying iCloud+ customers classify as datacenter traffic"
+  - ip: "104.28.28.4"
+    expect: relay
+    context: gem
+    asn: 13335
+    tier_b: apple_private_relay
+    provider: "iCloud Private Relay"
+    gem_sources: [apple_private_relay]
+    note: "iCloud Private Relay egress inside CLOUDFLARE space (AS13335) — the case the classifier's rule-3 comment describes"
+  - ip: "2606:54c0::4"
+    expect: relay
+    context: gem
+    asn: 13335
+    tier_b: apple_private_relay
+    provider: "iCloud Private Relay"
+    gem_sources: [apple_private_relay]
+    note: "iCloud Private Relay v6 egress — relay parity across families"
+  - ip: "107.189.29.8"
+    expect: tor_exit
+    context: gem
+    asn: 53667
+    tier_b: tor_exits
+    provider: "Tor"
+    gem_sources: [tor_exits]
+    note: "Tor exit (rule 4). Tor exits re-number constantly: clients assert this row with a fixture overlay for tor_exits, so the row proves the RULE, not this host's tenure"
+  - ip: "63.246.112.4"
     expect: hosting
-    asn: 15169
-    note: "Google public DNS v6"
-  - ip: "fd00::1"
-    expect: private
-    note: "RFC 4193 ULA"
-  - ip: "::1"
-    expect: private
-    note: "v6 loopback"
+    context: gem
+    asn: 16509
+    tier_b: aws
+    provider: "aws"
+    gem_sources: [aws]
+    note: "AWS published range (rule 8) — the value of Tier B over the anonymous canonical dc overlay is the provider attribution"
+  - ip: "2600:1f14::4"
+    expect: hosting
+    context: gem
+    asn: 16509
+    tier_b: aws
+    provider: "aws"
+    gem_sources: [aws]
+    note: "AWS v6 published range"
+  - ip: "34.128.4.4"
+    expect: hosting
+    context: gem
+    asn: 396982
+    tier_b: gcp
+    provider: "gcp"
+    gem_sources: [gcp]
+    note: "Google Cloud published range — provider gcp, and the base ASN is the GCP-only AS396982"
+  - ip: "51.116.0.4"
+    expect: hosting
+    context: gem
+    asn: 8075
+    tier_b: azure
+    provider: "azure"
+    gem_sources: [azure]
+    note: "Azure published range (Germany West Central)"
+  - ip: "164.92.64.4"
+    expect: hosting
+    context: gem
+    asn: 14061
+    tier_b: digitalocean
+    provider: "digitalocean"
+    gem_sources: [digitalocean]
+    note: "DigitalOcean published range"
+  - ip: "23.92.16.4"
+    expect: hosting
+    context: gem
+    asn: 63949
+    tier_b: linode
+    provider: "linode"
+    gem_sources: [linode]
+    note: "Linode published range — note the base ASN is Akamai's AS63949 after the acquisition; Tier B attribution says linode where the ASN would say Akamai"
+  - ip: "104.238.128.4"
+    expect: hosting
+    context: gem
+    asn: 20473
+    tier_b: vultr
+    provider: "vultr"
+    gem_sources: [vultr]
+    note: "Vultr published range (The Constant Company)"
+  - ip: "155.248.160.4"
+    expect: hosting
+    context: gem
+    asn: 31898
+    tier_b: oracle
+    provider: "oracle"
+    gem_sources: [oracle]
+    note: "Oracle Cloud published range"
+  - ip: "162.158.0.10"
+    expect: hosting
+    context: gem
+    asn: 13335
+    gem_sources: [asn_cdn, asn_category]
+    context_flags: [cloudflare_range]
+    note: "Cloudflare published range — a CONTEXT FLAG, not a verdict: the verdict stays :hosting from Tier A and context_flags gains cloudflare_range. Context flags never decide verdicts; they ride along for app logic"
+  - ip: "135.136.22.2"
+    expect: vpn
+    context: gem
+    asn: 9009
+    tier_b: mullvad_relays
+    provider: "Mullvad"
+    gem_sources: [mullvad_relays]
+    note: "Mullvad relay (rule 5) — provider attribution beats the anonymous x4b_vpn overlay for the same verdict. Base ASN is M247, itself a vpn_provider ASN"
+  - ip: "2.58.241.66"
+    expect: vpn
+    context: gem
+    asn: 9678
+    tier_b: protonvpn
+    provider: "ProtonVPN"
+    gem_sources: [protonvpn]
+    note: "ProtonVPN server — the base ASN (AS9678 HostingInside) is plain hosting, so ONLY the Tier B list produces :vpn here"
+  - ip: "31.171.155.131"
+    expect: vpn
+    context: gem
+    asn: 197706
+    tier_b: pia_servers
+    provider: "Private Internet Access"
+    gem_sources: [pia_servers]
+    note: "Private Internet Access server — same shape, a third provider"
+

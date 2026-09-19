@@ -50,6 +50,14 @@ text changes (SHA-256 pinning).
   released under CC0 1.0 — public domain, forever.
 - Compiled artifacts (`openasn-ipv4.bin`, `openasn-ipv6.bin`,
   `asn-categories.csv`): CC0 1.0.
+- The organization-name sidecar `openasn-orgs.bin`, and the portable
+  representations of the same core specified in EXPORT_FORMATS.md
+  (`openasn.sqlite.gz`, `openasn.csv.gz`, `openasn.mmdb`): CC0 1.0. They are
+  projections of the artifacts above, compiled from the same build and the
+  same sources, so every notice in this file applies to them unchanged. This
+  text is embedded verbatim in the SQLite metadata and in the MMDB
+  description, so an export carries its attribution even when separated from
+  the release.
 - Pipeline code: MIT (see LICENSE-CODE).
 
 ## Not in these artifacts, by design

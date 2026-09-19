@@ -425,6 +425,117 @@ compares against previous output must also have a reference that is frozen,
 externally dated, and independent of whether the gate passed — and a
 documented, recorded way for a human to overrule it once.
 
+## D-FMT-1 — Convenience exports may materialize a frozen classification profile (2026-09-18)
+
+**The problem.** D-IMPL-6 guarantees that a nightly data refresh can never
+surface a verdict a deployed client does not know, and it earns that
+guarantee mechanically: the artifact carries ranges and 16 flag bits, the
+bit-to-verdict mapping is compiled into versioned client code, and there is
+physically no field in which a refresh could deliver a verdict string. That
+is why auto-applying data updates is always safe.
+
+The portable exports (`openasn.sqlite.gz`, `openasn.csv.gz`, `openasn.mmdb`,
+specified in [EXPORT_FORMATS.md](EXPORT_FORMATS.md)) remove the mechanism the
+guarantee rests on. Their consumers are a PHP `SELECT`, a CSV import, and a
+generic MMDB reader; there is no OpenASN client code anywhere in the path.
+Two options were honest:
+
+1. Ship raw evidence only (flags, category, role) and let every consumer
+   reimplement the precedence ladder. That reintroduces exactly the
+   cross-language divergence D-IMPL-6 exists to prevent, in languages that
+   have no OpenASN client at all, and it defeats the point of the exports:
+   a correct answer from a small standard-library integration.
+2. Materialize the verdict into the data, and restore the safety property
+   through a different, enforced mechanism.
+
+We take 2.
+
+**The decision.** The free core gains SQLite, range CSV, and MMDB
+projections. Native OASN remains ranges and flags interpreted by versioned
+client code. Convenience exports may materialize ordinary-address Tier A
+classification under a frozen named profile, initially `core-v1`. A data
+refresh may change the evidence and the classification of an IP, but may not
+introduce a new profile vocabulary or reinterpret an existing field. Schema
+and profile changes are separately versioned; an incompatible successor ships
+alongside v1 rather than silently replacing its filenames. Legal scope and
+native-client stability are unchanged.
+
+**This is a scoped addition to D-IMPL-6, not a reinterpretation of it.**
+D-IMPL-6 did not already permit data-delivered verdicts and must never be
+quoted as if it had. Its promise is a statement about a byte layout that
+cannot express a verdict; the exports can. Stretching "verdicts are code, not
+data" to cover a file with a `core_verdict` column would convert an enforced
+property into an unenforced slogan, and the first refresh that shipped a new
+string would break consumers that had been told they were safe. So D-IMPL-6
+stands unchanged for the native artifacts and for every client built on them,
+and this decision adds one narrow permission carrying its own enforcement.
+
+**What "frozen" forbids.** Under `core-v1`, a data refresh may not:
+
+- emit a verdict outside the nine values (`residential_isp`, `mobile`,
+  `business`, `hosting`, `vpn`, `enterprise_gateway`, `education`,
+  `government`, `unknown`), or a source token outside the twelve defined
+  ones;
+- change the precedence order, including the order in which the four hosting
+  reasons are listed inside one record;
+- change what a field means. `bad_asn` stays hosting/cloud/colo list
+  membership and never becomes an abuse score; `hosting_extra` stays one
+  corroborating signal and never becomes the hosting verdict; `as_org` stays
+  the announcing ASN's organization and never becomes a retail brand or a
+  provider attribution.
+
+What a refresh **may** change is an individual IP's evidence and therefore its
+verdict: an ASN gains a category, an overlay gains a range, and an address
+that was `residential_isp` yesterday is `hosting` today. That is a value
+moving inside a fixed vocabulary, which is what every consumer's `switch`
+already handles, and it is the entire job of a data refresh. Adding a verdict,
+a source token, or a precedence change is a **new profile name**, shipped
+under new filenames alongside v1. An implementation bug that emits something
+outside `core-v1` is fixed to restore `core-v1`, with the fix documented; the
+profile is never moved to match the bug.
+
+Note the nine export verdicts are a strict subset of the client enum's
+thirteen. `private` and `cgnat` are lookup-policy results, produced before the
+data is consulted, so no stored record can carry them. `tor_exit` and `relay`
+require Tier B sources that are fetched by clients at runtime and are not in
+these assets. An export verdict therefore carries no Tier B attribution, and
+saying so is part of the contract rather than a caveat in a footnote.
+
+**How the guarantee is enforced**, since it can no longer come from the byte
+layout:
+
+- Every asset carries `classification_profile` in its own metadata *and* in
+  its release manifest entry. A consumer that reads an unknown profile
+  refuses the installation and keeps its last-good generation, the same
+  failure mode as an unknown `format_version`.
+- The SQLite DDL constrains `core_verdict` with a `CHECK ... IN (...)` over
+  the nine values, so a rogue verdict cannot be written into the asset at all.
+  The vocabulary is enforced by the file, not only by the producer.
+- The precedence ladder is pinned by hand-authored fixtures in
+  [`conformance/exports/v1/`](conformance/exports/v1/), tracked and public so
+  third-party implementations test against the same expectations. Those
+  expectations are never regenerated from the code under test.
+- [`export-contract.json`](export-contract.json) is the dataset's declaration
+  of the identities and of `required_mode`, the export mode a publishing build
+  must satisfy. It ships at `none`: the contract is public before the assets
+  are, and activation is a separate reviewed change coordinated with the
+  producer's toolchain.
+
+`core-v1` deliberately uses the public client's explanation names
+(`asn_mobile_carrier`, `asn_no_category`, `isp_transit_ambiguous`) rather than
+the pipeline classifier's internal labels (`asn_mobile`, `no_category`). The
+pipeline classifier keeps its own labels and its spot-panel contract and is
+**not** refactored to share a function with the export profile: it is the
+independent reference the export is validated against, and two implementations
+that agree are evidence, while one implementation used twice is not.
+
+**The general lesson, binding on future decisions in this log.** When a
+guarantee is produced by a mechanism, and a new artifact removes that
+mechanism, the guarantee does not carry over by analogy. Either restore it
+with new enforcement and record that, or state plainly that it no longer
+holds. Silently restating the old decision in broader words is the failure
+this log exists to prevent.
+
 ## D-SRC-3 — X4B overlays carry only X4B's own data; its third-party feeds are stripped (2026-09-19)
 
 **Status: accepted. Decided by the coordinator on 2026-09-19 under owner delegation.**

@@ -250,3 +250,23 @@ AS328988  # Safaricom Telecommunications Ethiopia (ET) — mobile-licence entran
 #   Internet shares the cellular pools with no block of its own.
 # src: https://stat.ripe.net/data/prefix-overview/data.json?resource=95.130.84.0/24 +
 # https://rdap.db.ripe.net/ip/188.122.96.0 + https://rdap.afrinic.net/rdap/ip/41.243.8.0 (2026-09-19)
+
+# ======================== P4-C2b CD-24 recheck (2026-09-19) ========================
+# CD-24 lets enterprise/static/M2M blocks through when the registry or operator shows they are served
+# over the CELLULAR network, and trivial own-platform infra. Re-examined AS20057 and AS131445 only;
+# BOTH STAY OUT (pinned likely-human elsewhere or already :residential_isp; a miss costs little):
+#   AS20057 AT&T Mobility - the ATTMO3Z-* reassignments (govt/police/fleet customers inside
+#     ATT-MOBILITY-LLC-155-170-0-0) plausibly are static-IP wireless, but no registry remark or AT&T
+#     document ties them to the cellular network; and the other cited block fails outright:
+#     12.72.0.0/15 (incl. 12.73.0.0/17) is ATTSVC-12-72-0-0 assigned to "AT&T Worldnet Services" with
+#     PTRs *.dial-access.att.net (sister-company dial/fixed naming, use unknown => exclude). The census
+#     also shows 199.176.124.0/23 NEWAY-4, a Newaygo County (MI) reassignment inside AADSNET-CIDR (AT&T
+#     Services) with the county's own PTRs ncats-*.newaygo.mi.us.
+#   AS131445 AIS mobile - 182.232.208.0/22 sits among TH_AIS_Mobile_Internet NAT-engine pools, but
+#     "AIS_Internet Enterprise Customers" is not shown to be cellular-served; and the mobile AS also
+#     announces 49.231.59.0/24 + 49.231.61.0/24, which carry route objects for AS45458 SBN-AWN-AS-02
+#     ("SBN-ISP/AWN-ISP", AIS's enterprise fixed ISP) inside 49.231.0.0/16, whose sub-assignments are
+#     SBN/AWN business DIA customers (factories, hotels, a "5G FWA MPLS" backup).
+# src: https://rdap.arin.net/registry/ip/12.73.0.0 + https://rdap.arin.net/registry/ip/199.176.124.0 +
+# https://rdap.apnic.net/ip/182.232.208.0 + https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS45458
+# (2026-09-19)

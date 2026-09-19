@@ -386,3 +386,94 @@ reference is written *by the thing it guards* can deadlock. Any gate that
 compares against previous output must also have a reference that is frozen,
 externally dated, and independent of whether the gate passed — and a
 documented, recorded way for a human to overrule it once.
+
+## D-SRC-1 — RIR delegated-extended stats are a curation input, not Tier A (2026-09-19) — PROPOSED
+
+**Status: PROPOSED, awaiting an owner ruling.** The pipeline change
+(`openasn-pipeline` branch `sources/rir-delegated-stats`) implements the safe
+half and changes no artifact byte. Everything below "Owner decisions" is open.
+
+**The question.** The Pass 3 source memo (2026-09-12) recommended adopting
+the NRO/RIR delegated-extended statistics as a Tier A source, for the
+per-ASN RIR, registration country and date, and for sibling clustering
+through the per-RIR opaque-id. Before implementing it, the terms were
+re-read on 2026-09-19 from each authority's own pages. The research record,
+with exact URLs and verbatim quotes, is
+`docs/enrichment/research/parts/P4-S-rir-terms-2026-09-19.jsonl`.
+
+| RIR | What governs the stats files | Class |
+|---|---|---|
+| APNIC | `README-EXTENDED.TXT` §2 and the in-file header: "The files are freely available for download and use on the condition that APNIC will not be held responsible for any loss or damage arising from the use of the information contained in these reports." | use grant |
+| AFRINIC | `README-EXTENDED.txt` §2, the same sentence word for word | use grant |
+| LACNIC | `disclaimer.txt`, the same sentence in English; the PT/ES versions say free "para copia" (for copying) | use grant |
+| ARIN | Nothing. The stats page says only that the files "are available for use via HTTPS". The Whois TOU is scoped to the Whois Service and does not govern them | silent |
+| RIPE NCC | Site-wide copyright statement: "All rights restricted … may not be used, reproduced and made available to third parties without prior written authorisation". ToS Art. 1 defines the Website as every ripe.net sub-domain, which includes ftp.ripe.net, and Art. 6.2 names databases. The carve-out covers only non-commercial or research use of unmodified, RIPE-identified material | restricted |
+| NRO (merged file) | No licence anywhere on nro.net. The file is served from `ftp.ripe.net` and carries RIPE rows | silent + RIPE hazard |
+
+**The ruling (proposed).**
+
+1. **Not Tier A.** The legal invariant (README "Legal design" 1) requires
+   *explicit* redistribution rights. "Download and use", silence, and "all
+   rights restricted" are not explicit redistribution rights. The memo's
+   "no licence asserted" and "registry facts" arguments may well be right in
+   law, but they are arguments. The invariant asks for a grant, and when in
+   doubt we exclude. No RIR-derived value enters `openasn-ipv4.bin`,
+   `openasn-ipv6.bin`, `openasn-orgs.bin`, `asn-categories.csv`, the
+   manifest or any export.
+2. **Curation input under D-CUR-1.** The pipeline reads the four non-RIPE
+   per-RIR files at build time into `build/work/rir/`, which is not
+   published. It uses them to propose sibling candidates for
+   `data/overrides/`. Each candidate is reviewed like any other line, and a
+   line that graduates is the curator's own sourced conclusion. A shared
+   registrant is not, alone, evidence of a class: AS20057 (AT&T Mobility)
+   has 122 siblings, and most of them are not mobile networks.
+3. **RIPE excluded.** RIPE is off by default even for local working files.
+   `OPENASN_RIR_INCLUDE_RIPE=1` enables it for private research, which the
+   RIPE carve-out permits, and no RIPE-derived value is ever cited into a
+   published line. The merged NRO file is never used, and a foreign-registry
+   line fails the parse.
+4. **Terms pinned, outside the nightly.** APNIC, AFRINIC and LACNIC terms
+   are pinned in `data/licenses/pins.json` with `"scope": "curation"`.
+   ARIN's README is pinned as a receipt that it states no terms. The tools
+   that read the files check those pins, and the nightly does not, because
+   an input that is not in the release must not block the release.
+
+**Measured 2026-09-19 (without RIPE).** 91,605 ASN rows, 82,591 of them
+delegated. There are 49,360 holders, and 4,556 sibling clusters (2 to 237
+ASNs) cover 17,416 ASNs, which is 21.1% of delegated ASNs. **Correction to
+the memo:** its 28.0% counted APNIC's NIR pools as organisations. APNIC
+gives a whole National Internet Registry pool one opaque-id (IRINN alone is
+5,385 ASNs, all IN), so propagating a name across such a "cluster" would
+label thousands of unrelated operators. Holders above 250 ASNs are treated
+as pools and never propagate. There are 12 pools covering 20,383 ASNs: nine
+APNIC NIR pools and three large ARIN holders, excluded conservatively.
+
+**Other corrections to the Pass 3 record.** LACNIC (`disclaimer.txt`) and
+AFRINIC (`README-EXTENDED.txt`) do publish terms; the Pass 3 check read only
+the data files. Also, sapics' `origin-asn/SOURCES.md`, our own pinned
+licence file, cites an "NRO License" at `https://www.nro.net/about/nro-policies/`,
+which returns 404 today.
+
+**Owner decisions (open).**
+
+1. Is a "download and use" grant (APNIC, AFRINIC, LACNIC) enough for a CC0
+   artifact? If so, a *separate, opt-in* sidecar holding RIR, country,
+   registration date and holder cluster could ship for those three registries
+   under a new file with its own spec, leaving the existing artifact bytes
+   unchanged. That would need legal sign-off, or a written confirmation from
+   each RIR, first.
+2. ARIN has no written terms. Accept "silent" (US registry facts, *Feist*),
+   or ask ARIN in writing?
+3. RIPE is excluded unless the RIPE NCC gives prior written authorisation.
+   Should we ask? The RIPE region is ~40k delegated ASNs, the largest single
+   gap.
+4. Should the existing owner-private quant importer
+   (`pipeline/enrich/quant/rir_stats.rb`), which still reads all five RIRs
+   including RIPE, drop RIPE too, or keep it under the research carve-out as
+   long as the extended tier stays unpublished?
+5. sapics (PDDL, Tier A backbone) states it compiles from RIR delegated
+   stats "Subject to the NRO License and respective RIR copyright
+   statements". The same doubt reaches our backbone at one remove. Its
+   `origin-asn` output is BGP-derived IP→ASN, not a copy of the stats files,
+   so this is probably fine, but it should be read once with this entry in
+   mind.

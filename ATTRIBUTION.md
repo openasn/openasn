@@ -13,6 +13,14 @@ text changes (SHA-256 pinning).
 - License: MIT — per the project README, the license covers "the scripts,
   automation, and the list itself (source files and generated output)".
 - Copyright (c) 2024 X4B (Mathew Heard)
+- What OpenASN takes: only X4B's own work. That is its hand-curated ASN lists
+  (`input/*/ASN.txt`, expanded against the backbone below) and its manual
+  netblocks (`input/*/ips/Manual.txt`), used to keep the matching ranges of
+  X4B's published lists. X4B's generated lists also merge third-party feeds
+  (Apple iCloud Private Relay egress, Mullvad, Private Internet Access,
+  Proton VPN). Those feeds are not X4B's to license, so OpenASN strips them
+  and does not republish them. They are Tier B (see below). Decision:
+  DECISIONS.md D-SRC-3.
 
 ### brianhama / bad-asn-list — curated hosting/cloud/colo ASN list
 - https://github.com/brianhama/bad-asn-list
@@ -42,6 +50,14 @@ text changes (SHA-256 pinning).
   released under CC0 1.0 — public domain, forever.
 - Compiled artifacts (`openasn-ipv4.bin`, `openasn-ipv6.bin`,
   `asn-categories.csv`): CC0 1.0.
+- The organization-name sidecar `openasn-orgs.bin`, and the portable
+  representations of the same core specified in EXPORT_FORMATS.md
+  (`openasn.sqlite.gz`, `openasn.csv.gz`, `openasn.mmdb`): CC0 1.0. They are
+  projections of the artifacts above, compiled from the same build and the
+  same sources, so every notice in this file applies to them unchanged. This
+  text is embedded verbatim in the SQLite metadata and in the MMDB
+  description, so an export carries its attribution even when separated from
+  the release.
 - Pipeline code: MIT (see LICENSE-CODE).
 
 ## Not in these artifacts, by design

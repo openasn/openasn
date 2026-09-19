@@ -17,6 +17,23 @@ name: Build & publish data
 #   * Cron minute is deliberately off-hour (03:17 UTC): GitHub delays
 #     on-the-hour crons under load, and upstreams appreciate the jitter.
 #   * jq is preinstalled on ubuntu runners; the as.json parser uses it.
+#   * Go is a BUILD-ONLY toolchain here: the pipeline compiles
+#     tools/rib2origin, which derives the IP->ASN backbone from ten
+#     RouteViews RIB dumps (~850MB download, ~1 min CPU; DECISIONS.md
+#     D-SRC-2 (backbone)). One setup-go serves it and the MMDB writer (see
+#     BUILD-ONLY TOOLCHAINS below); the version comes from go.mod, never from
+#     a number typed here. Nothing we ship needs Go at runtime.
+#   * OPENASN_BACKBONE=routeviews is set explicitly below although it is the
+#     pipeline default: rolling back to the legacy sapics backbone must be a
+#     visible one-line change here (plus re-pinning sapics in a reviewed PR,
+#     or the licence gate fails the build by design).
+#   * The upstream cache now also holds the ten RIBs (one file per
+#     collector and slot; the pipeline prunes all but the RIB it used, so
+#     ~1GB). It lets a collector that fails to download fall back to its
+#     previous night's RIB - at most 36h older, WARNed and stamped in
+#     manifest stats - instead of thinning the backbone. An older RIB is
+#     never reused: that collector is skipped (DECISIONS D-SRC-2 (backbone),
+#     review RB-1).
 #   * Action majors (checkout v7 / cache v6 / upload-artifact v7 /
 #     setup-python v7 / setup-go v7) run on Node 24; the previously pinned
 #     v4s targeted Node 20, deprecated:
@@ -158,11 +175,16 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Go, build-only, serves two modules: tools/rib2origin (derives the
+      # RouteViews IP->ASN backbone, stdlib only; compiled by the pipeline at
+      # run time, see header) and tools/mmdbwriter (the MMDB export). Both
+      # go.mod files pin the same `go 1.24.0` directive; if they ever differ,
+      # GOTOOLCHAIN=auto fetches the newer one for rib2origin.
       # MMDB phase. go.mod carries the `go` directive that pins the
       # toolchain and go.sum is the lockfile, so both the version and the
       # module cache key come from the pipeline repo rather than from a
       # number typed here that could drift away from it.
-      - name: Set up Go (build-only, writes the MMDB export)
+      - name: Set up Go (build-only, RouteViews backbone + MMDB export)
         id: go
         uses: actions/setup-go@v7
         with:
@@ -224,6 +246,8 @@ jobs:
       - name: Run pipeline (fetch → gates → compile → validate → publish)
         env:
           OPENASN_DATA_REPO: ${{ github.workspace }}/data-repo
+          # The IP->ASN backbone (D-SRC-2 (backbone)). See header before changing it.
+          OPENASN_BACKBONE: routeviews
           # Publish only on scheduled runs and normal manual dispatch —
           # never from PRs or ordinary pushes (those validate only), and
           # never from an export_mode validation run (see PUBLISHING above).
@@ -345,6 +369,7 @@ jobs:
           - Delta gate (G4): a layer's record count moved more than ±20% overnight
           - Crosscheck drift: the ipverse hosting-ASN count moved more than 10% down / 20% up
           - An upstream URL scheme changed (sapics did this 2026-06-18)
+          - RouteViews: fewer than 7 of the 10 collector RIBs usable, or tools/rib2origin failed to build/run (Go setup)
 
           ### If a drift gate tripped
 

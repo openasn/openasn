@@ -58,7 +58,7 @@ X4BNet lists_vpn    (MIT)   vpn/dc       Proton/Mullvad/IVPN/PIA…   → :vpn+p
 bad-asn-list        (MIT)   hosting      Cloudflare ranges          → context flag
 Wikidata P3797      (CC0)   org names    Zscaler egress             → :enterprise_gateway
 data/overrides/     (CC0)   our layer    Nord/VPN Gate              → opt-in :vpn+provider
-                                         ipverse WHOIS org names    → opt-in as_org
+                                         ipverse WHOIS org names    → as_org (fetched locally)
 ```
 
 **Tier A** sources carry explicit redistribution rights and are compiled into the published artifacts. **Tier B** sources are either license-restricted from republishing or too fast-moving for a nightly file (Tor exits change hourly) — so we publish the *recipe* (`fetch-manifest.json`: URL, parser id, cadence, failure policy) and clients pull from the original authorities at runtime. **Tier C** (bring-your-own MaxMind/IP2Location, planned) never touches this pipeline. The catalog of rejected sources and why (PeeringDB's AUP, GPL lists, ShareAlike databases, aggregator repackaging…) lives in the project history — the short version is the next section.

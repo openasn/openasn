@@ -448,11 +448,14 @@ exclude") decide it. Coordinator decision CD-4 (2026-09-19) applied them.
    LLM-verified dossiers.
 5. **The WHOIS names move to Tier B.** Recipe `ipverse_org_names`
    (`maps_to: "as_org"`, parser `ipverse_as_csv_names`, ipverse's ~6MB
-   `as.csv`, weekly, keep-stale, **opt-in**). The user's server fetches the
-   table for its own use. A recipe name only fills an ASN the canonical
-   sidecar leaves blank, and never overrides it. Opt-in because the table is
-   registry data under registry terms, and the operator should choose it
-   knowingly. Clients that do not know the parser skip it (the forward-
+   `as.csv`, weekly, keep-stale, **enabled by default**). The user's server
+   fetches the table for its own use. A recipe name only fills an ASN the
+   canonical sidecar leaves blank, and never overrides it. On by default
+   like the other light recipes (`enabled_default: true`; only heavy
+   recipes are opt-in), so clients keep names for the long tail without
+   configuration (coordinator ruling CD-11a, 2026-09-19). The table is
+   registry data under registry terms, so the recipe notes say so, and an
+   operator who does not want it disables the recipe. Clients that do not know the parser skip it (the forward-
    compatibility rule), so older gems are unaffected.
 6. **Format.** OORG v1 bytes, the version byte and the CSV header are
    unchanged, and an entry still means "this ASN's organization name". So
@@ -481,7 +484,8 @@ entry count (`org_names`, LAYER_POLICY). A metric absent from the previous
 manifest SKIPs, so the first night after this change is clean and pinnable.
 From the second night, a >20% move fails like any layer. The visible change
 still belongs in the release notes and launch copy, because `as_org` goes
-nil for most ASNs for every client that does not opt in to the recipe.
+nil for most ASNs for every client that does not run the recipe (older
+clients, and anyone who disables it).
 
 Evidence: `docs/enrichment/research/parts/P4-O-org-names-2026-09-19.jsonl`
 (the Wikidata reference census, ARIN terms, coverage, gap list).

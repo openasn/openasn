@@ -593,9 +593,9 @@
       "provider": "ipverse as-metadata",
       "cadence_hours": 168,
       "on_failure": "keep_stale",
-      "enabled_default": false,
+      "enabled_default": true,
       "min_records": 50000,
-      "notes": "NOT AN IP LIST: an ASN -> organization-name table (as.csv header: asn,handle,description,country-code; ~6MB, ~125k rows). Clients use the `description` column to fill as_org for ASNs that the canonical openasn-orgs.bin does not name. The canonical CC0 names (our sourced org_names.txt, then Wikidata) always win. The descriptions are bulk RIR WHOIS `descr` strings. APNIC, ARIN and RIPE restrict republishing WHOIS in bulk, so OpenASN stopped publishing them in 2026-09 (DECISIONS.md D-SRC-2, org names). Your server fetches them for its own use, and you are responsible for that use under the RIRs' terms. Do not redistribute the table. Opt-in for that reason. min_records: a parse that yields fewer names than this is upstream breakage, so keep stale. Clients that do not know this parser id skip the source (forward compatibility)."
+      "notes": "NOT AN IP LIST: an ASN -> organization-name table (as.csv header: asn,handle,description,country-code; ~6MB, ~125k rows). Clients use the `description` column to fill as_org for ASNs that the canonical openasn-orgs.bin does not name. The canonical CC0 names (our sourced org_names.txt, then Wikidata) always win. The descriptions are bulk RIR WHOIS `descr` strings. APNIC, ARIN and RIPE restrict republishing WHOIS in bulk, so OpenASN stopped publishing them in 2026-09 (DECISIONS.md D-SRC-2, org names). Your server fetches them for its own use, and you are responsible for that use under the RIRs' terms. Do not redistribute the table. On by default like other light recipes (coordinator ruling CD-11a, 2026-09-19); disable it if you do not want WHOIS-derived names on your server. min_records: a parse that yields fewer names than this is upstream breakage, so keep stale. Clients that do not know this parser id skip the source (forward compatibility)."
     }
   ]
 }

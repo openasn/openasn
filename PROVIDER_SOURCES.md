@@ -213,6 +213,204 @@ End-to-end sample classifications from the live run:
 | Canadian Centre VPN guidance | Not added. | Government guidance, not a provider source. |
 | VPN.com | Not added. | Review/marketplace site, not a provider source. |
 
+## Verified Crawlers (added 2026-09-05)
+
+The agent-era thesis made concrete: signed agents are verified by Web Bot Auth, everything
+else is classified by network origin — and PROVIDER ATTRIBUTION is what lets a site allow
+Googlebot while throttling anonymous cloud bots.
+
+**Design (no verdict-enum change).** A source may declare an optional `role`. The verdict
+stays `hosting` — a crawler egress genuinely IS a datacenter — while the operator id rides
+alongside as `Result#crawler` plus a context flag. `Result::VERDICTS` remains closed and
+append-only (D-IMPL-6).
+
+**Attribution is read from a separate role index, not the verdict ladder.** This is
+load-bearing, and the measurements are why:
+
+| Feed | Overlap with a cloud recipe OpenASN already ships |
+|---|---|
+| Bingbot | 27 of 28 prefixes inside Azure ServiceTags |
+| GPTBot / ChatGPT-User / OAI-SearchBot | 21/21, 207/207, 35/35 — all inside Azure |
+| ClaudeBot | spans AWS + GCP + Azure at once; 20 of 26 entries are single `/32` hosts |
+| Googlebot | 23 of 317 inside GCP `cloud.json` (the geo-crawl `/28`s) |
+| Applebot | 0 — the only operator identifiable by ASN alone (AS714) |
+
+Crawler space is almost entirely borrowed. If attribution came from the ladder, whichever
+cloud overlay indexed first would swallow the entire agent web.
+
+**Two roles, deliberately not one.**
+
+| Role | Meaning | Examples |
+|---|---|---|
+| `verified_crawler` | Autonomous software on its own schedule; honors robots.txt; nobody is waiting. | Googlebot, GPTBot, ClaudeBot, Applebot, CCBot, DuckDuckBot |
+| `verified_fetcher` | A PERSON asked for this page and is waiting. These deliberately do not follow all robots.txt directives. | ChatGPT-User, Perplexity-User, Google user-triggered fetchers, Google-Agent, Amzn-User |
+
+Collapsing them would tell an app that a live user's request is well-behaved automation and
+invite it to throttle a human — the exact false positive this project exists to avoid.
+
+### Added (live-smoked 2026-09-05, counts are merged ranges)
+
+| Source id | Operator | URL | Role | Default | v4 / v6 |
+|---|---|---|---|---|---|
+| `google_common_crawlers` | Googlebot | `developers.google.com/static/crawling/ipranges/common-crawlers.json` | crawler | on | 28 / 8 |
+| `google_special_crawlers` | Google AdsBot/AdSense/Safety | `.../special-crawlers.json` | crawler | on | 9 / 8 |
+| `google_user_triggered_fetchers_google` | Google fetchers | `.../user-triggered-fetchers-google.json` | fetcher | on | 17 / 20 |
+| `google_user_triggered_agents` | Google-Agent (Web Bot Auth) | `.../user-triggered-agents.json` | fetcher | on | 5 / 1 |
+| `openai_gptbot` | OpenAI GPTBot | `openai.com/gptbot.json` | crawler | on | 14 / 0 |
+| `openai_chatgpt_user` | OpenAI ChatGPT-User | `openai.com/chatgpt-user.json` | fetcher | on | 184 / 0 |
+| `openai_searchbot` | OpenAI OAI-SearchBot | `openai.com/searchbot.json` | crawler | on | 30 / 0 |
+| `openai_adsbot` | OpenAI OAI-AdsBot | `openai.com/adsbot.json` | crawler | on | 2 / 0 |
+| `anthropic_bots` | Anthropic (ClaudeBot + Claude-User + Claude-SearchBot) | `claude.com/crawling/bots.json` | crawler | on | 26 / 0 |
+| `applebot` | Applebot | `search.developer.apple.com/applebot.json` | crawler | on | 18 / 0 |
+| `commoncrawl_ccbot` | Common Crawl CCBot | `index.commoncrawl.org/ccbot.json` | crawler | on | 3 / 1 |
+| `duckduckbot` | DuckDuckBot | `duckduckgo.com/duckduckbot.json` | crawler | on | 479 / 0 |
+| `perplexitybot` | PerplexityBot | `www.perplexity.ai/perplexitybot.json` | crawler | on | 8 / 0 |
+| `perplexity_user` | Perplexity-User | `www.perplexity.ai/perplexity-user.json` | fetcher | on | 4 / 0 |
+| `bingbot` | Microsoft Bingbot | `www.bing.com/toolbox/bingbot.json` | crawler | opt-in | 27 / 0 |
+| `google_infra` | Google infrastructure | `www.gstatic.com/ipranges/goog.json` | (none) | opt-in | 98 / 15 |
+| `google_user_triggered_fetchers_gae` | shared App Engine egress | `.../user-triggered-fetchers.json` | (none) | opt-in | 50 / 58 |
+| `amazonbot` | Amazonbot | `developer.amazon.com/amazonbot/ip-addresses/` | crawler | opt-in | 524 / 0 |
+| `amzn_searchbot` | Amzn-SearchBot | `.../searchbot-ip-addresses/` | crawler | opt-in | 512 / 0 |
+| `amzn_user` | Amzn-User | `.../live-ip-addresses/` | fetcher | opt-in | 1023 / 0 |
+
+Live classification check against the shipped dataset: `66.249.66.1` -> hosting/googlebot
+AS15169; `20.171.207.1` -> hosting/gptbot AS8075 (Azure); `216.73.216.1` -> hosting/claudebot
+AS16509 (AWS); `17.241.219.1` -> applebot AS714; `8.8.8.8` -> provider `google-infra`, crawler
+nil (goog.json carries no role, by design).
+
+### Deliberate non-additions
+
+| Candidate | Decision | Evidence |
+|---|---|---|
+| DuckAssistBot (`duckduckgo.com/duckassistbot.json`) | Reject | BYTE-IDENTICAL to `duckduckbot.json` (32,101 bytes, same MD5, same creationTime). DuckDuckGo publishes one shared egress pool; a second source would imply an IP-level search-vs-AI distinction the operator does not make. |
+| Meta / Facebook crawlers | Reject | `developers.facebook.com/docs/sharing/webmasters/crawler/` names only user-agent strings and publishes no addresses. An `AS32934` origin-set query is a registry lookup, not a first-party recognition list. Verified: `57.141.0.1` gets no attribution. |
+| Google `user-triggered-fetchers.json` | Added WITHOUT a role | These resolve to `*.gae.googleusercontent.com`: shared App Engine egress running arbitrary tenant code. Attributing it to Google as a verified fetcher would be a false statement about whoever's app is actually calling. 1058 prefixes; 0 inside GCP `cloud.json`. |
+| `goog.json` | Added WITHOUT a role | Infrastructure, not a crawler list. Contains `8.8.8.0/24` (Public DNS) and aggregated `/15`–`/12` blocks, and is a superset of GCP customer space the `gcp` recipe already covers precisely. Answers the open question in the `gcp` recipe note: `cloud.json` stays the default, `goog.json` stays opt-in. |
+| Bingbot | Added but opt-in | An EVIDENCE gap, not a technical one. Bing Webmaster help is a JS SPA serving no prose to a plain fetcher, and the only first-party text retrievable says the opposite — Bing Webmaster Blog, Dec 2018: "Since Bing does not release the list of IPs". Promote to default once a current Microsoft page can be quoted. |
+
+### Traps future maintainers should not rediscover
+
+1. **Google's crawler URLs moved.** The legacy `/search/apis/ipranges/googlebot.json` still
+   answers, but the docs now point at `/static/crawling/ipranges/common-crawlers.json`.
+2. **`www.anthropic.com/claudebot.json` does not exist.** It 404s with a 59 KB Next.js error
+   page — which an earlier run stored as if it were the feed. The real feed is
+   `claude.com/crawling/bots.json`, and it is COMBINED: ClaudeBot, Claude-User and
+   Claude-SearchBot cannot be separated by IP.
+3. **Freshness signals are inconsistent and contradictory.** Bing's in-body `creationTime` is
+   frozen at 2024-01-03 while its HTTP `Last-Modified` is current — use the header. Anthropic
+   serves no `Last-Modified` at all and its `creationTime` is Z-suffixed where everyone else
+   emits naive microseconds — use the body. They are exact opposites.
+4. **Only Google publishes IPv6.** Bing, OpenAI, Anthropic, Apple, Perplexity, DuckDuckGo and
+   Amazon are IPv4-only today.
+5. **Prefix lengths vary.** Perplexity publishes `/30` and `/29`, Amazon publishes BARE
+   addresses with no suffix in two of its three files and `/32` in the third. Never assume `/32`.
+6. **PerplexityBot's list is known-incomplete.** Cloudflare reported in August 2025 that
+   Perplexity also crawled from undeclared IPs using a generic browser user agent. Absence
+   from the list is not evidence a request is not Perplexity — a false negative, the safe
+   direction, but worth knowing.
+
+
+## Health Check 2026-09-05
+
+Every recipe in `fetch-manifest.json` as of the 2026-07-05 pass (47 sources) was fetched
+ONCE, live, with the identifying User-Agent `openasn-research/1.0
+(+https://github.com/openasn/openasn)` and parsed with the gem's own parsers. "Tokens" is
+what the parser returned; "v4/v6 ranges" is after merging; "Hostnames" counts DNS-expanded
+sources, which report hostnames rather than ranges because the health check does no DNS.
+
+**42 of 47 healthy. 5 failures, all diagnosed below — none was a silent data-quality
+problem, and none required guessing.**
+
+| Source id | HTTP | Bytes | Tokens | v4 ranges | v6 ranges | Hostnames | Result |
+|---|---|---|---|---|---|---|---|
+| `apple_private_relay` | 200 | 12,167,779 | 287,841 | 953 | 5,920 | 0 | ok |
+| `tor_exits` | 200 | 19,025 | 1,339 | 660 | 0 | 0 | ok |
+| `aws` | 200 | 2,606,812 | 16,869 | 932 | 1,945 | 0 | ok |
+| `gcp` | 200 | 112,291 | 1,098 | 157 | 17 | 0 | ok |
+| `azure` | 200 | 4,314,150 | 95,557 | 594 | 954 | 0 | ok |
+| `oracle` | 200 | 234,112 | 1,107 | 478 | 0 | 0 | ok |
+| `digitalocean` | 200 | 52,881 | 1,228 | 101 | 39 | 0 | ok |
+| `linode` | 200 | 192,744 | 5,505 | 95 | 22 | 0 | ok |
+| `vultr` | 200 | 21,353 | 499 | 82 | 17 | 0 | ok |
+| `cloudflare_ranges` | 200 | 334 | 22 | 14 | 7 | 0 | ok |
+| `protonvpn` | 200 | 12,589 | 855 | 528 | 0 | 0 | ok |
+| `mullvad_relays` | 200 | 294,427 | 1,093 | 516 | 543 | 0 | ok |
+| `ivpn_servers` | 200 | 38,752 | 176 | 169 | 0 | 0 | ok |
+| `pia_servers` | 200 | 162,698 | 1,471 | 1,348 | 0 | 0 | ok |
+| `airvpn_status` | 200 | 220,524 | 2,056 | 448 | 1,012 | 0 | ok |
+| `windscribe_servers` | 403 | 0 | 0 | 0 | 0 | 0 | FAIL 403 |
+| `nordvpn_servers` | 200 | 9,049,393 | 8,035 | 7,764 | 1 | 0 | ok |
+| `privadovpn` | 200 | 44,178 | 165 | 164 | 0 | 0 | ok |
+| `riseup_vpn` | 200 | 9,956 | 21 | 20 | 0 | 0 | ok |
+| `wlvpn_server_list` | 200 | 1,143,725 | 3,611 | 3,611 | 0 | 0 | ok |
+| `worldvpn_servers` | 200 | 601,026 | 180 | 166 | 0 | 0 | ok |
+| `ovpn_status_servers` | 200 | 12,362 | 96 | 34 | 0 | 0 | ok |
+| `anonine_status` | 200 | 19,335 | 293 | 77 | 0 | 0 | ok |
+| `azirevpn_locations` | 200 | 9,693 | 62 | 0 | 0 | 62 | ok |
+| `vpnac_status` | 200 | 37,052 | 130 | 0 | 0 | 130 | ok |
+| `trustzone_servers` | 200 | 39,680 | 70 | 0 | 0 | 70 | ok |
+| `surfshark_generic` | 200 | 100,538 | 142 | 0 | 0 | 142 | ok |
+| `surfshark_static` | 200 | 27,241 | 38 | 0 | 0 | 38 | ok |
+| `surfshark_obfuscated` | 200 | 4,813 | 7 | 0 | 0 | 7 | ok |
+| `ipvanish_openvpn` | 200 | 5,207,382 | 3,612 | 0 | 0 | 3,612 | ok |
+| `privatevpn_openvpn` | 200 | 377,342 | 101 | 1 | 0 | 100 | ok |
+| `purevpn_openvpn` | 200 | 1,311,428 | 166 | 0 | 0 | 166 | ok |
+| `torguard_openvpn_tcp` | 403 | 0 | 0 | 0 | 0 | 0 | FAIL 403 |
+| `torguard_openvpn_udp` | 403 | 0 | 0 | 0 | 0 | 0 | FAIL 403 |
+| `fastestvpn_tcp` | 200 | 5,231 | 63 | 0 | 0 | 63 | ok |
+| `fastestvpn_udp` | 200 | 5,293 | 63 | 0 | 0 | 63 | ok |
+| `vpnsecure_locations` | 404 | 0 | 0 | 0 | 0 | 0 | FAIL 404 |
+| `tunnelbear_openvpn` | 200 | 60,247 | 47 | 0 | 0 | 47 | ok |
+| `strongvpn_locations` | 200 | 181,994 | 145 | 0 | 0 | 145 | ok |
+| `vyprvpn_openvpn` | 200 | 149,595 | 73 | 0 | 0 | 73 | ok |
+| `giganews_vyprvpn_hosts` | 200 | 43,750 | 73 | 0 | 0 | 73 | ok |
+| `slickvpn_locations` | 200 | 60,820 | 0 | 0 | 0 | 0 | FAIL parse |
+| `vpnbook_openvpn` | 200 | 151,794 | 10 | 0 | 0 | 10 | ok |
+| `freevpn_us_servers` | 200 | 90,522 | 15 | 0 | 0 | 15 | ok |
+| `vpngate` | 200 | 1,320,355 | 98 | 97 | 0 | 0 | ok |
+| `zscaler` | 200 | 130,036 | 935 | 136 | 28 | 0 | ok |
+| `nazgul_mixed` | 200 | 230,037 | 14,375 | 5,742 | 415 | 0 | ok |
+
+### The five failures, and what was done
+
+| Source id | Symptom | Diagnosis | Action |
+|---|---|---|---|
+| `slickvpn_locations` | 200, parser returned 0 | SlickVPN redesigned `https://www.slickvpn.com/locations/` since 2026-07-05. Server addresses moved out of the `.ovpn` link text into `<button data-host="gw1.bos1.slickvpn.com" title="Copy server address">` next to an "Active" badge. | Parser rewritten to read `data-host`. Stricter than the old link-pairing heuristic: it is the exact address SlickVPN gives its own users. 11 hosts live. |
+| `vpnsecure_locations` | 404 | `https://www.vpnsecure.me/vpn-locations/` is gone. `https://www.vpnsecure.me/locations` returns 200 but is now a marketing page: 0 server hostnames, 0 status markers, no `isponeder.com` references. The source is dead, not moved. | Recipe removed from the manifest and from the gem's `vpn_dns` group. The `vpnsecure_locations_html` parser stays registered so clients pinned to an older manifest keep working. |
+| `windscribe_servers` | 403 | Cloudflare "Sorry, you have been blocked" interstitial on every path tried (`assets.windscribe.com/serverlist/mob-v2/1/0`, `.../openvpn/1/0`, `api.windscribe.com/ServerList/mob-v2/1/0`). OpenASN does not defeat bot challenges (D-CUR-1, and rule 3 below). | `enabled_default` changed true -> false so default clients stop failing this fetch every 24 hours. The recipe and its `vpn_providers` group membership are KEPT: Tier B runs on the end user's own network, the block may be vantage-specific, and `keep_stale` means an overlay fetched earlier keeps classifying. |
+| `torguard_openvpn_tcp` | 403 | Cloudflare `error code: 1005` — an ASN-level ban of the network the check ran from. This is a fact about our vantage point, not about the archive. | No change beyond a dated note. Already opt-in (`vpn_dns`). |
+| `torguard_openvpn_udp` | 403 | Same. | Same. |
+
+Two 403s therefore mean two different things, and the distinction decides the fix: 1005 is
+"your network is banned" (leave the recipe alone, another client will succeed), a challenge
+interstitial is "we do not want automated fetchers" (stop recommending it on by default).
+
+### Sources added in this pass
+
+| Source id | Provider | URL | Group | Parser | Live smoke 2026-09-05 |
+|---|---|---|---|---|---|
+| `zscaler_gov` | Zscaler (US government cloud) | `https://config.zscaler.com/api/zscalergov.net/cenr/json` | opt-in `zscaler` | `zscaler_json` | 6 v4 + 7 v6 |
+| `github_meta` | GitHub | `https://api.github.com/meta` | opt-in `clouds_extra` | `github_meta_json` | 2101 v4 + 648 v6 |
+| `atlassian` | Atlassian | `https://ip-ranges.atlassian.com/` | opt-in `clouds_extra` | `atlassian_ipranges_json` | 68 v4 + 8 v6 |
+
+**Zscaler sibling clouds: measured, then deliberately skipped.** Zscaler serves several named
+clouds from the same CENR API path. All seven return 200 with the identical nested shape:
+
+| Cloud | Ranges | Networks | New vs `zscaler.net` |
+|---|---|---|---|
+| `zscaler.net` (existing recipe) | 935 | 673 | — |
+| `zscalerone.net` | 8 | 8 | 0 |
+| `zscalertwo.net` | 951 | 672 | 3 |
+| `zscalerthree.net` | 918 | 666 | 5 |
+| `zscloud.net` | 948 | 674 | 5 |
+| `zscalerbeta.net` | 23 | 20 | 1 |
+| `zscalergov.net` | 30 | 30 | **30 (all of them)** |
+
+Five extra fetches would buy 14 additional networks; the government cloud alone buys 30 and
+is the only one whose address space is genuinely disjoint. Only `zscaler_gov` was added. The
+FedRAMP cloud's users are US federal and state agency employees browsing from the office, so
+`enterprise_gateway` (a likely-human verdict) is exactly the right mapping.
+
 ## Future Implementation Rules
 
 1. Add a manifest source only when the endpoint has exact IP/CIDR tokens or exact provider-published server hostnames.
@@ -221,3 +419,422 @@ End-to-end sample classifications from the live run:
 4. Do not import generated hostname patterns unless a first-party page/API publishes the actual hostnames.
 5. Public/free relay networks stay opt-in because they can be high-churn and residential-looking.
 6. Every new parser needs unit tests plus at least one live source smoke showing nonzero ranges and a real lookup classification.
+
+## Documentation-as-data clouds (added 2026-09-12)
+
+Three large hosters — Scaleway, IBM Cloud Classic and OVHcloud shared hosting — never built
+an `ip-ranges` endpoint. Their authoritative address list is a page in their own
+documentation, and all three now serve that page as raw markdown from their own domain
+(an LLM-era docs-platform feature that turns out to be the cleanest machine path they have).
+
+| Source id | Provider | URL | Group | Parser | Live smoke 2026-09-12 |
+|---|---|---|---|---|---|
+| `scaleway_ranges` | Scaleway (Online SAS / Iliad) | `https://www.scaleway.com/en/docs/account/reference-content/scaleway-network-information.md` | opt-in `clouds_extra` | `scaleway_network_mdx` | 11 v4 + 1 v6 |
+| `ibm_cloud_classic` | IBM Cloud Classic (ex-SoftLayer) | `https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges&format=markdown` | opt-in `clouds_extra` | `ibm_cloud_ip_ranges_markdown` | 60 v4 + 0 v6 |
+| `ovh_web_hosting_clusters` | OVHcloud (shared web hosting) | `https://docs.ovhcloud.com/en/guides/web-cloud/web-hosting/clusters-and-shared-hosting-ip.md` | opt-in `clouds_extra` | `ovh_web_hosting_cluster_md` | 259 v4 + 66 v6 |
+
+All three are opt-in for the same reason Zscaler is: the operators' ASNs already carry
+`hosting` from the core artifact, so what these recipes buy is range-level precision and
+provider attribution, not new coverage.
+
+### The IBM page is the most dangerous document in the manifest
+
+509 of its 759 CIDRs are RFC1918. A parser that ingested the page whole would label every
+home and office LAN on Earth as IBM hosting — the single worst false positive available to
+this project. Two independent guards therefore both have to hold:
+
+1. **Section allowlist.** Only `## Front-end (public) network`, `## Load balancer IPs` and
+   `## Legacy networks` are read. `## Back-end (private) network`, `### Customer private
+   network space`, `## Service network`, `### Service by data center` and the two SSL VPN
+   sections are private space. `## Red Hat Enterprise Linux server requirements` and
+   `## Windows virtual server instance requirements` are excluded on a different ground: they
+   list endpoints an IBM CUSTOMER must be able to reach (Red Hat, Microsoft WSUS), which are
+   not IBM address space and must never be attributed to IBM.
+2. **RFC1918 guard** applied regardless of section, so a renamed heading degrades to "too few
+   rows" (`keep_stale`) rather than to a catastrophe.
+
+`## Legacy networks` is in the allowlist on evidence, not on faith. Its rows are
+ex-ThePlanet/SoftLayer space and ARIN still answers IBM for them — checked 2026-09-12:
+`209.85.4.0` → `NETBLK-THEPLANET-BLK-EV1-15`, registrant "IBM Cloud"; `12.96.160.0` →
+`SOFTLAYER TECHNOLOGIES, INC`; `70.84.160.0` → `NETBLK-THEPLANET-BLK-13`, "IBM Cloud". The
+209.85 prefix looks like Google at a glance (Google holds 209.85.128.0/17) and is not; that
+near-miss is exactly why the section is allowlisted by hand instead of by heuristic.
+
+Coverage is thin by design: these are IBM's own infrastructure subnets, not customer
+allocations, and IBM Cloud VPC — the modern platform — is published nowhere. Do **not**
+substitute `https://ibm.biz/cidr-calculator`; IBM itself disclaims it as a community tool.
+
+### Traps in the other two
+
+- **Scaleway**: the page has two bullet lists of addresses in identical syntax. The first
+  (`## IP ranges used by Scaleway`) is prefix data; the second (`## DNS cache servers and NTP
+  servers`) is bare resolver hosts. The parser stops dead at the next H2. A whole-page CIDR
+  regex additionally picks up `62.210.16.0/24` from a later Dedibox section — harmless,
+  because it is inside the published `62.210.0.0/16`, but proof that scraping the page
+  wholesale reads out-of-scope content.
+  `78.232.0.0/16` looks like Free SAS residential space and is not: RIPE gives netname
+  SCALEWAY, org Scaleway, status ASSIGNED PA. Labelling it `hosting` corrects stale
+  geolocation data rather than mislabelling French home users.
+  The `.md` URL on `www.scaleway.com` is byte-identical (2,373 bytes) to the MDX in
+  `github.com/scaleway/docs-content`, so we cite the first-party domain and depend on nobody.
+- **OVHcloud**: the payload is 24 clusters, each with a per-country inbound VIP table, a
+  shared-CDN address, and one **outgoing NAT gateway**. The gateways are the prize: every PHP
+  script on a cluster — thousands of tenant sites — egresses from that single address, so
+  traffic a site receives from `91.134.248.230` is server-side automation by construction.
+  The flip side is shared fate: one gateway fronts an entire multi-tenant cluster, so a per-IP
+  reputation decision punishes every tenant at once. Classify, do not block.
+  Fetch gotcha: the same URL **with** a trailing slash returns a 404 page (the site strips
+  trailing slashes client-side); the `.md` form is the only stable one.
+  Scope: shared hosting only. OVH's bare metal, VPS and Public Cloud estates — the
+  overwhelming majority of OVH space and of OVH-sourced abuse — are published nowhere: no
+  ip-ranges endpoint exists, `geofeed.ovh.net` does not resolve, and OVH's RIPE objects carry
+  no `geofeed:` attribute. OVH's RIPE data is also noisy because failover IPs are reassigned
+  to end customers under their own org handles (`141.94.0.0/28` → netname `OVH_355850375`,
+  org "Doskoil Toma"), which is why registry scraping is a poor substitute here.
+
+## Tier B health check 2026-09-12
+
+Every recipe in `fetch-manifest.json` fetched ONCE, live, with the identifying
+User-Agent `openasn-research/1.0 (+https://github.com/openasn/openasn)` and parsed with the gem's own parsers. "Tokens" is what
+the parser returned; "v4/v6 ranges" is after merging; "Hostnames" counts DNS-expanded
+sources, which report hostnames rather than ranges because the health check does no DNS.
+
+**81 of 81 healthy.** The table below is a SAME-DAY composite: 64 rows from the 01:31 UTC full run, and 17 rows re-fetched at 15:00-15:20 UTC by the adversarial audit (the 12 sampled recipes plus the 5 the 01:31 run predates). No recipe is older than one day, and nothing was fetched twice to build it. Reproduce with `ruby scripts/tier_b_healthcheck.rb` (all recipes),
+`ruby scripts/tier_b_healthcheck.rb <source_id> …` for one, or `ONLY=vpn …` for a subset.
+It writes `<OUT>.json` plus this table as `<OUT>.md`, and exits non-zero on any failure.
+
+| Source id | HTTP | Bytes | Tokens | v4 ranges | v6 ranges | Hostnames | Result |
+|---|---|---|---|---|---|---|---|
+| `apple_private_relay` | 200 | 12,167,779 | 287841 | 953 | 5920 | 0 | ok |
+| `tor_exits` | 200 | 19,020 | 1340 | 668 | 0 | 0 | ok |
+| `aws` | 200 | 2,696,504 | 17438 | 932 | 2180 | 0 | ok |
+| `gcp` | 200 | 112,790 | 1103 | 160 | 17 | 0 | ok |
+| `azure` | 200 | 4,316,414 | 95623 | 594 | 954 | 0 | ok |
+| `oracle` | 200 | 234,112 | 1107 | 478 | 0 | 0 | ok |
+| `digitalocean` | 200 | 52,920 | 1229 | 101 | 39 | 0 | ok |
+| `linode` | 200 | 192,744 | 5505 | 95 | 22 | 0 | ok |
+| `vultr` | 200 | 21,353 | 499 | 82 | 17 | 0 | ok |
+| `cloudflare_ranges` | 200 | 334 | 22 | 14 | 7 | 0 | ok |
+| `github_meta` | 200 | 152,856 | 7305 | 2017 | 638 | 0 | ok |
+| `atlassian` | 200 | 87,939 | 166 | 68 | 8 | 0 | ok |
+| `google_common_crawlers` | 200 | 21,768 | 317 | 28 | 8 | 0 | ok |
+| `google_special_crawlers` | 200 | 19,109 | 272 | 9 | 8 | 0 | ok |
+| `google_user_triggered_fetchers_google` | 200 | 34,754 | 496 | 17 | 20 | 0 | ok |
+| `google_user_triggered_agents` | 200 | 1,413 | 20 | 5 | 1 | 0 | ok |
+| `google_user_triggered_fetchers_gae` | 200 | 71,822 | 1058 | 50 | 58 | 0 | ok |
+| `google_infra` | 200 | 6,186 | 145 | 98 | 15 | 0 | ok |
+| `bingbot` | 200 | 1,580 | 28 | 27 | 0 | 0 | ok |
+| `openai_gptbot` | 200 | 1,133 | 21 | 14 | 0 | 0 | ok |
+| `openai_chatgpt_user` | 200 | 7,699 | 213 | 190 | 0 | 0 | ok |
+| `openai_searchbot` | 200 | 2,080 | 39 | 33 | 0 | 0 | ok |
+| `openai_adsbot` | 200 | 177 | 2 | 2 | 0 | 0 | ok |
+| `anthropic_bots` | 200 | 1,162 | 26 | 26 | 0 | 0 | ok |
+| `applebot` | 200 | 2,218 | 33 | 18 | 0 | 0 | ok |
+| `commoncrawl_ccbot` | 200 | 540 | 5 | 3 | 1 | 0 | ok |
+| `duckduckbot` | 200 | 32,101 | 486 | 479 | 0 | 0 | ok |
+| `perplexitybot` | 200 | 482 | 8 | 8 | 0 | 0 | ok |
+| `perplexity_user` | 200 | 276 | 4 | 4 | 0 | 0 | ok |
+| `amazonbot` | 200 | 529,818 | 1292 | 1292 | 0 | 0 | ok |
+| `amzn_searchbot` | 200 | 506,824 | 816 | 816 | 0 | 0 | ok |
+| `amzn_user` | 200 | 515,837 | 1023 | 1023 | 0 | 0 | ok |
+| `fastly_ranges` | 200 | 402 | 21 | 16 | 2 | 0 | ok |
+| `huawei_cloud_geofeed` | 200 | 33,235 | 927 | 135 | 26 | 0 | ok |
+| `scaleway_ranges` | 200 | 2,373 | 13 | 11 | 1 | 0 | ok |
+| `ibm_cloud_classic` | 200 | 37,832 | 90 | 60 | 0 | 0 | ok |
+| `ovh_web_hosting_clusters` | 200 | 37,840 | 479 | 259 | 66 | 0 | ok |
+| `mistralai_user` | 200 | 279 | 4 | 4 | 0 | 0 | ok |
+| `mistralai_index` | 200 | 176 | 2 | 2 | 0 | 0 | ok |
+| `ahrefsbot` | 200 | 3,350 | 81 | 74 | 0 | 0 | ok |
+| `protonvpn` | 200 | 13,405 | 907 | 525 | 0 | 0 | ok |
+| `mullvad_relays` | 200 | 291,324 | 1083 | 512 | 538 | 0 | ok |
+| `ivpn_servers` | 200 | 38,752 | 176 | 169 | 0 | 0 | ok |
+| `pia_servers` | 200 | 127,930 | 1133 | 1055 | 0 | 0 | ok |
+| `airvpn_status` | 200 | 220,596 | 2056 | 448 | 1012 | 0 | ok |
+| `windscribe_servers` | 200 | 305,203 | 1076 | 395 | 0 | 0 | ok |
+| `nordvpn_servers` | 200 | 9,062,384 | 8044 | 7772 | 1 | 0 | ok |
+| `privadovpn` | 200 | 44,719 | 167 | 166 | 0 | 0 | ok |
+| `riseup_vpn` | 200 | 9,956 | 21 | 20 | 0 | 0 | ok |
+| `wlvpn_server_list` | 200 | 1,137,011 | 3596 | 3596 | 0 | 0 | ok |
+| `worldvpn_servers` | 200 | 601,026 | 180 | 166 | 0 | 0 | ok |
+| `ovpn_servers` | 200 | 36,192 | 96 | 34 | 0 | 0 | ok |
+| `anonine_status` | 200 | 19,337 | 293 | 77 | 0 | 0 | ok |
+| `azirevpn_locations` | 200 | 9,693 | 62 | 0 | 0 | 62 | ok |
+| `vpnac_status` | 200 | 37,101 | 130 | 0 | 0 | 130 | ok |
+| `trustzone_servers` | 200 | 39,732 | 70 | 0 | 0 | 70 | ok |
+| `cryptostorm_configs` | 200 | 485,048 | 138 | 0 | 0 | 138 | ok |
+| `surfshark_generic` | 200 | 100,547 | 142 | 0 | 0 | 142 | ok |
+| `surfshark_static` | 200 | 25,837 | 36 | 0 | 0 | 36 | ok |
+| `surfshark_obfuscated` | 200 | 4,813 | 7 | 0 | 0 | 7 | ok |
+| `ipvanish_openvpn` | 200 | 5,184,342 | 3596 | 0 | 0 | 3596 | ok |
+| `privatevpn_openvpn` | 200 | 377,342 | 101 | 1 | 0 | 100 | ok |
+| `purevpn_openvpn` | 200 | 1,311,428 | 166 | 0 | 0 | 166 | ok |
+| `torguard_openvpn_tcp` | 200 | 169,004 | 104 | 52 | 0 | 52 | ok |
+| `torguard_openvpn_udp` | 200 | 169,006 | 104 | 52 | 0 | 52 | ok |
+| `fastestvpn_tcp` | 200 | 5,231 | 63 | 0 | 0 | 63 | ok |
+| `fastestvpn_udp` | 200 | 5,293 | 63 | 0 | 0 | 63 | ok |
+| `tunnelbear_openvpn` | 200 | 60,247 | 47 | 0 | 0 | 47 | ok |
+| `strongvpn_locations` | 200 | 181,994 | 145 | 0 | 0 | 145 | ok |
+| `vyprvpn_openvpn` | 200 | 149,595 | 73 | 0 | 0 | 73 | ok |
+| `giganews_vyprvpn_hosts` | 200 | 43,782 | 73 | 0 | 0 | 73 | ok |
+| `slickvpn_locations` | 200 | 60,820 | 11 | 0 | 0 | 11 | ok |
+| `vpnbook_openvpn` | 200 | 151,792 | 10 | 0 | 0 | 10 | ok |
+| `freevpn_us_servers` | 200 | 90,532 | 15 | 0 | 0 | 15 | ok |
+| `vpngate` | 200 | 1,320,837 | 98 | 96 | 0 | 0 | ok |
+| `zscaler` | 200 | 130,041 | 935 | 136 | 29 | 0 | ok |
+| `zscaler_gov` | 200 | 4,431 | 30 | 6 | 7 | 0 | ok |
+| `cisco_sse_geofeed` | 200 | 56,539 | 1866 | 86 | 65 | 0 | ok |
+| `cato_pop_ranges` | 200 | 1,644,566 | 43 | 40 | 0 | 0 | ok |
+| `broadcom_cloud_swg` | 200 | 186,959 | 720 | 232 | 36 | 0 | ok |
+| `nazgul_mixed` | 200 | 230,338 | 14394 | 5748 | 413 | 0 | ok |
+
+**Zero failures — and three of the five 2026-09-05 failures healed on their own.** That is
+the finding worth keeping, because it validates how the last pass triaged them:
+
+| Source id | 2026-09-05 | 2026-09-12 | What it means |
+|---|---|---|---|
+| `torguard_openvpn_tcp` / `_udp` | 403, Cloudflare `error code: 1005` | 200, 169 KB, 52 v4 + 52 hostnames each | 1005 is an ASN-level ban on the *fetching* network, a fact about our vantage point and not about the archive. Leaving the recipe untouched was right; it now fetches cleanly. |
+| `windscribe_servers` | 403, Cloudflare challenge interstitial on every path | 200, 305 KB, 395 v4 | The interstitial was transient too. See the note below on `enabled_default`. |
+| `slickvpn_locations` | 200, parser returned 0 | 200, 11 hostnames | The `data-host` rewrite landed in the last pass and holds. |
+| `vpnsecure_locations` | 404, source genuinely gone | removed from the manifest | Still gone. The parser stays registered for clients pinned to an older manifest. |
+
+The generalisation for future maintainers: **a fetch failure is a claim about the observer as
+often as about the endpoint.** Before changing a recipe, decide which one you are looking at.
+Nothing here needed a fix, so nothing was changed except the note above.
+
+## SWG/SASE egress beyond Zscaler (added 2026-09-12)
+
+D-ENRICH-1 says `enterprise_gateway` is SWG/SASE vendor egress only — the addresses real
+human employees browse the web from through a vendor-operated cloud proxy. It is a
+likely-human, never-blocking verdict. Sixteen vendors were checked; three publish a usable
+first-party list.
+
+| Source id | Vendor | URL | Group | Parser | Live smoke 2026-09-12 |
+|---|---|---|---|---|---|
+| `cisco_sse_geofeed` | Cisco (Umbrella SWG **and** Secure Access) | `https://geofeed.network.strln.net/` | opt-in `swg_egress` | `geofeed_csv_no_widen` | 86 v4 + 65 v6 |
+| `broadcom_cloud_swg` | Broadcom / Symantec Cloud SWG (ex-WSS) | `https://servicepoints.threatpulse.com/api/v2/full` | opt-in `swg_egress` | `broadcom_servicepoints_json` | 232 v4 + 36 v6 |
+| `cato_pop_ranges` | Cato Networks | `https://knowledge.catonetworks.com/docs/production-pop-guide` | opt-in `swg_egress` | `cato_pop_html` | 40 v4 |
+
+**Check RIR whois for a `geofeed:` attribute before anything else.** That single move found
+the Cisco feed, which is the best source in this category and which no amount of reading
+Cisco's documentation would have surfaced: `whois 151.186.1.1` returns
+`remarks: Geofeed https://geofeed.network.strln.net/`. One feed covers two products —
+"the feed includes deployed egress prefixes for Cisco SSE products, including Secure Access
+and Umbrella" — so Umbrella and Secure Access need no separate recipes.
+
+**The D-ENRICH-1 trap in this category is the public DNS resolver, and the geofeed dodges it
+by construction.** Cisco's static allowlist TechNote gives `208.67.216.0/21`, which swallows
+the OpenDNS public resolvers at 208.67.220.0/24 and 208.67.222.0/24. The geofeed lists
+208.67.216–219 and deliberately omits the resolver /24s. Anyone tempted to shortcut to the
+documented /16s would label a public DNS resolver as an enterprise gateway.
+
+**Broadcom's list is mostly rented Google Cloud.** 34.x, 35.x, 130.211.x and 144.49.x
+dominate it. Two consequences: it overlaps the `gcp` recipe, and an ASN-level Broadcom
+override would be actively wrong. Keep the refresh tight — released space reverts to
+ordinary GCP.
+
+### The thirteen that publish nothing usable, and the pattern behind it
+
+| Vendor | Why not | Evidence |
+|---|---|---|
+| Netskope | Public page carries 5 CIDRs; the consolidated NewEdge list is login-gated; `wp-json` 403s. Site ToU restricts material to "personal, non-commercial" use. | `docs.netskope.com/en/newedge-ip-ranges-for-allowlisting`, `support.netskope.com/s/article/NewEdge-Consolidated-List-of-IP-Range-for-Allowlisting` |
+| Palo Alto Prisma Access | Per-tenant only. Unauthenticated GET → 403 "Missing Authentication Token", POST → 401. The legacy `api.gpcloudservice.com` presents a private Palo Alto root CA no public trust store validates. | `api.prod.datapath.prismaaccess.com/getPrismaAccessIP/v2`; 22,898-URL sitemap grepped |
+| iboss | Docs 307 to an authenticated GitBook app; support/KB hosts dead; iboss's own copy says each customer gets dedicated gateway IPs, so no shared pool exists to publish. | `docs.iboss.com`, `www.iboss.com/ip-ranges/` (SPA shell, 0 CIDRs) |
+| Menlo Security | KB is login-gated — Zendesk's public API reports exactly one public article, unrelated. Terms also prohibit automated robots/spiders. | `csportal.menlosecurity.com/api/v2/help_center/en-us/articles.json` |
+| Forcepoint | The single authoritative KB article is a Salesforce Lightning SPA: 409,479 bytes of JS shell, zero addresses without running JavaScript. | `support.forcepoint.com/s/article/Cloud-service-data-center-IP-addresses-port-numbers` |
+| Fortinet FortiSASE | A public IP feed exists but "you must use a FortiCloud IAM API user token", and the URL is per-instance. | Fortinet docs |
+| Lookout, Versa | Lookout: Cloudflare interstitial on the help centre (no bypass attempted). Versa: full 1,058-URL sitemap enumerated, including all 127 SSE pages — no such document exists. | — |
+
+| Check Point | No egress list anywhere in the doc tree; SK articles are JS-only behind reCAPTCHA; `ip.checkpoint.com` is NXDOMAIN. | `support.checkpoint.com` SK tree |
+| Proofpoint | `help.proofpoint.com` denies anonymous reads entirely (MindTouch 403). | — |
+| Sophos | No cloud SWG product exists. ZTNA gateways are CUSTOMER-hosted, which makes them `business`, not `enterprise_gateway`. | — |
+| Barracuda SecureEdge | A real SSE with vendor PoPs, but no addresses published — verified through the anonymous Confluence REST/CQL API, not just the UI. | — |
+| Trend Micro | **CLOSED 2026-09-12 — now a positive finding, not an absence of evidence.** The allow-list document itself was located and read: its "Internet Access Cloud Gateway" row lists FQDNs only (`proxy.ztsa-iag.trendmicro.com`, `proxy.jp.ztsa-iag.trendmicro.com`, `d9vbqsel5dvrs.cloudfront.net`) and no addresses. Trend does run a qualifying shared gateway; it simply does not publish its egress IPs. | `docs.trendmicro.com/en-us/documentation/article/trend-vision-one-firewall-japan-all-exceptions` (200, 213,773 B, server-rendered) |
+| Akamai | Standing rejection re-recorded: terms forbid our use. Separately, no SIA egress list exists — the firewall docs are hostname-only. | — |
+
+**Two traps inside the Trend Micro answer, recorded so nobody re-walks them.** The article
+`trend-vision-one-corporate-network-locations-ia` is titled "Internet Access gateways and
+corporate network locations" and says "IP address" eleven times — every one of them is the
+*customer's own* office IP, registered inbound ("Specify the externally-facing IP addresses
+of your organization's internet gateways and register the IP addresses to the Internet
+Access Cloud Gateway"). That is the exact inverse of what a Tier B recipe needs. And the
+only CIDRs anywhere in the firewall-exceptions article — thirteen Azure /28s — belong to the
+**Private** Access connector (ZTNA), and are outbound destinations for the customer's
+on-prem connector: wrong product, wrong direction.
+
+**And the enumeration deadlock has a general solution.** The previous pass concluded that
+`docs.trendmicro.com` article URLs are not enumerable because there is no sitemap and the
+TOC and search are JavaScript-rendered. That is half right: the article HTML carries
+relative sibling slugs in its "Related information" block, so the docs **are** crawlable as a
+link graph (15 real slugs harvested from one known-good page). The other half came from
+**Common Crawl's URL index** (`index.commoncrawl.org`, a public bulk API), which returned 617
+distinct `docs.trendmicro.com` URLs and is where the firewall-exceptions slug actually
+surfaced. Both techniques are reusable on any vendor whose docs hide behind a JS TOC — and
+neither requires bypassing anything.
+
+**The pattern is architectural, not editorial.** Four of these reject for the same reason:
+the vendor gives each customer *dedicated* egress IPs, so there is no shared pool to
+publish. Tier B `enterprise_gateway` coverage is realistically limited to vendors running
+shared egress — Zscaler, Cisco SSE, Broadcom, Cato. That is a ceiling on this category, and
+worth knowing before anyone budgets another pass against it.
+
+**Skyhigh Security is deliberately NOT added, and needs an owner decision.** The data is
+good: `success.skyhighsecurity.com/docs/allow-ip-address-ranges-for-points-of-presence.md`
+returns 200 with 6 CIDRs, all RDAP-confirmed as Musarubra/Skyhigh WGCS space, and **five of
+the six are not captured by the existing AS203724 override** (only 131.229.128.0/17
+originates from it). The blocker is legal, not technical: that host's `robots.txt` is a
+blanket `User-agent: * / Disallow: /` with the comment "Block all web crawlers from
+accessing any part of the site", while the *same host's* `llms.txt` explicitly instructs
+automated agents to fetch page `.md` variants — and the governing Trellix terms of service
+return 403 to every client tried, so the actual anti-automation clause could not be read.
+Unreadable terms plus an explicit robots Disallow is where this project stops (the Akamai
+precedent). Recorded in full in the research ledger; reversible in minutes if the owner
+reads the terms and disagrees.
+
+### ASN-level fallbacks for the vendors with no list (RDAP-confirmed 2026-09-12)
+
+Where no range list exists an ASN override is sometimes the honest substitute, and sometimes
+actively wrong. Both cases were checked, so neither has to be rediscovered:
+
+- **AS44444 -> `enterprise_gateway`, RECOMMENDED** (Forcepoint). RIPE RDAP: handle AS44444,
+  name `Forcepoint-Cloud-AS`, org ORG-FUL16-RIPE "Forcepoint UK Limited". Their cloud proxy
+  `webdefence.global.blackspider.com` resolves into it, and `rdap.db.ripe.net/ip/157.167.56.0`
+  returns netname `Forcepoint-Cloud-LIS`. This is the only viable way to cover Forcepoint.
+- **AS13150 -> `enterprise_gateway`, RECOMMENDED** (Cato). RIPE RDAP: name CATON, org
+  ORG-CNL17-RIPE "CATO NETWORKS LTD"; RPKI ROAs to AS13150 for 45.62.176.0/20,
+  199.27.32.0/19, 216.205.112.0/20. Cheaper than the range recipe, though the recipe also
+  catches leased China/Casablanca space AS13150 does not announce. **AS37927 is NOT Cato** —
+  that is NOMURATRADE in JPNIC, and the mistake is in circulation.
+- **AS203724 (Skyhigh) — the existing override is CONFIRMED correct.** RIPE and ARIN both
+  return handle AS203724, name MGG4-AS1, org "Musarubra Germany GmbH", mnt
+  SKYHIGH-SECURITY-MNT.
+- **AS25046 (Check Point) — DO NOT USE.** It is corporate/R&D space (`business`); the
+  Harmony/Infinity SASE cloud actually runs inside AWS AS16509.
+- **No ASN override for Broadcom, Cloudflare, Akamai, Barracuda or Trend Micro.** Broadcom's
+  egress is leased Google Cloud; Cloudflare shares AS13335 with the entire CDN; the rest run
+  on AWS/Azure. An ASN claim on any of them would be wrong at scale.
+- **Trend Micro, checked explicitly 2026-09-12 — DO NOT USE.** ARIN RDAP entity `TREND-7`
+  ("TREND MICRO INCORPORATED") holds exactly AS16880 and AS36421 plus legacy
+  216.104.0.0/19, 216.99.128.0/20, 66.180.80.0/20, 2620:101:4000::/42 — and the gateway is
+  in none of it. Trend's own published gateway FQDNs resolve into AWS: `proxy.eu…` →
+  3.74.82.245 / 52.29.74.64 (eu-central-1), `proxy.jp…` → 13.115.78.2 / 18.178.1.238
+  (ap-northeast-1), `pac.jp…` → CloudFront. **This is the Check Point AS25046 precedent
+  repeating exactly** — a corporate ASN registered to the vendor while the SASE cloud runs
+  in AWS AS16509 — and the precedent now has two independent data points. (Those AWS
+  addresses are ingress VIPs, not measured egress; they are evidence of hosting only and
+  must not go into a recipe.)
+
+Also re-verified 2026-09-12: **Cloudflare One / WARP egress ranges are still not published**
+and are still distinct from the public Cloudflare IP Ranges page, so `cloudflare_ranges`
+stays a context flag and never `enterprise_gateway`.
+
+## VPN re-check 2026-09-12
+
+Re-checking sources a previous pass wrote off was the highest-value VPN work of this pass:
+three of them had changed.
+
+| Provider | 2026-09-05 | 2026-09-12 | Action |
+|---|---|---|---|
+| Windscribe | 403 Cloudflare challenge on every path | 200, 305 KB, 395 v4 | `enabled_default` restored to true |
+| TorGuard | 403 Cloudflare `error code: 1005` | 200, 52 v4 + 52 hostnames each | No change — it stays opt-in because `vpn_dns` is opt-in by policy, not because of the ban |
+| OVPN | 32 status-page URLs, one per datacenter | one API call, same 96 IPs | `ovpn_status_servers` → `ovpn_servers` |
+| Cryptostorm | not researched | 200, 92 configs, 138 hostnames | added to opt-in `vpn_dns` |
+| Perfect Privacy | "timed out from this environment, retry later" | **the provider shut down in January 2026** | Closed permanently; stop retrying |
+| CalyxVPN | "timed out, retry later" | `api.calyx.net` authoritative NODATA; pinned fallback times out | Still no |
+| Ivacy, hide.me, ExpressVPN, CyberGhost | account-gated | unchanged (Ivacy is now behind a managed challenge, i.e. worse) | Still no |
+| Astrill, CactusVPN, VPNArea, Speedify, Njalla, Obscura, Mozilla VPN | not researched | marketing counts, dead endpoints, or auth gates | Documented as negative findings |
+
+**OVPN is a 32× reduction in requests aimed at a provider's own infrastructure**, for the
+same data. `https://www.ovpn.com/v2/api/client/entry` returns the whole fleet; both sources
+were verified to yield 96 exact IPs and 34 merged v4 ranges. Never log that response body:
+its sibling `shadowsocks` object carries a shared credential.
+
+**ProtonVPN stays on the licensed third-party feed.** Proton's own `/vpn/logicals` requires
+an `x-pm-appversion` header naming a whitelisted Proton platform — app impersonation, which
+this project does not do.
+
+All twelve default-on exact-IP endpoints were re-verified live: **12/12 HTTP 200**. Three
+notes for whoever maintains the health check: `check.torproject.org/torbulkexitlist` sends
+no `Content-Type` at all, PIA's v7 list is JSON on line 1 with a signature blob after it (so
+whole-file `jq` fails), and `worldvpn.net/servers` is the only HTML source in the default
+set and therefore the likeliest to break silently — assert a minimum IP count there, not
+just a 200.
+
+## Adversarial audit 2026-09-12
+
+An unconditioned re-audit of the recipes this branch adds, run against live bytes rather
+than against the notes. **Population:** the 36 source ids on this branch and not on `main`
+(the headline "+34" is net — `ovpn_status_servers` was renamed `ovpn_servers`, and
+`vpnsecure_locations` was deleted). **Sample:** 12, drawn with a seeded reproducible draw,
+`population.sort.sample(12, random: Random.new(20260912))`, before looking at any of them.
+
+Per recipe: the terms URL and the list URL re-fetched once each with the research
+User-Agent; the list host's `robots.txt` re-fetched; the governing sentence re-quoted from
+what is retrievable **today** rather than re-asserted from the note; the live bytes
+re-parsed with this project's own parser; the ranges sanity-checked; and every parsed prefix
+classified against the shipped artifact.
+
+**Result: 12/12 fetched 200, 12/12 parsed, and the range checks were clean — no RFC1918, no
+`/0`, no over-wide prefixes, no unparseable tokens.** No recipe was wrong about what it
+fetches, and every `enabled_default` in the sample is justified. The five non-crawler
+additions the draw missed (`broadcom_cloud_swg`, `cato_pop_ranges`, `cisco_sse_geofeed`,
+`cryptostorm_configs`, `ovpn_servers`) were smoke-tested separately and matched their
+recorded counts exactly, so **all 81 recipes now carry a same-day measurement.**
+
+What the audit did find was a documentation problem: twelve notes were corrected. The four
+worth repeating here, because each is a class of mistake rather than a typo:
+
+1. **A recipe with no false-positive analysis, where there is a real one.**
+   `huawei_cloud_geofeed` is genuine Huawei Cloud space, but 82 of its 927 rows are
+   announced from ASNs the core artifact classifies `residential_isp` (AS23724 IDC China
+   Telecom ×32, China Telecom/Unicom ×37, others), plus 100 on `business` ASNs. Enabling it
+   moves those to `hosting` — the human→machine direction this project treats as dangerous.
+   The recipe is right and opt-in is *required*, not merely defensible.
+2. **A justification borrowed from a neighbour.** `openai_chatgpt_user` and `openai_adsbot`
+   were both justified by a sentence that lives in the **OAI-SearchBot** table cell and
+   covers OAI-SearchBot alone. Their real evidence is a `Published IP addresses:` label plus
+   first-party publication — still enough to ship on by default, but the grade is now stated
+   instead of inherited.
+3. **Claims nobody can check.** `zscaler_gov` asserted FedRAMP authorization and "employees
+   browsing from the office". Neither is retrievable: `config.zscaler.com` and
+   `help.zscaler.com` serve JavaScript shells, and `help.zscaler.com` returns 200 for
+   invented paths, so a 200 there proves nothing. The uncited claim is gone; the `maps_to`
+   reasoning is now the honest one (shared with server-to-SaaS traffic and the vendor's own
+   categorisation fetches — `enterprise_gateway` survives because the error direction is a
+   false negative, never a mislabelled human).
+4. **Fetching a host the documentation never names.** `perplexity_user` and `perplexitybot`
+   fetch `www.perplexity.ai` while `docs.perplexity.ai` names `www.perplexity.com` in every
+   occurrence. Measured: `.com` 302s to `.ai`, which is the serving origin. We keep the
+   origin so no client depends on following a redirect, and the discrepancy plus the
+   one-line fallback is now in the note instead of being invisible.
+
+### Re-verification traps found this pass
+
+- **APNIC RDAP does not expose the `geofeed:` attribute.** All five Huawei Cloud objects
+  return 200 from `rdap.apnic.net` with zero occurrences of `geofeed`; only
+  `whois -h whois.apnic.net` shows it. Anyone re-checking that source via RDAP will wrongly
+  conclude the registry evidence has vanished. (All five re-verified by whois 2026-09-12.)
+- **`docs.mistral.ai/robots` is client-rendered** (Next.js RSC): the quoted sentences are
+  not contiguous in the served HTML, so a grep-based re-check fails on a page that is fine.
+- **Apple's own "Applebot IP CIDRs" anchor is plain `http://`**, while the same page links
+  the same file over `https` further down. We pin `https` deliberately — do not "fix" it.
+  And `search.developer.apple.com` serves no `robots.txt` (it 307s to `developer.apple.com`
+  and returns HTML), so the accurate claim is "nothing disallows this fetch", never
+  "robots.txt allows it".
+- **`config.zscaler.com/robots.txt` is a soft-404** returning the SPA index (200,
+  `text/html`). A client parsing that as robots.txt would read it as allow-all.
+- **Google's `verify-google-requests` page is about Googlebot**, a *common* crawler that is
+  not in `special-crawlers.json`. The correct citation for the special-case feed is
+  `developers.google.com/crawling/docs/google-special-case-crawlers`: "The IP ranges are
+  published in the `special-crawlers.json` object."
+
+### A cross-check worth institutionalising
+
+Classifying every parsed prefix against the shipped artifact is not in any runbook, and it
+was the highest-yield step of the audit — it is the only check that catches a recipe quietly
+disagreeing with the core dataset. It found three, all now recorded rather than silently
+overridden: Scaleway's `78.232.0.0/16` (core says `residential_isp` AS12322 Free SAS; RIPE
+RDAP says netname SCALEWAY, ASSIGNED PA, org "Scaleway" — so the core is stale, not the
+recipe), the Huawei carrier overlap above, and four AhrefsBot prefixes inside AS140577
+(Ahrefs' own ASN, labelled `business`). It also cleared a scare: ChatGPT-User's widest
+prefix is `9.129.0.0/17`, inside IBM's legacy `9/8`, which resolves to **AS8075 Microsoft** —
+Azure space IBM released, not a bogon.

@@ -15,6 +15,12 @@
 #   * overrides/*.txt lines: `AS<number>  # comment` where the comment
 #     contains a source URL (or `src:`) — provenance is non-negotiable.
 #   * no ASN may appear in eyeball_confirm.txt AND an infrastructure list.
+#   * org_names.txt: `AS<number>  <name>  # src: <url>`, the src never a
+#     registry/aggregator host (D-SRC-2).
+#   * asn_country.txt: `AS<number>  <CC>  # src: <url>`, CC an ISO 3166-1
+#     alpha-2 country code or `--` (publish none), the src never a
+#     registry/aggregator host (D-SRC-2, country); a `territory: <key>` tag
+#     requires that territory's recognised state (CD-19a).
 #   * corrections.yml: integer keys; required fields; valid vocabulary.
 #   * fetch-manifest.json: parses; every source has id/parser/maps_to and
 #     a url or resolver.
@@ -24,6 +30,7 @@ require "json"
 require "yaml"
 require "ipaddr"
 require "set"
+require "uri"
 
 ROOT = File.expand_path("..", __dir__)
 FAILURES = []
@@ -62,6 +69,95 @@ conflicts = sets["eyeball_confirm"] & infra
 unless conflicts.empty?
   fail_check("overrides conflict: in eyeball_confirm AND an infrastructure list: " \
              "#{conflicts.to_a.sort.map { |a| "AS#{a}" }.join(', ')} — resolve via corrections.yml, not both-ways membership")
+end
+
+# --- org_names.txt ---------------------------------------------------------------
+# Mirrors Overrides#parse_org_names in the pipeline. The host list mirrors
+# WikidataNames::RESTRICTED_REF_HOSTS there. Keep the two in sync.
+
+ORG_NAME_RESTRICTED_HOSTS = %w[
+  arin.net ripe.net apnic.net lacnic.net afrinic.net
+  registro.br nic.br jpnic.ad.jp nic.ad.jp twnic.net.tw kisa.or.kr cnnic.cn cnnic.net.cn idnic.net irinn.in
+  peeringdb.com bgp.he.net bgp.tools bgpview.io ipinfo.io ipip.net
+  ipgeolocation.io bigdatacloud.com radar.qrator.net radar.cloudflare.com
+  caida.org db-ip.com ipverse.net
+].freeze
+
+org_names_path = File.join(ROOT, "data", "overrides", "org_names.txt")
+org_names = Set.new
+if File.exist?(org_names_path)
+  File.foreach(org_names_path, encoding: "UTF-8").with_index(1) do |line, lineno|
+    stripped = line.strip
+    next if stripped.empty? || stripped.start_with?("#")
+
+    unless (m = stripped.match(/\AAS(\d+)\s+(.+?)\s+#\s*(.+)\z/))
+      fail_check("org_names.txt:#{lineno}: expected `AS<number>  <name>  # src: <url> (<date>)`, got: #{stripped[0, 80].inspect}")
+      next
+    end
+    asn, name, comment = m[1].to_i, m[2], m[3]
+    fail_check("org_names.txt:#{lineno}: AS#{asn} name longer than 200 chars") if name.length > 200
+    url = comment[%r{https?://\S+}]
+    if url.nil?
+      fail_check("org_names.txt:#{lineno}: AS#{asn} has no source URL")
+    else
+      host = (URI.parse(url).host.to_s.downcase rescue "")
+      if ORG_NAME_RESTRICTED_HOSTS.any? { |h| host == h || host.end_with?(".#{h}") }
+        fail_check("org_names.txt:#{lineno}: AS#{asn} cites #{host}, a registry/aggregator host; cite a first-party or CC0 page (D-SRC-2)")
+      end
+    end
+    fail_check("org_names.txt:#{lineno}: duplicate AS#{asn}") if org_names.include?(asn)
+    org_names << asn
+  end
+end
+
+# --- asn_country.txt -------------------------------------------------------------
+# Mirrors Overrides#parse_countries in the pipeline (same host list as
+# org_names.txt above; same non-country codes as Overrides::NOT_COUNTRIES).
+
+NOT_COUNTRY_CODES = %w[XX ZZ EU AP AA QM QN QO QP QQ QR QS QT QU QV QW QX QY QZ].freeze
+# Mirrors Countries::TERRITORY_STATES (CD-19a): occupied / breakaway
+# territory -> internationally recognised state.
+TERRITORY_STATES = {
+  "crimea" => "UA", "sevastopol" => "UA", "donetsk" => "UA", "luhansk" => "UA",
+  "zaporizhzhia" => "UA", "kherson" => "UA", "abkhazia" => "GE", "south_ossetia" => "GE",
+  "transnistria" => "MD", "northern_cyprus" => "CY"
+}.freeze
+countries_path = File.join(ROOT, "data", "overrides", "asn_country.txt")
+countries = Set.new
+if File.exist?(countries_path)
+  File.foreach(countries_path, encoding: "UTF-8").with_index(1) do |line, lineno|
+    stripped = line.strip
+    next if stripped.empty? || stripped.start_with?("#")
+
+    unless (m = stripped.match(/\AAS(\d+)\s+(\S+)\s+#\s*(.+)\z/))
+      fail_check("asn_country.txt:#{lineno}: expected `AS<number>  <CC>  # src: <url> (<date>)`, got: #{stripped[0, 80].inspect}")
+      next
+    end
+    asn, cc, comment = m[1].to_i, m[2], m[3]
+    unless cc == "--" || (cc.match?(/\A[A-Z]{2}\z/) && !NOT_COUNTRY_CODES.include?(cc))
+      fail_check("asn_country.txt:#{lineno}: AS#{asn} #{cc.inspect} is not an ISO 3166-1 alpha-2 country code (or `--`)")
+    end
+    if comment.match?(/\bterritory:/)
+      territory = comment[/\bterritory:\s*([a-z_]+)/, 1]
+      state = TERRITORY_STATES[territory]
+      if state.nil?
+        fail_check("asn_country.txt:#{lineno}: AS#{asn} territory #{territory.inspect} is not one of #{TERRITORY_STATES.keys.join(', ')}")
+      elsif cc != state
+        fail_check("asn_country.txt:#{lineno}: AS#{asn} is in #{territory}; its country is the recognised state #{state}, not #{cc} (CD-19a)")
+      end
+    end
+    url = comment[%r{https?://\S+}]
+    if url.nil?
+      fail_check("asn_country.txt:#{lineno}: AS#{asn} has no source URL")
+    else
+      host = (URI.parse(url).host.to_s.downcase rescue "")
+      if ORG_NAME_RESTRICTED_HOSTS.any? { |h| host == h || host.end_with?(".#{h}") }
+        fail_check("asn_country.txt:#{lineno}: AS#{asn} cites #{host}, a registry/aggregator host; cite a first-party or CC0 page (D-SRC-2, country)")
+      end
+    end
+    fail_check("asn_country.txt:#{lineno}: duplicate AS#{asn}") if countries.include?(asn)
+    countries << asn
+  end
 end
 
 # --- corrections.yml ----------------------------------------------------------
@@ -124,7 +220,7 @@ end
 
 if FAILURES.empty?
   total = sets.values.sum(&:size)
-  puts "lint OK: #{total} override entries across #{FLAG_FILES.size} lists, corrections/fetch-manifest/spotchecks all valid"
+  puts "lint OK: #{total} override entries across #{FLAG_FILES.size} lists, #{org_names.size} org names, #{countries.size} countries, corrections/fetch-manifest/spotchecks all valid"
 else
   puts "LINT FAILED:"
   FAILURES.each { |f| puts "  - #{f}" }

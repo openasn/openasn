@@ -55,8 +55,9 @@ AS714     US  # src: https://www.apple.com/contact/ ("One Apple Park Way Cuperti
 # docs/enrichment/dossiers-marquee.jsonl (org.hq_country). Source per line, strongest
 # first: an operator/Wikipedia/Wikidata evidence page whose claim names the
 # country or HQ city; else the operator's Wikidata item; else its website.
-# NEEDS A HUMAN REVIEW PASS BEFORE MERGE (LLM-researched, LLM-verified
-# dossiers). Drafts that disagree with the registry country were held back
+# Re-verified line by line by K2 on 2026-09-19 (research record
+# P4-K2-country-verify-2026-09-19.jsonl); LLM work, so a human spot check
+# before merge is still wanted. Drafts that disagree with the registry country were held back
 # for review and are not in this file (K-STATUS, evidence record).
 AS174  US  # src: https://en.wikipedia.org/wiki/Cogent_Communications (2026-09-19)
 AS209  US  # src: https://en.wikipedia.org/wiki/Lumen_Technologies (2026-09-19)

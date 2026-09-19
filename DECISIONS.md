@@ -560,9 +560,10 @@ backbone switchover (CD-12), not here.
    98% of the dossier-drafted lines the two agree. They part where a group's
    item or dossier is attached to a subsidiary's ASN. Wikidata alone does
    this for China Mobile's RU/HK/ZA/BR ASNs (→ CN), NTT AS2914 (→ JP) and
-   Telstra AS4637 (→ AU). Curated lines win over Wikidata for that reason:
-   our lines say US for AS2914 and HK for AS4637, because the operating
-   subsidiaries are based there.
+   Telstra AS4637 (→ AU). Curated lines win over Wikidata for that reason.
+   (K first curated US for AS2914 and HK for AS4637; K2's verification
+   found no non-registry source placing the running entity, so both are now
+   `--`: no country. See "Follow-ups" below.)
 4. **Where the curated lines come from** (526 on 2026-09-19, all to be
    reviewed by a human before merge, as for org_names.txt):
    - 10 hand-curated head lines, each from a first-party page fetched that
@@ -639,12 +640,83 @@ every CSV consumer that does not run the recipe. The known internal
 consumer is openasn-observatory, whose "registry country" distributions
 would collapse.
 
-**Open for the owner.** (i) Whether the held-back drafts go in, and with
-which value: occupied territories are a policy call. (ii) Whether a
-consultation-only registry comparison is acceptable in a curation tool
-(it reads ipverse's cached country for every drafted ASN). The
-alternative is to review every draft by hand. (iii) Whether the CSV should
-keep rows that now carry only an ASN number and a category (the assigned
-ASN list is itself a registry fact). (iv) Whether HK/MO should come from
-Wikidata's P17 at all: Wikidata gives CN for Hong Kong and Macau companies,
-while ISO 3166 codes them HK and MO.
+**Follow-ups (coordinator decision CD-19, workstream K2, 2026-09-19).**
+Evidence, one record per curated line and per decision:
+`docs/enrichment/research/parts/P4-K2-country-verify-2026-09-19.jsonl`.
+
+- **Occupied and breakaway territories (CD-19a).** An operator based in
+  Crimea, Sevastopol, the Donetsk/Luhansk/Zaporizhzhia/Kherson oblasts,
+  Abkhazia, South Ossetia, Transnistria or Northern Cyprus gets the
+  internationally recognised (UN) state: UA, GE, MD or CY. The de facto
+  controller is recorded in the evidence record. Two guards, one per path:
+  an asn_country.txt line tagged `territory: <key>` must carry that state
+  (build and lint fail otherwise, and the merge re-checks the published
+  value), and the Wikidata fallback, for an item whose HQ or location lies
+  (through P131*) in one of 23 territory items, publishes the recognised
+  state when its own P17/P159 says that state, the de facto controller or
+  nothing, and nothing otherwise. Wikidata can therefore never publish RU
+  for a Crimean operator. 14 operators are tagged (Miranda-Media, CRELCOM,
+  MCS, Lugakom, Luganet, the DPR's "RTO"/Phoenix ×3, Systema, A-Mobile,
+  Aquafon, Interdnestrcom, Kuzey Kıbrıs Turkcell, KKTC Telsim), sourced
+  from EU Official Journal acts, Wikipedia and the operators' own pages.
+  K-Telecom (Win Mobile, AS203451) serves Crimea but is seated in
+  Krasnodar, so it gets no country (owner call). Nine smaller territory
+  operators had no reachable non-registry source and publish nothing.
+- **Hong Kong and Macau (CD-19b).** ISO 3166-1 codes them HK and MO, and
+  Wikidata's P17 for their companies is CN. The Wikidata fallback now
+  refines CN to HK/MO for an item located in Hong Kong or Macau (China
+  Mobile Hong Kong AS9231/AS137872 → HK, China Telecom (Macau) AS136167 →
+  MO). It never rewrites a non-CN result. HGC AS9304 is curated HK.
+  China Mobile International's Hong Kong ASNs sit on the group item (CN)
+  and no non-registry page placing CMI was reachable, so they get `--`.
+- **`--` (publish none).** An asn_country.txt code of `--` publishes no
+  country and stops the Wikidata fallback. It is used where the Wikidata
+  value is a group item on a subsidiary's ASN, or wrong (CD-19c: the
+  operator is the entity that runs the ASN). 53 lines use it.
+- **Held-back drafts and the 65 Wikidata divergences (CD-19c).** Curated
+  where a non-registry source was clear: AS1 US (Level 3 "owner of AS1";
+  Wikidata's DE was an error), AS8402 RU (Beeline in Russia is VimpelCom,
+  not VEON), AS9002 RETN GB, AS8302 Zattoo CH, AS24796 NaMeX IT. 42
+  group-on-subsidiary or unplaceable Wikidata values got `--`. Akamai,
+  Alibaba Cloud, Oracle, Orange Business, Allstream and GTHost stay blank.
+  AS29447 stays blank: org_names.txt names Iliad Italia but the holder is
+  Scaleway SAS, an identity conflict for the owner.
+- **Independent verification (CD-19e).** Every curated line was checked
+  again on 2026-09-19: its source resolved to a Wikidata item (directly or
+  through the Wikipedia article) and checked for P17/P159 and identity, or
+  its first-party page fetched and read. 527 lines stand (413 pass the
+  Wikidata check outright, 61 after a manual identity review, 53 on
+  first-party, GLEIF, Companies House or EU Official Journal pages). 16
+  were removed for want of a checkable source, 2 turned into `--`, and
+  about 20 got a better source. Société réunionnaise du radiotéléphone
+  (AS34306) gets RE, the ISO 3166-1 code, not Wikidata's FR.
+  These lines are LLM-verified; a human spot check before merge is still
+  wanted.
+- **Row set of `asn-categories.csv` (CD-19d).** A row is now written only
+  for an ASN that originates a base range in our artifacts (the BGP
+  backbone, plus ranges gap-filled for curated ASNs) or that carries at
+  least one field (org, country, category or role, flag). The unrouted,
+  field-less rows restated nothing but a registry assignment. 124,849 rows
+  → 119,687 (−5,162) on the 2026-09-19 cache. 23,745 unrouted rows that
+  carry only ipverse's category/role stay, as CD-19d counts category/role
+  as a field. Under sapics "routed" still includes RIR-stats fill; with the
+  RouteViews backbone (CD-12) it becomes exact. **No format_version bump**:
+  FORMAT.md's format_version is a field of the OASN header and governs
+  the native artifacts' bytes, which are identical (timestamp-normalized),
+  as is OORG. The CSV carries no version and its header and columns are
+  unchanged. FORMAT.md now documents the CSV's columns and row set.
+
+**Measured impact after the follow-ups** (same cache and feeds):
+960 countries in the manifest (527 curated + 433 Wikidata), 956 in the
+CSV; routed ASNs with a country 911 (0.95%); routed IPv4 72.5% (was
+72.80%); eyeballs 77.14% on the 2026-09-19 feed (was 76.99%) and 77.27% on
+the 2026-07-04 feed. Coverage moved little because the removals were
+small and the territory lines are large eyeball ASNs.
+
+**Open for the owner.** (i) K-Telecom (Crimea network, Krasnodar seat):
+none, UA or RU? (ii) Should French overseas departments (Réunion) use their
+ISO code, as AS34306 now does, or FR? (iii) AS29447: Iliad Italia or
+Scaleway? (iv) Whether a consultation-only registry comparison is
+acceptable in a curation tool (CD-19c says yes for routing drafts into
+review; it is written nowhere). (v) Whether the 23,745 unrouted rows that
+carry only ipverse's category/role should stay (CD-19d keeps them).

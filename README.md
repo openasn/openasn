@@ -22,7 +22,7 @@ The artifact format is public and language-neutral ([FORMAT.md](FORMAT.md)) — 
 | File | What it is |
 |---|---|
 | `openasn-ipv4.bin` / `openasn-ipv6.bin` | Packed classification artifacts: IP→ASN backbone with category/role/flag bits + VPN/datacenter range overlays. Byte spec: [FORMAT.md](FORMAT.md) |
-| `asn-categories.csv` | Human-friendly table: every ASN → org, country, category, network role, OpenASN flags (CC0). `org` and `country` are filled where we hold a CC0 value (our sourced overrides + Wikidata) and empty otherwise. `country` is the ISO code of where the ASN's operator is based, not the registry country; see [D-SRC-2](DECISIONS.md) |
+| `asn-categories.csv` | Human-friendly table: every routed ASN, and every other ASN we hold a field for → org, country, category, network role, OpenASN flags (CC0). Unrouted ASNs with nothing to say have no row (see [FORMAT.md](FORMAT.md)). `org` and `country` are filled where we hold a CC0 value (our sourced overrides + Wikidata) and empty otherwise. `country` is the ISO code of where the ASN's operator is based, not the registry country; see [D-SRC-2](DECISIONS.md) |
 | `openasn-orgs.bin` | ASN → organization name sidecar (CC0 names only; optional for clients). Byte spec: [FORMAT.md](FORMAT.md) |
 | `manifest.json` | Build id, per-file SHA-256, and full source provenance (upstream URL, license, license-file hash, fetch time) |
 | `fetch-manifest.json` | The Tier B recipe (see "Legal design") that clients execute themselves |

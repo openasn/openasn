@@ -44,3 +44,32 @@ AS216059  # FREE VPN APP LIMITED (GB). src: https://raw.githubusercontent.com/ip
 AS219467  # SUYOU VPN LIMITED (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "SUYOU VPN LIMITED" (2026-07-04)
 AS397282  # Castle VPN (US). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Castle VPN" (2026-07-04)
 AS154050  # GAMING VPN PTY LTD (AU) — consumer gaming VPN egress. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "GAMING VPN PTY LTD" (2026-07-04)
+
+# --- Sweep 2026-09-19 (pass 4): VPN operators' own ASNs, found by exact-IP measurement ---
+# Discovery: every public IPv4 in 18 first-party VPN exit lists (fetched 2026-09-12) mapped to its
+# origin ASN; candidates are ASNs where published exits are a large share of the announced space, plus
+# a VPN-brand sweep of all registered org names. Membership is decided per ASN from the RIR's own
+# records, never from the measurement or a name alone: the aut-num / INETNUM objects must identify the
+# space as the VPN brand's (e.g. netnames PROTONVPN, NORDVPN-*, PFX-EXPRESSVPN, holders "VPN Consumer
+# <city>"), or the operator's own PeeringDB record must say so. REJECTED on the same evidence and
+# recorded so nobody re-proposes them: AS62371 Proton (Mail/Drive: PROTONMAIL, CH-PROTONDRIVE),
+# AS46253 (IPVanish-registered but carries SugarSync cloud storage), AS22781 Strong Technology (still
+# hosts the legacy Reliable Hosting web customers), AS39351 31173 Services, AS43357/AS23959 Owl
+# (dedicated-server hosts with Mullvad customers), AS198605 Avast (antivirus cloud), AS16652 Riseup,
+# AS4224 Calyx, AS62744 Quintex, AS53494 Lantern Hill IT, AS397095 Three Lanterns, AS152935
+# CLOUDPROXY-VN, AS399498/AS401139/AS219346/AS219382 "Private Networks" LLCs (the AS27683 pattern).
+# HELD (not enough evidence): AS272096 PacketHub LACNIC (221k addresses, zero measured exits),
+# AS205016 HERN Labs (maintainer OPERA-MNT; Opera browser-VPN lead, no first-party statement),
+# AS13926 NETPROTECT-PHX (0.4% measured share), AS218908, AS398075, AS397744, AS219022; and
+# unrouted hedges AS58546 Astrill, AS210691 AstroVPN, AS63128 NETPROTECT-CHICAGO (a line would change
+# no verdict). src: https://rdap.db.ripe.net/ip/216.73.160.0 + https://www.peeringdb.com/api/net?asn=209103 (2026-09-19)
+AS209103  # Proton AG (CH) — ProtonVPN egress: aut-num name "ProtonVPN", netnames PROTONVPN / ProtonVPN-CH1 / ProtonVPN-CH2 / CH-PROTONVPN-2, maintainer ch-protonvpn-1-mnt; PeeringDB: "ProtonVPN is a Stub ASN of Proton AG AS62371". src: https://rdap.db.ripe.net/autnum/209103 (2026-09-19)
+AS199218  # Proton AG (CH) — ProtonVPN egress: aut-num name "ProtonVPN-2"; netnames CH-PROTONVPN-2-* on its own allocations and PV-SL-HOSTED-Frankfurt; the rest are leased /24s (netutils/IPXO "End User Organization") originated by it. src: https://rdap.db.ripe.net/autnum/199218 (2026-09-19)
+AS203619  # IVPN Limited (GI) — IVPN egress: one /24, 89.124.253.0/24, netname GI-IVPN-20060308, maintainer lir-gi-ivpn-1-MNT. src: https://rdap.db.ripe.net/autnum/203619 (2026-09-19)
+AS397540  # Windscribe (CA) — Windscribe egress: aut-num WINDSCRIBE; netnames WINDSCRIBE-NET-01 / NET-WS-DR / WL-242; PeeringDB: "Primary network of Windscribe Limited. A VPN and Internet privacy tools company."; abuse@windscribe.com. src: https://rdap.arin.net/registry/autnum/397540 (2026-09-19)
+AS62651   # Strong Technology, LLC. (US) — StrongVPN / IPVanish / WLVPN (NetProtect) egress: aut-num NETPROTECT-DP; netnames NETPROTECT-IAD-DP, STL-*-DP city PoPs; PTR *.as62651.net; 1,563 published exits of 21,760 addresses (7.2%). src: https://rdap.arin.net/registry/autnum/62651 (2026-09-19)
+AS140952  # Strong Technology, LLC (US) — StrongVPN / IPVanish / WLVPN (NetProtect) egress: APNIC aut-num STL-AS-AP remark "Strong Technology, LLC"; netnames NETPR-*-GD city PoPs; PTR *.as140952.net; 276 exits of 3,584 (7.7%). src: https://rdap.apnic.net/autnum/140952 (2026-09-19)
+AS54203   # Strong Technology, LLC. (US) — StrongVPN / IPVanish / WLVPN (NetProtect) egress: aut-num NETPROTECT-SP; netnames STL-MCI-NOC; PTR *.as54203.net; 63 exits of 768 (8.2%). src: https://rdap.arin.net/registry/autnum/54203 (2026-09-19)
+AS141039  # PacketHub S.A. (PA) — NordVPN egress: APNIC aut-num PACKETHUBSA-AS-AP; netnames Packethub-* by country and NORDVPN-L20201219 (holder Packethub S.A.); 369 NordVPN exits of 7,936 (4.7%). Sibling AS207137 is already listed via X4BNet. src: https://rdap.apnic.net/autnum/141039 (2026-09-19)
+AS147049  # PacketHub S.A. (PA) — NordVPN egress: APNIC aut-num PACKETHUBSA-AS-AP; netnames Packethub-SA / Packethub-2025* and NORDVPN-L20210903 (holder Packethub S.A.); 668 NordVPN exits of 18,176 (3.7%). src: https://rdap.apnic.net/autnum/147049 (2026-09-19)
+AS206092  # F.N.S. HOLDINGS LIMITED (CY) — ExpressVPN egress: aut-num SECFIREWALLAS; of 27 sampled blocks, 15 are registered to holders literally named "VPN Consumer <city>" or "VPN-Consumer-US", plus PFX-EXPRESSVPN (Prefixx), LSW-CUST-EXPRESSVPN (LayerSwitch) and Express-Equinix-London; the other 9 are broker-leased /24s (IPXO, Micron-Hosting, IONIS, ...) it originates. 45 exits from the fetched lists (ExpressVPN publishes none). src: https://rdap.db.ripe.net/autnum/206092 (2026-09-19)

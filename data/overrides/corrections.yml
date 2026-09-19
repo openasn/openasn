@@ -233,3 +233,28 @@
   reason: "AAPT (Vocus) is a telecom carrier with DSL access space, not a host: sampled PTRs are cor8-ppp517.mel.dsl.connect.net.au and dsl-61-95-64-9.request.com.au (DSL) and *.static-ipl.aapt.com.au, and APNIC measures 25,071 end users. hosting is wrong; isp is the minimal fix (business would be a further claim this entry does not make)."
   source_url: "https://rdap.apnic.net/ip/61.95.0.0"
   date: 2026-09-19
+
+# --- Pass 4 (2026-09-19): eyeball networks ipverse calls hosting, found during the mobile research ---
+24432:
+  category: isp
+  reason: "AS24432 is Robi Axiata, Bangladesh's second mobile operator: APNIC aut-num AXIATA-ROBI-AS-AP, registrant Axiata (Bangladesh) Limited, remark 'Internet service Provider'; its inetnums are AXIATA-BD 'Robi Axitata Ltd- DATA'; APNIC measures 4,458,276 end users behind only 20,992 IPv4 addresses (212 per address, carrier NAT). hosting labels millions of subscribers as servers. (Not in mobile_carrier.txt: no inetnum says cellular.)"
+  source_url: "https://rdap.apnic.net/autnum/24432"
+  date: 2026-09-19
+
+131429:
+  category: isp
+  reason: "AS131429 (aut-num MOBIFONE-AS-VN) is MobiFone, a Vietnamese mobile operator: its blocks are assigned to MobiFone regional service companies, its NOC and its international telecom centre; APNIC measures 2,458,308 end users behind 84,736 IPv4 addresses (29 per address). A few /22s are assigned to cloud customers (CLOUDMEDIA-VN, CLOUDONE-VN), which does not make the AS a host."
+  source_url: "https://rdap.apnic.net/ip/59.153.220.0"
+  date: 2026-09-19
+
+24499:
+  category: isp
+  reason: "AS24499 (aut-num TPP-AS-PK) is Telenor Pakistan, a mobile operator: its own blocks are netname TPP-PK 'Telenor Pakistan (Pvt) Ltd' and it also routes small fixed ISPs (FIBERZONE, Hazara Communication Cable Net, Lahore Digital Network); APNIC measures 2,004,545 end users behind 20,480 IPv4 addresses (98 per address). hosting is wrong."
+  source_url: "https://rdap.apnic.net/ip/37.111.128.0"
+  date: 2026-09-19
+
+29614:
+  category: isp
+  reason: "AS29614 (AFRINIC as-name GHANATEL-AS) is Vodafone Ghana's (now Telecel Ghana) access network: sampled PTRs are 41-218-224-9-adsl-dyn.4u.com.gh, 41-210-32-9-adsl-static.4u.com.gh and 64-155-41-9-dedicatedinternet.vodafone.com.gh, and APNIC measures 2,151,222 end users. hosting labels Ghanaian broadband subscribers as servers."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/29614"
+  date: 2026-09-19

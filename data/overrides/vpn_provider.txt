@@ -9,7 +9,8 @@
 # Curation bar: the ASN must be either (a) hand-curated as VPN infrastructure
 # by X4BNet (first-party, MIT), or (b) registered to an organization whose
 # primary business is a consumer VPN/anonymizer product, evidenced by the
-# ipverse as-metadata description (CC0). Mixed-use hosting providers whose
+# RIR aut-num registrant (RDAP; since 2026-09-19 P4-C2 - the ipverse
+# description, a bulk WHOIS copy, is no longer a source). Mixed-use hosting providers whose
 # customers *include* VPNs (e.g. Datacamp/CDN77's parent AS60068) do NOT
 # belong here — the range overlay handles those selectively.
 #
@@ -35,15 +36,13 @@ AS401401  # Unredacted Inc. src: https://raw.githubusercontent.com/X4BNet/lists_
 AS401720  # Unredacted Inc. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/vpn/ASN.txt (2026-07-04)
 
 # --- VPN companies operating their own ASN (evidence: ipverse as-metadata org descriptions) ---
-AS197141  # Mullvad VPN AB (SE). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Mullvad VPN AB" (2026-07-04)
-AS216025  # Mullvad VPN AB (SE). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Mullvad VPN AB" (2026-07-04)
-AS201665  # Anonymizer LLC (US) — commercial anonymizer. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Anonymizer LLC" (2026-07-04)
-AS208765  # Bullet Proof VPN Ltd (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Bullet Proof VPN Ltd" (2026-07-04)
-AS213163  # FREE UNLIMITED VPN LTD (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "FREE UNLIMITED VPN LTD" (2026-07-04)
-AS216059  # FREE VPN APP LIMITED (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "FREE VPN APP LIMITED" (2026-07-04)
-AS219467  # SUYOU VPN LIMITED (GB). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "SUYOU VPN LIMITED" (2026-07-04)
-AS397282  # Castle VPN (US). src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Castle VPN" (2026-07-04)
-AS154050  # GAMING VPN PTY LTD (AU) — consumer gaming VPN egress. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "GAMING VPN PTY LTD" (2026-07-04)
+AS197141  # Mullvad VPN AB (SE). src: https://rdap.db.ripe.net/autnum/197141 (aut-num MULLVAD, registrant Mullvad VPN AB) (2026-09-19)
+AS216025  # Mullvad VPN AB (SE). src: https://rdap.db.ripe.net/autnum/216025 (aut-num MULLVAD-AS, registrant Mullvad VPN AB) (2026-09-19)
+AS201665  # Anonymizer LLC (US) — commercial anonymizer. src: https://rdap.db.ripe.net/autnum/201665 (aut-num KSTNETWORKS, registrant Anonymizer, LLC) (2026-09-19)
+AS208765  # Bullet Proof VPN Ltd (GB). src: https://rdap.db.ripe.net/autnum/208765 (aut-num Bulletproof, registrant Bullet Proof VPN Ltd) + https://www.peeringdb.com/asn/208765 (operator record "Bullet Proof VPN Ltd") (2026-09-19)
+AS219467  # SUYOU VPN LIMITED (GB). src: https://rdap.db.ripe.net/autnum/219467 (aut-num SUYOU-NET, registrant SUYOU VPN LIMITED) (2026-09-19)
+AS397282  # Castle VPN (US). src: https://rdap.arin.net/registry/autnum/397282 (aut-num CASTLEVPN, registrant Castle VPN) (2026-09-19)
+AS154050  # GAMING VPN PTY LTD (AU) — consumer gaming VPN egress. src: https://rdap.apnic.net/autnum/154050 (aut-num GAMINGVPNPTYLTD-AS-AP, registrant GAMING VPN PTY LTD) (2026-09-19)
 
 # --- Sweep 2026-09-19 (pass 4): VPN operators' own ASNs, found by exact-IP measurement ---
 # Discovery: every public IPv4 in 18 first-party VPN exit lists (fetched 2026-09-12) mapped to its
@@ -73,3 +72,9 @@ AS54203   # Strong Technology, LLC. (US) — StrongVPN / IPVanish / WLVPN (NetPr
 AS141039  # PacketHub S.A. (PA) — NordVPN egress: APNIC aut-num PACKETHUBSA-AS-AP; netnames Packethub-* by country and NORDVPN-L20201219 (holder Packethub S.A.); 369 NordVPN exits of 7,936 (4.7%). Sibling AS207137 is already listed via X4BNet. src: https://rdap.apnic.net/autnum/141039 (2026-09-19)
 AS147049  # PacketHub S.A. (PA) — NordVPN egress: APNIC aut-num PACKETHUBSA-AS-AP; netnames Packethub-SA / Packethub-2025* and NORDVPN-L20210903 (holder Packethub S.A.); 668 NordVPN exits of 18,176 (3.7%). src: https://rdap.apnic.net/autnum/147049 (2026-09-19)
 AS206092  # F.N.S. HOLDINGS LIMITED (CY) — ExpressVPN egress: aut-num SECFIREWALLAS; of 27 sampled blocks, 15 are registered to holders literally named "VPN Consumer <city>" or "VPN-Consumer-US", plus PFX-EXPRESSVPN (Prefixx), LSW-CUST-EXPRESSVPN (LayerSwitch) and Express-Equinix-London; the other 9 are broker-leased /24s (IPXO, Micron-Hosting, IONIS, ...) it originates. 45 exits from the fetched lists (ExpressVPN publishes none). src: https://rdap.db.ripe.net/autnum/206092 (2026-09-19)
+
+# ============== P4-C2 (2026-09-19): re-sourced 7 lines, removed 2 ==============
+# REMOVED AS213163 ("FREE UNLIMITED VPN LTD") and AS216059 ("FREE VPN APP LIMITED"): neither ASN is
+# registered any more - RIPE returns only the parent as-block and RIPEstat shows no holder - so the
+# 07-04 description string was stale, and a line on a returned ASN would flag its NEXT holder as a
+# VPN. src: https://rdap.db.ripe.net/autnum/213163 (404) + https://stat.ripe.net/data/as-overview/data.json?resource=AS216059 (2026-09-19)

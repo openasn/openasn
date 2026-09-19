@@ -180,7 +180,6 @@ AS48503   # Mobile Telecom-Service LLP (Tele2 + ALTEL 4G, KZ) — operator's own
 # https://rdap.db.ripe.net/ip/188.49.192.0 + https://rdap.afrinic.net/rdap/ip/41.1.0.0 (2026-09-19)
 
 # --- North America ---
-AS6167    # Cellco Partnership d/b/a Verizon Wireless (US) — dedicated cellular: ARIN aut-num name "CELLCO-PART" (Cellco Partnership is Verizon Wireless's legal entity) and its largest allocation 97.128.0.0/9 is NetName "WIRELESSDATANETWORK"; rDNS 9.sub-97-237-48.myvzw.com (myvzw.com = My Verizon Wireless). 18,230,078 APNIC-estimated end users. Verizon's fixed/Fios consumer broadband is the separate AS701. src: https://rdap.arin.net/registry/autnum/6167 (2026-09-12)
 
 # --- Europe ---
 AS20978   # TT Mobil / Avea (TR) — cellular; RIPE aut-num TT_Mobil, org ORG-ITHA1-RIPE (mnt AVEA-MNT) holds only this AS, inetnums 5.47.0.0/16, 37.155.0.0/16, 46.104.128.0/17 all netname AVEA "AVEA Iletisim Hizmetleri A.S."; Turk Telekom's fixed subscribers are on AS9121. src: https://rdap.db.ripe.net/ip/5.47.0.9 (2026-09-12)
@@ -200,7 +199,7 @@ AS36998   # Zain Sudan / Mobitel (SD) — AFRINIC as-name SDN-MOBITEL descr "MOB
 AS37440  # Airtel Malawi (MW) — AFRINIC inetnums 105.234.0.0/17 descr "Airtel Malawi GPRS subscribers" and 129.140.0.0/17 + 137.115.0.0/17 + 137.196.0.0/17 all descr "Mobile Internet"; rDNS *.r.airtel.mw is Airtel's group cellular template. 2,619,972 APNIC users / 16,896 IPv4 = 155 per address. ipverse says category=hosting; corrections.yml sets isp so this flag takes effect. src: https://stat.ripe.net/data/whois/data.json?resource=105.234.0.0 (2026-09-12; independently re-verified 2026-09-19)
 AS328988  # Safaricom Telecommunications Ethiopia (ET) — mobile-licence entrant with no fixed plant (the incumbent fixed network is Ethio Telecom AS24757); AFRINIC registrant ORG-STEP1-AFRINIC, inetnums STEP-NE* "Safaricom Ethiopia-NET13", no fixed/enterprise netname in its 5 announced ranges; 5,231,302 APNIC users over 9,216 IPv4 = 567 users/IP (carrier NAT). Verified independently 2026-09-19. src: https://rdap.afrinic.net/rdap/autnum/328988 (2026-09-19)
 
-# ============== IPv6 + full-census audit 2026-09-19 (P4-C2): 59 -> 23 lines ==============
+# ============== IPv6 + full-census audit 2026-09-19 (P4-C2): 59 -> 22 lines ==============
 # WHY. The independent verifier (CV) removed AS29357 on an IPv6 customer block that every earlier
 # check had missed: they looked at IPv4 only, and sampled at most 15 ranges. This pass re-checked
 # EVERY line against EVERY prefix it announces (RIPEstat announced-prefixes, v4 and v6), pulling for
@@ -242,7 +241,9 @@ AS328988  # Safaricom Telecommunications Ethiopia (ET) — mobile-licence entran
 #   AS211908 Horizon Scope  its own PeeringDB: ISP/ICT for businesses and enterprises (Zain Iraq ICT arm)
 #   AS138322 AWCC         its own PeeringDB calls it the "Afghan Wireless Backbone ASN"; 9,286 users
 #   AS10728 AS11461 AS5079  T-Mobile-held but announce nothing: no census possible, unverifiable
-# KEPT (23): every block of each is a cellular/subscriber/own-platform object, IPv6 included.
+#   AS6167 Verizon Wireless  155.146.160.0/20 + 155.146.176.0/20 AMAZON-IAD, 155.146.192.0/20 AMAZON-PDX
+#                          (Amazon-registered edge-compute space) - pinned in eyeball_confirm.txt
+# KEPT (22): every block of each is a cellular/subscriber/own-platform object, IPv6 included.
 #   Judgement calls recorded as KEEP: AS36998 "ZAIN SD DATA CENTER" /23 and AS37440 "Airtel Malawi
 #   Corporate Network" /24 read as the operator's own platforms (as Banglalink, Mobiuz, Free Mobile
 #   SRV); AS48503's 174.35.103.0/24 is a CDNetworks cache reassignment; AS21928's T-Mobile Home

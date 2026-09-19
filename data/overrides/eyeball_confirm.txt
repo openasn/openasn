@@ -38,6 +38,7 @@ AS6830    # Liberty Global Europe (NL) — pan-EU consumer cable (UPC et al.); r
 AS7922    # Comcast Cable Communications LLC (US). src: ipverse as-metadata description "Comcast Cable Communications LLC" (2026-07-04)
 AS20115   # Charter Communications LLC (US). src: ipverse as-metadata description "Charter Communications LLC" (2026-07-04)
 AS22773   # Cox Communications Inc. (US). src: ipverse as-metadata description "Cox Communications Inc." (2026-07-04)
+AS6167    # Verizon Wireless / Cellco Partnership (US) — ARIN aut-num CELLCO-PART; cellular pools WIRELESSDATANETWORK 97.128.0.0/9 with PTRs *.myvzw.com; 17,820,161 APNIC-estimated end users. PINNED 2026-09-19 (P4-C2) instead of mobile_carrier.txt, which it fails on Amazon-registered edge-compute blocks (155.146.160.0/20 AMAZON-IAD) it originates; likely-human either way. src: https://rdap.arin.net/registry/autnum/6167 + https://rdap.arin.net/registry/ip/155.146.160.0 (2026-09-19)
 AS3352    # Telefónica de España S.A.U. (ES). src: ipverse as-metadata description "TELEFONICA DE ESPANA S.A.U." (2026-07-04)
 AS12430   # Vodafone España S.A.U. (ES). src: ipverse as-metadata description "VODAFONE ESPANA S.A.U." (2026-07-04)
 AS6739    # Vodafone ONO S.A. (ES). src: ipverse as-metadata description "VODAFONE ONO S.A." (2026-07-04)

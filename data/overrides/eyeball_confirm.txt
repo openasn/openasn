@@ -127,7 +127,7 @@ AS3269    # Telecom Italia S.p.A. (IT). src: ipverse as-metadata description "Te
 #   independent per-record pass (RDAP + a census of the INETNUM netnames inside each ASN own
 #   announced space + live rDNS + PeeringDB) overturned three of the fifteen.
 #     MOVED to mobile_carrier.txt (pin deleted here in the same commit): AS23693, AS17421,
-#       AS328988 (2026-09-19). AS45609 and AS39891 were moved 2026-09-12 and RESTORED here
+#       AS328988 + AS201767 (2026-09-19). AS45609 and AS39891 were moved 2026-09-12 and RESTORED here
 #       2026-09-19 by the independent verifier: each originates a registry-labelled fixed
 #       block (ABTS-DSL-DEL; Jeddah-Residential-Fixed-Broadband), which fails the file bar.
 #     KEPT here, the seed was WRONG: AS4818 (aut-num DIGIIX-AP "DiGi Internet Exchange";
@@ -140,7 +140,9 @@ AS3269    # Telecom Italia S.p.A. (IT). src: ipverse as-metadata description "Te
 #     KEPT here after the 2026-09-19 verification (converged/unsure): AS26611 (Comcel is
 #       the legal holder of Claro Colombia fixed too; 0.96 users/IPv4), AS327712 (originates
 #       213.140.59.0/24 ADSL-Algerie-Telecom "permanent customers").
-#     STILL PENDING research, pin stays for now: AS327931, AS201767, AS39603, AS17853, AS21497.
+#     KEPT here after verification 2026-09-19: AS39603 Play (PLAY_FBB 109.243.0.0/16 in the AS),
+#       AS17853 LG Uplus (BORANET_customer blocks), AS327931 Djezzy (OTA-VSAT-NET enterprise VSAT).
+#     MOVED 2026-09-19: AS201767 Uzmobile. STILL PENDING research, pin stays for now: AS21497.
 #   src: https://rdap.apnic.net/autnum/4818 + https://rdap.lacnic.net/rdap/autnum/12252 +
 #   https://rdap.db.ripe.net/autnum/44244 (2026-09-12)
 #
@@ -257,7 +259,6 @@ AS1221    # Telstra (AU) — 9,093,802 APNIC-estimated end users (world eyeball 
 AS4804    # Optus consumer (AU) — APNIC registrant is SingTel Optus Pty Ltd, but the aut-num NAME is the legacy "MPX-AS" with remark "Microplex PTY LTD | Australia Border AS" (an acquired AS Optus never renamed). Recorded so a future name-based sweep does not read it as a lookalike. 4,010,424 APNIC-estimated end users (world eyeball rank 198), 9,207,040 IPv4 addresses. src: https://rdap.apnic.net/autnum/4804 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "SingTel Optus Pty Ltd" category "isp" (2026-09-05)
 
 AS8193    # Uzbektelekom, the FIXED incumbent AS (UZ) — RIPE aut-num name "BRM-AS", registrant "Uzbektelekom" Joint Stock Company; the group's cellular arm is AS201767 Uzmobile, pinned separately under the same holder string. 8,381,504 APNIC-estimated end users (world eyeball rank 80), 96,256 IPv4 addresses. src: https://rdap.db.ripe.net/autnum/8193 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Uzbektelekom Joint Stock Company" category "isp" (2026-09-05)
-AS201767  # Uzmobile, Uzbektelekom's CELLULAR arm (UZ) — RIPE aut-num name "UZMOBILE-AS"; same holder string as AS8193, only the aut-num name separates them. 3,561,842 APNIC-estimated end users (world eyeball rank 222) behind 2,816 IPv4 addresses (1,265 users/address — the mobile CGNAT signature). Dedicated cellular -> mobile_carrier.txt candidate (D-IMPL-4). src: https://rdap.db.ripe.net/autnum/201767 (2026-09-12) + https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json category "isp" (2026-09-05)
 
 AS21826   # Inter Telemic (VE) — 2,590,008 APNIC-estimated end users (world eyeball rank 290), 660,992 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "Corporación Telemic C.A." category "isp" (2026-09-05)
 AS264628  # Fibex (VE) — 1,972,748 APNIC-estimated end users (world eyeball rank 350), 8,448 IPv4 addresses. src: https://raw.githubusercontent.com/ipverse/as-metadata/master/as.json description "CORPORACION FIBEX TELECOM C.A." category "isp" (2026-09-05)

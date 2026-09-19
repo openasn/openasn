@@ -169,3 +169,10 @@
   reason: "Vodacom South Africa's cellular subscriber AS (AFRINIC as-name VODACOM-ZA): its announced space is registered as mobile subscriber pools - 41.5.0.0/16 netname Vodacom_UMTS_Cape_Town_Western_Cape_INTERNET_APN 'Legal IP block for UMTS users in Cape Town', 41.13-41.22 'Legal IP Block for Internet APN' - and sampled PTRs are vc-*.umts.vodacom.co.za. APNIC measures 3,904,413 end users behind it. ipverse says business, which labels South African mobile subscribers as a corporate network; isp is right. (It is not in mobile_carrier.txt because 41.1.0.0/16 is still registered to the 'Vodacom Wimax BU'.)"
   source_url: "https://rdap.afrinic.net/rdap/ip/41.5.0.0"
   date: 2026-09-19
+
+37440:
+  category: isp
+  network_role: access_provider
+  reason: "Airtel Malawi is Malawi's largest mobile operator, not a hosting provider: its AFRINIC inetnums read 'Airtel Malawi GPRS subscribers' (105.234.0.0/17) and 'Mobile Internet' (129.140.0.0/17, 137.115.0.0/17, 137.196.0.0/17, 137.64.0.0/17), rDNS is *.r.airtel.mw, and APNIC measures 2,619,972 end users behind 16,896 IPv4 addresses. ipverse's category=hosting would also make its mobile_carrier.txt line a no-op (hosting is tested before the mobile flag)."
+  source_url: "https://stat.ripe.net/data/whois/data.json?resource=105.234.0.0"
+  date: 2026-09-19

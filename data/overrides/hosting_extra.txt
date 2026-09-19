@@ -145,3 +145,15 @@ AS40430   # colo4jax LLC (US) — bar (c): ARIN aut-num COLO4JAX-AS remark verba
 # aut-num record (RDAP registrant = the hosting brand) instead; the X4B citation stays. All 19
 # registrants match their line (GoDaddy-owned Host Europe GmbH for AS21501/AS60253, HostRoyale for
 # AS44144 OMEGASOFT, NovoServe B.V. for AS204601 PODAON). Records: P4-C2-curation-2026-09-19.jsonl.
+
+# ============== P4-C2b (2026-09-19): bulletproof-hosting leads ==============
+# Three leads from the pass-4 researchers (Spamhaus ASN-DROP / Recorded Future / GreyNoise). None is in
+# X4B's datacenter input or bad-asn-list, so only bar (c), the registry's own wording, can admit one:
+#   AS216246 RU-AEZA-AS (Aeza Group LLC) - NOT ADDED, not needed: ipverse already categorizes it hosting.
+#   AS203273 NetCrafters OU (EE) - NOT ADDED: aut-num and all 120 announced blocks are silent netnames
+#     (NetCrafters, NetCrafters-System-Moscow/-Frankfurt), no PeeringDB record, no brand site; the only tie
+#     to hosting is Spamhaus ASN-DROP listing it under aeza.net, a third-party reputation list, not a bar.
+#     Leave to the X4B range overlay; re-propose only with registry or operator evidence.
+# The AEZA main AS210644 (OFAC SDN) reads ipverse "business" and is not in either curated list either;
+# its aut-num has no datacenter wording, so it stays out on the same ground (lead for the next pass).
+AS209847  # WorkTitans B.V. / THE.Hosting (NL) — bar (c): the RIPE aut-num's admin/tech role is THE-HOSTING (mnt THE-HOSTING-MNT) and 30 of its 35 announced IPv4 prefixes sit in holder-registered netnames THE-HOSTING / MD-HOSTING-* (the IPv6 is leased LVNET/"DISTRIBUTED SAAS" space, no access-network object); its operator PeeringDB record "THE Hosting" points to the.hosting, which sells VPS and dedicated servers. Stark Industries/PQ Hosting successor per Recorded Future; Spamhaus ASN-DROP. APNIC "users" are proxy-egress artifacts. src: https://rdap.db.ripe.net/autnum/209847 + https://rdap.db.ripe.net/ip/185.153.182.0 + https://www.peeringdb.com/asn/209847 + https://the.hosting/ + https://www.recordedfuture.com/research/one-step-ahead-stark-industries-solutions-preempts-eu-sanctions (2026-09-19)

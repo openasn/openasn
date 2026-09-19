@@ -18,11 +18,15 @@
 #     source_url: "https://evidence"
 #     date: YYYY-MM-DD
 #
-# First entries filed 2026-07-07 — surfaced by the enrichment pilot's
-# flywheel (docs/openasn-enrichment-plan-v1.md §17): the LLM draft flagged
-# these ipverse category errors and a human verified each against the
-# company's own site before publishing. The loader validates every field
-# (pipeline/lib/overrides.rb); the PR lint mirrors it (scripts/lint_overrides.rb).
+# First entries filed 2026-07-07 — surfaced by the correction flywheel this
+# file exists to serve: an LLM-assisted enrichment pass reads public sources
+# per ASN and DRAFTS candidate category errors, a human verifies each against
+# the company's own site, and only the verified, source-cited line is
+# published. LLM output never writes this file directly; a human-reviewable,
+# evidenced line does (AGENTS.md rule 2, and DECISIONS.md D-CUR-1 for what a
+# curator may consult per record while deciding).
+# The loader validates every field (pipeline/lib/overrides.rb); the PR lint
+# mirrors it (scripts/lint_overrides.rb).
 
 393961:
   category: business
@@ -35,3 +39,127 @@
   reason: "Adhesives Research Inc. is a private specialty-materials / adhesive-tape manufacturer (est. 1961); ipverse as-metadata mislabels it education_research (misled by the word 'Research')."
   source_url: "https://www.adhesivesresearch.com/"
   date: 2026-07-07
+# ============================ Sweep 2026-09-05 (M1) ============================
+# 16 upstream category errors on LARGE CONSUMER NETWORKS. ipverse as-metadata labels each of
+# these `hosting` or `business`; every one is a retail broadband or mobile operator, so today
+# OpenASN answers ":hosting" or ":business" for roughly 180 million people's home and phone traffic.
+#
+# METHOD. Candidates came from ranking every routed ASN by APNIC estimated end users and keeping
+# those NOT categorized `isp` (252 ASNs) — the population where an upstream category error costs
+# the most. Opus researchers worked the list per record (RDAP, the operator's own site, Wikipedia,
+# the national regulator, and reverse DNS on addresses inside announced prefixes). The manager then
+# INDEPENDENTLY re-checked the identity of every ASN below against the RIR's RDAP registrant before
+# writing it here, and the registrant name appears in each `reason`. Only ASNs that survived both
+# passes are in this file; the sweep's remaining candidates are held for a second adversarial pass
+# rather than shipped on one researcher's word.
+#
+# WHY `category` ONLY, NEVER `network_role`. ipverse derives networkRole from position in the
+# routing graph, which is a DIFFERENT claim from "what kind of network is this", and it is usually
+# right: MTN Nigeria genuinely is a midsize transit provider as well as an access network. It also
+# cannot change the verdict (category isp + any role except tier1_transit -> :residential_isp).
+# Correcting only what we verified keeps every entry minimal and reviewable.
+#
+# KNOWN LIMITATION — READ THIS BEFORE TRUSTING THE TOP TWO. AS29465 (MTN Nigeria) and AS36873
+# (Airtel Nigeria) will STILL classify :hosting after this correction, because both are also stale
+# false positives in brianhama/bad-asn-list: pipeline/compile.rb ORs FLAG_BAD_ASN on AFTER this
+# file is applied, and pipeline/lib/classifier.rb ranks that flag above every category. Nothing in
+# data/overrides/ can currently override an upstream infrastructure list. The corrections are
+# recorded anyway because they are true and they pre-position the fix; making them effective needs
+# the upstream removal and/or a pipeline change letting curated eyeball evidence suppress the flag.
+
+2527:
+  category: isp
+  reason: "JPNIC (via APNIC RDAP) names AS2527 'So-net' with the holder description 'Sony Network Communications Inc.'; PeeringDB net 2275 gives the same holder, aka So-net, website so-net.ne.jp. rDNS is decisive: 11 of 12 sampled prefixes resolve to Japanese consumer FTTH naming - fp24020001.ap.nuro.jp, fp98a50001.tkyc518.ap.nuro.jp, pd2fa4001.nigtnt01.ap.so-net.ne.jp (the 12th, 103.241.124.0/22, has no PTR). So-net and NURO Hikari are two of Japan's large retail fibre brands; 3.87M IPv4 addresses, 4.1M APNIC end users. category=business classifies Japanese home fibre subscribers as corporate."
+  source_url: "https://jpnic.rdap.apnic.net/autnum/2527"
+  date: 2026-09-12
+
+10620:
+  category: isp
+  reason: "LACNIC registers AS10620 to 'Telmex Colombia S.A.' (handle CO-ACSA-LACNIC), America Movil / Claro Colombia's fixed-line arm, with abuse contact at claro.com.co. Decisive rDNS: 12 of 12 sampled prefixes resolve to consumer-access naming under cable.net.co - dynamic-ip-18149721.cable.net.co, static-ip-1815691.cable.net.co, dynamic-ip-1861442471.cable.net.co. It announces ~3,445 prefixes / 1.86M IPv4 addresses and APNIC measures 6.36M end users, Colombia's second-largest eyeball network after UNE EPM. category=business is wrong."
+  source_url: "https://rdap.lacnic.net/rdap/autnum/10620"
+  date: 2026-09-12
+
+17552:
+  category: isp
+  reason: "Decisive rDNS: 12 of 12 sampled prefixes resolve to consumer-access naming under asianet.co.th - ppp-171-96-31-1.revip8.asianet.co.th (PPPoE DSL), cm-171-101-192-1.revip11.asianet.co.th (cable modem), wf-171-99-0-1.revip9.asianet.co.th. APNIC's RDAP names the AS 'TRUEONLINE-AS-AP' with the remark 'True Online', registrant TRUE INTERNET CORPORATION CO. LTD. TrueOnline is Thailand's largest fixed broadband brand and APNIC measures 7.8M end users behind this ASN (Thail…"
+  source_url: "https://rdap.apnic.net/autnum/17552"
+  date: 2026-09-05
+
+17858:
+  category: isp
+  reason: "KRNIC names AS17858 POWERVIS-AS-KR-KR with description 'LG POWERCOMM'; both role contacts are ipadm@lguplus.co.kr at LG Uplus's Yongsan HQ, so LG Uplus operates it today (Powercom merged into LG U+ in July 2010). Its largest block, 115.136.0.0/13, is registered netname 'Xpeed-KR' - Xpeed is LG's residential FTTH brand - decisive proof this is consumer access space. 20.6M IPv4 across 218 prefixes; APNIC measures 10.6M end users, Korea #2 behind Korea Telecom. No PTRs are published, which is normal for Korean consumer space. category=business misfiles a tenth of South Korea."
+  source_url: "https://krnic.rdap.apnic.net/ip/115.136.0.0"
+  date: 2026-09-12
+
+20294:
+  category: isp
+  reason: "AFRINIC registers AS20294 to 'MTN Uganda' (ORG-MU2-AFRINIC) with every role contact on @mtn.com. Registry netnames inside its space are explicitly retail: 41.210.128.0/24 'Internet-Client-Allocations / Broadband Allocation pool' and 41.210.160.0/19 'Wimax-clients'. rDNS resolves to *.ips.mtn.co.ug subscriber hosts. MTN Uganda is the country's largest telecom with 24.4M customers (July 2026), and APNIC measures 7.4M end users behind this ASN - Uganda's largest eyeball network, ahead of Airtel Uganda. category=hosting turns Uganda's biggest consumer network into servers."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/20294"
+  date: 2026-09-12
+
+27699:
+  category: isp
+  reason: "registro.br registers AS27699 to 'TELEFÔNICA BRASIL S.A' (CNPJ 02558157000162) with abuse contact 'CSIRT TELEFONICA BR'; PeeringDB net 20486 gives its aka as 'Vivo'. Decisive rDNS: 12 of 12 sampled prefixes resolve to Vivo consumer-access naming - 152-249-0-1.user.vivozap.com.br, 177-94-0-1.dsl.telesp.net.br, 201-0-214-1.dial-up.telesp.net.br (vivozap = Vivo, telesp = the legacy Telefonica Sao Paulo DSL domain, ajato = the legacy cable brand). 6.56M IPv4 addresses, 5.95M APNIC end users. category=business is wrong."
+  source_url: "https://rdap.registro.br/autnum/27699"
+  date: 2026-09-12
+
+28403:
+  category: isp
+  reason: "LACNIC registers AS28403 to 'RadioMovil Dipsa, S.A. de C.V.' (MX-RDSA-LACNIC), the legal entity trading as Telcel, Mexico's largest mobile operator; the admin/tech/abuse contact is at telcel.com. Decisive rDNS: 12 of 12 sampled prefixes resolve to the movil-200-068-128-001.itelcel.com subscriber template (itelcel.com is Radiomovil Dipsa's network domain). APNIC measures 4.6M end users behind only 17,920 IPv4 addresses - extreme CGNAT, an eyeball signature. category=business classifies Mexican mobile subscribers as corporate networks."
+  source_url: "https://rdap.lacnic.net/rdap/autnum/28403"
+  date: 2026-09-12
+
+29465:
+  category: isp
+  reason: "RIPE registers AS29465 (VCG-AS) to 'MTN NIGERIA Communication limited' (ORG-VGC1-RIPE). Its mass-subscriber pool is 102.88.0.0/13, registered netname 'MTN-Nigeria'; 41.206.0.0/24 is descr 'HUAWAI PREPAID SOLUTION', i.e. prepaid mobile infrastructure. (Note: the 197.210.0.0/16 sub-blocks are registered for enterprise internet, so they are not evidence of retail.) MTN Nigeria is the country's largest retail operator, and APNIC measures 43.7M end users behind this ASN - Nigeria #1, world eyeball rank 8. category=hosting is wrong. NOTE: FLAG_BAD_ASN still forces :hosting."
+  source_url: "https://rdap.db.ripe.net/autnum/29465"
+  date: 2026-09-12
+
+36873:
+  category: isp
+  reason: "AFRINIC registers AS36873 to 'Airtel Networks Limited' - Nigeria's second-largest retail mobile operator (~46.8M customers, ~27% market share), formerly Econet/Vmobile/Celtel/Zain, hence ipverse's stale 'CELTEL NIGERIA' description. It announces 577 prefixes of 105.112.0.0/12-family subscriber space and APNIC measures 17.5M end users behind it. category=hosting turns Nigeria's #2 consumer network into servers."
+  source_url: "https://en.wikipedia.org/wiki/Airtel_Nigeria"
+  date: 2026-09-05
+
+36925:
+  category: isp
+  reason: "AFRINIC registers AS36925 to MEDITELECOM (Medi Telecom, trading as Orange Maroc) with the admin/tech role object literally named 'ISP Orange Morocco' at isp_oma@orange.ma. Its address space is registered as retail: 105.191.0.0/16, 102.102.128.0/17, 196.120.48.0/20 and 45.218.96.0/20 are all netname 'Mobile_Costumers' descr '2G/3G/4G Mobile Costumers', and 41.87.128.0/20 is netname 'DSL' descr 'Dynamic DSL Orange Maroc Customers'. 291 prefixes / 8.23M IPv4; APNIC measures 9.1M end users, Morocco #2. category=hosting misclassifies most of Orange Morocco's customers as servers."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/36925"
+  date: 2026-09-12
+
+36935:
+  category: isp
+  reason: "AFRINIC registers AS36935 with registrant 'Vodafone Data' (ORG-RT2-AFRINIC, RT2 = Raya Telecom) and admin/tech contact 'Vodafone Egypt'; 82.129.144.0/20 is netname 'RAYA' descr 'Network Operator & Nationwide ISP'. Vodafone Egypt is the country's largest mobile operator (~51.5M active subscriptions, 2025) and, via Vodafone Data, its licensed fixed-data vehicle for consumer ADSL. The AS announces ~1,298 prefixes / 3.69M IPv4 and APNIC measures 7.2M end users - Egypt's second-largest eyeball network after TE Data. category=business classifies Egyptian consumers as corporate."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/36935"
+  date: 2026-09-12
+
+36947:
+  category: isp
+  reason: "AFRINIC registers AS36947 (as-name ALGTEL-AS, descr 'AS de ALGERIE TELECOM') to 'Telecom Algeria' (ORG-TA23-AFRINIC), contacts at djaweb.dz and algerietelecom.dz. Its space is registered as retail: 41.96.0.0/16 netname 'Oran' descr 'Residentiel', 105.102.0.0/18 descr 'fawri', and 197.200.160.0/19 'IP FIXE PPPOE' via 'AS fawri' (FAWRI is Algerie Telecom's retail internet brand, and the string ipverse uses as the description). Algerie Telecom is the sole fixed-broadband operator in Algeria with 4.46M fixed subscribers; APNIC measures 16.6M end users - Algeria #1 by far."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/36947"
+  date: 2026-09-12
+
+37020:
+  category: isp
+  reason: "AFRINIC registers AS37020 under ORG-CD1-AFRINIC with contact 'CELTEL DRC' (Celtel is Airtel's former name), contacts at cd.airtel.com. Registry netnames are mobile-core: 41.222.196.0/24 'GPRS - GPRS GTP & Internet access' and 41.243.3.0/24 'DRC-Goma-MPBN'. Decisive rDNS: 12 of 12 sampled prefixes resolve to Airtel DRC subscriber naming - 1-3-243-41.r.airtel.cd, 1-196-222-41.r.airtel.cd. Airtel DRC is one of the DRC's two largest mobile operators and APNIC measures 4.8M end users behind only 19,200 IPv4 addresses - extreme CGNAT, an eyeball signature. category=hosting is wrong."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/37020"
+  date: 2026-09-12
+
+37133:
+  category: isp
+  reason: "AFRINIC's registrant for AS37133 is literally 'Airtel Tanzania' (ORG-CT1-AFRINIC), contacts @airtel.co.tz - the 'Zain Tanzania' description is stale (Zain sold its African operations to Bharti Airtel in 2010). Netnames are mobile subscriber pools ('Airtel_Tanzania_3G_3', 'Airtel_Tanzania_3G_5') and PeeringDB net 7704 self-classifies as Cable/DSL/ISP. rDNS: 10 of 12 sampled prefixes resolve to 1-25-186-197.r.airtel.co.tz style subscriber names, 2 have no PTR. APNIC measures 4.1M end users behind 70,144 IPv4 addresses - Tanzania's largest eyeball network. category=hosting is wrong."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/37133"
+  date: 2026-09-12
+
+37148:
+  category: isp
+  reason: "AFRINIC registers AS37148 (as-name globacom-as) to 'Globacom Limited' (ORG-GL1-AFRINIC, the same org handle as AS328309), contacts @gloworld.com. Its retail pools are registered as such: 41.203.64.0/19 netname 'GLOMOBILE' descr 'GLO-Mobile Network Services' and 197.211.49.0/24 netname 'BROADACCESS'. (Parts of 129.205.0.0 and 197.211.0.0 are enterprise blocks, so pick examples with care.) Glo is Nigeria's mass-market mobile operator and ISP with 60.7M subscribers; APNIC measures 9.9M end users behind this ASN, Nigeria's #3 eyeball network. category=hosting misclassifies them as servers."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/37148"
+  date: 2026-09-12
+
+201776:
+  category: isp
+  reason: "Miranda-Media is the retail telecom operator of Crimea/Sevastopol and the Russian-occupied Donetsk, Luhansk, Zaporizhzhia and Kherson regions, selling home broadband, fixed telephony, mobile (GSM/UMTS/LTE) and TV; it is majority Rostelecom-linked and was created specifically to serve those territories. Its RIPE AS object lists Rostelecom/Fiord/RETN upstreams, Yandex/VK peers and a public geofeed - an eyeball ISP, not a hosting company. APNIC measures 19.8M end users…"
+  source_url: "https://en.wikipedia.org/wiki/Miranda_(telecommunications_company)"
+  date: 2026-09-05
+

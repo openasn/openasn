@@ -20,7 +20,7 @@
 # `rake overrides:candidates` keyword sweep + manual review.
 
 # --- North America ---
-AS6614    # T-Mobile USA Inc. (mobile-only carrier). src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
+AS6614    # T-Mobile USA Inc. (US) — cellular; legacy aut-num name USCC-ASN (US Cellular, whose wireless business T-Mobile acquired in 2025), ARIN registrant is TMOBI "T-Mobile USA, Inc." today, so the name/description mismatch is expected and not a lookalike. src: https://rdap.arin.net/registry/autnum/6614 (2026-09-12)
 AS21928   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
 AS10728   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
 AS11461   # T-Mobile USA Inc. src: ipverse as-metadata description "T-Mobile USA Inc." (2026-07-04)
@@ -29,7 +29,6 @@ AS20057   # AT&T Wireless Service (dedicated mobility AS, distinct from fixed AS
 AS32307   # NE Colorado Cellular Inc (Viaero Wireless). src: ipverse as-metadata description "NE COLORADO CELLULAR INC" (2026-07-04)
 
 # --- Europe ---
-AS6854    # PJSC MegaFon (RU, mobile). src: ipverse as-metadata description "PJSC MegaFon" (2026-07-04)
 AS25106   # Mobile TeleSystems JLLC (MTS Belarus). src: ipverse as-metadata description "Mobile TeleSystems JLLC" (2026-07-04)
 AS12958   # T2 Mobile LLC (Tele2 Russia, mobile-only). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
 AS39374   # T2 Mobile LLC (Tele2 Russia). src: ipverse as-metadata description "T2 Mobile LLC" (2026-07-04)
@@ -51,14 +50,12 @@ AS56041   # China Mobile Communications Corporation. src: ipverse as-metadata de
 AS56042   # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
 AS56047   # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
 AS132525  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
-AS138407  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
-AS139080  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
 AS140895  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
 AS141425  # China Mobile Communications Corporation. src: ipverse as-metadata description (2026-07-04)
 AS209141  # China Mobile International (Russia) LLC. src: ipverse as-metadata description (2026-07-04)
 AS17924   # SmarTone Mobile Communications Limited (HK). src: ipverse as-metadata description "Smartone Mobile communications Limited" (2026-07-04)
 AS9587    # DTAC TriNet Co. Ltd. (TH mobile). src: ipverse as-metadata description "DTAC TriNet Co. Ltd." (2026-07-04)
-AS133481  # Advanced Wireless Network Co. Ltd (AWN — AIS Thailand mobile). src: ipverse as-metadata description "ADVANCED WIRELESS NETWORK COMPANY LIMITED" (2026-07-04)
+AS131445  # AIS (TH) — AWN's DEDICATED cellular AS: RDAP aut-num name "AIS3G-2100-AS-AP" (the 2100 MHz mobile licence), remark "Advance Wireless Network"; 9,492,714 APNIC end users behind only 144,896 IPv4 addresses (~65 per address, the carrier-NAT signature). REPLACES AS133481, which is AIS's FIXED fibre network — see the Sweep 2026-09-12 note. src: https://rdap.apnic.net/autnum/131445 (2026-09-12)
 AS10030   # Celcom Axiata Berhad (MY mobile). src: ipverse as-metadata description "Celcom Axiata Berhad" (2026-07-04)
 AS10081   # DiGi Telecommunications Sdn Bhd (MY mobile). src: ipverse as-metadata description "DiGi Telecommunications Sdn Bhd" (2026-07-04)
 
@@ -69,3 +66,118 @@ AS138322  # Afghan Wireless Communication Company. src: ipverse as-metadata desc
 AS37009   # Mobile Telecommunications Ltd (MTC Namibia). src: ipverse as-metadata description "Mobile Telecommunications Ltd." (2026-07-04)
 AS48503   # Mobile Telecom-Service LLP (Tele2/Altel KZ). src: ipverse as-metadata description "Mobile Telecom-Service LLP" (2026-07-04)
 AS50257   # JV A-Mobile Ltd (Abkhazia mobile). src: ipverse as-metadata description "JV A-Mobile Ltd." (2026-07-04)
+
+# ============================ Sweep 2026-09-12 (N1) ============================
+# Four corrections found by an adversarial audit of this file against the RIRs' own RDAP records
+# (the file had been curated from ipverse org DESCRIPTIONS, which is exactly the trap the cdn.txt
+# header warns about: a description string identifies the legal HOLDER, not the network).
+#
+# 1. AS133481 REMOVED, AS131445 ADDED (a swap). Advanced Wireless Network Co. Ltd is the legal
+#    holder of BOTH of AIS Thailand's ASNs, so both carry the identical ipverse description
+#    "ADVANCED WIRELESS NETWORK COMPANY LIMITED" and the seed picked the wrong one. APNIC RDAP is
+#    unambiguous: AS133481 is aut-num "AIS-Fibre-AS-AP" with the remark "AIS Fibre" - AIS's FIXED
+#    FTTH network (553,216 IPv4 addresses over 610 prefixes, 7.32M APNIC end users), and it was
+#    answering :mobile for Thai home fibre subscribers. AS131445 is aut-num "AIS3G-2100-AS-AP" -
+#    the dedicated cellular network - and it was answering :residential_isp. An exact inversion.
+#    AS133481 needs no override: ipverse already categorizes it isp, so it now answers
+#    :residential_isp on its own. src: https://rdap.apnic.net/autnum/133481 +
+#    https://rdap.apnic.net/autnum/131445 (2026-09-12)
+#
+# 2. AS138407 and AS139080 REMOVED - both are DATACENTERS, not cellular networks. Their APNIC
+#    aut-num remarks say so verbatim: "The Internet Data Center of Guizhou Mobile Communication
+#    Company Limited" (CMNET-GZIDC-CN) and "...of Sichuan Mobile Communication Company Limited"
+#    (CMNET-SCIDC-CN). :mobile is a likely_human, never-hard-block verdict; asserting it over
+#    datacenter space is a false negative in the direction that costs an abuse-policy consumer
+#    the most. Both moved to hosting_extra.txt. src: https://rdap.apnic.net/autnum/138407 +
+#    https://rdap.apnic.net/autnum/139080 (2026-09-12)
+#
+# 3. AS6854 REMOVED - "PJSC MegaFon" is the holder, but the aut-num is SYNTERRA-AS and the RIPE
+#    record is a transit map (UpStreams / regional Peering / Customers / BGP communities for
+#    transit peers). rDNS across its space is backbone router naming - D1-MCH-gi0-1.314.main.
+#    synterra.ru, MSK-D1-DUB-gi1-0-0.76.main.synterra.ru - and APNIC measures 0 end users behind
+#    it. This is MegaFon's ex-Synterra fixed backbone, not its cellular subscriber network.
+#    src: https://rdap.db.ripe.net/autnum/6854 + rDNS of 83.222.192.1 / 83.222.208.1 (2026-09-12)
+#
+# KNOWN, DELIBERATELY LEFT: AS10728, AS11461, AS5079 (T-Mobile USA) and AS140895 (China Mobile
+# Anhui) currently announce no address space, so their lines change no verdict. They are kept as
+# hedges in case the ASNs are re-activated; they cost nothing because a flag with no ranges is
+# never consulted.
+#
+# NOT AUDITED THIS PASS: the file's recall. mobile_carrier is 40 lines against a world of
+# several hundred dedicated cellular ASNs; a ranked candidate list (routed ASNs with >=300k APNIC
+# end users and a cellular-looking name, none of them yet in any override file) is the input for
+# the next expansion. Known incompleteness is fine per the header; misclassification is not.
+
+# ======================= Sweep 2026-09-12 (P3-C) — worldwide expansion =======================
+# WHAT WAS DONE. The 175 highest-impact candidates worldwide (the 15 "dedicated-cellular pins"
+# named in eyeball_confirm.txt's header, the 66 keyword-flagged routed ASNs with >=300k APNIC end
+# users, and a brand sweep over every routed ASN with >=800k users) were ranked by measured
+# eyeball population and researched per record: RDAP for the aut-num, a CENSUS of the INETNUM
+# netnames inside the ASN's own announced space, live rDNS at prefix midpoints, PeeringDB, and the
+# operator's own product pages. An independent pass then re-derived every line below from the
+# registry or from live rDNS before it shipped.
+#
+# THE METHOD THAT MATTERS, for whoever extends this file next. The aut-num record alone is not
+# enough and the org DESCRIPTION is actively misleading (it names the legal holder, not the
+# network - the trap that produced the AIS inversion). What decides it is the netname census:
+#   cellular  -> *_APN_*, *-GPRS-*, *-UMTS-*, *-3G-*, *-LTE-*, *-Subscribers-*
+#   CONVERGED -> *-FIXED-DATA*, *FTTH*, *DSL*, *PPPoE*, WiMAX, *Leased Line*, *Enterprise*, *B2B*
+# and one converged block anywhere in the AS is a rejection, however many mobile blocks sit beside
+# it. Query it with `https://rdap.org/ip/<first address of a prefix the ASN announces>`, and sample
+# MANY prefixes: Orange Maroc AS36925 shows `Mobile_Costumers` on its four largest blocks and is
+# still a REJECT, because 41.87.128.0/20 in the same AS is "Dynamic DSL Orange Maroc Customers".
+#
+# THE RESULT IS MOSTLY REJECTIONS, and that is the bar working as designed. Of the top 60 ASNs on
+# Earth by eyeball population, 32 were rejected as converged, fixed, backbone or datacenter
+# networks. Named here so nobody re-proposes them: AS9808 China Mobile and the seven provincial
+# CMNET cores (AS56046 Jiangsu, AS24400 Shanghai, AS56048 Beijing, AS24445 Henan, AS56045 Jiangxi,
+# AS56044 Liaoning, AS56040 Guangdong - each aut-num describes the province's whole IP CORE
+# NETWORK and the shared CMNET inetnum declares both "Mobile Communications Network Operator in
+# China" and "Internet Service Provider in China"; AS24400's descr names Oriental Cable Network,
+# AS56048 announces 211.151.96.0/19 CHINA-21VIANET, AS56046 announces 45.250.28.0/22 Duchuang-IDC);
+# AS33771 Safaricom Kenya (SAFARICOM-FIXED-DATA in its own space); AS9534 Maxis; AS18001 Dialog;
+# AS20294 MTN Uganda (Wimax-clients); AS43766 Zain KSA (RYD-FTTH); AS26615 TIM Brasil; AS38623
+# Metfone (dynamic-ip-adsl.metfone.com.kh); AS812 Rogers (cpe.net.cable.rogers.com); AS5650
+# Frontier; AS4230 Embratel and AS4713 OCN (a backbone and a fixed fibre ISP held by mobile
+# groups); AS24560 AIRTELBROADBAND-AS-AP "Telemedia Services"; AS4761 Indosat; AS4775 Globe
+# Telecom (BAYAN-DSL-PPPoE-AP); AS36925 Orange Maroc; AS35819 Mobily (Broadband IP Range on every
+# sampled prefix); AS2518 BIGLOBE; AS36935 + AS24835 Vodafone Egypt; AS10139 SmartBro (a WISP);
+# AS63023 GTHost (a VPS host, not a carrier at all - a hosting_extra lead instead).
+#
+# THREE OF THE FIFTEEN SEED PINS DID NOT SURVIVE. eyeball_confirm.txt's header offers 15 ASNs as
+# an "authoritative seed"; it is a lead list, not an authority. AS4818 (DiGi/CelcomDigi) is
+# aut-num DIGIIX-AP "DiGi Internet Exchange" and CelcomDigi's own PeeringDB record says "We are
+# mobile and fixed operator in Malaysia" (info_type Cable/DSL/ISP). AS12252 (Claro Peru) carries
+# LACNIC registrant handle PE-TPSA4, Telmex Peru - the FIXED company America Movil absorbed.
+# AS44244 (MTN Irancell) has empty RIPE remarks, only untyped city pools, and positive
+# counter-evidence (2.145.192.0/18 Colo-Reserved, 85.185.36.0/22 MTN-Irancell-Datacenter-Services)
+# plus a TD-LTE fixed-wireless home product. All three keep their eyeball_confirm pin.
+#
+# NOTE ON PRECEDENCE (classifier.rb): FLAG_BAD_ASN | FLAG_HOSTING_EXTRA | FLAG_CDN and
+# category == "hosting" are all tested BEFORE FLAG_MOBILE, while category == "business" is tested
+# AFTER it. So a line here is a silent no-op on a `hosting`-categorized ASN unless corrections.yml
+# fixes the category too, and it works fine on a `business`-categorized one. AS29465 MTN Nigeria
+# is the standing example: it is in brianhama/bad-asn-list, so it answers :hosting whatever we do.
+
+# --- North America ---
+AS6167    # Cellco Partnership d/b/a Verizon Wireless (US) — dedicated cellular: ARIN aut-num name "CELLCO-PART" (Cellco Partnership is Verizon Wireless's legal entity) and its largest allocation 97.128.0.0/9 is NetName "WIRELESSDATANETWORK"; rDNS 9.sub-97-237-48.myvzw.com (myvzw.com = My Verizon Wireless). 18,230,078 APNIC-estimated end users. Verizon's fixed/Fios consumer broadband is the separate AS701. src: https://rdap.arin.net/registry/autnum/6167 (2026-09-12)
+
+# --- Europe ---
+AS15897   # Vodafone Turkey (TR) — cellular; RIPE inetnums 46.155.0.0/16 and 176.55.0.0/16 netname Vodafone-Turkey-Customer-IP-Pools descr "Vodafone Turkey 3G IP Pool", registrant ORG-RIHv1-RIPE holds only this AS (the fixed arm Vodafone Net is a separate org/AS). src: https://rdap.db.ripe.net/ip/46.155.0.9 (2026-09-12)
+AS16135   # Turkcell (TR) — cellular; RIPE aut-num TURKCELL-AS, org ORG-TA62-RIPE (the GSM licensee) holds only this AS, inetnum 176.90.0.0/15 netname TR-TURKCELL-INTERNET descr "Ankara GPRS (2G-3G)"; the group's fixed fibre arm Turkcell Superonline is the separate AS34984. src: https://rdap.db.ripe.net/ip/176.90.224.9 (2026-09-12)
+AS20978   # TT Mobil / Avea (TR) — cellular; RIPE aut-num TT_Mobil, org ORG-ITHA1-RIPE (mnt AVEA-MNT) holds only this AS, inetnums 5.47.0.0/16, 37.155.0.0/16, 46.104.128.0/17 all netname AVEA "AVEA Iletisim Hizmetleri A.S."; Turk Telekom's fixed subscribers are on AS9121. src: https://rdap.db.ripe.net/ip/5.47.0.9 (2026-09-12)
+
+# --- Asia-Pacific ---
+AS17421   # Chunghwa Telecom Mobile Business Group (TW) — APNIC aut-num EMOME-NET, remark "Mobile Business Group | Chunghwa Telecom Co., Ltd."; 4/4 sampled prefixes PTR *.emome-ip.hinet.net (emome = CHT cellular brand); CHT fixed broadband is the separate AS3462 HINET. src: https://rdap.apnic.net/autnum/17421 (2026-09-12)
+AS23693   # Telkomsel (ID) — dedicated cellular: APNIC aut-num name "TELKOMSEL-ASN-ID", description "Cellular Network Provider", and 12 of 12 sampled prefixes are netname TELKOMSEL-ID with the same "Cellular Network Provider" descr; rDNS dynamic-pool-telkomsel-114-124-0-9.telkomsel.net.id. 27,094,979 APNIC users over 2,416,384 IPv4. Telkom Indonesia's IndiHome fixed broadband stays on the separate AS7713 TELKOMNET-AS-AP. src: https://rdap.apnic.net/autnum/23693 (2026-09-12)
+AS24389   # Grameenphone (BD) — cellular; APNIC aut-num GRAMEENPHONE-AS-AP descr "Cell Phone Operator", inetnums 37.111.192.0/18 and 119.30.32.0/20 descr "Internet service provider via GPRS/EDGE"; 4,480,082 APNIC users on 20,480 IPv4 = 219 users/IPv4. src: https://rdap.apnic.net/autnum/24389 (2026-09-12)
+AS45609   # Bharti Airtel Mobility (IN) — dedicated cellular: APNIC aut-num name "BHARTI-MOBILITY-AS-AP", remark "Bharti Airtel Ltd. AS for GPRS Service"; 28 of 30 sampled prefixes are descr BHARTI-AIRTEL-LTD-MOBILITY-SERVICES-IN / GPRS-Subscribers-in-North / BCL (Bharti Cellular Ltd), and no sampled subscriber IP has a PTR. 142,258,928 APNIC users over 3,700,992 IPv4 = 38.4 users/IP (carrier NAT). Airtel's fixed arm is the separate AS24560 AIRTELBROADBAND-AS-AP "Telemedia Services". src: https://rdap.apnic.net/autnum/45609 (2026-09-12)
+
+# --- Middle East / Africa / Latin America ---
+AS22085   # Claro S/A mobile (BR) — 4/4 sampled prefixes PTR *.3g.claro.net.br; registro.br responsible "BCP SA", Claro's legacy cellular company; Claro fixed cable is the separate AS28573 Claro NXT (*.virtua.com.br). src: https://rdap.lacnic.net/rdap/autnum/22085 (2026-09-12)
+AS29975   # Vodacom South Africa (ZA) — AFRINIC as-name VODACOM-ZA; 4/4 sampled prefixes PTR *.umts.vodacom.co.za; inetnums Vodacom_UMTS_Cape_Town_Western_Cape_INTERNET_APN "Legal IP block for UMTS users", VODA-GPRS and VODACOM-UMTS; 3,904,413 APNIC end users. src: https://rdap.afrinic.net/rdap/autnum/29975 (2026-09-12)
+AS36998   # Zain Sudan / Mobitel (SD) — AFRINIC as-name SDN-MOBITEL descr "MOBITEL"; sampled prefixes are inetnums ZAIN_SD_2G_3G_LTE_APN_Internet_HW_Pool-1, ZAIN-SD-APNs and ZAINSD-2G-3G-LTE-Customer-NTK; 4,132,912 APNIC end users behind 86,528 IPv4 = 48 users/IPv4. src: https://rdap.afrinic.net/rdap/autnum/36998 (2026-09-12)
+AS37020   # Airtel DRC (CD) — cellular; AFRINIC netname DRC-3G descr "Reserved for Goma GGSN PDP allocation" (41.243.128.0/18) and "GPRS - GPRS GTP & Internet access" (41.222.196.0/24), rDNS *.r.airtel.cd; 4.73M APNIC users on 19,200 IPv4 = 246 users/IPv4. src: https://rdap.afrinic.net/rdap/ip/41.243.128.9 (2026-09-12)
+AS37075   # Airtel Uganda (UG) — cellular; AFRINIC netnames Mobile_data / Mobile_Data_Service descr "Assigned for Mobile Data Service for 2G , 3G & 4G" remarks "Airtel_Uganda_Mobile subs" on 102.80.0.0/14 and 154.228.0.0/14, rDNS 4/4 *.r.airtel.ug. src: https://rdap.afrinic.net/rdap/ip/154.230.128.9 (2026-09-12)
+AS37133   # Airtel Tanzania (TZ) — AFRINIC as-name airtel-tz-as, registrant "Airtel Tanzania" (ipverse's "Zain Tanzania" is stale); 156.156.0.0/14 and 197.152.0.0/16 are inetnums named Airtel-Tanzania-3G; PTR *.r.airtel.co.tz; 3,858,396 APNIC end users behind 70,144 IPv4 = 55 users/IPv4. src: https://rdap.afrinic.net/rdap/autnum/37133 (2026-09-12)
+AS39891   # STC Al Jawwal (SA) — dedicated cellular: RIPE aut-num name "ALJAWWALSTC-AS", remark "3G AlJawwal, Saudi Telecom Company Saudi Arabia"; 36 of 40 sampled prefixes are netname Riyadh/Jeddah/Dammam/Madinah-Residential-Mobile-Broadband or STC_MBB (one stray /24, 188.54.145.0/24, is Residential-Fixed-Broadband). 12,625,712 APNIC users over 2,365,952 IPv4; no PTR on any sampled subscriber IP. STC's fixed arm is the separate AS25019 SaudiNet. src: https://rdap.db.ripe.net/autnum/39891 (2026-09-12)

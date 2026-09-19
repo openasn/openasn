@@ -77,3 +77,34 @@ AS210558  # 1337 Services GmbH (DE) — njal.la VPS/hosting. src: https://raw.gi
 AS35048   # Biterika Group LLC (RU) — proxy/hosting infrastructure. src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
 AS208969  # Biterika Group LLC (RU). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
 AS214574  # Biterika Group LLC (RU). src: https://raw.githubusercontent.com/X4BNet/lists_vpn/main/input/datacenter/ASN.txt + ipverse description (2026-07-04)
+
+# ============================ Sweep 2026-09-12 (N1) ============================
+# BAR EXTENDED with a third evidence class, used by exactly the two lines below:
+#   (c) the RIR's OWN aut-num record identifies the network as a datacenter/IDC.
+# Rationale: bars (a) and (b) both rest on third-party curated lists or on a brand name being
+# "name-evidently" hosting. A registry remark written by the holder is stronger evidence than
+# either, and it is re-checkable in one curl. It is also the only evidence available for
+# datacenters run by an operator whose brand reads as a telco.
+#
+# Both lines below were previously in mobile_carrier.txt (seeded 2026-07-04 from the ipverse
+# description "China Mobile Communications Corporation", which is the holder, not the network),
+# where they asserted :mobile — a likely_human, never-hard-block verdict — over datacenter space.
+AS138407  # China Mobile Guizhou IDC (CN) — APNIC aut-num CMNET-GZIDC-CN, remark verbatim "The Internet Data Center of Guizhou Mobile Communication Company Limited"; 31,488 IPv4 addresses over 103 prefixes. Moved here from mobile_carrier.txt. src: https://rdap.apnic.net/autnum/138407 (2026-09-12)
+AS139080  # China Mobile Sichuan IDC (CN) — APNIC aut-num CMNET-SCIDC-CN, remark verbatim "The Internet Data Center of Sichuan Mobile Communication Company Limited"; 75,776 IPv4 addresses over 83 prefixes. Moved here from mobile_carrier.txt. src: https://rdap.apnic.net/autnum/139080 (2026-09-12)
+#
+# THE 80-ASN CROSSCHECK GAP, RE-MEASURED 2026-09-12 (build/work/crosscheck-uncovered-dc-asns.txt):
+# 55 of the 80 are already in one of our override files, so the real gap is 25. NONE of those 25
+# meets bar (a) — every one is X4B-datacenter-only, none is corroborated by bad-asn-list — and the
+# largest by measured users are not hosting at all: AS31242 (P4/Play, a Polish mobile carrier),
+# AS28682 (Posta Slovenije), AS39832 (Opera Norway, browser-VPN egress), AS208323 (Foundation for
+# Applied Privacy, a Tor/privacy relay operator). Three of those four are ALREADY named in this
+# file's "deliberately NOT graduated" note from 2026-07-04 and the exclusions still hold.
+# Conclusion: the gap is not a backlog of easy wins. The remainder needs per-record research, and
+# some of it belongs in vpn_provider or nowhere rather than here. Candidates worth researching
+# next, with what makes them interesting:
+#   AS206092 F.N.S. HOLDINGS LIMITED (CY) — 271,959 APNIC "users" behind 30,464 addresses with no
+#     consumer brand: the shape of proxy egress, not a datacenter and not an ISP.
+#   AS205016 HERN Labs AB (SE) and AS198605 AVAST Software s.r.o. (CZ) — both plausibly VPN
+#     egress rather than hosting; check vpn_provider's bar first.
+#   AS64249 Charles River Operation (US), AS197450 Sunucun (TR) — category=isp with datacenter-ish
+#     address ratios; need the retail-vs-hosting question answered before either file takes them.

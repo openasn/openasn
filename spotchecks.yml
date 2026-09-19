@@ -347,11 +347,11 @@ checks:
     gem_sources: [asn_mobile_carrier]
     note: "Rakuten Mobile (JP)"
   - ip: "83.229.128.10"
-    expect: mobile
-    rule: asn_mobile
+    expect: residential_isp
+    rule: asn_category
     asn: 6854
-    gem_sources: [asn_mobile_carrier]
-    note: "MegaFon (RU)"
+    gem_sources: [asn_category]
+    note: "MegaFon's ex-Synterra backbone (AS6854, RU). Expected mobile until 2026-09-19: the curation sweep (PR #5, RDAP audit 2026-09-12) removed AS6854 from mobile_carrier.txt because its aut-num is SYNTERRA-AS, the RIPE record is a transit map, rDNS is backbone router naming and APNIC measures 0 end users behind it (src: https://rdap.db.ripe.net/autnum/6854). The row now asserts the category verdict and guards against the mobile flag coming back without new evidence (CD-6: prefer false negatives)."
   - ip: "2607:fb91:a600::10"
     expect: mobile
     rule: asn_mobile

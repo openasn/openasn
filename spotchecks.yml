@@ -63,6 +63,11 @@ checks:
     expect: vpn
     asn: 9009
     note: "M247 Europe - VPN infra (X4B ranges + vpn_provider override)"
+  - ip: "104.28.28.1"
+    expect: hosting
+    rule: asn_category
+    asn: 13335
+    note: "Apple iCloud Private Relay egress inside Cloudflare (mask-api.icloud.com/egress-ip-ranges.csv lists 104.28.28.0-4 as AU Sydney, checked 2026-09-19). MUST NOT be :vpn via x4b_vpn: X4B merges Apple's feed, which is Tier B for us, and the pipeline strips it (DECISIONS.md D-SRC-3). The core says hosting; :relay comes only from the client-side Tier B recipe. Added 2026-09-19 after it shipped as vpn."
 
   # --- residential: plain, and the tier1-consumer fix ---
   - ip: "95.121.10.10"

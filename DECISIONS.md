@@ -594,6 +594,15 @@ backbone switchover (CD-12), not here.
    blank, and it never overrides it. The notes say the codes are registry
    data under registry terms, and that a registry country is not quite the
    same thing as the canonical one.
+   **The Ruby gem gains no country field.** It never exposed one (no binary
+   artifact carries a country), so nothing is lost. Adding a default-on
+   `Result#as_country` fed only by registry data would widen the gem's use
+   of the data this decision removes, with a meaning that differs from the
+   CSV column. The gem only enables the source ids its own feature switches
+   map, so it never fetches this recipe (verified: 123 tests green, the new
+   id is not enabled). The recipe serves CSV consumers such as
+   openasn-observatory, and any SDK that later adds a country field on
+   purpose.
 6. **Format.** The CSV header and column order are unchanged, and no binary
    artifact is touched, so there is **no format_version bump** (FORMAT.md
    governs the native artifacts, and none of them carried a country). The

@@ -718,21 +718,23 @@ the 2026-07-04 feed. Coverage moved little because the removals were
 small and the territory lines are large eyeball ASNs.
 
 **Countries for the names added since K (K3, 2026-09-19).** K's two
-drafters were re-run over the 522 ASNs that ON/ON2 named (or the dossiers
-covered) after K ran. 450 lines landed: 324 on the operator's Wikidata item
-(identity checked against our org name; country agreeing with the dossier
-draft; the registry country used only to route disagreements to review,
-CD-19c) and 126 on a fetched page quoted in the line (Wikipedia infobox or
-the operator's legal notice/contact page). Group items on subsidiaries'
-ASNs were left blank, as before; 72 candidates were held back with reasons
-in the research record (P4-K3-country-2026-09-19.jsonl). Only `country`
-cells changed (450 filled, 0 altered). Measured the same way as above:
-1,408 countries in the CSV; routed IPv4 72.5% → 79.8%; eyeballs 77.2% →
-82.2% on the 2026-09-19 feed. LLM-verified like the rest; a human spot
-check before merge is still wanted.
+drafters were re-run over the 662 ASNs that ON/ON2 named (or the dossiers
+covered) after K ran, up to org_names at 981cd6d. 570 lines landed: 417 on
+the operator's Wikidata item (identity checked against our org name;
+country agreeing with the dossier draft; the registry country used only to
+route disagreements to review, CD-19c) and 153 on a fetched page quoted in
+the line (Wikipedia infobox or the operator's legal notice/contact page).
+Group items on subsidiaries' ASNs were left blank, as before; 92
+candidates were held back with reasons in the research record
+(P4-K3-country-2026-09-19.jsonl). Only `country` cells changed (570
+filled, 0 altered). Measured the same way as above: 1,528 countries in the
+CSV; routed IPv4 72.5% → 80.5%; eyeballs 77.2% → 82.8% on the 2026-09-19
+feed. LLM-verified like the rest; a human spot check before merge is still
+wanted.
 
 **Open for the owner.** (i)–(iii) were settled by CD-25 (K-Telecom RU,
 Réunion RE, AS29447 Iliad Italia IT). (iv) Whether a consultation-only
 registry comparison is acceptable in a curation tool (CD-19c says yes for
-routing drafts into review; it is written nowhere). (v) Whether the 23,745 unrouted rows that
-carry only ipverse's category/role should stay (CD-19d keeps them).
+routing drafts into review; it is written nowhere). (v) Whether the
+23,745 unrouted rows that carry only ipverse's category/role should stay
+(CD-19d keeps them).

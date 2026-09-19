@@ -410,8 +410,8 @@ exclude") decide it. Coordinator decision CD-4 (2026-09-19) applied them.
 **The ruling.**
 
 1. **No ipverse description is published**, in any artifact or column. The
-   pipeline still reads ipverse for `category`/`networkRole`/country, which
-   are unaffected. Tripwire: `test/org_names_test.rb` in the pipeline fails
+   pipeline still reads ipverse for `category`/`networkRole`, which are
+   unaffected. (Its country code left too; see D-SRC-2 (country) below.) Tripwire: `test/org_names_test.rb` in the pipeline fails
    if a `description` reaches the CSV.
 2. **Published names come from CC0 sources only**, first hit wins:
    1. `data/overrides/org_names.txt`: our curated lines,
@@ -492,3 +492,150 @@ clients, and anyone who disables it).
 
 Evidence: `docs/enrichment/research/parts/P4-O-org-names-2026-09-19.jsonl`
 (the Wikidata reference census, ARIN terms, coverage, gap list).
+
+## D-SRC-2 (country) — Registry countries leave the CC0 core; ours and Wikidata's replace them (2026-09-19, PROPOSED)
+
+The per-ASN country is the same problem as the org names, and it gets the
+same treatment (coordinator decision CD-11d, 2026-09-19). Evidence:
+`docs/enrichment/research/parts/P4-K-country-2026-09-19.jsonl`.
+
+**Where the published country came from.** One place only: the `country`
+column of `asn-categories.csv` (also mirrored to Hugging Face). It was
+ipverse as-metadata `metadata.countryCode`, copied through verbatim
+(pipeline `lib/asjson.rb` → `publish.rb`). No binary artifact, no OORG
+entry, no gem field and no D-FMT-1 export carries a country (EXPORT_FORMATS.md:
+"v1 carries no country"). ipverse's README says its "handle, organization
+name, and country code [are] sourced from regional internet registries
+(RIR)"
+(https://raw.githubusercontent.com/ipverse/as-metadata/master/README.md,
+fetched 2026-09-19). In the 2026-09-19 cache, 119,874 of 124,849 values come
+from `authoritative` (registry) records, 4,505 from `inferred` records and
+96 from the community `as-overlay`. The registry terms that ruled out the
+names apply to these codes too: APNIC's bulk-WHOIS clause, ARIN's
+no-republication clause, RIPE's T&C 4.5 and the EU database right. So do
+the delegated-stats terms, which grant no redistribution (D-SRC-1). A
+country code is a fact, but 124k of them extracted from the registries is a
+substantial part of each registry's database. Rule 1 ("when in doubt,
+exclude") decides it.
+
+**The other per-ASN fields, checked.** `category` and `network_role` are
+ipverse's own derivations ("based on multiple signals", "based on BGP
+connectivity metrics"), not registry records. L rated them sound but
+fragile, and they stay. The org name left under D-SRC-2 (org names). No
+other RIR- or WHOIS-derived per-ASN field is published. Two row-level
+facts remain, and the owner should know about them:
+(a) the CSV's row set is "every ASN ipverse knows", which is the list of
+assigned ASNs, a registry fact. After both D-SRC-2 changes, 122,985 of
+124,849 rows carry no org, no country and no flag, only ipverse's
+category/role, and 10,912 carry nothing but the ASN number (open question
+below).
+(b) sapics' extra IP space is RIR-stats fill. That is handled by the
+backbone switchover (CD-12), not here.
+
+**The ruling.**
+
+1. **No ipverse country code is published**, in any artifact or column.
+   Tripwire: `test/country_test.rb` in the pipeline fails if an
+   `asn_meta` country reaches the CSV.
+2. **Published countries come from CC0 sources only**, first hit wins:
+   1. `data/overrides/asn_country.txt`: our curated lines,
+      `AS<n>  <CC>  # src: <url> (<date>)`, ISO 3166-1 alpha-2. The source
+      rule is the one org_names.txt uses: a first-party page (imprint,
+      legal notice, contact page) or a CC0/reference page. A registry or
+      aggregator host, or a non-country code (XX, ZZ, EU, AP, …), fails
+      the build and the PR lint.
+   2. **Wikidata**: P17 "country" of the item whose P3797 statement D-SRC-2
+      (org names) already admits, else P159 "headquarters location" → P17.
+      The ASN → item link is exactly as strict as for the names. P17/P159
+      statements that rest only on registry or aggregator references, by
+      URL or by "stated in" RIR/PeeringDB item, are dropped (measured
+      2026-09-19: 2 of 1,324; the references are GRID, GLEIF, Crunchbase,
+      company registers and Wikipedia imports). An item with two or more
+      countries left is ambiguous and yields nothing.
+   An ASN with neither has an empty country. That is an honest blank, never
+   a guess.
+3. **The meaning changes, slightly, and is now documented.** The column
+   used to mean "the country on the registry record". It now means **"the
+   country the ASN's operator is based in (seat or headquarters)"**. For
+   98% of the dossier-drafted lines the two agree. They part where a group's
+   item or dossier is attached to a subsidiary's ASN. Wikidata alone does
+   this for China Mobile's RU/HK/ZA/BR ASNs (→ CN), NTT AS2914 (→ JP) and
+   Telstra AS4637 (→ AU). Curated lines win over Wikidata for that reason:
+   our lines say US for AS2914 and HK for AS4637, because the operating
+   subsidiaries are based there.
+4. **Where the curated lines come from** (526 on 2026-09-19, all to be
+   reviewed by a human before merge, as for org_names.txt):
+   - 10 hand-curated head lines, each from a first-party page fetched that
+     day (Google, Microsoft, Cloudflare, Hetzner, Fastly, Telefónica, Apple,
+     IBM). They include the G7 sentinels.
+   - 421 drafted from enrichment dossiers (`org.hq_country`) by
+     `rake asn_country:draft` in the pipeline. The citation is an
+     operator, Wikipedia or Wikidata page, never a registry.
+   - 95 for ASNs whose org_names.txt line cites a Wikipedia article: that
+     article's Wikidata item, under the same P17/P159 rules as the build.
+     The ASN → operator link is our own curated line.
+   **Registry consultation, stated plainly.** Both drafting paths compared
+   each draft with the ipverse registry country and held back every
+   disagreement for a human (8 dossier drafts, 9 Wikidata derivations; list
+   in the evidence record). One more was pulled by hand: AS201776
+   (Miranda-Media, Crimea), whose Wikidata item says RU and agrees with
+   the registry, while its dossier says UA. Agreement with the registry is
+   not agreement between our own sources. The registry value decided only which list a
+   draft went to. It is written nowhere and read by nothing in the build
+   (D-CUR-1). The held-back cases are the ones that need judgement:
+   operators in occupied Crimea and Luhansk (dossier says UA, registry
+   says RU), group vs subsidiary (Akamai, Alibaba Cloud, Oracle, VEON), and
+   one bad Wikidata value (AS1 → DE).
+5. **The registry countries move to Tier B.** Recipe `ipverse_as_country`
+   (`maps_to: "as_country"`, parser `ipverse_as_csv_country`, the same ~6MB
+   `as.csv` as `ipverse_org_names`, weekly, keep-stale, `min_records`
+   50,000, **enabled by default** like the other light recipes, matching
+   CD-11a). A recipe value only fills an ASN the canonical data leaves
+   blank, and it never overrides it. The notes say the codes are registry
+   data under registry terms, and that a registry country is not quite the
+   same thing as the canonical one.
+6. **Format.** The CSV header and column order are unchanged, and no binary
+   artifact is touched, so there is **no format_version bump** (FORMAT.md
+   governs the native artifacts, and none of them carried a country). The
+   column's meaning is sharpened as in (3), and the README says so.
+
+**Measured impact** (offline build from the 2026-09-19 cache; APNIC AS-Pop
+feed of 2026-09-19 from the Layer-A refresh; 95,790 routed ASNs):
+
+| | countries | routed ASNs | routed IPv4 | eyeballs |
+|---|---|---|---|---|
+| before (ipverse) | 124,475 | 99.95% | 99.91% | 100.00% |
+| Wikidata only | 537 | 0.50% | 26.38% | 26.34% |
+| asn_country.txt only | 526 | 0.55% | 68.92% | 76.58% |
+| **after** (both) | **1,005** in the CSV (1,013 incl. ASNs outside ipverse's list) | **0.99%** (953) | **72.80%** | **76.99%** |
+
+Eyeballs on the older 2026-07-04 feed that O measured with: 76.96%. Routed
+IPv4 rose from 53.7% to 72.8% on the named-operator lines (DoD alone is
+6.3%). The ranked gap list for the next pass is in the
+evidence record. Its eyeball head is the held-back occupied-territory
+cases (0.2% each), and its IPv4 head is now flat (the top 100 gaps are 4.2%
+of routed IPv4): the held-back group-vs-subsidiary cases (Alibaba Cloud,
+Akamai, Oracle, Orange Business, HGC, VEON) and unnamed ASNs.
+
+**Gates.** G7 (new) checks three sentinels from the hand-curated head
+(AS15169 US, AS13335 US, AS3352 ES) and drift-gates the `countries` count
+under LAYER_POLICY. A metric absent from the previous manifest SKIPs, so the
+first night is clean and pinnable, and **no `ack_drift` is required**. No
+existing gate (G4 layer counts, crosscheck hosting count, G5 panel, G6
+names) measures country, and the spot panel does not assert countries.
+From the second night on, a >20% move in `countries` fails like any layer.
+The change still belongs in the release notes and launch copy together
+with the org names (CD-11f): `country` goes blank for ~99% of ASNs for
+every CSV consumer that does not run the recipe. The known internal
+consumer is openasn-observatory, whose "registry country" distributions
+would collapse.
+
+**Open for the owner.** (i) Whether the held-back drafts go in, and with
+which value: occupied territories are a policy call. (ii) Whether a
+consultation-only registry comparison is acceptable in a curation tool
+(it reads ipverse's cached country for every drafted ASN). The
+alternative is to review every draft by hand. (iii) Whether the CSV should
+keep rows that now carry only an ASN number and a category (the assigned
+ASN list is itself a registry fact). (iv) Whether HK/MO should come from
+Wikidata's P17 at all: Wikidata gives CN for Hong Kong and Macau companies,
+while ISO 3166 codes them HK and MO.

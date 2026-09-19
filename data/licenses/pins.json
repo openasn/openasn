@@ -28,5 +28,33 @@
     "extract": "whole_file",
     "sha256": "67690d0688b2b17b2fb74446e0bf58132a389b2e543d9ba0c4c44a60fedd4e67",
     "pinned_at": "2026-07-04T20:25:50Z"
+  },
+  "apnic-delegated-stats": {
+    "url": "https://ftp.apnic.net/stats/apnic/README-EXTENDED.TXT",
+    "extract": "conditions_of_use_section",
+    "sha256": "3a694611913904b39d3898afa504b742f957d416b3355120c57fa4117ffaff6c",
+    "pinned_at": "2026-09-19T04:13:32Z",
+    "scope": "curation"
+  },
+  "afrinic-delegated-stats": {
+    "url": "https://ftp.afrinic.net/pub/stats/afrinic/README-EXTENDED.txt",
+    "extract": "conditions_of_use_section",
+    "sha256": "34885c00ff694a933d1df37552ab5358f4cbdeec7724639af4b11c4d685903a3",
+    "pinned_at": "2026-09-19T04:13:33Z",
+    "scope": "curation"
+  },
+  "lacnic-delegated-stats": {
+    "url": "https://ftp.lacnic.net/pub/stats/lacnic/disclaimer.txt",
+    "extract": "whole_file",
+    "sha256": "e848dd88bdd2e0bc4c020b63372718e0db3445afc1a899ff7eafda8fcdc8c71e",
+    "pinned_at": "2026-09-19T04:13:34Z",
+    "scope": "curation"
+  },
+  "arin-delegated-stats": {
+    "url": "https://ftp.arin.net/pub/stats/arin/README",
+    "extract": "whole_file",
+    "sha256": "9378748d6658adb9246c7be566bf68e074f219ad1dc34957ae2af96458048d4d",
+    "pinned_at": "2026-09-19T04:13:34Z",
+    "scope": "curation"
   }
 }

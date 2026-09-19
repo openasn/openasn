@@ -381,18 +381,384 @@ format and one unblock procedure:
    start with its age in hours, and the failure issue quotes the gate lines
    from the run rather than listing possible causes.
 
+8. **An acknowledged step change re-anchors its own metric** (added
+   2026-09-19 under D-SRC-3, decided by the coordinator under owner
+   delegation). Rules 4 and 6 together had a gap. An ack publishes a
+   deliberate step change (D-SRC-3: `vpn_ipv4` 6,639 → 4,692). From the
+   next night the value sits past the drop line below the best pin, which
+   is a WARN(SLIDE) every night. A warned build is not clean, so no weekly
+   pin is ever cut again, for any metric, and the pins only age. The fix:
+   - An acked evaluation of a metric the operator **names** in
+     `OPENASN_ACK_DRIFT_REANCHOR` (the `ack_drift_reanchor` dispatch input)
+     stamps a **reviewed baseline** for that metric into `manifest.json`
+     (`stats.reviewed_baselines.<metric>` = value, ack reason,
+     `reviewed_at`). Each build carries it forward. A bare ack keeps rule 4's
+     meaning, one run only, and leaves the pins alone. The name is required
+     because the ack covers every metric that fails in the run, while a run
+     stops at the first failure, so the operator acks having seen only one.
+     Re-anchoring on the ack alone silently re-anchored an unseen second
+     failure. It also made a transient move acked as real deadlock when
+     upstream snapped back, because the pre-ack pins that rule 2 needs to
+     recognise the recovery were gone (adversarial review RX, 2026-09-19;
+     `docs/swarm-2026-09-19/RX-REVIEW.md`).
+   - For that metric only, pins cut before `reviewed_at` are ignored. The
+     reviewed value stands in for them as the recovery reference and as the
+     slow-slide anchor. Once clean pins cut after it exist, they are used,
+     and the reviewed baseline retires when no consulted pin predates it.
+   - Every other metric is gated against the pins exactly as before.
+   - **A reviewed baseline is not a pin.** It is never a release, and only
+     an ack that names the metric writes it: a human, with a sentence on
+     the public record. The
+     acked build itself stays unclean and is never pinned. "Pins come from
+     clean builds only" is unchanged. What changes is that the next clean
+     build is clean, so pinning resumes on schedule.
+   - A new drop measured against the reviewed value still fails or warns
+     normally. The review sanctions one move, not a direction.
+   Tests: `ReviewedBaselineTest` in the pipeline repo (ack → next night
+   clean, no perpetual warn, pins resume, un-acked metric gated normally,
+   the old pin cannot return as anchor, an unnamed co-failing metric is not
+   re-anchored, a bare ack still lets a recovery self-heal).
+
 **The general lesson, binding on every future gate.** A tripwire whose
 reference is written *by the thing it guards* can deadlock. Any gate that
 compares against previous output must also have a reference that is frozen,
 externally dated, and independent of whether the gate passed — and a
 documented, recorded way for a human to overrule it once.
 
+## D-FMT-1 — Convenience exports may materialize a frozen classification profile (2026-09-18)
+
+**The problem.** D-IMPL-6 guarantees that a nightly data refresh can never
+surface a verdict a deployed client does not know, and it earns that
+guarantee mechanically: the artifact carries ranges and 16 flag bits, the
+bit-to-verdict mapping is compiled into versioned client code, and there is
+physically no field in which a refresh could deliver a verdict string. That
+is why auto-applying data updates is always safe.
+
+The portable exports (`openasn.sqlite.gz`, `openasn.csv.gz`, `openasn.mmdb`,
+specified in [EXPORT_FORMATS.md](EXPORT_FORMATS.md)) remove the mechanism the
+guarantee rests on. Their consumers are a PHP `SELECT`, a CSV import, and a
+generic MMDB reader; there is no OpenASN client code anywhere in the path.
+Two options were honest:
+
+1. Ship raw evidence only (flags, category, role) and let every consumer
+   reimplement the precedence ladder. That reintroduces exactly the
+   cross-language divergence D-IMPL-6 exists to prevent, in languages that
+   have no OpenASN client at all, and it defeats the point of the exports:
+   a correct answer from a small standard-library integration.
+2. Materialize the verdict into the data, and restore the safety property
+   through a different, enforced mechanism.
+
+We take 2.
+
+**The decision.** The free core gains SQLite, range CSV, and MMDB
+projections. Native OASN remains ranges and flags interpreted by versioned
+client code. Convenience exports may materialize ordinary-address Tier A
+classification under a frozen named profile, initially `core-v1`. A data
+refresh may change the evidence and the classification of an IP, but may not
+introduce a new profile vocabulary or reinterpret an existing field. Schema
+and profile changes are separately versioned; an incompatible successor ships
+alongside v1 rather than silently replacing its filenames. Legal scope and
+native-client stability are unchanged.
+
+**This is a scoped addition to D-IMPL-6, not a reinterpretation of it.**
+D-IMPL-6 did not already permit data-delivered verdicts and must never be
+quoted as if it had. Its promise is a statement about a byte layout that
+cannot express a verdict; the exports can. Stretching "verdicts are code, not
+data" to cover a file with a `core_verdict` column would convert an enforced
+property into an unenforced slogan, and the first refresh that shipped a new
+string would break consumers that had been told they were safe. So D-IMPL-6
+stands unchanged for the native artifacts and for every client built on them,
+and this decision adds one narrow permission carrying its own enforcement.
+
+**What "frozen" forbids.** Under `core-v1`, a data refresh may not:
+
+- emit a verdict outside the nine values (`residential_isp`, `mobile`,
+  `business`, `hosting`, `vpn`, `enterprise_gateway`, `education`,
+  `government`, `unknown`), or a source token outside the twelve defined
+  ones;
+- change the precedence order, including the order in which the four hosting
+  reasons are listed inside one record;
+- change what a field means. `bad_asn` stays hosting/cloud/colo list
+  membership and never becomes an abuse score; `hosting_extra` stays one
+  corroborating signal and never becomes the hosting verdict; `as_org` stays
+  the announcing ASN's organization and never becomes a retail brand or a
+  provider attribution.
+
+What a refresh **may** change is an individual IP's evidence and therefore its
+verdict: an ASN gains a category, an overlay gains a range, and an address
+that was `residential_isp` yesterday is `hosting` today. That is a value
+moving inside a fixed vocabulary, which is what every consumer's `switch`
+already handles, and it is the entire job of a data refresh. Adding a verdict,
+a source token, or a precedence change is a **new profile name**, shipped
+under new filenames alongside v1. An implementation bug that emits something
+outside `core-v1` is fixed to restore `core-v1`, with the fix documented; the
+profile is never moved to match the bug.
+
+Note the nine export verdicts are a strict subset of the client enum's
+thirteen. `private` and `cgnat` are lookup-policy results, produced before the
+data is consulted, so no stored record can carry them. `tor_exit` and `relay`
+require Tier B sources that are fetched by clients at runtime and are not in
+these assets. An export verdict therefore carries no Tier B attribution, and
+saying so is part of the contract rather than a caveat in a footnote.
+
+**How the guarantee is enforced**, since it can no longer come from the byte
+layout:
+
+- Every asset carries `classification_profile` in its own metadata *and* in
+  its release manifest entry. A consumer that reads an unknown profile
+  refuses the installation and keeps its last-good generation, the same
+  failure mode as an unknown `format_version`.
+- The SQLite DDL constrains `core_verdict` with a `CHECK ... IN (...)` over
+  the nine values, so a rogue verdict cannot be written into the asset at all.
+  The vocabulary is enforced by the file, not only by the producer.
+- The precedence ladder is pinned by hand-authored fixtures in
+  [`conformance/exports/v1/`](conformance/exports/v1/), tracked and public so
+  third-party implementations test against the same expectations. Those
+  expectations are never regenerated from the code under test.
+- [`export-contract.json`](export-contract.json) is the dataset's declaration
+  of the identities and of `required_mode`, the export mode a publishing build
+  must satisfy. It ships at `none`: the contract is public before the assets
+  are, and activation is a separate reviewed change coordinated with the
+  producer's toolchain.
+
+`core-v1` deliberately uses the public client's explanation names
+(`asn_mobile_carrier`, `asn_no_category`, `isp_transit_ambiguous`) rather than
+the pipeline classifier's internal labels (`asn_mobile`, `no_category`). The
+pipeline classifier keeps its own labels and its spot-panel contract and is
+**not** refactored to share a function with the export profile: it is the
+independent reference the export is validated against, and two implementations
+that agree are evidence, while one implementation used twice is not.
+
+**The general lesson, binding on future decisions in this log.** When a
+guarantee is produced by a mechanism, and a new artifact removes that
+mechanism, the guarantee does not carry over by analogy. Either restore it
+with new enforcement and record that, or state plainly that it no longer
+holds. Silently restating the old decision in broader words is the failure
+this log exists to prevent.
+
+## D-SRC-3 — X4B overlays carry only X4B's own data; its third-party feeds are stripped (2026-09-19)
+
+**Status: accepted. Decided by the coordinator on 2026-09-19 under owner delegation.**
+
+**What was wrong.** X4BNet/lists_vpn is Tier A because its MIT grant covers
+"the list itself (source files and generated output)". But its build
+(`.github/workflows/build-list.yml`) concatenates every file in
+`input/<list>/ips/` into `output/<list>/ipv4.txt`, and X4B's own scheduled
+workflows fill `input/vpn/ips/` with lists X4B does not own:
+
+| file | written from | first seen |
+|---|---|---|
+| `apple.txt` | `https://mask-api.icloud.com/egress-ip-ranges.csv` (iCloud Private Relay egress) | 2025-06-29 |
+| `mullvadvpn.txt` | `https://api.mullvad.net/www/relays/all` | 2025-04-13 |
+| `pia.txt` | `https://raw.githubusercontent.com/Lars-/PIA-servers/refs/heads/master/export.csv` (repo has no licence) | 2025-06-28 |
+| `protonvpn.txt` | `https://api.protonmail.ch/vpn/logicals` (workflow disabled 2025-06-29; frozen file still merged) | 2023-02-07 |
+| `input/datacenter/ips/protonvpn.txt` | one 2023-02-09 snapshot of the same Proton API | 2023-02-09 |
+
+This project classes every one of those as Tier B ("never republished",
+ATTRIBUTION.md). Taking X4B's output whole therefore republished them, which
+breaks README "Legal design" rule 1: a builder repo's licence does not
+sanitize third-party data it aggregates. It also broke a product rule. Apple
+relay egress shipped as `vpn` (for example `104.28.28.0–104.28.28.76`, AS13335,
+`core_verdict=vpn`, `core_sources=["x4b_vpn"]`), although README says relay is
+never folded into `vpn`.
+
+**Verified, not assumed** (P4-X, against X4B commit `07f9013b`, the one whose
+output OpenASN had cached). X4B's build was reproduced offline, and the
+reproduction explains every address of the published vpn list. 100% of each
+feed's CIDRs are inside it. The four feeds account for 124,207 of its
+3,197,515 addresses (3.88%; Apple alone 3.33%). 114,507 of those (3.58%) are
+covered only by a feed, not by X4B's own ASN list. Evidence:
+`docs/enrichment/research/parts/P4-X-x4b-feeds-2026-09-19.jsonl`.
+
+**The ruling.**
+
+1. X4B's published `output/` files are an **upper bound**, never taken
+   whole. A range is kept only where X4B's **first-party** inputs justify it:
+   its hand-curated `input/<list>/ASN.txt`, expanded against OpenASN's own
+   backbone, and its hand-curated `input/<list>/ips/Manual.txt`. A feed entry
+   inside a listed ASN stays, because X4B's own ASN entry covers it (e.g.
+   Proton servers inside AS208172, which X4B lists).
+2. **vpn is a whitelist**: `kept = published ∩ justified`. This is the
+   directory X4B's feed bots write to, so the rule must also exclude a feed
+   X4B adds in the future, and a feed file updated between two X4B builds,
+   without anyone naming it first. The only cost beyond the feeds is 1,024
+   addresses (four /24s) where X4B's expansion database (iptoasn.com) and
+   our backbone disagree about the origin ASN.
+3. **datacenter subtracts the named feed file**:
+   `kept = published − (feeds − justified)`. A whitelist was built and
+   measured here, then rejected. X4B's datacenter expansion disagrees with
+   our backbone on ~222k addresses, and applying the whitelist would have
+   moved real cloud space from `hosting` to `business` (GCP 35.208.0.0/15:
+   iptoasn says AS15169, our backbone says AS43515). No X4B workflow writes
+   to `input/datacenter/ips/`, so naming its single third-party file is
+   precise. If X4B ever adds a file there, it must be named in the pipeline
+   (`Sources::X4B_DC_FEEDS`). The pipeline never calls api.github.com, so
+   it cannot list the directory for itself.
+4. Neither method can add a range X4B did not publish. Feed files are read
+   only in order to subtract them. That is D-CUR-1 consultation; their
+   contents are never republished.
+5. Apple relay, Mullvad, PIA and Proton keep reaching users the way they
+   always should have: as `fetch-manifest.json` Tier B recipes, which
+   clients fetch from the original authority.
+
+**Blast radius, measured** (offline build, identical inputs, before vs after;
+`openasn-ipv6.bin`, `openasn-orgs.bin` and `asn-categories.csv` are
+byte-identical apart from the build timestamp):
+
+| layer | ranges | addresses |
+|---|---|---|
+| vpn (IPv4) | 6,644 → 4,692 (−29.4%) | 3,197,515 → 3,081,984 (−3.61%) |
+| datacenter (IPv4) | 30,157 → 30,105 (−0.17%) | −300 |
+
+115,628 IPv4 addresses change verdict. All but 97 of them leave `vpn`:
+73,702 go to `hosting` (x4b_dc), 36,288 to `hosting` (category), 4,314 to
+`unknown` (feed entries in tier-1 transit space: Cogent AS174 3,165, GTT
+AS3257 696), 1,115 to `business`, and 112 to `residential_isp`. The largest ASNs are the Apple
+relay hosts: Akamai AS36183 (59,354), Cloudflare AS13335 (19,779), Fastly
+AS54113 (15,972) and Akamai AS20940 (11,516). In the core these become
+`hosting`, the same answer the rest of Apple's relay space already gets. They
+become `relay` wherever a client runs the Tier B recipe, which is the design.
+
+**Gates.** The spot panel is green before and after, and no row changed. The
+G4 layer drift gate FAILS once, on `vpn_ipv4`: 6,639 in `latest` → 4,692,
+which is −29.3% against a 20% drop line, with no weekly pin within 5%. The
+first publish therefore needs a dispatch with
+`ack_drift="D-SRC-3: X4B third-party feeds (Apple relay, Mullvad, PIA, Proton) removed from the vpn overlay"`
+and `ack_drift_reanchor=vpn_ipv4`. The other layers pass.
+
+**Resolved before first publish: a deliberate step change now re-anchors
+its own metric** (D-GATE-1 rule 8). Before this, from the night after the
+acked publish, `vpn_ipv4` would have sat about 29% below the best weekly pin
+(v2026.09.13, 6,593). Rule 6 would have turned that into a WARN(SLIDE) every
+night. A warned build is never clean, so no weekly pin would ever have been
+cut again, for any layer. Now the ack, naming `vpn_ipv4`, records a reviewed baseline for
+`vpn_ipv4` (4,692, with the ack reason and date). The next clean build is
+clean, and weekly pinning resumes. The coordinator ruled this a precondition
+for publishing (2026-09-19).
+
+**Policy: anonymity egress that X4B lists by ASN is treated as `vpn` in the
+core.** X4B's first-party `input/vpn/ASN.txt` lists AS60729
+(`AS60729 # Tor Servers (Tor exit nodes)`), so that ASN's space is kept and
+classifies `vpn` (spot panel row 185.220.101.5 already says so). `tor_exit`
+is the more precise verdict, but the core cannot carry it honestly:
+
+- FORMAT.md has no Tor flag bit, and bits 14–15 are reserved; using them
+  needs a `format_version` bump.
+- Its only range layer for this is `relay`, which is Tier B and always 0 in
+  the canonical artifact.
+- D-FMT-1's frozen export profile rules out `tor_exit` and `relay` as
+  `core_verdict` by design.
+- An ASN is not an exit list. Exits churn hourly, which is why the Tor
+  Project bulk exit list is Tier B.
+
+So no remapping is proposed. Clients that run the Tier B tor recipe already
+answer `tor_exit` for actual exits, because it outranks the X4B vpn overlay
+in the client ladder. Everything else in that ASN stays `vpn`, the honest
+Tier A answer for anonymity-network egress.
+
+## D-SRC-1 — RIR delegated-extended stats are a curation input, not Tier A (2026-09-19)
+
+**Status: ACCEPTED 2026-09-19** by the pass-4 coordinator under the owner's
+delegation of all decisions (COORDINATOR-DECISIONS CD-3: curation-only,
+never compiled into published artifacts, RIPE excluded; written-permission
+requests to the RIRs are drafted, not sent). Rulings 1-4 below are in force.
+The "Owner decisions" at the end stay open for the owner; none is needed for
+this change. The pipeline change
+(`openasn-pipeline` branch `sources/rir-delegated-stats`) implements the safe
+half and changes no artifact byte.
+
+**The question.** The Pass 3 source memo (2026-09-12) recommended adopting
+the NRO/RIR delegated-extended statistics as a Tier A source, for the
+per-ASN RIR, registration country and date, and for sibling clustering
+through the per-RIR opaque-id. Before implementing it, the terms were
+re-read on 2026-09-19 from each authority's own pages. The research record,
+with exact URLs and verbatim quotes, is
+`docs/enrichment/research/parts/P4-S-rir-terms-2026-09-19.jsonl`.
+
+| RIR | What governs the stats files | Class |
+|---|---|---|
+| APNIC | `README-EXTENDED.TXT` §2 and the in-file header: "The files are freely available for download and use on the condition that APNIC will not be held responsible for any loss or damage arising from the use of the information contained in these reports." | use grant |
+| AFRINIC | `README-EXTENDED.txt` §2, the same sentence word for word | use grant |
+| LACNIC | `disclaimer.txt`, the same sentence in English; the PT/ES versions say free "para copia" (for copying) | use grant |
+| ARIN | Nothing. The stats page says only that the files "are available for use via HTTPS". The Whois TOU is scoped to the Whois Service and does not govern them | silent |
+| RIPE NCC | Site-wide copyright statement: "All rights restricted … may not be used, reproduced and made available to third parties without prior written authorisation". ToS Art. 1 defines the Website as every ripe.net sub-domain, which includes ftp.ripe.net, and Art. 6.2 names databases. The carve-out covers only non-commercial or research use of unmodified, RIPE-identified material | restricted |
+| NRO (merged file) | No licence anywhere on nro.net. The file is served from `ftp.ripe.net` and carries RIPE rows | silent + RIPE hazard |
+
+**The ruling.**
+
+1. **Not Tier A.** The legal invariant (README "Legal design" 1) requires
+   *explicit* redistribution rights. "Download and use", silence, and "all
+   rights restricted" are not explicit redistribution rights. The memo's
+   "no licence asserted" and "registry facts" arguments may well be right in
+   law, but they are arguments. The invariant asks for a grant, and when in
+   doubt we exclude. No RIR-derived value enters `openasn-ipv4.bin`,
+   `openasn-ipv6.bin`, `openasn-orgs.bin`, `asn-categories.csv`, the
+   manifest or any export.
+2. **Curation input under D-CUR-1.** The pipeline reads the four non-RIPE
+   per-RIR files at build time into `build/work/rir/`, which is not
+   published. It uses them to propose sibling candidates for
+   `data/overrides/`. Each candidate is reviewed like any other line, and a
+   line that graduates is the curator's own sourced conclusion. A shared
+   registrant is not, alone, evidence of a class: AS20057 (AT&T Mobility)
+   has 122 siblings, and most of them are not mobile networks.
+3. **RIPE excluded.** RIPE is off by default even for local working files.
+   `OPENASN_RIR_INCLUDE_RIPE=1` enables it for private research, which the
+   RIPE carve-out permits, and no RIPE-derived value is ever cited into a
+   published line. The merged NRO file is never used, and a foreign-registry
+   line fails the parse.
+4. **Terms pinned, outside the nightly.** APNIC, AFRINIC and LACNIC terms
+   are pinned in `data/licenses/pins.json` with `"scope": "curation"`.
+   ARIN's README is pinned as a receipt that it states no terms. The tools
+   that read the files check those pins, and the nightly does not, because
+   an input that is not in the release must not block the release.
+
+**Measured 2026-09-19 (without RIPE).** 91,605 ASN rows, 82,591 of them
+delegated. There are 49,360 holders, and 4,556 sibling clusters (2 to 237
+ASNs) cover 17,416 ASNs, which is 21.1% of delegated ASNs. **Correction to
+the memo:** its 28.0% counted APNIC's NIR pools as organisations. APNIC
+gives a whole National Internet Registry pool one opaque-id (IRINN alone is
+5,385 ASNs, all IN), so propagating a name across such a "cluster" would
+label thousands of unrelated operators. Holders above 250 ASNs are treated
+as pools and never propagate. There are 12 pools covering 20,383 ASNs: nine
+APNIC NIR pools and three large ARIN holders, excluded conservatively.
+
+**Other corrections to the Pass 3 record.** LACNIC (`disclaimer.txt`) and
+AFRINIC (`README-EXTENDED.txt`) do publish terms; the Pass 3 check read only
+the data files. Also, sapics' `origin-asn/SOURCES.md`, our own pinned
+licence file, cites an "NRO License" at `https://www.nro.net/about/nro-policies/`,
+which returns 404 today.
+
+**Owner decisions (open).**
+
+1. Is a "download and use" grant (APNIC, AFRINIC, LACNIC) enough for a CC0
+   artifact? If so, a *separate, opt-in* sidecar holding RIR, country,
+   registration date and holder cluster could ship for those three registries
+   under a new file with its own spec, leaving the existing artifact bytes
+   unchanged. That would need legal sign-off, or a written confirmation from
+   each RIR, first.
+2. ARIN has no written terms. Accept "silent" (US registry facts, *Feist*),
+   or ask ARIN in writing?
+3. RIPE is excluded unless the RIPE NCC gives prior written authorisation.
+   Should we ask? The RIPE region is ~40k delegated ASNs, the largest single
+   gap.
+4. Should the existing owner-private quant importer
+   (`pipeline/enrich/quant/rir_stats.rb`), which still reads all five RIRs
+   including RIPE, drop RIPE too, or keep it under the research carve-out as
+   long as the extended tier stays unpublished?
+5. sapics (PDDL, Tier A backbone) states it compiles from RIR delegated
+   stats "Subject to the NRO License and respective RIR copyright
+   statements". The same doubt reaches our backbone at one remove. Its
+   `origin-asn` output is BGP-derived IP→ASN, not a copy of the stats files,
+   so this is probably fine, but it should be read once with this entry in
+   mind.
+
 ## D-SRC-2 (backbone) — The IP→ASN backbone is recomputed by OpenASN from RouteViews RIBs; sapics is retired (2026-09-19)
 
-**Status: ACCEPTED by the coordinator under the owner's delegation (pass-4
-ruling CD-12, building on CD-5). Pending the owner's own legal read before
-merge**, because item 4 amends README "Legal design" rule 1, the project's
-founding legal policy. Nothing here is merged or published.
+**Status: ACCEPTED (2026-09-19).** Decided by the coordinator under the
+owner's delegation (pass-4 ruling CD-12, building on CD-5); the owner then
+explicitly authorized the merge, including item 4's amendment of README
+"Legal design" rule 1, the project's founding legal policy. Merged by the
+pass-4 integrator (INT-B).
 
 This is the backbone part of D-SRC-2 ("Tier A sources are judged by their
 inputs, not their label"; audit P4-L). The org-names part is decided
@@ -477,8 +843,9 @@ terms and the EU database right, and RIR stats are curation-only (D-SRC-1).
    not a licence term; we fetch 10 named files a night with an identifying
    User-Agent and never list directories). A courtesy note to
    help@routeviews.org is drafted, not sent
-   (`docs/swarm-2026-09-19/BS-routeviews-email.md`); sending it is a
-   merge prerequisite.
+   (`docs/swarm-2026-09-19/BS-routeviews-email.md`); sending it was listed
+   as a merge prerequisite and is left to the owner (an outward
+   communication the integrator does not send).
 5. **Attribution.** ATTRIBUTION.md (shipped in every release, and embedded
    verbatim in the portable exports once EXPORT_FORMATS lands) carries
    RouteViews' prescribed sentence with "[Product/Report]" filled as
@@ -578,6 +945,7 @@ panel 21/21 green).
 `ack_drift_reanchor`), and on rebase the X4B integration test's
 `sapics_v4`/`sapics_v6` path keys renamed to `backbone_v4`/`backbone_v6`
 (the only semantic conflict between the two branches); the RouteViews
-courtesy note sent; launch copy saying "origin ASN as seen in BGP
+courtesy note sent (still a draft at merge time: an owner action, not a
+licence condition); launch copy saying "origin ASN as seen in BGP
 (RouteViews)". The exports branch rebases after both, and must install Go
 from both modules.

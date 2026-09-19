@@ -469,14 +469,17 @@ eyeball estimates; 95,790 routed ASNs):
 |---|---|---|---|---|
 | before (ipverse) | 124,849 | 99.99% | 100.00% | 100.00% |
 | Wikidata admissible only | 566 | 0.53% | 26.94% | 26.28% |
-| **after** (org_names.txt + Wikidata) | **777** | **0.74%** | **49.28%** | **66.76%** |
+| after (org_names.txt + Wikidata), first cut | 777 | 0.74% | 49.28% | 66.76% |
+| **after the pass 4 ON review and extension** | **1,393** | **1.39%** | **80.39%** | **80.71%** |
 
-This is the power law at work (rule 7): 777 names reach two thirds of the
-world's eyeballs. The long tail is blank on purpose. The next curation pass
-works down the ranked gap list (evidence record below), eyeballs first and
-then address space. Its top entries are national mobile carriers
-(Videotron, Movitel, Telcel, Shaw, China Mobile, Comcel, Safaricom, …) and
-large address holders (US DoD, Microsoft's secondary ASNs, Ford, Apple).
+This is the power law at work (rule 7): 777 names reached two thirds of the
+world's eyeballs. The pass 4 ON workstream then reviewed the 251 drafted
+lines (248 kept, 3 removed) and worked about 770 ranks down the gap list,
+eyeballs and address space interleaved, adding 619 sourced names (national
+carriers, US DoD, Microsoft's secondary ASNs, Meta, Akamai, Ford, Apple, ...).
+1,393 names now reach four fifths of eyeballs and of routed IPv4. The long
+tail is blank on purpose. Evidence per line:
+`docs/enrichment/research/parts/P4-ON-org-names-2026-09-19.jsonl`.
 
 **Gates.** No existing drift gate measures org names, so nothing trips and
 **no `ack_drift` is required** for the first publish. G6 now drift-gates the

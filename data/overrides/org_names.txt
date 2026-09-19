@@ -21,10 +21,11 @@
 #     source. Never paste a WHOIS `descr` or an ipverse description.
 #   * precedence: this file > Wikidata P3797 labels > no name (as_org nil).
 #
-# Order of work (AGENTS.md rule 7): the head first. The two sections below
-# cover 66.8% of APNIC-estimated eyeballs and 49.3% of routed IPv4 space
-# together with Wikidata (measured 2026-09-19). The ranked gap list for the
-# next pass is in the D-SRC-2 evidence record.
+# Order of work (AGENTS.md rule 7): the head first. Together with Wikidata,
+# the sections below cover 80.7% of APNIC-estimated eyeballs and 80.4% of
+# routed IPv4 space (measured 2026-09-19, after the pass 4 ON extension).
+# The next pass continues down the same ranked gap list (eyeballs and IPv4
+# interleaved); see the D-SRC-2 evidence records.
 
 # --- Hand-curated head, 2026-09-19 -------------------------------------------
 # Each src page was fetched on the date given and names the ASN verbatim.
@@ -46,7 +47,7 @@ AS54113   Fastly  # src: https://www.fastly.com/peering ("ASN AS54113") (2026-09
 # Drafted by a tool from LLM-researched, LLM-verified dossiers, then reviewed
 # line by line on 2026-09-19 (pass 4 workstream ON): every src was fetched,
 # the name had to appear on it, and the operator had to match the registry
-# record we consulted (never cited). 248 of 251 kept; 80 got a new src or a
+# record we consulted (never cited). 248 of 251 kept; 85 got a new src or a
 # trimmed name (homepages that were bot-walled or unreachable were replaced by
 # the operator Wikipedia article); 3 removed (AS3226, AS4847, AS204108).
 # A province in parentheses ("China Mobile (Henan)") is a disambiguator from

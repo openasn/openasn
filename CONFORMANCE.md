@@ -97,6 +97,15 @@ a bug in the client that differs from the gem.
 3. **Result key casing (JS).** `toJSON()` emits the gem's exact snake_case key
    names, because conformance depends on them; the object also exposes
    camelCase accessors for idiomatic JS.
+4. **CIDR input to `lookup()` (Python, JS) — NEEDS A RULING, not yet settled.**
+   The gem accepts `lookup("1.2.3.0/24")`: Ruby's `IPAddr` silently masks the
+   host bits and it classifies `1.2.3.0`. The Python and JS clients reject it
+   as invalid input. Silently classifying a whole prefix by its network
+   address is a footgun, so the clients' behaviour is the better one — but
+   until this is decided one way and applied everywhere, it is a real
+   difference in a public API, and the panel does not cover it. (Distinct
+   from the *parser* rule, where a provider list's `1.2.3.4/24` must be
+   masked, not rejected, or a whole /24 of evidence is dropped as junk.)
 
 ## Tier B sources are untrusted input
 

@@ -194,8 +194,12 @@ AS50257   # JV A-Mobile Ltd (Abkhazia mobile). src: ipverse as-metadata descript
 #   Telenor PK, AS131429 MobiFone, AS59588 Zain IQ, AS37577 Orange BF. Unsure (no evidence either
 #   way, not shipped): AS42961 Zain KW (aut-num GPRS-AS but 1.57 users/IPv4), AS262210 Bitel,
 #   AS37223 Vodacom MZ.
-# Batch F (ranks 101-120): shipped AS45245 Banglalink (132 users/IPv4, every block BANGLALINK-BD) and
-#   AS29357 Wataniya/Ooredoo Kuwait (HS-WT "HSDPA Services" / WTC-MIP "Mobile IP" netnames). Rejected:
+# Batch F (ranks 101-120): shipped AS45245 Banglalink (132 users/IPv4, every block BANGLALINK-BD).
+#   AS29357 Wataniya/Ooredoo Kuwait was shipped on its all-mobile IPv4 netnames (HS-WT, WTC-MIP) and
+#   REMOVED 2026-09-19 by the independent verifier: its only IPv6 customer block, 2a00:1851::/32, is
+#   netname B2C_B2B_Customers, Ooredoo Kuwait sells business and home fibre, its sibling AS219131 is
+#   unrouted, and PeeringDB self-classifies AS29357 Cable/DSL/ISP - an enterprise block under CD-6.
+#   src: https://rdap.db.ripe.net/ip/2a00:1851:: + https://www.peeringdb.com/api/net?asn=29357 (2026-09-19). Rejected:
 #   AS8953 Orange RO (RO-ORANGE-B2B static space), AS36890 MTN Rwanda (pppoe-users), AS3329 HOL-GR,
 #   AS4760 PCCW Netvigator, AS1680 Cellcom Fixed Line, AS36994 Vodacom Business, AS215540 (a proxy6
 #   proxy network, not a carrier), and the converged Orange BE/TN, T-Mobile CZ, Vodafone RO/CZ/HU,
@@ -223,7 +227,6 @@ AS201767  # Uzmobile — the CELLULAR branch of Uzbektelekom JSC (UZ). RIPE aut-
 
 # --- Middle East / Africa / Latin America ---
 AS22085   # Claro S/A mobile (BR) — 4/4 sampled prefixes PTR *.3g.claro.net.br; registro.br responsible "BCP SA", Claro's legacy cellular company; Claro fixed cable is the separate AS28573 Claro NXT (*.virtua.com.br). src: https://rdap.lacnic.net/rdap/autnum/22085 (2026-09-12)
-AS29357  # Wataniya Telecom / Ooredoo Kuwait (KW) — cellular; RIPE aut-num WATANIYATELECOM-AS; every sub-assigned block is netname HS-WT-* "Wataniya HSDPA Services" (188.70.0.0/15, 78.89.128.0/17) or WTC-MIP-* "WTC Mobile IP" (78.89.0.0/16, 178.53.0.0/16), plus WTC-MPLS-CORE router space; 1,624,696 APNIC users. src: https://rdap.db.ripe.net/ip/188.71.0.0 (2026-09-19)
 AS36998   # Zain Sudan / Mobitel (SD) — AFRINIC as-name SDN-MOBITEL descr "MOBITEL"; sampled prefixes are inetnums ZAIN_SD_2G_3G_LTE_APN_Internet_HW_Pool-1, ZAIN-SD-APNs and ZAINSD-2G-3G-LTE-Customer-NTK; 4,132,912 APNIC end users behind 86,528 IPv4 = 48 users/IPv4. src: https://rdap.afrinic.net/rdap/autnum/36998 (2026-09-12)
 AS37020   # Airtel DRC (CD) — cellular; AFRINIC netname DRC-3G descr "Reserved for Goma GGSN PDP allocation" (41.243.128.0/18) and "GPRS - GPRS GTP & Internet access" (41.222.196.0/24), rDNS *.r.airtel.cd; 4.73M APNIC users on 19,200 IPv4 = 246 users/IPv4. src: https://rdap.afrinic.net/rdap/ip/41.243.128.9 (2026-09-12)
 AS37075   # Airtel Uganda (UG) — cellular; AFRINIC netnames Mobile_data / Mobile_Data_Service descr "Assigned for Mobile Data Service for 2G , 3G & 4G" remarks "Airtel_Uganda_Mobile subs" on 102.80.0.0/14 and 154.228.0.0/14, rDNS 4/4 *.r.airtel.ug. src: https://rdap.afrinic.net/rdap/ip/154.230.128.9 (2026-09-12)

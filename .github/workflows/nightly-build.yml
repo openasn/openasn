@@ -52,6 +52,11 @@ name: Build & publish data
 #     stamps the reason into manifest.json (`stats.drift_ack`), so the
 #     override is on the public record forever. It does NOT disable the
 #     absolute floors (MIN_HOSTING_ASNS, size bounds, spot panel).
+#     If the move is a PERMANENT step (not a transient), also set
+#     `ack_drift_reanchor` to the failing metric name(s) (e.g. vpn_ipv4):
+#     the acked value becomes that metric's reviewed baseline, so later
+#     nights do not warn as a slide and weekly pins resume (D-GATE-1 rule 8).
+#     Only the metrics you name are re-anchored.
 
 on:
   schedule:
@@ -64,6 +69,11 @@ on:
         default: false
       ack_drift:
         description: "Acknowledge a drift-gate FAIL for THIS run: the reason (with evidence) is stamped into manifest.json. Leave empty for a normal build."
+        type: string
+        required: false
+        default: ""
+      ack_drift_reanchor:
+        description: "Only with ack_drift, only for a PERMANENT step: metric name(s) whose acked value becomes the reviewed baseline (e.g. vpn_ipv4). Leave empty for a transient move."
         type: string
         required: false
         default: ""
@@ -234,6 +244,9 @@ jobs:
           # drift-gate FAIL to a loud WARN and stamps the reason into
           # manifest.json stats.drift_ack (DECISIONS.md D-GATE-1).
           OPENASN_ACK_DRIFT: ${{ inputs.ack_drift }}
+          # Metric names only; ignored without ack_drift. An acked FAIL on a
+          # named metric becomes its reviewed baseline (D-GATE-1 rule 8).
+          OPENASN_ACK_DRIFT_REANCHOR: ${{ inputs.ack_drift_reanchor }}
           GH_TOKEN: ${{ github.token }}
         working-directory: pipeline-repo
         run: |
@@ -348,7 +361,10 @@ jobs:
           **`ack_drift`** input set to the reason, including evidence (e.g. the
           upstream commit URL). The drift FAIL becomes a loud WARN for that one
           run and the reason is stamped into `manifest.json` (`stats.drift_ack`)
-          permanently. It does not disable the absolute floors, the size bounds,
+          permanently. If the move is a permanent step rather than a transient,
+          also set **`ack_drift_reanchor`** to the failing metric name so later
+          nights re-anchor on it (D-GATE-1 rule 8); name only the metric you
+          checked. It does not disable the absolute floors, the size bounds,
           or the spot panel — those still have to be green.
 
           Background: DECISIONS.md → D-GATE-1.

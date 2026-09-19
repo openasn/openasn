@@ -64,7 +64,7 @@ re-published upstream nightly, the verdict is the contract, and the choice
 between two interchangeable hosting signals is not — asserting it would fail
 builds on non-events. Three rows opt back in because the path *is* the point
 (Cloudflare must not come from the dc overlay; the `hosting_extra` override
-must be what makes vsys.host hosting; Host Europe shows the same override
+must be what makes Hostodo hosting; Host Europe shows the same override
 losing to rule 9, by design).
 
 ## Running the panel

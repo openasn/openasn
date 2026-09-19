@@ -921,6 +921,19 @@ dataset `sources/routeviews-backbone`, live fetch, cold cache, RIB slot
   `unknown` rather than naming the origin; that is the conservative
   direction (AGENTS rule 2).
 
+**Spot panel v2 at merge (INT-B, 2026-09-19).** Panel v2 (98 rows) was
+generated on the sapics backbone and landed on main first. On the RouteViews
+backbone 11 of its probes were unrouted: each sat in space no ASN announces
+(RIPEstat network-info: no origin). They were changed row by row with the
+reason in each note and in the spotchecks.yml panel history: 5 probes moved
+to the same ASN's largest announced range, 4 rows whose ASN announces nothing
+(AS133877, AS521 v4+v6, AS203665) now expect `unknown` via `unrouted` and
+guard against RIR fill returning, and 3 rows whose path could no longer be
+isolated moved to another ASN with the same path (hosting_extra: Hostodo
+AS399804; no_category: AS23448, AS22282). Offline build on the 2026-09-19
+02:00 RIB slot: G5 green (82 Tier A rows); the gem returns the expected
+verdict, ordered sources and ASN on all 98 rows.
+
 **First publish (exact dispatch).** Order: merge openasn-pipeline first (the
 nightly checks out its `main`, and the Go module lives there), then this
 branch, both before the next 03:17 UTC cron. D-SRC-3 (X4B) is expected to

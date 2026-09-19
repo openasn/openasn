@@ -122,8 +122,32 @@ client must honour:
    `198.51.100.0/24`, `203.0.113.0/24`, `2001:2::/48`, `2001:10::/28`,
    `2001:db8::/32` and `2002::/16` — IANA special-purpose space, including all
    of 6to4, which carries real end users — as Vultr's own. Twenty-one other
-   sources were clean. Clients should filter IANA special-purpose prefixes out
-   of Tier B overlays and log what they dropped.
+   sources were clean.
+
+   **Every client MUST clip the non-globally-reachable entries of the IANA
+   IPv4/IPv6 Special-Purpose Address Registries out of each Tier B overlay
+   after parsing, and log each clipped range once with the source id.** The
+   Ruby gem and the Python client ship the same 28-prefix table
+   (`TierB::BOGON_CIDRS` / `BOGON_CIDRS`), and it is a conformance surface:
+   a prefix filtered in one client and not another is a verdict divergence
+   that no panel row can catch, because Tier B overlays are client-fetched
+   and the `context: gem` rows use synthetic ones. Three rules go with it:
+
+   - **Clip, do not drop.** A range that merely overlaps keeps its
+     legitimate remainder (`192.0.0.0/22` keeps `192.0.1.0/24` and
+     `192.0.3.0/24`). Deleting a whole announcement because it touched one
+     bogon is worse than the bug.
+   - **A source that is entirely special-purpose yields zero ranges**, which
+     must take the existing keep-stale branch, not write an empty overlay.
+   - **Keep the globally-reachable entries.** IANA marks `64:ff9b::/96`
+     (NAT64), `192.31.196.0/24` and `192.175.48.0/24` (AS112),
+     `192.52.193.0/24` (AMT) and `2620:4f:8000::/48` reachable; an operator
+     may legitimately announce them, and eating them is the too-aggressive
+     failure mode. Note `64:ff9b:1::/48`, the local-use translation prefix,
+     is **not** reachable and IS clipped.
+
+   This applies to Tier B only. Tier A canonical artifacts are built by this
+   project from sources it vetted, not by a third party describing itself.
 
 ## Keeping the panel honest
 

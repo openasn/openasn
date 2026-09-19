@@ -64,6 +64,60 @@ build id, same Tier A scope. None of them carries Tier B evidence, so a
 `core_verdict` never says `tor_exit` or `relay`; those still come from the
 `fetch-manifest.json` recipe a client executes itself.
 
+#### One query, one row
+
+The whole SQLite integration is a predecessor lookup plus a containment check.
+Bind an IPv4 address as an integer, an IPv6 address as a 16-byte big-endian
+BLOB, and read the columns by name:
+
+```sql
+SELECT * FROM (
+  SELECT * FROM v4 WHERE start <= :ip ORDER BY start DESC LIMIT 1
+) AS candidate
+WHERE end >= :ip;
+```
+
+```
+asn            15169            core_verdict      hosting
+as_org         Google LLC       core_sources      ["x4b_dc"]
+category       hosting          vpn_range         0
+network_role   midsize_transit  datacenter_range  1
+bad_asn        1                hosting_extra     0
+cdn            0                vpn_provider      0
+```
+
+That row is a real lookup of `8.8.8.8`, and it illustrates the point on its
+own: the verdict is `hosting`, but `hosting_extra` is `0` and `cdn` is `0`.
+The datacenter range overlay decided it, which is what `core_sources` says.
+`bad_asn` is `1` and did **not** decide anything.
+
+Three things that are easy to get wrong here, and that the conformance
+fixtures check:
+
+- **`asn IS NULL` is a hit, not a miss.** Some ranges are covered by the
+  datacenter or VPN overlay with no BGP base row behind them. They are real
+  records with a real verdict, and org/category/role are null while the range
+  flags still apply. Treating them as "not found" loses genuine coverage.
+  Do not infer presence from truthiness either: `0` is a valid ASN, and
+  `if ($asn)` is false for it in most languages.
+- **`vpn_range` and `datacenter_range` are range overlays, independent of the
+  ASN-level `vpn_provider` and `hosting_extra` bits.** An address can be
+  `vpn` with `vpn_provider = 0`, and `hosting` with `hosting_extra = 0`. The
+  bits are corroborating evidence, not the verdict; `core_verdict` is the
+  verdict and `core_sources` says which rule won.
+- **`bad_asn` still means what it means above**: hosting/cloud/colo list
+  membership, never an abuse score, and as the row above shows it is often
+  set on entirely ordinary infrastructure. It must not be surfaced to a human
+  as "bad" or "malicious".
+
+Special addresses (RFC 1918, CGNAT, loopback, link-local, multicast,
+reserved) are deliberately **not rows**. They are answered by lookup policy 1
+before the database is consulted, which is why a consumer needs the small
+helper described in
+[EXPORT_FORMATS.md](EXPORT_FORMATS.md) rather than a bare `SELECT`. Runnable
+PHP, C# and nginx consumers live in
+[openasn/openasn-examples](https://github.com/openasn/openasn-examples).
+
 ## Verdict taxonomy
 
 Clients classify with a strict precedence ladder (overlays outrank ASN classification; specials outrank everything):

@@ -838,3 +838,16 @@ recipe), the Huawei carrier overlap above, and four AhrefsBot prefixes inside AS
 (Ahrefs' own ASN, labelled `business`). It also cleared a scare: ChatGPT-User's widest
 prefix is `9.129.0.0/17`, inside IBM's legacy `9/8`, which resolves to **AS8075 Microsoft** —
 Azure space IBM released, not a bogon.
+
+## Tier B health check 2026-10-02
+
+All 83 recipes fetched once, live, with the gem's own User-Agent (`openasn-ruby/0.4.0 (+https://github.com/openasn/openasn)`), parsed with the gem's parsers from `main` (0.4.0). Reproduce with `ruby scripts/tier_b_healthcheck.rb` (the script now defaults to the gem's User-Agent, reuses one response for recipes that share a file, retries only transport errors and 5xx once after a pause, and handles `as_org`/`as_country` recipes against `min_records`). Result: **80 of 83 healthy after the fix below, 2 blocked, 1 not verifiable from the observer's network.**
+
+| Source id | 2026-10-02 | Cause | Action |
+|---|---|---|---|
+| `scaleway_ranges` | 404 | Scaleway moved the page from `/docs/account/reference-content/` to `/docs/account/support/`. | URL updated; new page parses to the same 11 v4 + 1 v6. |
+| `torguard_openvpn_tcp` / `_udp` | 403 | Cloudflare managed-challenge interstitial ("Just a moment..."), not error 1005. | Not worked around. Dated note in the manifest; already opt-in, keep_stale applies. |
+| `huawei_cloud_geofeed` | no response | This machine's resolver cannot resolve `res-static.hc-cdn.cn` (Google public DNS shows the name exists). | None; re-run from another network. Unverified. |
+| `ipverse_as_country` | 200 | Fetch fine; the gem deliberately does not execute this recipe (openasn-ruby PR #6). | None. |
+
+Upstream drift of 10% or more against 2026-09-12, all well-formed and above any floor: `applebot` 18 -> 9 v4 (Apple's file was regenerated 2026-09-15 with 24 prefixes, all parsed), `pia_servers` +38%, `cryptostorm_configs` -17%, `freevpn_us_servers` -13%, `openai_gptbot` -14%, `nordvpn_servers` -11%. `slickvpn_locations` is healthy on gem main (11 hosts via `data-host`); the observatory's "schema changed" comes from it pinning the published 0.3.x gem. `vpnsecure_locations` is no longer a recipe (removed 2026-09-12); `/vpn-locations/` now 301s to `/locations`, which still has no server hostnames (re-checked 2026-10-02).

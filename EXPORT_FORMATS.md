@@ -19,13 +19,16 @@ same inputs, same build id, no new source, no Tier B data, no enrichment.
 They exist so a consumer with SQL, a CSV importer, or a generic MMDB reader
 can use the core without decoding OpenASN bit offsets.
 
-**Status.** This contract is published ahead of the assets.
-[`export-contract.json`](export-contract.json) carries `required_mode`, the
-export mode every successful release must satisfy. While it reads `none`, a
-release contains the native artifacts only and no portable export is expected
-in any release, published or dated. Activation is a reviewed change to that
-file, coordinated with the producer's toolchain. Do not infer availability
-from this document; read the manifest of the release you are downloading.
+**Status.** Active. [`export-contract.json`](export-contract.json) carries
+`required_mode`, the export mode every successful release must satisfy, and
+it reads `all`: every release built since activation carries all three
+assets, each validated before upload, and a build that cannot produce one of
+them publishes nothing. Activation followed non-publishing candidate builds
+of both `portable` and `all`, as D-FMT-1 requires. Lowering `required_mode`
+again is a breaking change for every consumer of these files. Releases built
+before activation, including every dated pin up to at least `v2026.09.13`,
+carry the native artifacts only. Do not infer availability from this
+document; read the manifest of the release you are downloading.
 
 The rationale for materializing classification into data at all is recorded in
 [DECISIONS.md](DECISIONS.md) as D-FMT-1.

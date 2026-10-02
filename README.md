@@ -39,6 +39,9 @@ Every client must return the **same verdict for the same IP on the same bytes** 
 | `openasn-ipv4.bin` / `openasn-ipv6.bin` | Packed classification artifacts: IP→ASN backbone with category/role/flag bits + VPN/datacenter range overlays. Byte spec: [FORMAT.md](FORMAT.md) |
 | `openasn-orgs.bin` | Optional sidecar: ASN → organization name ("OORG", same byte spec). CC0 names only (our sourced overrides + Wikidata). Clients work fully without it; `as_org` is simply nil until it's downloaded |
 | `asn-categories.csv` | Human-friendly table: every routed ASN, and every other ASN we hold a field for → org, country, category, network role, OpenASN flags (CC0). Unrouted ASNs with nothing to say have no row (see [FORMAT.md](FORMAT.md)). `org` and `country` are filled where we hold a CC0 value (our sourced overrides + Wikidata) and empty otherwise. `country` is the ISO code of where the ASN's operator is based, not the registry country; see [D-SRC-2](DECISIONS.md) |
+| `openasn.sqlite.gz` | The same Tier A core as one SQLite database (gzip; ~7 MB, ~44 MB expanded): one predecessor query per lookup, classification already applied. Spec: [EXPORT_FORMATS.md](EXPORT_FORMATS.md) |
+| `openasn.csv.gz` | The same records as a range CSV (gzip; ~5 MB, ~52 MB expanded), one row per maximal interval |
+| `openasn.mmdb` | The same records as an MMDB file (uncompressed, ~13 MB) for any generic MMDB reader |
 | `manifest.json` | Build id, per-file SHA-256, and full source provenance (upstream URL, license, license-file hash, fetch time) |
 | `fetch-manifest.json` | The Tier B recipe (see "Legal design") that clients execute themselves |
 | `ATTRIBUTION.md` / `SHA256SUMS` | Credits and checksums |
@@ -59,10 +62,12 @@ meanings, classification profile, input policy, update protocol) is
 [DECISIONS.md](DECISIONS.md) (D-FMT-1).
 
 > [!NOTE]
-> **The contract is published ahead of the assets.**
+> **All three exports are mandatory release assets.**
 > [`export-contract.json`](export-contract.json) carries `required_mode`, the
-> export mode a release must satisfy. While it reads `none`, releases contain
-> the native artifacts only and no portable export is expected in any release.
+> export mode every release must satisfy. It reads `all`: a build that cannot
+> produce and validate all three exports publishes nothing, so `latest` never
+> carries a partial set. Releases built before this was activated (every dated
+> pin up to at least `v2026.09.13`) carry the native artifacts only.
 > Read the `manifest.json` of the release you are downloading rather than
 > assuming an asset is there.
 
@@ -94,7 +99,7 @@ WHERE end >= :ip;
 
 ```
 asn            15169            core_verdict      hosting
-as_org         Google LLC       core_sources      ["x4b_dc"]
+as_org         Google           core_sources      ["x4b_dc"]
 category       hosting          vpn_range         0
 network_role   midsize_transit  datacenter_range  1
 bad_asn        1                hosting_extra     0

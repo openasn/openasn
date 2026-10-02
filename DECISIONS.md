@@ -520,6 +520,16 @@ layout:
   must satisfy. It ships at `none`: the contract is public before the assets
   are, and activation is a separate reviewed change coordinated with the
   producer's toolchain.
+- **Activated at `all` (2026-10-02).** Non-publishing candidate builds of
+  `portable` (Actions run 37057316296) and `all` (run 37057330043) validated
+  on `main`, and the toolchains (pinned Python 3.12 for SQLite, Go from
+  `tools/mmdbwriter/go.mod` for MMDB) were already installed on every run of
+  the nightly workflow. `all` rather than `portable` because the MMDB is the
+  one format a consumer can use with no OpenASN code and no SQL at all, the
+  public examples already ship three MMDB readers, Go is already mandatory for
+  the RouteViews backbone, and the whole set adds about 25 MB to a release
+  (CSV 5.2 MB, SQLite 7.0 MB gzip, MMDB 12.9 MB). The evidence is in the PR
+  that raised `required_mode`.
 
 `core-v1` deliberately uses the public client's explanation names
 (`asn_mobile_carrier`, `asn_no_category`, `isp_transit_ambiguous`) rather than

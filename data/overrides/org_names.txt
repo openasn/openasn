@@ -1704,4 +1704,4 @@ AS10052  Kyungpook National University  # src: https://en.wikipedia.org/wiki/Kyu
 AS26383  Baxet  # src: https://baxet.com/ (2026-10-02)
 AS23679  Nusanet  # src: https://nusanet.id/ (2026-10-02)
 AS35908  Krypt  # src: https://www.krypt.com/contact (2026-10-02)
-AS4213  Krypt  # src: https://www.krypt.com/contact (2026-10-02)
+AS55286  ServerMania  # src: https://www.servermania.com/company (2026-10-02)

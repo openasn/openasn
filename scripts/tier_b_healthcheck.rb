@@ -44,8 +44,8 @@ MANIFEST   = ENV.fetch("MANIFEST", File.join(REPO_ROOT, "fetch-manifest.json"))
 OUT        = ENV.fetch("OUT", "tier-b-health-#{Time.now.utc.strftime('%Y-%m-%d')}")
 THREADS    = Integer(ENV.fetch("THREADS", "6"))
 TIMEOUT    = Integer(ENV.fetch("TIMEOUT", "60"))
-USER_AGENT = "openasn-research/1.0 (+https://github.com/openasn/openasn)"
 MAX_REDIRECTS = 5
+SAVE_DIR   = ENV["SAVE_DIR"] # when set, every distinct response body is saved here (for diagnosis / fixtures)
 
 gem_lib = ENV["GEM_LIB"] || begin
   sibling = File.expand_path("../openasn-ruby/lib", REPO_ROOT)
@@ -57,6 +57,9 @@ begin
 rescue LoadError
   abort "cannot load the openasn gem — set GEM_LIB=/path/to/openasn-ruby/lib or `gem install openasn`"
 end
+# The gem's own User-Agent by default, so the check sees what a real client sees.
+# USER_AGENT overrides it (the 2026-09 runs used "openasn-research/1.0 (+...)").
+USER_AGENT = ENV.fetch("USER_AGENT", "openasn-ruby/#{OpenASN::VERSION} (+https://github.com/openasn/openasn)")
 
 manifest = JSON.parse(File.read(MANIFEST))
 sources  = manifest["sources"]
@@ -70,6 +73,29 @@ abort "no sources matched" if sources.empty?
 # Deliberately NOT the gem's HttpClient: the health check must see the raw
 # status of a redirect chain and must not inherit any client-side policy that
 # could mask a broken endpoint.
+# One network fetch per distinct (method, url, form) per run: recipes that share
+# a file (ipverse_org_names / ipverse_as_country) reuse the first response.
+FETCH_CACHE = {}
+FETCH_LOCK = Mutex.new
+RETRY_PAUSE = Integer(ENV.fetch("RETRY_PAUSE", "20"))
+
+# -> [status, body, content_type_or_error, final_url]. A transport error or 5xx/429
+# gets exactly one retry after RETRY_PAUSE seconds; a 4xx is a verdict, not retried.
+def fetch_once(url, method: :get, form: nil)
+  key = [method, url, form]
+  entry = FETCH_LOCK.synchronize { FETCH_CACHE[key] ||= { mutex: Mutex.new } }
+  entry[:mutex].synchronize do
+    return entry[:result] if entry[:result]
+
+    result = fetch(url, method: method, form: form)
+    if result[0].zero? || result[0] >= 500 || result[0] == 429
+      sleep RETRY_PAUSE
+      result = fetch(url, method: method, form: form)
+    end
+    entry[:result] = result
+  end
+end
+
 def fetch(url, limit = MAX_REDIRECTS, method: :get, form: nil)
   uri = URI.parse(url)
   http = Net::HTTP.new(uri.host, uri.port)
@@ -91,15 +117,15 @@ def fetch(url, limit = MAX_REDIRECTS, method: :get, form: nil)
     location = response["location"]
     return fetch(URI.join(url, location).to_s, limit - 1, method: method, form: form) if location
   end
-  [response.code.to_i, response.body.to_s, response["content-type"].to_s]
+  [response.code.to_i, response.body.to_s, response["content-type"].to_s, url]
 rescue StandardError => e
-  [0, "", "#{e.class}: #{e.message}"]
+  [0, "", "#{e.class}: #{e.message}", url]
 end
 
 # Azure's real JSON URL rotates weekly behind a download page; mirror the
 # gem's resolver so the check exercises the path production takes.
 def resolve_azure(page_url)
-  _, body, = fetch(page_url)
+  _, body, = fetch_once(page_url)
   body[%r{https://download\.microsoft\.com/download/[^"'\s]+ServiceTags_Public_\d+\.json}]
 end
 
@@ -126,7 +152,7 @@ def check(source)
           "provider" => source["provider"], "role" => source["role"],
           "enabled_default" => source["enabled_default"],
           "http" => 0, "bytes" => 0, "tokens" => 0, "v4" => 0, "v6" => 0,
-          "hostnames" => 0, "result" => "", "detail" => "", "urls" => [] }
+          "hostnames" => 0, "records" => nil, "result" => "", "detail" => "", "urls" => [] }
 
   urls = urls_for(source)
   if urls.empty?
@@ -139,9 +165,16 @@ def check(source)
   method = source["method"].to_s.upcase == "POST" ? :post : :get
   tokens = []
   urls.each do |url|
-    status, body, ctype = fetch(url, method: method, form: source["form"])
+    status, body, ctype, final_url = fetch_once(url, method: method, form: source["form"])
     row["http"] = status if row["http"].zero? || status != 200
     row["bytes"] += body.bytesize
+    (row["final_urls"] ||= []) << final_url
+    if SAVE_DIR && !body.empty?
+      require "fileutils"
+      require "digest"
+      FileUtils.mkdir_p(SAVE_DIR)
+      File.binwrite(File.join(SAVE_DIR, "#{source['id']}-#{Digest::SHA1.hexdigest(url)[0, 8]}.body"), body)
+    end
     if status != 200
       row["result"] = "FAIL http"
       row["detail"] = "#{url} -> #{status} (#{ctype})"
@@ -158,6 +191,15 @@ def check(source)
   row["http"] = 200 if row["http"].zero?
 
   row["tokens"] = tokens.length
+  row["min_records"] = source["min_records"]
+  if %w[as_org as_country].include?(source["maps_to"])
+    # Name/country tables: the parser returns pairs, not ranges. The floor is min_records.
+    floor = source["min_records"].to_i
+    row["records"] = tokens.length
+    row["result"] = tokens.length >= [floor, 1].max ? "ok" : "FAIL below-floor"
+    row["detail"] = "parsed #{tokens.length} records < min_records #{floor}" unless row["result"] == "ok"
+    return row
+  end
   # No DNS here on purpose: a hostname source's answer depends on the resolver
   # and the vantage point, which would make the check unreproducible.
   direct, hosts = tokens.partition { |t| OpenASN::CidrUtils.parse(t.to_s.strip) }

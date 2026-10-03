@@ -1428,3 +1428,8 @@ AS44087  BY  # src: https://life.by/ (2026-10-03)
 AS44489  CZ  # src: https://www.starnet.cz/ (2026-10-03)
 AS13045  DE  # src: https://www.htp.net/impressum (2026-10-03)
 AS131471  PK  # src: https://lmpl.net/contact-us/ (2026-10-03)
+
+# --- Pass 5 C6: Chrome retry round 2, 2026-10-03 ---------------------------------
+AS28458  MX  # src: https://www.ientc.com/privacy-notice ("IENTC tiene su domicilio en Bernardo Quintana 562, Santiago de Querétaro, Querétaro") (2026-10-03)
+AS44559  CY  # src: https://ithostline.com/ (contacts "Achaion, 35 ... Agios Andreas, 1101, Nicosia, Cyprus") (2026-10-03)
+AS63969  BD  # src: https://www.race.net.bd/ (contact address "95 Mohakhali C/A, Dhaka-1212", Race Online Limited) (2026-10-03)

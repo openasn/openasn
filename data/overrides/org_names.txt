@@ -1851,3 +1851,8 @@ AS131471  Login.Me  # src: https://www.lmpl.net/ (2026-10-03)
 AS44507  Kostroma City Telephone Network (KMTN)  # src: https://www.kostroma.net/ (2026-10-03)
 AS136336  TicFiber  # src: https://www.ticfiber.in/ (2026-10-03)
 AS152194  CTG Server  # src: https://www.myctgs.com/ (2026-10-03)
+
+# --- Pass 5 C6: Chrome retry round 2, 2026-10-03 ---------------------------------
+AS28458  IENTC  # src: https://www.ientc.com/privacy-notice (page "Aviso de Privacidad | IENTC Telecom"; "IENTC tiene su domicilio en Bernardo Quintana 562, Santiago de Querétaro") (2026-10-03)
+AS44559  IThostline  # src: https://ithostline.com/ ("IThostline is a European company that develops services for efficient and secure networking") (2026-10-03)
+AS63969  Race Online  # src: https://www.race.net.bd/ (page titled "RaceOnline - Best Internet For Your Business - Race Online Limited") (2026-10-03)

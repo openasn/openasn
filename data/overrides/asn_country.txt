@@ -1386,3 +1386,7 @@ AS41733  RU  # src: https://en.wikipedia.org/wiki/ER-Telecom (2026-10-03)
 AS4782  TW  # src: https://en.wikipedia.org/wiki/Chunghwa_Telecom (2026-10-03)
 AS13445  US  # src: https://en.wikipedia.org/wiki/Webex (2026-10-03)
 AS45178  AF  # src: https://en.wikipedia.org/wiki/Roshan_(telecommunications) (2026-10-03)
+
+# --- Pass 5 C5: previously blocked sites re-read in Chrome, 2026-10-03 ----------
+AS202053  FI  # src: https://upcloud.com/about ("UpCloud is headquartered in Helsinki, Finland") (2026-10-03)
+AS132165  PK  # src: https://www.connect.net.pk/en (office address "Shaheed-e-Millat Road, Karachi, Pakistan") (2026-10-03)

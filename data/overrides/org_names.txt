@@ -1708,3 +1708,16 @@ AS55286  ServerMania  # src: https://www.servermania.com/company (2026-10-02)
 
 # --- Pass 5 C3: curation from enrichment leads, 2026-10-03 -------------------
 AS1213  Asiera (HEAnet)  # src: https://www.asiera.ie/ ("now Asiera (formerly known as HEAnet and EduCampus)") (2026-10-03)
+
+# --- Pass 5 C5: previously blocked sites re-read in Chrome, 2026-10-03 ----------
+AS202053  UpCloud  # src: https://upcloud.com/about (page titled "About UpCloud", "UpCloud is headquartered in Helsinki") (2026-10-03)
+AS198678  Delos Cloud  # src: https://www.deloscloud.de/ (page titled "Delos Cloud - Die souveraene Cloud fuer den Oeffentlichen Dienst") (2026-10-03)
+AS13649  Flexential  # src: https://www.flexential.com/about-us ("At Flexential, we offer a comprehensive suite of customized IT solutions") (2026-10-03)
+AS42675  Obenet  # src: https://www.obe.net/ (footer "2026 Obenet AB") (2026-10-03)
+AS63473  HostHatch  # src: https://hosthatch.com/about (footer "HostHatch LLC") (2026-10-03)
+AS132335  Leapswitch Networks  # src: https://leapswitch.com/ (footer "Leapswitch Networks Pvt. Ltd.") (2026-10-03)
+AS43350  NFOrce Internet Services  # src: https://www.nforce.com/ (page titled "NFOrce Internet Services") (2026-10-03)
+AS32489  Amanah Tech  # src: https://www.amanah.com/ (footer "Amanah Tech Inc.") (2026-10-03)
+AS200651  FlokiNET  # src: https://www.flokinet.is/ (page titled "FlokiNET - Secure, Stable, Anonymous, Offshore Privacy focused Hosting Services") (2026-10-03)
+AS132165  Connect Communications  # src: https://www.connect.net.pk/en (footer "Connect Communications. All Rights Reserved") (2026-10-03)
+AS13737  Interconnecx  # src: https://www.incx.net/ (footer "Interconnecx LLC ... AS13737") (2026-10-03)

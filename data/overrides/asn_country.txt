@@ -1333,3 +1333,7 @@ AS35908  US  # src: https://www.krypt.com/contact (2026-10-02)
 
 # --- Pass 5 C3: curation from enrichment leads, 2026-10-03 -------------------
 AS1213  IE  # src: https://en.wikipedia.org/wiki/HEAnet (Asiera, ex-HEAnet; "Headquarters Dublin") (2026-10-03)
+
+# --- Pass 5 C5: previously blocked sites re-read in Chrome, 2026-10-03 ----------
+AS202053  FI  # src: https://upcloud.com/about ("UpCloud is headquartered in Helsinki, Finland") (2026-10-03)
+AS132165  PK  # src: https://www.connect.net.pk/en (office address "Shaheed-e-Millat Road, Karachi, Pakistan") (2026-10-03)

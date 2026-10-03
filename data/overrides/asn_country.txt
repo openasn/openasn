@@ -1330,3 +1330,7 @@ AS3790  CR  # src: https://www.racsa.go.cr/contactenos/ (2026-10-02)
 AS7040  CA  # src: https://net-minders.com/about (2026-10-02)
 AS10052  KR  # src: https://en.wikipedia.org/wiki/Kyungpook_National_University (2026-10-02)
 AS35908  US  # src: https://www.krypt.com/contact (2026-10-02)
+
+# --- Pass 5 C3: curation from enrichment leads, 2026-10-03 -------------------
+AS1213  IE  # src: https://en.wikipedia.org/wiki/HEAnet (Asiera, ex-HEAnet; "Headquarters Dublin") (2026-10-03)
+AS327802  TD  # src: https://www.moov-africa.td/ (Moov Africa Tchad, operator serving Chad) (2026-10-03)

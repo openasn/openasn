@@ -818,7 +818,7 @@ AS7917  UnitedHealth Group  # src: https://en.wikipedia.org/wiki/UnitedHealth_Gr
 AS8001  Cologix  # src: https://en.wikipedia.org/wiki/Cologix (2026-09-19)
 AS8422  NetCologne  # src: https://en.wikipedia.org/wiki/NetCologne (2026-09-19)
 AS8437  Drei Austria (Hutchison Drei)  # src: https://en.wikipedia.org/wiki/3_(company) (2026-09-19)
-AS8612  Tiscali Italia (Smeraldo)  # src: https://en.wikipedia.org/wiki/Tessellis (2026-09-19)
+AS8612  Tiscali Italia  # src: https://en.wikipedia.org/wiki/Tessellis (2026-09-19; 2026-10-03 dropped the unsupported "(Smeraldo)" suffix: that page does not mention Smeraldo)
 AS8767  M-net  # src: https://de.wikipedia.org/wiki/M-net (2026-09-19)
 AS8883  UBS  # src: https://en.wikipedia.org/wiki/UBS (2026-09-19)
 AS8926  Moldtelecom  # src: https://en.wikipedia.org/wiki/Moldtelecom (2026-09-19)
@@ -1705,3 +1705,7 @@ AS26383  Baxet  # src: https://baxet.com/ (2026-10-02)
 AS23679  Nusanet  # src: https://nusanet.id/ (2026-10-02)
 AS35908  Krypt  # src: https://www.krypt.com/contact (2026-10-02)
 AS55286  ServerMania  # src: https://www.servermania.com/company (2026-10-02)
+
+# --- Pass 5 C3: curation from enrichment leads, 2026-10-03 -------------------
+AS1213  Asiera (HEAnet)  # src: https://www.asiera.ie/ ("now Asiera (formerly known as HEAnet and EduCampus)") (2026-10-03)
+AS327802  Moov Africa Tchad  # src: https://www.moov-africa.td/ (official Moov Africa Tchad operator site, mobile and fixed offers) (2026-10-03)

@@ -1708,4 +1708,3 @@ AS55286  ServerMania  # src: https://www.servermania.com/company (2026-10-02)
 
 # --- Pass 5 C3: curation from enrichment leads, 2026-10-03 -------------------
 AS1213  Asiera (HEAnet)  # src: https://www.asiera.ie/ ("now Asiera (formerly known as HEAnet and EduCampus)") (2026-10-03)
-AS327802  Moov Africa Tchad  # src: https://www.moov-africa.td/ (official Moov Africa Tchad operator site, mobile and fixed offers) (2026-10-03)

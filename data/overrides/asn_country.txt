@@ -1434,6 +1434,37 @@ AS28458  MX  # src: https://www.ientc.com/privacy-notice ("IENTC tiene su domici
 AS44559  CY  # src: https://ithostline.com/ (contacts "Achaion, 35 ... Agios Andreas, 1101, Nicosia, Cyprus") (2026-10-03)
 AS63969  BD  # src: https://www.race.net.bd/ (contact address "95 Mohakhali C/A, Dhaka-1212", Race Online Limited) (2026-10-03)
 
+# --- Pass 6 N1 (2026-10-10): head of the distribution (top 2,000 by routed IPv4 / top 1,000 by customer cone), names + countries --------
+# First-party pages (legal notice, imprint, about, contact, footer) or Wikidata/Wikipedia for the bare fact; fetched on the date shown.
+AS13786  US  # src: https://seabornnetworks.com/ (2026-10-10)
+AS64289  US  # src: https://macarne.com/ (2026-10-10)
+AS22356  BR  # src: https://durand.com.br/ (2026-10-10)
+AS38091  KR  # src: https://www.wikidata.org/wiki/Q12580823 (2026-10-10)
+AS20764  RU  # src: https://rascom.ru/ (2026-10-10)
+AS33891  DE  # src: https://www.core-backbone.com/impressum/ (2026-10-10)
+AS5405  DE  # src: https://inter.link/legal/ (2026-10-10)
+AS28917  LT  # src: https://fiord.net/ (2026-10-10)
+AS35598  RU  # src: https://inetcom.ru/about (2026-10-10)
+AS11537  US  # src: https://www.wikidata.org/wiki/Q873660 (2026-10-10)
+AS328578  KE  # src: https://kemnet.co.ke/contact-us/ (2026-10-10)
+AS22381  BR  # src: https://www.samm.com.br/ (2026-10-10)
+AS61568  BR  # src: https://www.aloo.com.br/ (2026-10-10)
+AS212508  IT  # src: https://lowhosting.org/legal (2026-10-10)
+AS58717  BD  # src: https://www.summitcommunications.net/ (2026-10-10)
+AS37662  MU  # src: https://www.wiocc.net/contact (2026-10-10)
+AS62255  SI  # src: https://bmy.link/ (2026-10-10)
+AS20562  NL  # src: https://openpeering.nl/ (2026-10-10)
+AS11164  US  # src: https://www.wikidata.org/wiki/Q873660 (2026-10-10)
+AS32787  US  # src: https://www.wikidata.org/wiki/Q415598 (2026-10-10)
+AS200612  QA  # src: https://www.gbiinc.com/ (2026-10-10)
+AS20804  PL  # src: https://exatel.pl/ (2026-10-10)
+AS10075  BD  # src: https://fiberathome.net/ (2026-10-10)
+AS35297  UA  # src: https://dataline.ua/en/contacts/ (2026-10-10)
+AS263444  BR  # src: https://www.open-x.com.br/ (2026-10-10)
+AS7693  TH  # src: https://ksc.net/th/index.aspx (2026-10-10)
+AS81  US  # src: https://www.wikidata.org/wiki/Q30279642 (2026-10-10)
+AS3766  CA  # src: https://www.wikidata.org/wiki/Q28162755 (2026-10-10)
+
 # --- Pass 6 N2 (2026-10-10): head of the distribution (top 2,000 by routed IPv4 / top 1,000 by customer cone), names + countries --------
 # First-party pages (legal notice, imprint, about, contact, footer) or Wikidata/Wikipedia for the bare fact; fetched on the date shown.
 AS24785  NL  # src: https://openpeering.nl/legal (2026-10-10)

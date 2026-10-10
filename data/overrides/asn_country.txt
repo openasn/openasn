@@ -2123,7 +2123,6 @@ AS8414  CH  # src: https://www.itu.int/en/about/Pages/default.aspx (2026-10-10)
 # --- Pass 6 N14 (2026-10-10): head of the distribution (top 2,000 by routed IPv4 / top 1,000 by customer cone), names + countries --------
 # First-party pages (legal notice, imprint, about, contact, footer) or Wikidata/Wikipedia for the bare fact; fetched on the date shown.
 AS10343  US  # src: https://en.wikipedia.org/wiki/NASA (2026-10-10)
-AS1701  US  # src: https://en.wikipedia.org/wiki/NASA (2026-10-10)
 AS27142  US  # src: https://en.wikipedia.org/wiki/United_States_Department_of_Defense (2026-10-10)
 AS344  US  # src: https://en.wikipedia.org/wiki/United_States_Department_of_Defense (2026-10-10)
 AS355  US  # src: https://en.wikipedia.org/wiki/United_States_Department_of_Defense (2026-10-10)

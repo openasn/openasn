@@ -258,3 +258,31 @@
   reason: "AS29614 (AFRINIC as-name GHANATEL-AS) is Vodafone Ghana's (now Telecel Ghana) access network: sampled PTRs are 41-218-224-9-adsl-dyn.4u.com.gh, 41-210-32-9-adsl-static.4u.com.gh and 64-155-41-9-dedicatedinternet.vodafone.com.gh, and APNIC measures 2,151,222 end users. hosting labels Ghanaian broadband subscribers as servers."
   source_url: "https://rdap.afrinic.net/rdap/autnum/29614"
   date: 2026-09-19
+
+# --- 2026-10-05: Spanish access and research networks ipverse calls hosting ---
+# Surfaced by a downstream consumer whose real residential, business and university users sit on
+# these ASNs and were being answered :hosting. In each case the ONLY hosting evidence is ipverse's
+# category (verdict rule asn_category): none is in brianhama/bad-asn-list or the X4B datacenter
+# input (checked 2026-10-05), so this file's correction is effective. Category only; ipverse's
+# midsize_transit role is consistent with the customer ASNs each one routes and cannot change the
+# verdict. Deliberately NOT filed: AS3262 SAREnet (transit + business connectivity + datacenter,
+# and it also routes the Akiwifi wireless ISP's dyn.akiwifi.com pools: mixed, no single category is
+# provably right) and AS29119 AIRE / SERVIHOSTING-AS (in bad-asn-list, which a correction cannot
+# override, and part of its hosting answer is genuinely right).
+766:
+  category: education_research
+  reason: "AS766 is RedIRIS, Spain's national research and education network: RIPE registers it to 'Entidad Publica Empresarial Red.es' (ORG-RA6-RIPE, aut-num remark 'RedIRIS Autonomous System'), its own site calls it the 'Spanish academic and research network' connecting Spanish R&D&i since 1988, and PeeringDB net 2813 self-classifies Educational/Research, so hosting labels Spanish university staff and students as servers (the same fix as AS786 Janet)."
+  source_url: "https://www.rediris.es/home/"
+  date: 2026-10-05
+
+34471:
+  category: isp
+  reason: "Free Technologies Excom S.L. (RIPE ORG-FTES1-RIPE, Alcobendas) is a Spanish retail fibre, WiMAX and mobile operator: excom.es sells 'internet y móvil' and fronts the customer areas of the local wireless and cable ISPs it serves (Telewifi, Madfibra, Inalnet, Wico, Triunfotel and others), its RIPE aut-num lists those ISPs as customers, and its own space includes netname ES-EXCOM_TELEWIFI (185.70.152.0/24), so hosting is wrong."
+  source_url: "https://www.excom.es/"
+  date: 2026-10-05
+
+201746:
+  category: isp
+  reason: "Olivenet Network S.L.U. (RIPE ORG-ETS6-RIPE, Marbella, Málaga) is the company behind Olin, a consumer fibre and mobile operator: olivenet.es redirects to olin.es, whose aviso legal names Olivenet Network S.L.U. as the site's responsible party and whose home page sells fibra y móvil to households and businesses, and its RIPE-announced space also carries the local cable ISP TelecableAlmonte (185.6.32.0/23), so hosting is wrong."
+  source_url: "https://olin.es/es/aviso-legal/"
+  date: 2026-10-05

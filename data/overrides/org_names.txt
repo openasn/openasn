@@ -2117,6 +2117,26 @@ AS208905  Exelera  # src: https://www.exelera.net/ (2026-10-10)
 AS16371  acens  # src: https://www.acens.com/ (2026-10-10)
 AS1657  University of Louisville  # src: https://louisville.edu/ (2026-10-10)
 
+# --- Pass 6 N-CHROME (2026-10-10): head of the distribution (top 2,000 by routed IPv4 / top 1,000 by customer cone), names + countries --------
+# First-party pages (legal notice, imprint, about, contact, footer) or Wikidata/Wikipedia for the bare fact; fetched on the date shown.
+AS23764  China Telecom Global  # src: https://www.chinatelecomglobal.com/ (2026-10-10)
+AS12291  Deutsche Post  # src: https://www.deutschepost.de/de/e/epost/geschaeftskunden/produkte.html (2026-10-10)
+AS40065  CNservers  # src: https://billing.cnservers.com/ (2026-10-10)
+AS18049  TINP  # src: http://www.tinp.com.tw/ (2026-10-10)
+AS4787  CBN  # src: https://www.cbn.id/id (2026-10-10)
+AS38158  CBN  # src: https://www.cbn.id/id (2026-10-10)
+AS44546  Alfatelecom  # src: http://alfatelecom.cz/ (2026-10-10)
+AS60299  MMTS  # src: http://mmts.su/internet-provider-llc-mmts (2026-10-10)
+AS21852  State of Arkansas  # src: https://portal.arkansas.gov/ (2026-10-10)
+AS7794  Execulink Telecom  # src: https://www.execulink.ca/ (2026-10-10)
+AS7717  IDC Indonesia  # src: https://www.idc.co.id/ (2026-10-10)
+AS1761  Texas Department of Information Resources  # src: https://dir.texas.gov/ (2026-10-10)
+AS37468  Angola Cables  # src: https://angolacables.co.ao/ (2026-10-10)
+AS32097  Wholesale Internet  # src: https://www.wholesaleinternet.net/ (2026-10-10)
+AS4618  Internet Thailand (INET)  # src: https://www.inet.co.th/en (2026-10-10)
+AS4454  State of Tennessee  # src: https://www.tn.gov/ (2026-10-10)
+AS4648  Spark New Zealand  # src: https://www.spark.co.nz/online/about (2026-10-10)
+
 # --- Pass 6 N9 (2026-10-10): head of the distribution (top 2,000 by routed IPv4 / top 1,000 by customer cone), names + countries --------
 # First-party pages (legal notice, imprint, about, contact, footer) or Wikidata/Wikipedia for the bare fact; fetched on the date shown.
 AS34872  Servperso Systems  # src: https://www.servperso.net/about-us (2026-10-10)

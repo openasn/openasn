@@ -2419,7 +2419,6 @@ AS8414  International Telecommunication Union  # src: https://www.itu.int/en/abo
 # First-party pages (legal notice, imprint, about, contact, footer) or Wikidata/Wikipedia for the bare fact; fetched on the date shown.
 AS18756  Lumen (Level 3)  # src: https://en.wikipedia.org/wiki/Level_3_Communications (2026-10-10)
 AS10343  NASA  # src: https://en.wikipedia.org/wiki/NASA (2026-10-10)
-AS1701  NASA  # src: https://en.wikipedia.org/wiki/NASA (2026-10-10)
 AS27142  US Department of Defense (DoD)  # src: https://en.wikipedia.org/wiki/United_States_Department_of_Defense (2026-10-10)
 AS344  US Department of Defense (DoD)  # src: https://en.wikipedia.org/wiki/United_States_Department_of_Defense (2026-10-10)
 AS355  US Department of Defense (DoD)  # src: https://en.wikipedia.org/wiki/United_States_Department_of_Defense (2026-10-10)

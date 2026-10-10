@@ -1885,7 +1885,7 @@ AS58717  Summit Communications  # src: https://www.summitcommunications.net/ (20
 AS37662  WIOCC  # src: https://www.wiocc.net/ (2026-10-10)
 AS50509  Transroute Telecom  # src: https://transroute.net/ (2026-10-10)
 AS62255  BeMyLink  # src: https://bmy.link/ (2026-10-10)
-AS20562  Broadband Hosting  # src: https://openpeering.nl/ (2026-10-10)
+AS20562  Open Peering (Broadband Hosting)  # src: https://openpeering.nl/ (2026-10-10)
 AS6204  ZET.NET  # src: https://zet.net/ (2026-10-10)
 AS202984  Team-Host  # src: https://www.team-host.ru/ (2026-10-10)
 AS9676  SaveCom  # src: https://www.savecom.net.tw/ (2026-10-10)

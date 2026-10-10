@@ -1882,3 +1882,14 @@ AS39533  HU  # src: https://asympto.com/contact/ (2026-10-10)
 AS13876  US  # src: https://www.fiberlight.com/about-us/contact/ (2026-10-10)
 AS34549  DE  # src: https://meerfarbig.net/impressum/ (2026-10-10)
 AS1657  US  # src: https://louisville.edu/ (2026-10-10)
+
+# --- Pass 6 N-CHROME (2026-10-10): head of the distribution (top 2,000 by routed IPv4 / top 1,000 by customer cone), names + countries --------
+# First-party pages (legal notice, imprint, about, contact, footer) or Wikidata/Wikipedia for the bare fact; fetched on the date shown.
+AS18049  TW  # src: http://www.tinp.com.tw/ (2026-10-10)
+AS44546  CZ  # src: http://alfatelecom.cz/ (2026-10-10)
+AS60299  RU  # src: http://mmts.su/internet-provider-llc-mmts (2026-10-10)
+AS18229  IN  # src: https://www.pioneerelabs.com/contact (2026-10-10)
+AS7717  ID  # src: https://www.idc.co.id/ (2026-10-10)
+AS1761  US  # src: https://dir.texas.gov/ (2026-10-10)
+AS32097  US  # src: https://www.wholesaleinternet.net/ (2026-10-10)
+AS4618  TH  # src: https://www.inet.co.th/en/contact (2026-10-10)

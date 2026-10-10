@@ -1563,7 +1563,6 @@ AS136787  PA  # src: https://www.packethub.net/ (2026-10-10)
 AS12605  AT  # src: https://www.liwest.at/impressum (2026-10-10)
 AS20161  CA  # src: https://terago.ca/contact-us/ (2026-10-10)
 
-<<<<<<< Updated upstream
 # --- Pass 6 L (2026-10-10): lane-E curation leads, seats (research record docs/enrichment/research/P6-L-leads-2026-10-10.jsonl) ---
 AS6735  DE  # src: https://www.tng.de/privatkunden/impressum/ (TNG Stadtnetz GmbH, Kiel) (2026-10-10)
 AS41330  RU  # src: https://en.wikipedia.org/wiki/T2_(telecommunications_company) (headquarters Moscow) (2026-10-10)
@@ -1593,7 +1592,6 @@ AS37303  MG  # src: https://www.airtel.africa/our-offices-1 (Airtel Madagascar S
 AS55824  IN  # src: https://en.wikipedia.org/wiki/National_Knowledge_Network (headquarters New Delhi) (2026-10-10)
 AS137689  CN  # src: https://www.chinatelecom-h.com/en/contact/contactus.php (China Telecom Corporation Limited, Beijing) (2026-10-10)
 AS55392  JP  # src: https://www.mfeed.ad.jp/en/about/ (Chiyoda-ku, Tokyo) (2026-10-10)
-=======
 
 # --- Pass 6 N5 (2026-10-10): head of the distribution (top 2,000 by routed IPv4 / top 1,000 by customer cone), names + countries --------
 # First-party pages (legal notice, imprint, about, contact, footer) or Wikidata/Wikipedia for the bare fact; fetched on the date shown.

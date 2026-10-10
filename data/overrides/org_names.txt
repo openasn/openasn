@@ -2414,3 +2414,10 @@ AS25656  University of Mississippi  # src: https://olemiss.edu/ (2026-10-10)
 AS25969  Saint Louis University  # src: https://www.slu.edu/ (2026-10-10)
 AS33153  SUNY Potsdam  # src: https://www.potsdam.edu/ (2026-10-10)
 AS8414  International Telecommunication Union  # src: https://www.itu.int/en/about/Pages/default.aspx (2026-10-10)
+
+# --- Pass 6 L round 2 (2026-10-10): lane-E curation leads (research record docs/enrichment/research/P6-L-leads-2026-10-10.jsonl) ---
+AS21246  IPKO  # src: https://en.wikipedia.org/wiki/IPKO (2026-10-10)
+AS6663  Euroweb Romania (Türk Telekom International)  # src: https://www.euroweb.ro/ (2026-10-10)
+AS42065  eTelecom  # src: https://etelecom.ru/ (2026-10-10)
+AS49800  OVIO  # src: https://ovio.am/en (2026-10-10)
+AS139820  HG Telecommunication  # src: https://hg.com.pk/ (2026-10-10)

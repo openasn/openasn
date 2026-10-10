@@ -2119,3 +2119,9 @@ AS25656  US  # src: https://olemiss.edu/ (2026-10-10)
 AS25969  US  # src: https://www.slu.edu/contact/ (2026-10-10)
 AS33153  US  # src: https://www.potsdam.edu/ (2026-10-10)
 AS8414  CH  # src: https://www.itu.int/en/about/Pages/default.aspx (2026-10-10)
+
+# --- Pass 6 L round 2 (2026-10-10): lane-E curation leads ---
+AS21246  XK  # src: https://en.wikipedia.org/wiki/IPKO (XK = Kosovo (user-assigned code), CD-58; "hq_location Pristina, Kosovo") (2026-10-10)
+AS6663  RO  # src: https://www.euroweb.ro/ (EUROWEB ROMANIA S.R.L, Bucharest, 102 Lipscani St.) (2026-10-10)
+AS42065  RU  # src: https://etelecom.ru/ (office "г. Санкт-Петербург, ул. Софьи Ковалевской"; RIPE holder in Antigua is not the operator) (2026-10-10)
+AS17494  BD  # src: https://btcl.gov.bd/pages/static-pages/6922de68933eb65569e1a6d3 (BTTB converted into Bangladesh Telecommunications Company Limited, government-owned, Dhaka) (2026-10-10)

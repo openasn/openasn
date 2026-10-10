@@ -318,3 +318,17 @@
   reason: "QNAX sells VPS, cloud servers, dedicated servers and colocation in its own data centre in Brazil (its own site); upstream labels it business."
   source_url: "https://qnax.com.br/"
   date: 2026-10-10
+
+# --- Pass 6 L round 2 (2026-10-10) ---
+
+1653:
+  category: education_research
+  reason: "Sunet is the Swedish university network, part of the Swedish Research Council, serving higher education and research institutions (its own about page); upstream labels it hosting."
+  source_url: "https://www.sunet.se/en/about-sunet"
+  date: 2026-10-10
+
+54004:
+  category: business
+  reason: "Lightpath sells enterprise, carrier and government fiber (its own site lists enterprise, carrier, E-Rate, government and healthcare markets, no consumer service); upstream labels it a consumer ISP."
+  source_url: "https://www.lightpathfiber.com/"
+  date: 2026-10-10

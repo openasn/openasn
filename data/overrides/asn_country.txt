@@ -2218,3 +2218,8 @@ AS62744  US  # src: https://quintex.com/ (2026-10-10)
 AS328915  ZA  # src: https://www.mann-it.co.za/about/ (2026-10-10)
 AS137373  ID  # src: https://suiten.id/ (2026-10-10)
 AS214195  TR  # src: https://tresteknoloji.com/ (2026-10-10)
+# --- Pass 6 L round 2 (2026-10-10): lane-E curation leads ---
+AS21246  XK  # src: https://en.wikipedia.org/wiki/IPKO (XK = Kosovo (user-assigned code), CD-58; "hq_location Pristina, Kosovo") (2026-10-10)
+AS6663  RO  # src: https://www.euroweb.ro/ (EUROWEB ROMANIA S.R.L, Bucharest, 102 Lipscani St.) (2026-10-10)
+AS42065  RU  # src: https://etelecom.ru/ (office "г. Санкт-Петербург, ул. Софьи Ковалевской"; RIPE holder in Antigua is not the operator) (2026-10-10)
+AS17494  BD  # src: https://btcl.gov.bd/pages/static-pages/6922de68933eb65569e1a6d3 (BTTB converted into Bangladesh Telecommunications Company Limited, government-owned, Dhaka) (2026-10-10)

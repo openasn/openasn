@@ -286,3 +286,35 @@
   reason: "Olivenet Network S.L.U. (RIPE ORG-ETS6-RIPE, Marbella, Málaga) is the company behind Olin, a consumer fibre and mobile operator: olivenet.es redirects to olin.es, whose aviso legal names Olivenet Network S.L.U. as the site's responsible party and whose home page sells fibra y móvil to households and businesses, and its RIPE-announced space also carries the local cable ISP TelecableAlmonte (185.6.32.0/23), so hosting is wrong."
   source_url: "https://olin.es/es/aviso-legal/"
   date: 2026-10-05
+
+# --- Pass 6 L (2026-10-10): lane-E curation leads (research record docs/enrichment/research/P6-L-leads-2026-10-10.jsonl) ---
+
+8103:
+  category: government_admin
+  reason: "Florida's SUNCOM network (Department of Management Services) is by statute the state enterprise telecommunications system for state agencies, local governments and nonprofits, not a consumer ISP."
+  source_url: "https://www.flsenate.gov/Laws/Statutes/2024/282.703"
+  date: 2026-10-10
+
+55824:
+  category: education_research
+  reason: "National Knowledge Network is the Government of India's network connecting institutions of learning, research and governance (its own site); upstream labels it hosting."
+  source_url: "https://nkn.gov.in/"
+  date: 2026-10-10
+
+10430:
+  category: education_research
+  reason: "The Washington K-20 network links the state's colleges, universities, K-12 school districts and libraries (its own about page); upstream labels it a consumer ISP."
+  source_url: "https://k20wa.org/about/"
+  date: 2026-10-10
+
+18101:
+  category: business
+  reason: "Reliance Communications' own site presents only enterprise services (fixed-line, data centre, enterprise solutions, subsea cables) for enterprises; upstream labels it hosting."
+  source_url: "https://www.rcom.co.in/"
+  date: 2026-10-10
+
+268581:
+  category: hosting
+  reason: "QNAX sells VPS, cloud servers, dedicated servers and colocation in its own data centre in Brazil (its own site); upstream labels it business."
+  source_url: "https://qnax.com.br/"
+  date: 2026-10-10

@@ -332,3 +332,112 @@
   reason: "Lightpath sells enterprise, carrier and government fiber (its own site lists enterprise, carrier, E-Rate, government and healthcare markets, no consumer service); upstream labels it a consumer ISP."
   source_url: "https://www.lightpathfiber.com/"
   date: 2026-10-10
+
+# ======================= Sweep 2026-11-12 (ISP/mobile networks mislabelled hosting) =======================
+# Surfaced by production web traffic observed on 2026-11-12: real consumer visitors on these networks came
+# back :hosting because ipverse as-metadata says category=hosting for every ASN below. Each entry was
+# verified independently on 2026-11-12 against (1) the RIR record of the ASN, (2) the RIR records and
+# reverse DNS of the address space it announces (sampled across its prefixes), (3) the operator's own
+# site, and (4) APNIC's per-AS user estimate (stats.labs.apnic.net/cgi-bin/aspop, window ending
+# 2026-11-10), which counts real people behind the AS. category=isp only, never network_role (same
+# reasoning as the 2026-09-05 block above). None of these ASNs is in X4B's datacenter/VPN ASN lists or
+# brianhama/bad-asn-list, so the correction takes effect. Mixed-use ASNs are labelled by what most of their
+# space and measured users are; any dedicated datacenter sub-range is still caught by the X4B range overlay.
+# Deliberately NOT mobile_carrier.txt: every converged operator below mixes fixed and mobile, or the
+# evidence does not show subscriber-only NAT pools (that file's bar). Full research record: docs/enrichment.
+
+7738:
+  category: isp
+  reason: "registro.br registers AS7738 to 'V tal' (CNPJ 02041460000193), the legacy Telemar/Oi national backbone AS. Its announced space is subscriber space by rDNS: 200151000003.userdial.telemar.net.br, 189.80.0.3 -> 18980000003.user.veloxzone.com.br, 179-236-112-3.user3p.vtal.net.br, 152-237-216-3.user.vtal.net.br. APNIC measures 4.51M end users (Brazil #5) behind 1.33M IPv4 addresses. V.tal also sells wholesale fibre (pt.wikipedia: neutral wholesale fibre network), hence role stays major_transit; category=hosting is wrong."
+  source_url: "https://rdap.registro.br/autnum/7738"
+  date: 2026-11-12
+
+8167:
+  category: isp
+  reason: "registro.br registers AS8167 to 'V tal' (CNPJ 02041460000193), the legacy Brasil Telecom backbone AS now run by the same operator as AS7738. Announced space is subscriber space by rDNS: 177-0-64-3.user3p.v-tal.net.br, 187-5-16-3.user3p.v-tal.net.br, 200-203-128-3.pgosm300.ipd.brasiltelecom.net.br, 201-11-128-3.cbace300.ipd.brasiltelecom.net.br. APNIC measures 3.32M end users (Brazil #10). Wholesale fibre is also sold, so role stays major_transit; category=hosting is wrong."
+  source_url: "https://rdap.registro.br/autnum/8167"
+  date: 2026-11-12
+
+13188:
+  category: isp
+  reason: "RIPE registers AS13188 with as-name TRIOLAN to the registrant 'CONTENT DELIVERY NETWORK LTD' (abuse@triolan.com.ua); the registrant's name resembles a CDN but it is Triolan, a Ukrainian cable/broadband ISP (cdn.txt already excludes it as 'a Ukrainian access ISP'). 1,607 announced prefixes; the sampled ones are netname TRIOLAN with reverse-octet rDNS N.x.x.x.triolan.net (10 of 10 sampled). APNIC measures 673k end users (Ukraine #5, 2.38%). category=hosting is wrong."
+  source_url: "https://rdap.db.ripe.net/autnum/13188"
+  date: 2026-11-12
+
+17882:
+  category: isp
+  reason: "APNIC registers AS17882 (Univision-AS-AP, descr UNIVISION LLC) to MCS Com Co Ltd with an @univision.mn technical contact; univision.mn is a household triple-play operator (its own description: bringing content to every household). Most announced space is netname UNIVISIONLLC-MN / UNIVISION-MN, with a few sibling-group blocks (Uplanet, OrbitNet, one Unitel data-centre /22, which the X4B range overlay still covers). APNIC measures 513k end users, Mongolia's largest AS (61.6%) on 36k IPv4 addresses, an eyeball signature. category=hosting is wrong."
+  source_url: "https://rdap.apnic.net/autnum/17882"
+  date: 2026-11-12
+
+23243:
+  category: isp
+  reason: "LACNIC registers AS23243 to 'COMCEL GUATEMALA S.A.' (GT-CGSA1-LACNIC) at 'Edificio Plaza Tigo' with a @tigo.com.gt contact: Tigo Guatemala, Millicom's Guatemalan operator (Wikipedia: Millicom operates 'mainly under the Tigo brand'), not Claro. APNIC measures 1.95M end users (Guatemala #3, 21%) behind 58k IPv4 addresses, heavy CGNAT. It also announces some business static space (e.g. 200.49.176.0/20), so mixed-use: left isp, not mobile_carrier. category=hosting is wrong."
+  source_url: "https://rdap.lacnic.net/rdap/autnum/23243"
+  date: 2026-11-12
+
+23956:
+  category: isp
+  reason: "APNIC registers AS23956 to Amber IT Limited (info@amberit.com.bd); its inetnums AMBERIT-BD carry the descr 'Internet Service Provider', and amberit.com.bd titles itself 'The Best Broadband Internet Service Provider in BD'. APNIC measures 470k end users (Bangladesh #9). It also hosts servers in some ranges (e.g. 202.4.96.0/19 whm.amberit.net), which does not make it a host; the X4B range overlay covers listed datacenter ranges. category=hosting is wrong."
+  source_url: "https://www.amberit.com.bd/"
+  date: 2026-11-12
+
+28669:
+  category: isp
+  reason: "registro.br registers AS28669 to 'VERO S.A' (CNPJ 31.748.174/0001-60); 166 announced IPv4 prefixes all resolve to the operator's own domain (3.224.241.191.in-addr.arpa.verointernet.com.br, same template across 10 of 10 sampled), and verointernet.com.br sells 'Internet residencial e empresarial' (home and business fibre, mobile). APNIC measures 157k end users. category=hosting is wrong."
+  source_url: "https://www.verointernet.com.br/"
+  date: 2026-11-12
+
+29447:
+  category: isp
+  reason: "RIPE registers AS29447 (as-name TIF-AS, a legacy Tiscali France AS) with the stale org name 'Scaleway SAS', which is where ipverse's 'Scaleway SAS' description and the hosting category come from, but its aut-num remark reads 'Iliad Italia S.p.A' and every announced IPv4 block is Iliad Italia's: MOBILE-USERS-BLOCK 37.160.0.0/14 and 78.208.0.0/13 ('Iliad Italia S.p.A Customers IP', rDNS 37-160-0-3.mob.proxad.it), IT-ILIAD-FTTH 81.56.0.0/15 (Freebox pool) and IPv6 2a01:e11::/32 IT-ILIAD-FTTH. APNIC measures 3.77M end users (Italy #4). Mobile and FTTH share the AS, so not mobile_carrier."
+  source_url: "https://rdap.db.ripe.net/ip/37.160.0.0"
+  date: 2026-11-12
+
+37611:
+  category: isp
+  reason: "AFRINIC registers AS37611 to 'AFRIHOST SP (PTY) LTD' (Sandton), South Africa's consumer ISP (afrihost.com: 'Fibre, LTE, 5G, Mobile, DSL, VoIP and Web Hosting'; Wikipedia: internet service provider). Announced space is subscriber space by rDNS (102-182-0-3.ip.ahisp.co.za, 102-223-56-3.ip.home-connect.co.za, 165-255-0-3.ip.ahisp.co.za) with the operator's own geofeed. APNIC measures 2.79M end users (South Africa #5). Web hosting is a side line in a few ranges (e.g. 41.76.208.0/24 hosted.co.za), which does not make it a host. category=hosting is wrong."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/37611"
+  date: 2026-11-12
+
+49800:
+  category: isp
+  reason: "RIPE registers AS49800 (GNC-ALFA) to 'GNC-Alfa CJSC' (abuse@gnc.am), an Armenian operator with an IX-heavy transit side; 37.186.64.0/18 is netname GNC-GPON-NET, descr 'GPON Broadband subscribers Net', and 62.89.0.0/19 is GNC-CUSTOMERS33-NET. APNIC measures 231k end users (Armenia). Infrastructure blocks (GNC-ALFA-NET) are a minority of its 15 prefixes. category=hosting is wrong."
+  source_url: "https://rdap.db.ripe.net/ip/37.186.64.0"
+  date: 2026-11-12
+
+52263:
+  category: isp
+  reason: "LACNIC registers AS52263 to 'Telecable Economico S.A.' (CR-TESA3-LACNIC) with an abuse contact named 'Telecable Residencial' and technical contacts at telecablecr.com; telecablecr.com titles itself 'Internet Hogar Costa Rica'. Announced space resolves to the operator's own domain (rev3.96.telecablecr.com, rev3.126.nstelecablecr.com). APNIC measures 959k end users, Costa Rica's largest AS (22.9%). category=hosting is wrong."
+  source_url: "https://rdap.lacnic.net/rdap/autnum/52263"
+  date: 2026-11-12
+
+58470:
+  category: isp
+  reason: "APNIC registers AS58470 to JAZZWORLD PAKISTAN LIMITED (jazz.com.pk contacts), Jazz being the mobile operator Pakistan Mobile Communications Limited (Wikipedia); the AS is its IX-peering AS but it announces consumer pools: 119.73.0.0/18 blocks are netname LINKdotNET, descr 'Internet Service Provider BRAS Dynamic IP POOL Islamabad' and 'Lahore' (BRAS = broadband subscriber termination), plus Mobilink-Services blocks. APNIC measures 146k end users behind only 5,376 IPv4 addresses. Mixed fixed/mobile, so not mobile_carrier. category=hosting is wrong."
+  source_url: "https://rdap.apnic.net/ip/119.73.7.0"
+  date: 2026-11-12
+
+132116:
+  category: isp
+  reason: "APNIC registers AS132116 (ANINETWORK-IN) to Anonet Network Private Limited (noc@anonet.in), Laxmi Nagar, Delhi; anonet.in titles itself 'High Speed Broadband Internet Service Provider in Laxmi Nagar, East Delhi'; 43.251.92.0/22 is netname ANIHI-SPEEDBROADBAND 'Ani Hi-Speed Broadband' and the space resolves to reverse.anonet.in. APNIC measures 1.37M end users. category=hosting is wrong."
+  source_url: "https://www.anonet.in/"
+  date: 2026-11-12
+
+200590:
+  category: isp
+  reason: "RIPE registers AS200590 (asnls) to 'NLS Kazakhstan LLC' (ncc@nls.kz); nls.kz advertises itself as an internet provider in Almaty and Astana (fibre internet tariffs, IP telephony, hosting as a side service). Announced blocks are netname KZ-NLS descr 'NLS Networks IPoE' and 'NLS Networks for Clients' (IPoE = subscriber access). APNIC measures 466k end users. category=hosting is wrong."
+  source_url: "https://rdap.db.ripe.net/ip/93.190.242.0"
+  date: 2026-11-12
+
+206262:
+  category: isp
+  reason: "RIPE registers AS206262 (Telkos) to 'TelKos L.L.C' (abuse@telkos.net, NOC Prishtine); telkos.net describes it as a Kosovo cable company selling high-speed internet and cable TV (Albanian: 'kompani kabllore ... ofron internet me shpejtësi të lartë, televizionit kabllor'). 5.206.233.0/24 is netname Viti-Broadband-Clients. APNIC measures 291k end users. category=hosting is wrong."
+  source_url: "https://www.telkos.net/"
+  date: 2026-11-12
+
+327708:
+  category: isp
+  reason: "AFRINIC registers AS327708 to 'Airtel Rwanda Ltd' (rw.airtel.com contacts) and the AS announces 197.157.128.0/18, allocated to Airtel Rwanda (ORG-ARL2-AFRINIC, country RW), plus sibling Airtel opco blocks (Niger, Congo, Malawi, Kenya, Seychelles; 41.77.6.0/24 Zambia is descr 'Pool Used for Internet browsing'). APNIC measures 945k end users, Rwanda's #2 AS (28.9%), so humans sit behind it even though it also works as Airtel Africa's group backbone (role stays midsize_transit). Mixed, so not mobile_carrier. category=hosting is wrong."
+  source_url: "https://rdap.afrinic.net/rdap/autnum/327708"
+  date: 2026-11-12

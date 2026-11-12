@@ -438,6 +438,30 @@ checks:
     asn: 3352
     gem_sources: [asn_category]
     note: "Telefonica de Espana v6"
+  - ip: "200.151.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 7738
+    gem_sources: [asn_category]
+    note: "V.tal AS7738 (ex-Oi/Telemar), 200.151.0.0/16 (rDNS userdial.telemar.net.br). Added 2026-11-12 with its corrections.yml entry: ipverse labels it hosting, so before the correction this probe answered :hosting for Brazilian home subscribers (APNIC: 4.5M users). Pre-fix lookup on the 2026-09-19 build gave hosting/asn_category/AS7738 with no flag bits, so the only thing the correction changes is the category."
+  - ip: "177.0.64.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 8167
+    gem_sources: [asn_category]
+    note: "V.tal AS8167 (ex-Brasil Telecom), 177.0.64.0/18 (rDNS user3p.v-tal.net.br). Added 2026-11-12 with its corrections.yml entry, same reason as AS7738 (APNIC: 3.3M users); pre-fix lookup was hosting/asn_category/AS8167 with no flag bits."
+  - ip: "37.160.0.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 29447
+    gem_sources: [asn_category]
+    note: "Iliad Italia AS29447, 37.160.0.0/14 (RIPE netname MOBILE-USERS-BLOCK, rDNS mob.proxad.it). Guards the stale-registrant trap: the RIPE org is still named 'Scaleway SAS', which is where ipverse's hosting category comes from. Deliberately residential_isp and not mobile: the AS also carries IT-ILIAD-FTTH home-fibre pools, so it fails the mobile_carrier.txt bar. Added 2026-11-12; pre-fix lookup was hosting/asn_category/AS29447 with no flag bits."
+  - ip: "37.57.48.10"
+    expect: residential_isp
+    rule: asn_category
+    asn: 13188
+    gem_sources: [asn_category]
+    note: "Triolan AS13188 (UA cable/broadband ISP), 37.57.48.0/21 (netname TRIOLAN). Guards the same-name trap: the RIPE registrant is 'CONTENT DELIVERY NETWORK LTD', which looks like a CDN. Added 2026-11-12; pre-fix lookup was hosting/asn_category/AS13188 with no flag bits."
 
   # --- business / education / government — category verdicts ---
   - ip: "81.9.5.10"

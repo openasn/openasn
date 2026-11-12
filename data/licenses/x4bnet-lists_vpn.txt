@@ -1,10 +1,12 @@
 # License
-Software in the below license corresponds to the scripts, automation, and the list itself (source files and generated output).
+The scripts, automation, curated source files, and generated IP lists produced by
+this project are licensed under the MIT License. Upstream database licenses are
+identified in the ASN database section above.
 
 ```
 MIT License
 
-Copyright (c) 2024 X4B (Mathew Heard)
+Copyright (c) 2026 X4B (Mathew Heard)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

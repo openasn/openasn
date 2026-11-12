@@ -1348,3 +1348,134 @@ registry comparison is acceptable in a curation tool (CD-19c says yes for
 routing drafts into review; it is written nowhere). (v) Whether the
 23,745 unrouted rows that carry only ipverse's category/role should stay
 (CD-19d keeps them).
+
+## D-SRC-4 — X4B's generated lists leave the core; OpenASN expands X4B's hand-curated inputs itself (2026-11-12)
+
+**Status: proposed in a reviewed PR; the owner decides.** This extends
+D-SRC-3, where X4B's `output/` lists were an upper bound cut back to what
+X4B's first-party inputs justify. Under this decision the output lists are
+not read at all.
+
+**What changed upstream** (X4BNet/lists_vpn, all on 2026-10-29 UTC):
+
+| commit | time | what |
+|---|---|---|
+| [`714bb476`](https://github.com/X4BNet/lists_vpn/commit/714bb476c3d5) | 01:33 | "remove the (not) legacy ipv6.txt". The license section is unchanged (sha256 `8826b5fb…`, same as the 2026-09-19 pin) |
+| [`e1831745`](https://github.com/X4BNet/lists_vpn/commit/e18317453bb2ecd4dc7c9aaf2f520996b1b8b21f) | 01:53 | last `output/` build before the switch (iptoasn.com expansion) |
+| [`ea035c77`](https://github.com/X4BNet/lists_vpn/commit/ea035c779e55) | 03:00 | "move to IPLocate IP to ASN database (#285)". Adds a README "ASN database" section: the [IPLocate ip-to-asn database](https://github.com/iplocate/ip-address-databases/tree/main/ip-to-asn) is "licensed under CC BY-SA 4.0 … This repository's scripts, curated inputs, and generated lists are licensed under MIT … Upstream sources retain their own licenses." Rewrites the License grant (below). License-section sha256 becomes `8ddb0a9e…` |
+| [`fdf1db6a`](https://github.com/X4BNet/lists_vpn/commit/fdf1db6a9b4a) | 03:41 | "keyword matching prototype (#286)". Adds `input/vpn/Keywords.txt` (`VPN`) and `input/datacenter/Keywords.txt` (`Host`, `Huawei`). A build includes any IPLocate entry whose `name`, `org` or `domain` contains a keyword, "even if their ASN is not listed". The datacenter list inherits the vpn keywords. The license section is unchanged from ea035c77 |
+
+The License grant was "Software in the below license corresponds to the
+scripts, automation, and the list itself (source files and generated
+output)." It is now "The scripts, automation, curated source files, and
+generated IP lists produced by this project are licensed under the MIT
+License. Upstream database licenses are identified in the ASN database
+section above." The copyright line went from 2024 to 2026. The pinned text
+is in `data/licenses/x4bnet-lists_vpn.txt`.
+
+**What broke, in order** (nightly-build runs, tracking issue #49):
+
+1. 2026-10-22: `HTTP 503` from the RouteViews licence page
+   (`wp-json/wp/v2/pages/45927`) inside the license gate. This was transient
+   and unrelated to X4B. The X4B pin still passed on 10-23.
+2. 2026-10-23 to 10-28: **G5 spot panel**, row `240c:ca0d::10` (CERNET v6).
+   RouteViews now sees `240c:ca0d::/32` originated by AS24363 ("CERNET2 IX
+   at Shandong University", ipverse category `hosting`), a more-specific of
+   `240c:c000::/20` (AS23910, CERNET2, also `hosting` in ipverse). This is
+   unrelated to X4B and **still open**: see "Not decided here" below.
+3. 2026-10-29 onward: **license gate**, `x4bnet-lists_vpn: LICENSE TEXT
+   CHANGED (pinned 8826b5fb…, live 8ddb0a9e…)`, caused by ea035c77. The
+   gate runs before G5, so it has hidden failure 2 since then.
+
+**Why the generated lists cannot stay.** Since ea035c77, X4B expands its
+ASN lists into ranges with a CC BY-SA 4.0 database, and since fdf1db6a it
+also adds networks that it selects by matching keywords against that
+database's name, org and domain fields. X4B labels the generated lists MIT
+and says upstream sources keep their own licenses. Whether a range list
+cut out of a CC BY-SA database is Adapted Material (which would carry
+ShareAlike into the composite) is exactly the doubt README "Legal design"
+rules 1 and 3 resolve by exclusion. A builder repo's licence does not
+sanitize the data it aggregates. The keyword selections are also a
+precision problem in their own right: a network is added because "Host" or
+"Huawei" appears in an IPLocate field, not because anyone curated it.
+
+The leak was real, not hypothetical. On the same backbone, D-SRC-3's method
+applied to today's IPLocate-built datacenter list keeps 13,755,034
+addresses (9,958 ranges) that the pre-switch list e1831745 did not have.
+The largest blocks come from ASNs X4B never listed (AS37611, AS44559,
+AS9308, AS43515, AS19527…). The vpn whitelist already kept those out of the
+vpn layer. The datacenter blacklist only subtracts the named Proton feed,
+so it would have shipped them.
+
+**The ruling.**
+
+1. OpenASN reads only X4B's hand-curated source files:
+   `input/vpn/ASN.txt`, `input/datacenter/ASN.txt`,
+   `input/vpn/ips/Manual.txt` and `input/datacenter/ips/Manual.txt`. Those
+   are MIT under the new grant ("curated source files"). OpenASN takes only
+   the AS numbers from the ASN files. `-AS…` exclusion lines are not
+   includes. Never read: `output/*`, `input/*/Keywords.txt`, and the
+   third-party feeds in `input/*/ips/`.
+2. vpn = (vpn ASNs expanded against OpenASN's own backbone) ∪ vpn
+   Manual.txt. datacenter = ((dc ∪ vpn) ASNs expanded against the backbone)
+   ∪ dc Manual.txt. This is D-SRC-3's "justified" set, no longer intersected
+   with X4B's output. Keyword-selected networks cannot enter, because they
+   exist only in the output. A keyword hit inside an ASN that X4B lists by
+   hand is covered by that ASN entry, as before.
+3. The pipeline's test suite fails if any X4B URL other than those four
+   files is added to `Sources` (`test/x4b_first_party_test.rb`).
+4. The license pin moves to `8ddb0a9e…` via `rake licenses:pin
+   ONLY=x4bnet-lists_vpn` (other pins untouched). It is the grant on the
+   curated files that OpenASN still relies on. The new "ASN database"
+   section above the License heading is not part of the pinned extract.
+5. Rejected alternative: pinning `output/` to e1831745. That would freeze
+   the overlays at 2026-10-29 for good, VPN churn included. It would also
+   pin a licence grant that is no longer the live one, and it still carries
+   D-SRC-3's feed problem.
+
+**D-SRC-3's reason for the dc blacklist, re-measured.** D-SRC-3 rejected a
+dc whitelist because X4B's expansion database and our backbone disagree on
+origins (the GCP `35.208.0.0/15` example). Measured on the 2026-11-12
+RouteViews backbone (9 of 10 collectors; route-views.sg 404), with the old
+method applied to e1831745 compared with this ruling:
+
+| layer | ranges | addresses |
+|---|---|---|
+| vpn (IPv4) | 4,708 → 5,033 (+6.9%) | 3,102,464 → 3,321,856 (+7.1%; nothing lost, all gains inside X4B-listed ASNs) |
+| datacenter (IPv4) | 30,592 → 31,715 (+3.7%) | 395,628,812 → 400,811,008 (−536,576 / +5,718,772) |
+
+Address-weighted verdict moves, all from one candidate artifact's base layer:
+
+- **Leaving `hosting` (the method's cost): 341,248 addresses.** Of these,
+  199,680 go to `business` (AS43515 Google Ireland 155,392, the GCP
+  disagreement D-SRC-3 named), 84,224 to `residential_isp` (AS134548
+  32,768, AS21887 8,448, AS31577 4,096 …), and 57,600 to `unknown` (54,784
+  unrouted in our backbone, 2,816 transit-ambiguous). A further 193,536
+  addresses stay `hosting` but via `asn_category` instead of `x4b_dc`
+  (e.g. AS17561).
+- **Entering `hosting` / `vpn`: ~3.4M addresses, almost all from X4B's
+  newer hand-curated ASNs, not from the method.** AS23724 China Telecom
+  Beijing IDC accounts for 2,220,800 (X4BNet/lists_vpn 8b3bf061,
+  2026-11-10). Others: AS137718 Volcano Engine, AS58466, AS37963, AS135061,
+  AS219329 Flashproxy.io. The old method would have taken these too, once
+  X4B's output caught up.
+- 196,096 addresses stay `vpn` but via `x4b_vpn` instead of
+  `asn_vpn_provider`.
+
+Both costs only remove an infrastructure label, which is the direction this
+project prefers. AS43515 can be curated into `hosting_extra` with its own
+source if review wants it back. That is not done here.
+
+**Gates** (local, non-publishing `ruby pipeline/run.rb` against `latest` =
+2026-10-21): license gate green, crosscheck PASS (hosting_asns
+11,766 → 11,960), G4 base_ipv4 PASS +2.0%, **vpn_ipv4 WARN +6.4%**
+(4,731 → 5,033, inside the 20% fail line), dc_ipv4 PASS +3.9%, base_ipv6
+PASS +0.8%. No ack is needed. G5: every X4B row is green. The only failure
+is the pre-existing CERNET v6 row (failure 2 above).
+
+**Not decided here.** Row `240c:ca0d::10` expects `education` / AS4538. The
+covering prefix now originates from AS24363, and its parent from AS23910.
+ipverse calls both `hosting`. The nightly cannot publish until a reviewed
+change resolves this: a sourced `corrections.yml` entry for the CERNET2
+ASNs, a reasoned update of that one row, or an upstream fix at
+ipverse/as-metadata. It needs its own evidence and its own PR.

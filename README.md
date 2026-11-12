@@ -249,7 +249,7 @@ The nightly build runs from [this repo's workflow](.github/workflows/nightly-bui
 
 ## Related projects
 
-OpenASN stands on excellent shoulders: [RouteViews](https://www.routeviews.org/) (BGP RIB archives, CC BY 4.0, University of Oregon — our IP→ASN backbone is recomputed from them), [ipverse/as-metadata](https://github.com/ipverse/as-metadata) (CC0 ASN categories), [X4BNet/lists_vpn](https://github.com/X4BNet/lists_vpn) (MIT VPN/dc ranges), [brianhama/bad-asn-list](https://github.com/brianhama/bad-asn-list) (MIT hosting ASNs). If OpenASN is useful to you, star them too — and send corrections upstream. Earlier releases used [sapics/ip-location-db](https://github.com/sapics/ip-location-db) (PDDL) as the backbone; thank you, sapics.
+OpenASN stands on excellent shoulders: [RouteViews](https://www.routeviews.org/) (BGP RIB archives, CC BY 4.0, University of Oregon — our IP→ASN backbone is recomputed from them), [ipverse/as-metadata](https://github.com/ipverse/as-metadata) (CC0 ASN categories), [X4BNet/lists_vpn](https://github.com/X4BNet/lists_vpn) (MIT hand-curated VPN/datacenter ASN lists), [brianhama/bad-asn-list](https://github.com/brianhama/bad-asn-list) (MIT hosting ASNs). If OpenASN is useful to you, star them too — and send corrections upstream. Earlier releases used [sapics/ip-location-db](https://github.com/sapics/ip-location-db) (PDDL) as the backbone; thank you, sapics.
 
 [![Powered by RouteViews](https://assets.routeviews.org/logos/png/transparent-background/routeviews-powered-by-black_transparent_SMALL.png)](https://www.routeviews.org/)
 

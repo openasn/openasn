@@ -40,19 +40,22 @@ download at archive.routeviews.org, lg.routeviews.org, and api.routeviews.org.
 
 ## Sources requiring attribution (MIT)
 
-### X4BNet / lists_vpn — VPN & datacenter range overlays, ASN curation seeds
+### X4BNet / lists_vpn — hand-curated VPN & datacenter ASN lists and netblocks
 - https://github.com/X4BNet/lists_vpn
-- License: MIT — per the project README, the license covers "the scripts,
-  automation, and the list itself (source files and generated output)".
-- Copyright (c) 2024 X4B (Mathew Heard)
-- What OpenASN takes: only X4B's own work. That is its hand-curated ASN lists
-  (`input/*/ASN.txt`, expanded against the backbone below) and its manual
-  netblocks (`input/*/ips/Manual.txt`), used to keep the matching ranges of
-  X4B's published lists. X4B's generated lists also merge third-party feeds
+- License: MIT. Per the project README, the license covers "the scripts,
+  automation, curated source files, and generated IP lists produced by this
+  project".
+- Copyright (c) 2026 X4B (Mathew Heard)
+- What OpenASN takes: only X4B's hand-curated source files. Those are its ASN
+  lists (`input/*/ASN.txt`), expanded by OpenASN against its own backbone
+  below, and its manual netblocks (`input/*/ips/Manual.txt`). OpenASN builds
+  the vpn and datacenter range overlays from those. It does not use X4B's
+  generated lists (`output/`). Since 2026-10-29 those lists are built from
+  the IPLocate ip-to-asn database, which is licensed CC BY-SA 4.0, and they
+  include networks matched by keyword. They also merge third-party feeds
   (Apple iCloud Private Relay egress, Mullvad, Private Internet Access,
-  Proton VPN). Those feeds are not X4B's to license, so OpenASN strips them
-  and does not republish them. They are Tier B (see below). Decision:
-  DECISIONS.md D-SRC-3.
+  Proton VPN) that are not X4B's to license. Those feeds are Tier B (see
+  below). Decisions: DECISIONS.md D-SRC-3, D-SRC-4.
 
 ### brianhama / bad-asn-list — curated hosting/cloud/colo ASN list
 - https://github.com/brianhama/bad-asn-list

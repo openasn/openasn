@@ -20,8 +20,8 @@
   "x4bnet-lists_vpn": {
     "url": "https://raw.githubusercontent.com/X4BNet/lists_vpn/main/README.md",
     "extract": "license_heading_section",
-    "sha256": "8826b5fbb9d7380264deb636df4adf349eab0e640ca3f2f5481d74cea96ba7a5",
-    "pinned_at": "2026-09-19T16:50:52Z"
+    "sha256": "8ddb0a9ea44366c5b827782fa00a205037772e2297f33a5ec64a3695d0e36eb6",
+    "pinned_at": "2026-11-12T20:47:05Z"
   },
   "brianhama-bad-asn-list": {
     "url": "https://raw.githubusercontent.com/brianhama/bad-asn-list/master/LICENSE",
